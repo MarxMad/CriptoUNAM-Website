@@ -5,6 +5,8 @@ import Comunidad from './pages/Comunidad'
 import Home from './pages/Home'
 import Perfil from './pages/Perfil'
 import { WalletProvider } from './context/WalletContext'
+import { ThemeProvider } from './context/ThemeContext'
+import ThemeToggle from './components/ThemeToggle'
 import './App.css'
 
 function App() {
@@ -71,95 +73,98 @@ function App() {
   }
 
   return (
-    <WalletProvider>
-      <Router>
-        <div className="App">
-          <nav className="navbar">
-            <Link to="/" className="logo-link">
-              <img src="/logo-criptounam.png" alt="CriptoUNAM Logo" className="logo" />
-            </Link>
-            <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
-              <Link to="/">Inicio</Link>
-              <Link to="/cursos">Cursos</Link>
-              <Link to="/comunidad">Comunidad</Link>
-              <Link to="/perfil">Mi Perfil</Link>
-              <div className="wallet-container">
-                {walletConnected ? (
-                  <div className="wallet-connected">
-                    <button 
-                      className="connect-wallet-btn connected"
-                      onClick={() => setShowWalletOptions(!showWalletOptions)}
-                    >
-                      <i className="fas fa-wallet"></i>
-                      {formatAddress(walletAddress)}
-                    </button>
-                    {showWalletOptions && (
-                      <div className="wallet-options">
-                        <p className="wallet-address">
-                          Conectado: {formatAddress(walletAddress)}
-                        </p>
-                        <button onClick={disconnectWallet}>
-                          <i className="fas fa-sign-out-alt"></i>
-                          Desconectar Wallet
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <>
-                    <button 
-                      className="connect-wallet-btn"
-                      onClick={() => setShowWalletOptions(!showWalletOptions)}
-                    >
-                      <i className="fas fa-wallet"></i>
-                      Conectar Wallet
-                    </button>
-                    {showWalletOptions && (
-                      <div className="wallet-options">
-                        <button onClick={() => connectWallet('metamask')}>
-                          <img src="/metamask-logo.png" alt="MetaMask" />
-                          MetaMask
-                        </button>
-                        <button onClick={() => connectWallet('coinbase')}>
-                          <img src="/coinbase-logo.png" alt="Coinbase" />
-                          Coinbase Wallet
-                        </button>
-                        <button onClick={() => connectWallet('walletconnect')}>
-                          <img src="/walletconnect-logo.png" alt="WalletConnect" />
-                          WalletConnect
-                        </button>
-                      </div>
-                    )}
-                  </>
-                )}
+    <ThemeProvider>
+      <WalletProvider>
+        <Router>
+          <div className="App">
+            <nav className="navbar">
+              <Link to="/" className="logo-link">
+                <img src="/logo-criptounam.png" alt="CriptoUNAM Logo" className="logo" />
+              </Link>
+              <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
+                <Link to="/">Inicio</Link>
+                <Link to="/cursos">Cursos</Link>
+                <Link to="/comunidad">Comunidad</Link>
+                <Link to="/perfil">Mi Perfil</Link>
+                <div className="wallet-container">
+                  {walletConnected ? (
+                    <div className="wallet-connected">
+                      <button 
+                        className="connect-wallet-btn connected"
+                        onClick={() => setShowWalletOptions(!showWalletOptions)}
+                      >
+                        <i className="fas fa-wallet"></i>
+                        {formatAddress(walletAddress)}
+                      </button>
+                      {showWalletOptions && (
+                        <div className="wallet-options">
+                          <p className="wallet-address">
+                            Conectado: {formatAddress(walletAddress)}
+                          </p>
+                          <button onClick={disconnectWallet}>
+                            <i className="fas fa-sign-out-alt"></i>
+                            Desconectar Wallet
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <button 
+                        className="connect-wallet-btn"
+                        onClick={() => setShowWalletOptions(!showWalletOptions)}
+                      >
+                        <i className="fas fa-wallet"></i>
+                        Conectar Wallet
+                      </button>
+                      {showWalletOptions && (
+                        <div className="wallet-options">
+                          <button onClick={() => connectWallet('metamask')}>
+                            <img src="/metamask-logo.png" alt="MetaMask" />
+                            MetaMask
+                          </button>
+                          <button onClick={() => connectWallet('coinbase')}>
+                            <img src="/coinbase-logo.png" alt="Coinbase" />
+                            Coinbase Wallet
+                          </button>
+                          <button onClick={() => connectWallet('walletconnect')}>
+                            <img src="/walletconnect-logo.png" alt="WalletConnect" />
+                            WalletConnect
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-            <button 
-              className="mobile-menu-btn"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              <i className="fas fa-bars"></i>
-            </button>
-          </nav>
+              <ThemeToggle />
+              <button 
+                className="mobile-menu-btn"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                <i className="fas fa-bars"></i>
+              </button>
+            </nav>
 
-          {/* Notification Popup */}
-          {showNotification && (
-            <div className="notification-popup">
-              {notificationMessage}
-            </div>
-          )}
+            {/* Notification Popup */}
+            {showNotification && (
+              <div className="notification-popup">
+                {notificationMessage}
+              </div>
+            )}
 
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/cursos" element={<Cursos />} />
-              <Route path="/comunidad" element={<Comunidad />} />
-              <Route path="/perfil" element={<Perfil />} />
-            </Routes>
-          </main>
-        </div>
-      </Router>
-    </WalletProvider>
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/cursos" element={<Cursos />} />
+                <Route path="/comunidad" element={<Comunidad />} />
+                <Route path="/perfil" element={<Perfil />} />
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </WalletProvider>
+    </ThemeProvider>
   )
 }
 
