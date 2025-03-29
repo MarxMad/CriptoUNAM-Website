@@ -39,7 +39,7 @@ cd criptounam
 2. Instalar dependencias:
 bash
 npm install
-o
+# o
 yarn install
 
 
@@ -80,16 +80,16 @@ criptounam/
 ## 🔍 Scripts Disponibles
 bash
 Desarrollo
-npm run dev # Inicia servidor de desarrollo
+(npm run dev)         # Inicia servidor de desarrollo
 Construcción
-npm run build # Construye para producción
-npm run preview # Vista previa de la build
+(npm run build)        # Construye para producción
+(npm run preview)      # Vista previa de la build
 Testing
-npm run test # Ejecuta tests
-npm run test:watch # Ejecuta tests en modo watch
+(npm run test)         # Ejecuta tests
+(npm run test:watch)   # Ejecuta tests en modo watch
 Linting
-npm run lint # Ejecuta ESLint
-npm run lint:fix # Corrige errores de linting
+( npm run lint)         # Ejecuta ESLint
+(npm run lint:fix)     # Corrige errores de linting
 
 
 
