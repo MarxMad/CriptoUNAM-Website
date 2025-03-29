@@ -1,0 +1,7 @@
+# Ignorar archivos innecesarios
+.DS_Store
+*.log
+node_modules/
+.vscode/
+*.swp
+*.tmp
