@@ -182,15 +182,16 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 
 ## 👥 Equipo
 
-- Nombre del Desarrollador 1 - Desarrollador Principal
-- Nombre del Desarrollador 2 - UI/UX
-- Nombre del Desarrollador 3 - Smart Contracts
+- Gerardo Pedrizco Vela - Desarrollador Principal
+- Fernanda Tello Arzate  - UI/UX
+- Adrian Armenta Sequeira - Smart Contracts
+- Daniel Cruz - Desarrolaldor de negocios
 
 ## 📞 Contacto
 
 - Website: [criptounam.com](https://criptounam.com)
-- Email: contacto@criptounam.com
-- Twitter: [@CriptoUNAM](https://twitter.com/CriptoUNAM)
+- Email: criptounam@gmail.com
+- Twitter: [@Cripto_UNAM](https://twitter.com/Cripto_UNAM)
 - Discord: Servidor de CriptoUNAM
 
 ## 🙏 Agradecimientos
