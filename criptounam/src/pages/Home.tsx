@@ -1,35 +1,87 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { useWallet } from '../context/WalletContext'
+import { IMAGES } from '../constants/images'
+
+interface RegistrationForm {
+  nombre: string
+  apellidos: string
+  edad: string
+  carrera: string
+  plantel: string
+  numeroCuenta: string
+  motivacion: string
+  twitter: string
+  instagram: string
+  linkedin: string
+  facebook: string
+}
 
 const Home = () => {
+  const { connectWallet, isConnected } = useWallet()
+  const [showForm, setShowForm] = useState(false)
   const [email, setEmail] = useState('')
-  const [walletConnected, setWalletConnected] = useState(false)
+  const [formData, setFormData] = useState<RegistrationForm>({
+    nombre: '',
+    apellidos: '',
+    edad: '',
+    carrera: '',
+    plantel: '',
+    numeroCuenta: '',
+    motivacion: '',
+    twitter: '',
+    instagram: '',
+    linkedin: '',
+    facebook: ''
+  })
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Email registrado:', email)
+    console.log('Datos del formulario:', formData)
+    setFormData({
+      nombre: '',
+      apellidos: '',
+      edad: '',
+      carrera: '',
+      plantel: '',
+      numeroCuenta: '',
+      motivacion: '',
+      twitter: '',
+      instagram: '',
+      linkedin: '',
+      facebook: ''
+    })
+    setShowForm(false)
   }
 
-  const connectWallet = async () => {
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        await window.ethereum.request({ method: 'eth_requestAccounts' })
-        setWalletConnected(true)
-      } catch (error) {
-        console.error('Error al conectar wallet:', error)
-      }
-    } else {
-      alert('Por favor instala MetaMask!')
-    }
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('Email registrado:', email)
+    setEmail('')
   }
 
   return (
-    <div>
+    <div className="home-container">
       {/* Hero Section */}
-      <header className="hero">
+      <header 
+        className="hero"
+        style={{ backgroundImage: `url(${IMAGES.HERO_BG})` }}
+      >
         <div className="hero-content">
           <h1>CriptoUNAM</h1>
           <h2>Formando la próxima generación de profesionales en blockchain</h2>
-          <button className="cta-button">Únete a la comunidad</button>
+          <button 
+            className="join-button"
+            onClick={() => setShowForm(true)}
+          >
+            Únete a la comunidad
+          </button>
         </div>
       </header>
 
@@ -72,7 +124,7 @@ const Home = () => {
       <section className="section newsletter">
         <h2>Únete a Nuestra Newsletter</h2>
         <p>Mantente actualizado con las últimas noticias y eventos de CriptoUNAM</p>
-        <form onSubmit={handleSubmit} className="newsletter-form">
+        <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
           <input
             type="email"
             value={email}
@@ -103,6 +155,154 @@ const Home = () => {
           </a>
         </div>
       </section>
+
+      {showForm && (
+        <div className="modal-overlay">
+          <div className="modal-content registration-form">
+            <button 
+              className="close-button"
+              onClick={() => setShowForm(false)}
+              aria-label="Cerrar formulario"
+            >
+              ×
+            </button>
+            <h2>Registro en CriptoUNAM</h2>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label htmlFor="nombre">Nombre*</label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="apellidos">Apellidos*</label>
+                <input
+                  type="text"
+                  id="apellidos"
+                  name="apellidos"
+                  value={formData.apellidos}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="edad">Edad*</label>
+                <input
+                  type="number"
+                  id="edad"
+                  name="edad"
+                  min="15"
+                  max="99"
+                  value={formData.edad}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="carrera">Carrera*</label>
+                <input
+                  type="text"
+                  id="carrera"
+                  name="carrera"
+                  value={formData.carrera}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="plantel">Plantel UNAM*</label>
+                <select
+                  id="plantel"
+                  name="plantel"
+                  value={formData.plantel}
+                  onChange={handleInputChange}
+                  required
+                >
+                  <option value="">Selecciona un plantel</option>
+                  <option value="FI">Facultad de Ingeniería</option>
+                  <option value="FC">Facultad de Ciencias</option>
+                  <option value="FCA">Facultad de Contaduría y Administración</option>
+                  <option value="FE">Facultad de Economía</option>
+                  {/* Agregar más planteles según sea necesario */}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="numeroCuenta">Número de Cuenta*</label>
+                <input
+                  type="text"
+                  id="numeroCuenta"
+                  name="numeroCuenta"
+                  pattern="\d{9}"
+                  title="El número de cuenta debe tener 9 dígitos"
+                  value={formData.numeroCuenta}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="motivacion">¿Por qué quieres formar parte de CriptoUNAM?*</label>
+                <textarea
+                  id="motivacion"
+                  name="motivacion"
+                  value={formData.motivacion}
+                  onChange={handleInputChange}
+                  required
+                  rows={4}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Redes Sociales</label>
+                <div className="social-inputs">
+                  <input
+                    type="text"
+                    name="twitter"
+                    placeholder="Twitter/X"
+                    value={formData.twitter}
+                    onChange={handleInputChange}
+                  />
+                  <input
+                    type="text"
+                    name="instagram"
+                    placeholder="Instagram"
+                    value={formData.instagram}
+                    onChange={handleInputChange}
+                  />
+                  <input
+                    type="text"
+                    name="linkedin"
+                    placeholder="LinkedIn"
+                    value={formData.linkedin}
+                    onChange={handleInputChange}
+                  />
+                  <input
+                    type="text"
+                    name="facebook"
+                    placeholder="Facebook"
+                    value={formData.facebook}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="submit-button">
+                Enviar Registro
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       <footer className="footer">
         <p>&copy; 2024 CriptoUNAM. Todos los derechos reservados.</p>

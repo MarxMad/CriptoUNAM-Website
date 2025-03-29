@@ -99,28 +99,30 @@ const Comunidad = () => {
       </header>
 
       {/* Estadísticas */}
-      <section className="community-stats">
-        <div className="stat-item">
-          <i className="fas fa-users"></i>
-          <h3>500+</h3>
-          <p>Miembros Activos</p>
+      <div className="comunidad-stats">
+        <div className="stats-container">
+          <div className="stat-box">
+            <i className="fas fa-users stat-icon"></i>
+            <h3>500+</h3>
+            <p>Miembros Activos</p>
+          </div>
+          <div className="stat-box">
+            <i className="fas fa-calendar-check stat-icon"></i>
+            <h3>30+</h3>
+            <p>Eventos Realizados</p>
+          </div>
+          <div className="stat-box">
+            <i className="fas fa-university stat-icon"></i>
+            <h3>10+</h3>
+            <p>Facultades Participantes</p>
+          </div>
+          <div className="stat-box">
+            <i className="fas fa-laptop-code stat-icon"></i>
+            <h3>15+</h3>
+            <p>Proyectos Desarrollados</p>
+          </div>
         </div>
-        <div className="stat-item">
-          <i className="fas fa-calendar-check"></i>
-          <h3>30+</h3>
-          <p>Eventos Realizados</p>
-        </div>
-        <div className="stat-item">
-          <i className="fas fa-university"></i>
-          <h3>10+</h3>
-          <p>Facultades Participantes</p>
-        </div>
-        <div className="stat-item">
-          <i className="fas fa-laptop-code"></i>
-          <h3>15+</h3>
-          <p>Proyectos Desarrollados</p>
-        </div>
-      </section>
+      </div>
 
       {/* Próximos Eventos */}
       <section className="upcoming-events">
