@@ -75,26 +75,8 @@ const Cursos = () => {
 
   return (
     <div className="cursos-container">
+      {/* Barra lateral de filtros */}
       <aside className={`filtros-sidebar ${filtrosExpandidos ? 'expanded' : ''}`}>
-        <div className="filtros-header">
-          <button 
-            className="toggle-filters"
-            onClick={() => setFiltrosExpandidos(!filtrosExpandidos)}
-          >
-            {filtrosExpandidos ? (
-              <>
-                <i className="fas fa-chevron-down"></i>
-                Ocultar Filtros
-              </>
-            ) : (
-              <>
-                <i className="fas fa-chevron-up"></i>
-                Mostrar Filtros
-              </>
-            )}
-          </button>
-        </div>
-
         <div className="search-box">
           <input
             type="text"
