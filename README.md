@@ -33,7 +33,7 @@ Plataforma educativa descentralizada para aprender sobre blockchain, criptomoned
 1. Clonar el repositorio:
 
     ```bash
-    git clone https://github.com/tu-usuario/criptounam.git
+    git clone https://github.com/MarxMad/CriptoUNAM-Website.git
     cd criptounam
     ```
 
@@ -182,10 +182,10 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 
 ## 👥 Equipo
 
-- Gerardo Pedrizco Vela - Desarrollador Principal
+- Gerardo Pedrizco Vela - UI/UX
 - Fernanda Tello Arzate  - UI/UX
 - Adrian Armenta Sequeira - Smart Contracts
-- Daniel Cruz - Desarrolaldor de negocios
+- Daniel Cruz - Desarrollador de Negocios
 
 ## 📞 Contacto
 
