@@ -3505,7 +3505,7 @@ p {
   background: var(--primary-dark);
   color: var(--light-beige);
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: var(--border-radius-lg);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -3561,4 +3561,118 @@ p {
 [data-theme='dark'] .comunidad-stats .stat-box:hover {
   border-color: var(--dark-gold);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos base para las estadísticas */
+.comunidad-stats {
+  margin: 2rem auto;
+  max-width: 1440px;
+  padding: 0 2rem;
+}
+
+.comunidad-stats .stats-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.comunidad-stats .stat-box {
+  background: var(--primary-dark);
+  color: var(--light-beige);
+  padding: 2rem;
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Diseño responsivo mejorado */
+@media (max-width: 1200px) {
+  .comunidad-stats .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .comunidad-stats .stat-box {
+    padding: 1.75rem;
+  }
+
+  .comunidad-stats .stat-box h3 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .comunidad-stats {
+    padding: 0 1rem;
+    margin: 1.5rem auto;
+  }
+
+  .comunidad-stats .stats-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem 0;
+  }
+
+  .comunidad-stats .stat-box {
+    padding: 1.5rem;
+  }
+
+  .comunidad-stats .stat-box .stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .comunidad-stats .stat-box h3 {
+    font-size: 2.25rem;
+  }
+
+  .comunidad-stats .stat-box p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .comunidad-stats .stats-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .comunidad-stats .stat-box {
+    padding: 1.25rem;
+  }
+
+  .comunidad-stats .stat-box h3 {
+    font-size: 2rem;
+  }
+
+  .comunidad-stats .stat-box .stat-icon {
+    font-size: 1.75rem;
+  }
+
+  .community-header h1 {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .community-header p {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+}
+
+/* Ajustes para el modo oscuro en responsive */
+@media (max-width: 768px) {
+  [data-theme='dark'] .comunidad-stats .stat-box {
+    background: var(--dark-surface-2);
+  }
+
+  [data-theme='dark'] .comunidad-stats .stat-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  }
 }
