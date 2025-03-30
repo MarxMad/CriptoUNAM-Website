@@ -33,7 +33,7 @@ Plataforma educativa descentralizada para aprender sobre blockchain, criptomoned
 1. Clonar el repositorio:
 
     ```bash
-    git clone https://github.com/tu-usuario/criptounam.git
+    git clone https://github.com/MarxMad/CriptoUNAM-Website.git
     cd criptounam
     ```
 
