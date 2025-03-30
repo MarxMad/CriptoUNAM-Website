@@ -3676,3 +3676,83 @@ p {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   }
 }
+
+/* Estilos para los botones sociales */
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.social-buttons a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  min-width: 200px;
+  justify-content: center;
+}
+
+.discord-btn {
+  background: #5865F2;
+  color: white;
+}
+
+.telegram-btn {
+  background: #0088cc;
+  color: white;
+}
+
+.whatsapp-btn {
+  background: #25D366;
+  color: white;
+}
+
+.social-buttons a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.discord-btn:hover {
+  background: #4752c4;
+}
+
+.telegram-btn:hover {
+  background: #0077b3;
+}
+
+.whatsapp-btn:hover {
+  background: #128C7E;
+}
+
+.social-buttons i {
+  font-size: 1.25rem;
+}
+
+/* Modo oscuro */
+[data-theme='dark'] .social-buttons a {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .social-buttons a:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .social-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .social-buttons a {
+    width: 100%;
+    padding: 1rem;
+  }
+}
