@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { IMAGES } from '../constants/images'
-import { handleRegistration } from '../api/telegram'
+import { handleRegistration, handleNewsletterSubscription } from '../api/telegram'
 import '../styles/Home.css'
 
 interface RegistrationForm {
@@ -37,6 +37,8 @@ const Home = () => {
   })
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
   const [showErrorMessage, setShowErrorMessage] = useState(false)
+  const [showNewsletterSuccess, setShowNewsletterSuccess] = useState(false)
+  const [showNewsletterError, setShowNewsletterError] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -89,10 +91,34 @@ const Home = () => {
     })
   }
 
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('Email registrado:', email)
-    setEmail('')
+    console.log('Enviando suscripción:', email)
+    
+    if (!email) {
+      setShowNewsletterError(true)
+      setTimeout(() => setShowNewsletterError(false), 5000)
+      return
+    }
+
+    try {
+      console.log('Llamando a handleNewsletterSubscription...')
+      const result = await handleNewsletterSubscription(email)
+      console.log('Resultado de la suscripción:', result)
+      
+      if (result.success) {
+        setEmail('')
+        setShowNewsletterSuccess(true)
+        setTimeout(() => setShowNewsletterSuccess(false), 5000)
+      } else {
+        setShowNewsletterError(true)
+        setTimeout(() => setShowNewsletterError(false), 5000)
+      }
+    } catch (error) {
+      console.error('Error al procesar la suscripción:', error)
+      setShowNewsletterError(true)
+      setTimeout(() => setShowNewsletterError(false), 5000)
+    }
   }
 
   
@@ -165,14 +191,19 @@ const Home = () => {
         <h2>Únete a Nuestra Newsletter</h2>
         <p>Mantente actualizado con las últimas noticias y eventos de CriptoUNAM</p>
         <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Tu correo electrónico"
-            required
-          />
-          <button type="submit">Suscribirse</button>
+          <div className="newsletter-input-group">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Tu correo electrónico"
+              required
+              className="newsletter-input"
+            />
+            <button type="submit" className="newsletter-button">
+              Suscribirse
+            </button>
+          </div>
         </form>
       </section>
 
@@ -196,7 +227,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Mensajes de éxito y error */}
+      {/* Mensajes de éxito y error para el registro */}
       {showSuccessMessage && (
         <div className="success-message">
           <p>¡Registro exitoso! Te contactaremos pronto.</p>
@@ -206,6 +237,19 @@ const Home = () => {
       {showErrorMessage && (
         <div className="error-message">
           <p>Hubo un error al procesar tu registro. Por favor, intenta de nuevo.</p>
+        </div>
+      )}
+
+      {/* Mensajes de éxito y error para el newsletter */}
+      {showNewsletterSuccess && (
+        <div className="success-message newsletter-message">
+          <p>¡Suscripción exitosa! Te mantendremos informado.</p>
+        </div>
+      )}
+      
+      {showNewsletterError && (
+        <div className="error-message newsletter-message">
+          <p>Hubo un error al procesar tu suscripción. Por favor, intenta de nuevo.</p>
         </div>
       )}
 
