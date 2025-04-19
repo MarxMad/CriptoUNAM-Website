@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useWallet } from '../context/WalletContext'
 import { ethers } from 'ethers'
 
@@ -85,7 +85,7 @@ const Perfil = () => {
       try {
         setLoading(true)
         // Obtener nombre de la red
-        const network = getNetworkName(isConnected)
+        const network = getNetworkName()
         setNetworkName(network)
 
         // Simular obtención de datos del usuario
@@ -205,15 +205,14 @@ const Perfil = () => {
     fetchUserData()
   }, [walletAddress, isConnected])
 
-  const getNetworkName = (isConnected: boolean): string => {
+  const getNetworkName = (): string => {
     const networks: { [key: number]: string } = {
       1: 'Ethereum Mainnet',
       5: 'Goerli Testnet',
       137: 'Polygon Mainnet',
       80001: 'Mumbai Testnet',
-      // Agregar más redes según necesites
     }
-    return isConnected ? networks[isConnected] || `Chain ID: ${isConnected}` : 'No conectado'
+    return isConnected ? networks[1] || `Chain ID: 1` : 'No conectado'
   }
 
   if (!walletAddress) {

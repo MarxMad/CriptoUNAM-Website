@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-import { useWallet } from '../context/WalletContext'
-
-
 
 interface RegistrationForm {
   nombre: string
@@ -18,7 +15,6 @@ interface RegistrationForm {
 }
 
 const Home = () => {
-  const { connectWallet } = useWallet()
   const [showForm, setShowForm] = useState(false)
   const [email, setEmail] = useState('')
   const [formData, setFormData] = useState<RegistrationForm>({
