@@ -52,40 +52,52 @@ const Newsletter = () => {
         <p>Mantente informado sobre las últimas novedades en blockchain y Web3</p>
       </header>
 
-      <section className="newsletter-entries">
-        {entries.map((entry) => (
-          <article key={entry.id} className="newsletter-entry">
-            {entry.imageUrl && (
-              <div className="entry-image">
-                <img src={entry.imageUrl} alt={entry.title} />
-              </div>
-            )}
-            <div className="entry-content">
-              <h2>{entry.title}</h2>
-              <span className="entry-date">{entry.date}</span>
-              <p>{entry.content}</p>
-              <Link to={`/newsletter/${entry.id}`} className="read-more">
-                Leer más
-              </Link>
-            </div>
-          </article>
-        ))}
-      </section>
+      <div className="sections-container">
+        <section className="entries-section">
+          <h2>Últimas Entradas</h2>
+          <div className="newsletter-entries">
+            {entries.map((entry) => (
+              <article key={entry.id} className="newsletter-entry">
+                {entry.imageUrl && (
+                  <div className="entry-image">
+                    <img src={entry.imageUrl} alt={entry.title} />
+                  </div>
+                )}
+                <div className="entry-content">
+                  <h2>{entry.title}</h2>
+                  <span className="entry-date">
+                    <i className="fas fa-calendar"></i>
+                    {entry.date}
+                  </span>
+                  <p>{entry.content}</p>
+                  <Link to={`/newsletter/${entry.id}`} className="read-more">
+                    Leer más
+                    <i className="fas fa-arrow-right"></i>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
-      <section className="newsletter-subscription">
-        <h2>Suscríbete a Nuestra Newsletter</h2>
-        <p>Recibe las últimas actualizaciones directamente en tu correo</p>
-        <form onSubmit={handleSubscribe} className="subscription-form">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Tu correo electrónico"
-            required
-          />
-          <button type="submit">Suscribirse</button>
-        </form>
-      </section>
+        <section className="subscription-section">
+          <h2>Suscríbete a Nuestra Newsletter</h2>
+          <p>Recibe las últimas actualizaciones directamente en tu correo</p>
+          <form onSubmit={handleSubscribe} className="subscription-form">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Tu correo electrónico"
+              required
+            />
+            <button type="submit">
+              Suscribirse
+              <i className="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </section>
+      </div>
     </div>
   )
 }

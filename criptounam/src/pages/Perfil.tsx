@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useWallet } from '../context/WalletContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWallet, faNetworkWired, faGraduationCap, faCalendarAlt, faCertificate, faTrophy, faImage, faExchangeAlt, faBell, faBellSlash, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
 interface UserProfile {
   cursosCompletados: {
@@ -70,7 +72,10 @@ const Perfil = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!walletAddress) return
+      if (!walletAddress) {
+        setLoading(false)
+        return
+      }
 
       try {
         setLoading(true)
@@ -193,7 +198,7 @@ const Perfil = () => {
     }
 
     fetchUserData()
-  }, [walletAddress, isConnected])
+  }, [walletAddress])
 
   const getNetworkName = (): string => {
     const networks: { [key: number]: string } = {
@@ -202,7 +207,7 @@ const Perfil = () => {
       137: 'Polygon Mainnet',
       80001: 'Mumbai Testnet',
     }
-    return isConnected ? networks[1] || `Chain ID: 1` : 'No conectado'
+    return networks[1] || `Chain ID: 1`
   }
 
   if (!walletAddress) {
@@ -211,6 +216,7 @@ const Perfil = () => {
         <div className="connect-prompt">
           <h2>Conecta tu Wallet</h2>
           <p>Para ver tu perfil, necesitas conectar tu wallet primero.</p>
+          <p>Usa el botón de conexión en la barra de navegación para conectar tu wallet.</p>
         </div>
       </div>
     )
@@ -219,7 +225,10 @@ const Perfil = () => {
   if (loading) {
     return (
       <div className="profile-page">
-        <div className="loading">Cargando perfil...</div>
+        <div className="loading">
+          <div className="loading-spinner"></div>
+          <p>Cargando perfil...</p>
+        </div>
       </div>
     )
   }
@@ -227,35 +236,68 @@ const Perfil = () => {
   return (
     <div className="profile-page">
       <div className="profile-header">
-        <h1>Mi Perfil</h1>
+        <div className="header-content">
+          <h1>Mi Perfil</h1>
+        </div>
         <div className="wallet-info">
           <div className="info-card">
+            <FontAwesomeIcon icon={faWallet} className="info-icon" />
             <h3>Dirección</h3>
             <p>{`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}</p>
           </div>
           <div className="info-card">
+            <FontAwesomeIcon icon={faNetworkWired} className="info-icon" />
             <h3>Red</h3>
             <p>{networkName}</p>
           </div>
         </div>
       </div>
 
+      {/* Estadísticas */}
+      <div className="activity-stats">
+        <div className="stat-card">
+          <FontAwesomeIcon icon={faGraduationCap} className="stat-icon" />
+          <div className="stat-number">{userProfile.cursosCompletados.length}</div>
+          <div className="stat-label">Cursos Completados</div>
+        </div>
+        <div className="stat-card">
+          <FontAwesomeIcon icon={faCalendarAlt} className="stat-icon" />
+          <div className="stat-number">{userProfile.eventosAsistidos.length}</div>
+          <div className="stat-label">Eventos Asistidos</div>
+        </div>
+        <div className="stat-card">
+          <FontAwesomeIcon icon={faCertificate} className="stat-icon" />
+          <div className="stat-number">{userProfile.certificaciones.length}</div>
+          <div className="stat-label">Certificaciones</div>
+        </div>
+        <div className="stat-card">
+          <FontAwesomeIcon icon={faTrophy} className="stat-icon" />
+          <div className="stat-number">{userProfile.logros.length}</div>
+          <div className="stat-label">Logros</div>
+        </div>
+      </div>
+
       <div className="profile-content">
         {/* Cursos Completados */}
         <section className="profile-section">
-          <h2>Mis Cursos</h2>
+          <h2><FontAwesomeIcon icon={faGraduationCap} /> Mis Cursos</h2>
           <div className="courses-grid">
             {userProfile.cursosCompletados.map(curso => (
               <div key={curso.id} className="course-card">
                 <div className="course-progress">
-                  <div 
-                    className="progress-bar" 
-                    style={{ width: `${curso.progreso}%` }}
-                  ></div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress" 
+                      style={{ width: `${curso.progreso}%` }}
+                    >
+                      {curso.progreso}%
+                    </div>
+                  </div>
                 </div>
                 <h3>{curso.titulo}</h3>
-                <p>Completado: {curso.fecha}</p>
-                <p className="progress-text">{curso.progreso}%</p>
+                <p className="course-date">
+                  <FontAwesomeIcon icon={faCalendarAlt} /> {curso.fecha}
+                </p>
               </div>
             ))}
           </div>
@@ -263,13 +305,17 @@ const Perfil = () => {
 
         {/* Eventos Asistidos */}
         <section className="profile-section">
-          <h2>Eventos Asistidos</h2>
+          <h2><FontAwesomeIcon icon={faCalendarAlt} /> Eventos Asistidos</h2>
           <div className="events-grid">
             {userProfile.eventosAsistidos.map(evento => (
               <div key={evento.id} className="event-card">
-                <div className="event-type">{evento.tipo}</div>
                 <h3>{evento.nombre}</h3>
-                <p>{evento.fecha}</p>
+                <p className="event-date">
+                  <FontAwesomeIcon icon={faCalendarAlt} /> {evento.fecha}
+                </p>
+                <p className="event-type">
+                  <FontAwesomeIcon icon={faNetworkWired} /> {evento.tipo}
+                </p>
               </div>
             ))}
           </div>
@@ -277,82 +323,17 @@ const Perfil = () => {
 
         {/* Certificaciones */}
         <section className="profile-section">
-          <h2>Certificaciones</h2>
+          <h2><FontAwesomeIcon icon={faCertificate} /> Certificaciones</h2>
           <div className="certs-grid">
             {userProfile.certificaciones.map(cert => (
               <div key={cert.id} className="cert-card">
-                <i className="fas fa-certificate"></i>
                 <h3>{cert.nombre}</h3>
-                <p>{cert.fecha}</p>
-                <a 
-                  href={`https://etherscan.io/tx/${cert.hash}`} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="verify-link"
-                >
-                  Verificar en Blockchain
-                </a>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Logros Desbloqueados */}
-        <section className="profile-section">
-          <h2>Logros Desbloqueados</h2>
-          <div className="achievements-grid">
-            {userProfile.logros.map(logro => (
-              <div key={logro.id} className={`achievement-card ${logro.nivel}`}>
-                <i className={`fas ${logro.icono}`}></i>
-                <h3>{logro.nombre}</h3>
-                <p>{logro.descripcion}</p>
-                <span className="achievement-date">{logro.fecha}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Mis NFTs */}
-        <section className="profile-section">
-          <h2>Mis NFTs</h2>
-          <div className="nfts-grid">
-            {userProfile.nfts.map(nft => (
-              <div key={nft.id} className="nft-card">
-                <img src={nft.imagen} alt={nft.nombre} />
-                <div className="nft-info">
-                  <h3>{nft.nombre}</h3>
-                  <p>{nft.descripcion}</p>
-                  <div className="nft-details">
-                    <span>Token ID: {nft.tokenId}</span>
-                    <a href={nft.openseaLink} target="_blank" rel="noopener noreferrer">
-                      Ver en OpenSea
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Historial de Transacciones */}
-        <section className="profile-section">
-          <h2>Historial de Transacciones</h2>
-          <div className="transactions-list">
-            {userProfile.transacciones.map(tx => (
-              <div key={tx.hash} className="transaction-item">
-                <div className="tx-type">
-                  <i className={`fas ${tx.tipo === 'envio' ? 'fa-arrow-up' : 'fa-arrow-down'}`}></i>
-                </div>
-                <div className="tx-info">
-                  <h4>{tx.descripcion}</h4>
-                  <p>{tx.fecha}</p>
-                </div>
-                <div className="tx-amount">
-                  <span className={tx.tipo}>{tx.cantidad} ETH</span>
-                  <a href={`https://etherscan.io/tx/${tx.hash}`} target="_blank" rel="noopener noreferrer">
-                    Ver en Etherscan
-                  </a>
-                </div>
+                <p className="cert-date">
+                  <FontAwesomeIcon icon={faCalendarAlt} /> {cert.fecha}
+                </p>
+                <p className="cert-hash">
+                  <FontAwesomeIcon icon={faNetworkWired} /> {cert.hash}
+                </p>
               </div>
             ))}
           </div>
@@ -362,30 +343,53 @@ const Perfil = () => {
         <section className="profile-section">
           <h2>Configuración</h2>
           <div className="settings-grid">
-            <div className="setting-card">
-              <h3>Notificaciones</h3>
-              <div className="setting-options">
-                <label className="switch">
-                  <input type="checkbox" checked={userProfile.settings.emailNotifications} />
-                  <span className="slider"></span>
-                  Notificaciones por Email
-                </label>
-                <label className="switch">
-                  <input type="checkbox" checked={userProfile.settings.pushNotifications} />
-                  <span className="slider"></span>
-                  Notificaciones Push
-                </label>
-              </div>
+            <div className="setting-item">
+              <FontAwesomeIcon icon={userProfile.settings.emailNotifications ? faBell : faBellSlash} />
+              <span>Notificaciones por Email</span>
+              <button 
+                className={`toggle-btn ${userProfile.settings.emailNotifications ? 'active' : ''}`}
+                onClick={() => setUserProfile(prev => ({
+                  ...prev,
+                  settings: {
+                    ...prev.settings,
+                    emailNotifications: !prev.settings.emailNotifications
+                  }
+                }))}
+              >
+                {userProfile.settings.emailNotifications ? 'Activado' : 'Desactivado'}
+              </button>
             </div>
-            <div className="setting-card">
-              <h3>Privacidad</h3>
-              <div className="setting-options">
-                <label className="switch">
-                  <input type="checkbox" checked={userProfile.settings.showActivity} />
-                  <span className="slider"></span>
-                  Mostrar Actividad Pública
-                </label>
-              </div>
+            <div className="setting-item">
+              <FontAwesomeIcon icon={userProfile.settings.pushNotifications ? faBell : faBellSlash} />
+              <span>Notificaciones Push</span>
+              <button 
+                className={`toggle-btn ${userProfile.settings.pushNotifications ? 'active' : ''}`}
+                onClick={() => setUserProfile(prev => ({
+                  ...prev,
+                  settings: {
+                    ...prev.settings,
+                    pushNotifications: !prev.settings.pushNotifications
+                  }
+                }))}
+              >
+                {userProfile.settings.pushNotifications ? 'Activado' : 'Desactivado'}
+              </button>
+            </div>
+            <div className="setting-item">
+              <FontAwesomeIcon icon={userProfile.settings.showActivity ? faEye : faEyeSlash} />
+              <span>Mostrar Actividad</span>
+              <button 
+                className={`toggle-btn ${userProfile.settings.showActivity ? 'active' : ''}`}
+                onClick={() => setUserProfile(prev => ({
+                  ...prev,
+                  settings: {
+                    ...prev.settings,
+                    showActivity: !prev.settings.showActivity
+                  }
+                }))}
+              >
+                {userProfile.settings.showActivity ? 'Activado' : 'Desactivado'}
+              </button>
             </div>
           </div>
         </section>
