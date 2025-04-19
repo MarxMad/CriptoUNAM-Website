@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { IMAGES } from '../constants/images'
+//import { IMAGES } from '../constants/images'
 import '../styles/RegistroCurso.css'
 
 const RegistroCurso = () => {
