@@ -75,7 +75,7 @@ const Comunidad = () => {
     setShowGallery(true)
   }
 
-  const handleCloseGallery = () => {
+ /* const handleCloseGallery = () => {
     setShowGallery(false)
     setSelectedEvent(null)
   }
@@ -97,7 +97,7 @@ const Comunidad = () => {
       setCurrentImageIndex((prev) => (prev === media.length - 1 ? 0 : prev + 1))
     }
   }
-
+*/
   return (
     <div className="community-page">
       <header className="community-header">

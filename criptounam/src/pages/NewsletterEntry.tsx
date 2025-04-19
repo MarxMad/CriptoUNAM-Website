@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom'
 import '../styles/Newsletter.css'
+import { Link } from 'react-router-dom'; // si estás usando React Router
+
 
 interface NewsletterEntry {
   id: number

@@ -70,14 +70,14 @@ const Perfil = () => {
   })
   const [loading, setLoading] = useState(true)
 
-  const getBalance = async () => {
+ /* const getBalance = async () => {
     if (typeof window.ethereum !== 'undefined') {
       const provider = new ethers.BrowserProvider(window.ethereum)
       const balance = await provider.getBalance(walletAddress)
       setBalance(ethers.formatEther(balance))
     }
   }
-
+*/
   useEffect(() => {
     const fetchUserData = async () => {
       if (!walletAddress) return
