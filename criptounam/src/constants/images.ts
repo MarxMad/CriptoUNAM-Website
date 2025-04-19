@@ -1,13 +1,13 @@
 export const IMAGES = {
   // Hero y elementos generales
-  HERO_BG: 'public/images/hero-bg.jpg',
-  LOGO: 'public/images/LogosCriptounamBlanco.svg',
+  HERO_BG: '/images/hero-bg.jpg',
+  LOGO: '/images/LogosCriptounamBlanco.svg',
   
   // Imágenes de cursos
   CURSOS: {
-    BLOCKCHAIN_BASICS: 'public/images/cursos/1.svg',
-    SMART_CONTRACTS: 'public/images/cursos/2.svg',
-    DEFI: 'public/images/cursos/3.svg',
+    BLOCKCHAIN_BASICS: '/images/cursos/1.svg',
+    SMART_CONTRACTS: '/images/cursos/2.svg',
+    DEFI: '/images/cursos/3.svg',
   },
   
   // Imágenes de comunidad
