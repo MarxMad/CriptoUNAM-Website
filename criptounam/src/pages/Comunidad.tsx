@@ -12,7 +12,7 @@ const Comunidad = () => {
       titulo: "Hackathon Web3 2024",
       fecha: "Marzo 2024",
       lugar: "Ciudad Universitaria",
-      imagen: "/eventos/hackathon2024.jpg",
+      imagen: "images/eventos/hackathon2024.jpg",
       descripcion: "Primer hackathon enfocado en desarrollo blockchain en la UNAM",
       fotos: [
         "/eventos/hackathon/foto1.jpg",
@@ -28,6 +28,29 @@ const Comunidad = () => {
         "/eventos/hackathon/pres2.pdf",
       ]
     },
+
+    {
+      id: 2,
+      titulo: "Hackathon Web3 2024",
+      fecha: "Marzo 2024",
+      lugar: "Ciudad Universitaria",
+      imagen: "images/eventos/hackathon2024.jpg",
+      descripcion: "Primer hackathon enfocado en desarrollo blockchain en la UNAM",
+      fotos: [
+        "/eventos/hackathon/foto1.jpg",
+        "/eventos/hackathon/foto2.jpg",
+        "/eventos/hackathon/foto3.jpg",
+      ],
+      videos: [
+        "/eventos/hackathon/video1.mp4",
+        "/eventos/hackathon/video2.mp4",
+      ],
+      presentaciones: [
+        "/eventos/hackathon/pres1.pdf",
+        "/eventos/hackathon/pres2.pdf",
+      ]
+    },
+    
     {
       id: 2,
       titulo: "Workshop DeFi",
@@ -45,7 +68,7 @@ const Comunidad = () => {
       descripcion: "Encuentro mensual de la comunidad blockchain"
     }
   ]
-
+//proximos eventos
   const proximosEventos = [
     {
       id: 1,

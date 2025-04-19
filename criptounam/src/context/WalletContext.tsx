@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 
 interface WalletContextType {
-  connectWallet: () => Promise<void>
+  connectWallet: (provider: string) => Promise<void>
   disconnectWallet: () => void
   isConnected: boolean
   walletAddress: string
@@ -21,19 +21,67 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [isConnected, setIsConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState('')
 
-  const connectWallet = async () => {
-    try {
+  useEffect(() => {
+    const checkWalletConnection = async () => {
       if (typeof window.ethereum !== 'undefined') {
-        const provider = new ethers.BrowserProvider(window.ethereum)
-        const signer = await provider.getSigner()
-        const address = await signer.getAddress()
-        setWalletAddress(address)
-        setIsConnected(true)
-      } else {
-        console.error('MetaMask no está instalado')
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum)
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+          if (accounts.length > 0) {
+            setWalletAddress(accounts[0])
+            setIsConnected(true)
+          }
+        } catch (error) {
+          console.error('Error al verificar la conexión:', error)
+        }
+      }
+    }
+
+    checkWalletConnection()
+
+    // Escuchar cambios en la cuenta
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts: string[]) => {
+        if (accounts.length === 0) {
+          disconnectWallet()
+        } else {
+          setWalletAddress(accounts[0])
+          setIsConnected(true)
+        }
+      })
+    }
+  }, [])
+
+  const connectWallet = async (provider: string) => {
+    try {
+      let ethereum;
+      
+      switch(provider) {
+        case 'metamask':
+          ethereum = (window as any).ethereum;
+          if (!ethereum) {
+            throw new Error('MetaMask no está instalado');
+          }
+          break;
+        case 'coinbase':
+          ethereum = (window as any).coinbaseWalletExtension;
+          if (!ethereum) {
+            throw new Error('Coinbase Wallet no está instalado');
+          }
+          break;
+        case 'walletconnect':
+          // Implementar WalletConnect
+          break;
+      }
+
+      if (ethereum) {
+        const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+        setWalletAddress(accounts[0]);
+        setIsConnected(true);
       }
     } catch (error) {
-      console.error('Error al conectar la wallet:', error)
+      console.error('Error al conectar wallet:', error);
+      throw error;
     }
   }
 
