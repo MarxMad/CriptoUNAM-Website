@@ -4,6 +4,8 @@ import Cursos from './pages/Cursos'
 import Comunidad from './pages/Comunidad'
 import Home from './pages/Home'
 import Perfil from './pages/Perfil'
+import Newsletter from './pages/Newsletter'
+import NewsletterEntry from './pages/NewsletterEntry'
 import { WalletProvider } from './context/WalletContext'
 import { ThemeProvider } from './context/ThemeContext'
 import ThemeToggle from './components/ThemeToggle'
@@ -79,12 +81,13 @@ function App() {
           <div className="App">
             <nav className="navbar">
               <Link to="/" className="logo-link">
-                <img src="/logo-criptounam.png" alt="CriptoUNAM Logo" className="logo" />
+                <img src="src/constants/images/LogosCriptounam3.svg" alt="CriptoUNAM Logo" className="logo" />
               </Link>
               <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
                 <Link to="/">Inicio</Link>
                 <Link to="/cursos">Cursos</Link>
                 <Link to="/comunidad">Comunidad</Link>
+                <Link to="/newsletter">Newsletter</Link>
                 <Link to="/perfil">Mi Perfil</Link>
                 <div className="wallet-container">
                   {walletConnected ? (
@@ -159,6 +162,8 @@ function App() {
                 <Route path="/cursos" element={<Cursos />} />
                 <Route path="/comunidad" element={<Comunidad />} />
                 <Route path="/perfil" element={<Perfil />} />
+                <Route path="/newsletter" element={<Newsletter />} />
+                <Route path="/newsletter/:id" element={<NewsletterEntry />} />
               </Routes>
             </main>
           </div>

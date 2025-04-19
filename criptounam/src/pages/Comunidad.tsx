@@ -53,7 +53,8 @@ const Comunidad = () => {
       fecha: "15 de Abril, 2024",
       hora: "16:00",
       lugar: "Auditorio de la Facultad de Ingeniería",
-      cupo: 50
+      cupo: 50,
+      registroLink: "https://www.google.com"
     },
     {
       id: 2,
@@ -61,8 +62,10 @@ const Comunidad = () => {
       fecha: "22 de Abril, 2024",
       hora: "18:00",
       lugar: "Facultad de Contaduría",
-      cupo: 30
+      cupo: 30,
+      registroLink: "https://www.google.com"
     }
+    
   ]
 
   const handleOpenGallery = (evento: any, type: 'photos' | 'videos' | 'presentations') => {
@@ -139,7 +142,10 @@ const Comunidad = () => {
                 <p><i className="far fa-clock"></i> {evento.hora}</p>
                 <p><i className="fas fa-map-marker-alt"></i> {evento.lugar}</p>
                 <p><i className="fas fa-users"></i> Cupo: {evento.cupo} personas</p>
-                <button className="register-btn">Registrarse</button>
+                <button 
+                className="register-btn"
+                onClick={() => window.open(evento.registroLink, '_blank')}
+                >Registrarse</button>
               </div>
             </div>
           ))}

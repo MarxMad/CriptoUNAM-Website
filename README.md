@@ -185,7 +185,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 - Gerardo Pedrizco Vela - UI/UX
 - Fernanda Tello Arzate  - UI/UX
 - Adrian Armenta Sequeira - Smart Contracts
-- Daniel Cruz - Desarrollador de Negocios
+- Daniel Cruz - Desarrolaldor de negocios
 
 ## 📞 Contacto
 

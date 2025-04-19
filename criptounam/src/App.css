@@ -381,7 +381,7 @@ p {
   align-items: center;
 }
 
-.logo-link {
+.logo-link   {
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -575,6 +575,37 @@ p {
   font-weight: 700;
   color: var(--primary-gold);
   margin: 0.5rem 0;
+}
+
+.stat-content h3 {
+  font-size: 2.5rem;
+  color: white;
+  margin: 0;
+  font-weight: 700;
+}
+
+.stat-content p {
+  color: #E0E0E0;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.stat-box  {
+  background: #B57B1D 100%;
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.stat-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
 }
 
 .stat-icon {

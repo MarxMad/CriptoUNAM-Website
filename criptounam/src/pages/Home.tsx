@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useWallet } from '../context/WalletContext'
-import { IMAGES } from '../constants/images'
+
+
 
 interface RegistrationForm {
   nombre: string
@@ -66,12 +67,14 @@ const Home = () => {
     setEmail('')
   }
 
+  
+
   return (
     <div className="home-container">
       {/* Hero Section */}
       <header 
         className="hero"
-        style={{ backgroundImage: `url(${IMAGES.HERO_BG})` }}
+        style={{ backgroundImage: `url("src/constants/images/LogosCriptounamBlanco.svg")` , backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
       >
         <div className="hero-content">
           <h1>CriptoUNAM</h1>
@@ -103,6 +106,10 @@ const Home = () => {
           <div className="stat-box">
             <h3>20+</h3>
             <p>Proyectos Blockchain</p>
+          </div>
+          <div className="stat-box">
+            <h3>20+</h3>
+            <p>Hackathons</p>
           </div>
         </div>
       </section>
