@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useWallet } from '../context/WalletContext'
-import { ethers } from 'ethers'
 
 interface UserProfile {
   cursosCompletados: {
@@ -53,7 +52,6 @@ interface UserProfile {
 
 const Perfil = () => {
   const { walletAddress, isConnected } = useWallet()
-  const [balance, setBalance] = useState('0')
   const [networkName, setNetworkName] = useState<string>('')
   const [userProfile, setUserProfile] = useState<UserProfile>({
     cursosCompletados: [],
@@ -70,14 +68,6 @@ const Perfil = () => {
   })
   const [loading, setLoading] = useState(true)
 
- /* const getBalance = async () => {
-    if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.BrowserProvider(window.ethereum)
-      const balance = await provider.getBalance(walletAddress)
-      setBalance(ethers.formatEther(balance))
-    }
-  }
-*/
   useEffect(() => {
     const fetchUserData = async () => {
       if (!walletAddress) return
@@ -242,10 +232,6 @@ const Perfil = () => {
           <div className="info-card">
             <h3>Dirección</h3>
             <p>{`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}</p>
-          </div>
-          <div className="info-card">
-            <h3>Balance</h3>
-            <p>{`${Number(balance).toFixed(4)} ETH`}</p>
           </div>
           <div className="info-card">
             <h3>Red</h3>

@@ -61,7 +61,6 @@ const Cursos = () => {
   const [filtroNivel, setFiltroNivel] = useState<string>('todos')
   const [busqueda, setBusqueda] = useState('')
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('todas')
-  const [filtrosExpandidos, setFiltrosExpandidos] = useState(false)
 
   const cursosFiltrados = cursosData.filter(curso => {
     const cumpleFiltroNivel = filtroNivel === 'todos' || curso.nivel.toLowerCase() === filtroNivel
@@ -76,7 +75,7 @@ const Cursos = () => {
   return (
     <div className="cursos-container">
       {/* Barra lateral de filtros */}
-      <aside className={`filtros-sidebar ${filtrosExpandidos ? 'expanded' : ''}`}>
+     <aside className={`filtros-sidebar`}>
         <div className="search-box">
           <input
             type="text"
