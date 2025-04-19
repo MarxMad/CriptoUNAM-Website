@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { IMAGES } from '../constants/images'
 
 interface RegistrationForm {
   nombre: string
@@ -70,7 +71,12 @@ const Home = () => {
       {/* Hero Section */}
       <header 
         className="hero"
-        style={{ backgroundImage: `url("src/constants/images/LogosCriptounamBlanco.svg")` , backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+        style={{ 
+          backgroundImage: `url(${IMAGES.LOGO})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'contain'
+        }}
       >
         <div className="hero-content">
           <h1>CriptoUNAM</h1>

@@ -1,32 +1,31 @@
 export const IMAGES = {
   // Hero y elementos generales
-  HERO_BG: '/images/hero-bg.jpg',
-  LOGO: '/images/logo.png',
+  HERO_BG: '/assets/images/hero-bg.jpg',
+  LOGO: 'src/assets/images/LogosCriptounamBlanco.svg',
   
   // Imágenes de cursos
   CURSOS: {
-    BLOCKCHAIN_BASICS: '/images/cursos/blockchain-basics.jpg',
-    SMART_CONTRACTS: '/images/cursos/smart-contracts.jpg',
-    DEFI: '/images/cursos/defi-course.jpg',
+    BLOCKCHAIN_BASICS: '/assets/images/cursos/blockchain-basics.jpg',
+    SMART_CONTRACTS: '/assets/images/cursos/smart-contracts.jpg',
+    DEFI: '/assets/images/cursos/defi.jpg',
   },
   
   // Imágenes de comunidad
   COMUNIDAD: {
     EVENTOS: {
-      HACKATHON: '/images/comunidad/eventos/hackathon.jpg',
-      MEETUP: '/images/comunidad/eventos/meetup.jpg',
+      HACKATHON: '/assets/images/comunidad/hackathon.jpg',
+      MEETUP: '/assets/images/comunidad/meetup.jpg',
     },
     GALLERY: {
-      EVENT1: '/images/comunidad/gallery/event1.jpg',
-      EVENT2: '/images/comunidad/gallery/event2.jpg',
+      EVENT1: '/assets/images/comunidad/gallery/event1.jpg',
+      EVENT2: '/assets/images/comunidad/gallery/event2.jpg',
     }
   },
   
   // Iconos
   ICONS: {
-    ETH: '/images/icons/ethereum.svg',
-    METAMASK: '/images/icons/metamask.svg',
-    DISCORD: '/images/icons/discord.svg',
-    TELEGRAM: '/images/icons/telegram.svg',
+    TWITTER: '/assets/images/icons/twitter.svg',
+    TELEGRAM: '/assets/images/icons/telegram.svg',
+    DISCORD: '/assets/images/icons/discord.svg',
   }
 } 

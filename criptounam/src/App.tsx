@@ -81,7 +81,7 @@ function App() {
           <div className="App">
             <nav className="navbar">
               <Link to="/" className="logo-link">
-                <img src="src/constants/images/LogosCriptounam3.svg" alt="CriptoUNAM Logo" className="logo" />
+                <img src="src/assets/images/LogosCriptounam3.svg" alt="CriptoUNAM Logo" className="logo" />
               </Link>
               <div className={`nav-links ${isMobileMenuOpen ? 'active' : ''}`}>
                 <Link to="/">Inicio</Link>
