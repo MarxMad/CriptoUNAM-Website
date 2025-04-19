@@ -81,15 +81,21 @@ const Comunidad = () => {
   }
 
   const handlePrevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? selectedEvent.galeria.length - 1 : prev - 1
-    )
+    if (selectedEvent) {
+      const media = galleryType === 'photos' ? selectedEvent.fotos : 
+                   galleryType === 'videos' ? selectedEvent.videos : 
+                   selectedEvent.presentaciones
+      setCurrentImageIndex((prev) => (prev === 0 ? media.length - 1 : prev - 1))
+    }
   }
 
   const handleNextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === selectedEvent.galeria.length - 1 ? 0 : prev + 1
-    )
+    if (selectedEvent) {
+      const media = galleryType === 'photos' ? selectedEvent.fotos : 
+                   galleryType === 'videos' ? selectedEvent.videos : 
+                   selectedEvent.presentaciones
+      setCurrentImageIndex((prev) => (prev === media.length - 1 ? 0 : prev + 1))
+    }
   }
 
   return (

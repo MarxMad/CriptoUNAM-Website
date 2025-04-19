@@ -1,5 +1,4 @@
-import React from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import '../styles/Newsletter.css'
 
 interface NewsletterEntry {
@@ -12,7 +11,7 @@ interface NewsletterEntry {
 }
 
 const NewsletterEntry = () => {
-  const { id } = useParams<{ id: string }>()
+  const { id } = useParams()
   
   // En una aplicación real, esto vendría de una API o base de datos
   const entries: NewsletterEntry[] = [

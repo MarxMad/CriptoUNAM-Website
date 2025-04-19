@@ -58,12 +58,6 @@ const cursosData: Curso[] = [
 ]
 
 const Cursos = () => {
-  const [filtros, setFiltros] = useState({
-    nivel: '',
-    categoria: '',
-    duracion: ''
-  })
-
   const [filtroNivel, setFiltroNivel] = useState<string>('todos')
   const [busqueda, setBusqueda] = useState('')
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('todas')
