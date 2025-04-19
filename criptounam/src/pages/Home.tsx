@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { IMAGES } from '../constants/images'
+import { handleRegistration } from '../api/telegram'
+import '../styles/Home.css'
 
 interface RegistrationForm {
   nombre: string
@@ -9,6 +11,7 @@ interface RegistrationForm {
   plantel: string
   numeroCuenta: string
   motivacion: string
+  telegram: string
   twitter: string
   instagram: string
   linkedin: string
@@ -26,36 +29,64 @@ const Home = () => {
     plantel: '',
     numeroCuenta: '',
     motivacion: '',
+    telegram: '',
     twitter: '',
     instagram: '',
     linkedin: '',
     facebook: ''
   })
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [showErrorMessage, setShowErrorMessage] = useState(false)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    try {
+      const result = await handleRegistration(formData)
+      
+      if (result.success) {
+        setShowSuccessMessage(true)
+        setTimeout(() => {
+          setShowForm(false)
+          setFormData({
+            nombre: '',
+            apellidos: '',
+            edad: '',
+            carrera: '',
+            plantel: '',
+            numeroCuenta: '',
+            motivacion: '',
+            telegram: '',
+            twitter: '',
+            instagram: '',
+            linkedin: '',
+            facebook: ''
+          })
+        }, 700)
+
+        setTimeout(() => {
+          setShowSuccessMessage(false)
+        }, 5000)
+      } else {
+        setShowErrorMessage(true)
+        setTimeout(() => {
+          setShowErrorMessage(false)
+        }, 5000)
+      }
+    } catch (error) {
+      console.error('Error al procesar el formulario:', error)
+      setShowErrorMessage(true)
+      setTimeout(() => {
+        setShowErrorMessage(false)
+      }, 5000)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Datos del formulario:', formData)
-    setFormData({
-      nombre: '',
-      apellidos: '',
-      edad: '',
-      carrera: '',
-      plantel: '',
-      numeroCuenta: '',
-      motivacion: '',
-      twitter: '',
-      instagram: '',
-      linkedin: '',
-      facebook: ''
-    })
-    setShowForm(false)
   }
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
@@ -165,6 +196,19 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Mensajes de éxito y error */}
+      {showSuccessMessage && (
+        <div className="success-message">
+          <p>¡Registro exitoso! Te contactaremos pronto.</p>
+        </div>
+      )}
+      
+      {showErrorMessage && (
+        <div className="error-message">
+          <p>Hubo un error al procesar tu registro. Por favor, intenta de nuevo.</p>
+        </div>
+      )}
+
       {showForm && (
         <div className="modal-overlay">
           <div className="modal-content registration-form">
@@ -184,7 +228,7 @@ const Home = () => {
                   id="nombre"
                   name="nombre"
                   value={formData.nombre}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -196,7 +240,7 @@ const Home = () => {
                   id="apellidos"
                   name="apellidos"
                   value={formData.apellidos}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -210,7 +254,7 @@ const Home = () => {
                   min="15"
                   max="99"
                   value={formData.edad}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -222,7 +266,7 @@ const Home = () => {
                   id="carrera"
                   name="carrera"
                   value={formData.carrera}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -233,7 +277,7 @@ const Home = () => {
                   id="plantel"
                   name="plantel"
                   value={formData.plantel}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                 >
                   <option value="">Selecciona un plantel</option>
@@ -241,7 +285,12 @@ const Home = () => {
                   <option value="FC">Facultad de Ciencias</option>
                   <option value="FCA">Facultad de Contaduría y Administración</option>
                   <option value="FE">Facultad de Economía</option>
-                  {/* Agregar más planteles según sea necesario */}
+                  <option value="FM">Facultad de Medicina</option>
+                  <option value="FQ">Facultad de Química</option>
+                  <option value="FAD">Facultad de Arte y Diseño</option>
+                  <option value="FTS">Facultad de Trabajo Social y Desarrollo Humano</option>
+                  <option value="FV">Facultad de Veterinaria</option>
+                  <option value="FCPyS">Facultad de Ciencias Políticas y Sociales</option>
                 </select>
               </div>
 
@@ -254,7 +303,7 @@ const Home = () => {
                   pattern="\d{9}"
                   title="El número de cuenta debe tener 9 dígitos"
                   value={formData.numeroCuenta}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -265,43 +314,62 @@ const Home = () => {
                   id="motivacion"
                   name="motivacion"
                   value={formData.motivacion}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   required
                   rows={4}
                 />
               </div>
 
               <div className="form-group">
+                <label htmlFor="telegram">Usuario de Telegram*</label>
+                <input
+                  type="text"
+                  id="telegram"
+                  name="telegram"
+                  value={formData.telegram}
+                  onChange={handleChange}
+                  placeholder="@usuario"
+                  required
+                />
+              </div>
+
+            
+
+              <div className="form-group">
                 <label>Redes Sociales</label>
                 <div className="social-inputs">
-                  <input
-                    type="text"
-                    name="twitter"
-                    placeholder="Twitter/X"
-                    value={formData.twitter}
-                    onChange={handleInputChange}
-                  />
                   <input
                     type="text"
                     name="instagram"
                     placeholder="Instagram"
                     value={formData.instagram}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                   />
                   <input
                     type="text"
                     name="linkedin"
                     placeholder="LinkedIn"
                     value={formData.linkedin}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                   />
                   <input
                     type="text"
                     name="facebook"
                     placeholder="Facebook"
                     value={formData.facebook}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                   />
+                  <input
+                  type="text"
+                  
+                  name="twitter"
+                  value={formData.twitter}
+                  onChange={handleChange}
+                  placeholder="Twitter"
+                />
+
+
+                  
                 </div>
               </div>
 
