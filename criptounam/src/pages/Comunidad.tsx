@@ -255,10 +255,10 @@ const Comunidad = () => {
           <h2>¿Quieres ser parte de nuestra comunidad?</h2>
           <p>Únete a nuestros canales y participa en nuestros eventos</p>
           <div className="social-buttons">
-            <a href="https://discord.gg/criptounam" className="discord-btn" target="_blank" rel="noopener noreferrer">
+            <a href="https://discord.gg/Pmu4JQeNR6" className="discord-btn" target="_blank" rel="noopener noreferrer">
               <i className="fab fa-discord"></i> Unirse al Discord
             </a>
-            <a href="https://t.me/criptounam" className="telegram-btn" target="_blank" rel="noopener noreferrer">
+            <a href="https://t.me/+tPgjd4cOxG05NmVh" className="telegram-btn" target="_blank" rel="noopener noreferrer">
               <i className="fab fa-telegram"></i> Grupo de Telegram
             </a>
             <a href="https://wa.me/+525512345678" className="whatsapp-btn" target="_blank" rel="noopener noreferrer">

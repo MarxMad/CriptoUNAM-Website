@@ -17,7 +17,7 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ethers-vendor': ['ethers'],
-          'ui-vendor': ['@chakra-ui/react', '@emotion/react', '@emotion/styled', 'framer-motion'],
+          'ui-vendor': [ '@emotion/react', '@emotion/styled', 'framer-motion'],
         },
       },
     },
