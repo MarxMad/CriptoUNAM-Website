@@ -15,9 +15,7 @@ const RegistroCurso = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Aquí iría la lógica para enviar el formulario
     console.log('Datos del registro:', formData)
-    // Redirigir a la página de confirmación o cursos
     navigate('/cursos')
   }
 
@@ -36,35 +34,31 @@ const RegistroCurso = () => {
       </div>
 
       <div className="registro-content">
-        <form onSubmit={handleSubmit} className="registro-form">
+        <form className="registro-form" onSubmit={handleSubmit}>
           <div className="form-section">
             <h2>Información Personal</h2>
             <div className="form-group">
-              <label htmlFor="nombre">Nombre completo</label>
+              <label htmlFor="nombre">Nombre Completo</label>
               <input
                 type="text"
                 id="nombre"
                 name="nombre"
                 value={formData.nombre}
                 onChange={handleChange}
-                placeholder="Ingresa tu nombre completo"
                 required
               />
             </div>
-
             <div className="form-group">
-              <label htmlFor="email">Correo electrónico</label>
+              <label htmlFor="email">Correo Electrónico</label>
               <input
                 type="email"
                 id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="ejemplo@unam.mx"
                 required
               />
             </div>
-
             <div className="form-group">
               <label htmlFor="telefono">Teléfono</label>
               <input
@@ -73,7 +67,6 @@ const RegistroCurso = () => {
                 name="telefono"
                 value={formData.telefono}
                 onChange={handleChange}
-                placeholder="55 1234 5678"
                 required
               />
             </div>
@@ -82,13 +75,12 @@ const RegistroCurso = () => {
           <div className="form-section">
             <h2>Información Adicional</h2>
             <div className="form-group">
-              <label htmlFor="comentarios">Comentarios o preguntas</label>
+              <label htmlFor="comentarios">Comentarios o Preguntas</label>
               <textarea
                 id="comentarios"
                 name="comentarios"
                 value={formData.comentarios}
                 onChange={handleChange}
-                placeholder="¿Tienes alguna pregunta o comentario sobre el curso?"
                 rows={4}
               />
             </div>
@@ -99,7 +91,7 @@ const RegistroCurso = () => {
               Cancelar
             </button>
             <button type="submit" className="submit-btn">
-              Confirmar Registro
+              Enviar Registro
             </button>
           </div>
         </form>
@@ -107,10 +99,10 @@ const RegistroCurso = () => {
         <div className="registro-info">
           <h3>Importante</h3>
           <ul>
-            <li>Los campos marcados con * son obligatorios</li>
             <li>Recibirás un correo de confirmación</li>
-            <li>El pago se realiza al inicio del curso</li>
-            <li>Puedes cancelar tu registro hasta 24 horas antes</li>
+            <li>El curso es gratuito</li>
+            <li>Se requiere asistencia mínima del 80%</li>
+            <li>Se entregará constancia de participación</li>
           </ul>
         </div>
       </div>
