@@ -1,0 +1,251 @@
+.newsletter-page {
+   
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.newsletter-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.newsletter-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.newsletter-header p {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.newsletter-entries {
+  display: grid;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.newsletter-entry {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.newsletter-entry:hover {
+  transform: translateY(-5px);
+}
+
+.entry-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+}
+
+.entry-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.entry-content {
+  padding: 1.5rem;
+}
+
+.entry-content h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.entry-date {
+  display: block;
+  color: #666;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.entry-content p {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.read-more {
+  display: inline-block;
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.read-more:hover {
+  color: #2980b9;
+}
+
+.newsletter-subscription {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.newsletter-subscription h2 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.newsletter-subscription p {
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.subscription-form {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.subscription-form input {
+  flex: 1;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.subscription-form button {
+  padding: 0.8rem 1.5rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.subscription-form button:hover {
+  background: #2980b9;
+}
+
+/* Estilos para la página de entrada completa */
+.newsletter-entry-page {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.full-entry {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.entry-header-image {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.entry-header-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.full-entry .entry-content {
+  padding: 2rem;
+}
+
+.full-entry h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.full-entry .entry-date {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.entry-body {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+.entry-body p {
+  margin-bottom: 1.5rem;
+}
+
+.entry-body ul {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.entry-body li {
+  margin-bottom: 0.5rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 2rem;
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #2980b9;
+}
+
+.entry-not-found {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.entry-not-found h2 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.entry-not-found p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .newsletter-page {
+    padding: 1rem;
+  }
+
+  .subscription-form {
+    flex-direction: column;
+  }
+
+  .entry-image {
+    height: 150px;
+  }
+
+  .entry-header-image {
+    height: 250px;
+  }
+
+  .full-entry h1 {
+    font-size: 2rem;
+  }
+
+  .entry-body {
+    font-size: 1rem;
+  }
+} 
