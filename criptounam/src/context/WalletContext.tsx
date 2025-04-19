@@ -1,95 +1,49 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { ethers } from 'ethers'
 
 interface WalletContextType {
-  account: string | null
-  chainId: number | null
   connectWallet: () => Promise<void>
   disconnectWallet: () => void
+  isConnected: boolean
+  walletAddress: string
 }
 
 const WalletContext = createContext<WalletContextType>({
-  account: null,
-  chainId: null,
   connectWallet: async () => {},
-  disconnectWallet: () => {}
+  disconnectWallet: () => {},
+  isConnected: false,
+  walletAddress: ''
 })
 
 export const useWallet = () => useContext(WalletContext)
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [account, setAccount] = useState<string | null>(null)
-  const [chainId, setChainId] = useState<number | null>(null)
-
-  useEffect(() => {
-    // Verificar si hay una wallet conectada al cargar
-    checkConnection()
-
-    // Escuchar cambios de cuenta
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', handleAccountsChanged)
-      window.ethereum.on('chainChanged', handleChainChanged)
-    }
-
-    return () => {
-      if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged)
-        window.ethereum.removeListener('chainChanged', handleChainChanged)
-      }
-    }
-  }, [])
-
-  const checkConnection = async () => {
-    if (window.ethereum) {
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const accounts = await provider.listAccounts()
-        if (accounts.length > 0) {
-          setAccount(accounts[0])
-          const network = await provider.getNetwork()
-          setChainId(network.chainId)
-        }
-      } catch (error) {
-        console.error('Error al verificar conexión:', error)
-      }
-    }
-  }
-
-  const handleAccountsChanged = (accounts: string[]) => {
-    if (accounts.length > 0) {
-      setAccount(accounts[0])
-    } else {
-      setAccount(null)
-    }
-  }
-
-  const handleChainChanged = (chainId: string) => {
-    setChainId(parseInt(chainId, 16))
-  }
+  const [isConnected, setIsConnected] = useState(false)
+  const [walletAddress, setWalletAddress] = useState('')
 
   const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const accounts = await provider.send('eth_requestAccounts', [])
-        setAccount(accounts[0])
-        const network = await provider.getNetwork()
-        setChainId(network.chainId)
-      } catch (error) {
-        console.error('Error al conectar wallet:', error)
+    try {
+      if (typeof window.ethereum !== 'undefined') {
+        const provider = new ethers.BrowserProvider(window.ethereum)
+        const signer = await provider.getSigner()
+        const address = await signer.getAddress()
+        setWalletAddress(address)
+        setIsConnected(true)
+      } else {
+        console.error('MetaMask no está instalado')
       }
-    } else {
-      alert('Por favor instala MetaMask!')
+    } catch (error) {
+      console.error('Error al conectar la wallet:', error)
     }
   }
 
   const disconnectWallet = () => {
-    setAccount(null)
-    setChainId(null)
+    setWalletAddress('')
+    setIsConnected(false)
   }
 
   return (
-    <WalletContext.Provider value={{ account, chainId, connectWallet, disconnectWallet }}>
+    <WalletContext.Provider value={{ connectWallet, disconnectWallet, isConnected, walletAddress }}>
       {children}
     </WalletContext.Provider>
   )

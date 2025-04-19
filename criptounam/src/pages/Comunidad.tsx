@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const Comunidad = () => {
   const [showGallery, setShowGallery] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState<null | any>(null)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [selectedEvent, setSelectedEvent] = useState<any>(null)
   const [galleryType, setGalleryType] = useState<'photos' | 'videos' | 'presentations'>('photos')
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   const eventos = [
     {

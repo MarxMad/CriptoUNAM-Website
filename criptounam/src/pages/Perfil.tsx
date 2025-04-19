@@ -52,8 +52,8 @@ interface UserProfile {
 }
 
 const Perfil = () => {
-  const { account, chainId } = useWallet()
-  const [balance, setBalance] = useState<string>('0')
+  const { walletAddress, isConnected } = useWallet()
+  const [balance, setBalance] = useState('0')
   const [networkName, setNetworkName] = useState<string>('')
   const [userProfile, setUserProfile] = useState<UserProfile>({
     cursosCompletados: [],
@@ -70,19 +70,22 @@ const Perfil = () => {
   })
   const [loading, setLoading] = useState(true)
 
+  const getBalance = async () => {
+    if (typeof window.ethereum !== 'undefined') {
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      const balance = await provider.getBalance(walletAddress)
+      setBalance(ethers.formatEther(balance))
+    }
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!account) return
+      if (!walletAddress) return
 
       try {
         setLoading(true)
-        // Obtener balance
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
-        const balance = await provider.getBalance(account)
-        setBalance(ethers.utils.formatEther(balance))
-
         // Obtener nombre de la red
-        const network = getNetworkName(chainId)
+        const network = getNetworkName(isConnected)
         setNetworkName(network)
 
         // Simular obtención de datos del usuario
@@ -200,9 +203,9 @@ const Perfil = () => {
     }
 
     fetchUserData()
-  }, [account, chainId])
+  }, [walletAddress, isConnected])
 
-  const getNetworkName = (chainId: number | null): string => {
+  const getNetworkName = (isConnected: boolean): string => {
     const networks: { [key: number]: string } = {
       1: 'Ethereum Mainnet',
       5: 'Goerli Testnet',
@@ -210,10 +213,10 @@ const Perfil = () => {
       80001: 'Mumbai Testnet',
       // Agregar más redes según necesites
     }
-    return chainId ? networks[chainId] || `Chain ID: ${chainId}` : 'No conectado'
+    return isConnected ? networks[isConnected] || `Chain ID: ${isConnected}` : 'No conectado'
   }
 
-  if (!account) {
+  if (!walletAddress) {
     return (
       <div className="profile-page">
         <div className="connect-prompt">
@@ -239,7 +242,7 @@ const Perfil = () => {
         <div className="wallet-info">
           <div className="info-card">
             <h3>Dirección</h3>
-            <p>{`${account.slice(0, 6)}...${account.slice(-4)}`}</p>
+            <p>{`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}</p>
           </div>
           <div className="info-card">
             <h3>Balance</h3>

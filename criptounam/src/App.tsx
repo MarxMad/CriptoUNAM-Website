@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Cursos from './pages/Cursos'
 import Comunidad from './pages/Comunidad'
 import Home from './pages/Home'

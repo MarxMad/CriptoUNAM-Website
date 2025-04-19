@@ -18,7 +18,7 @@ interface RegistrationForm {
 }
 
 const Home = () => {
-  const { connectWallet, isConnected } = useWallet()
+  const { connectWallet } = useWallet()
   const [showForm, setShowForm] = useState(false)
   const [email, setEmail] = useState('')
   const [formData, setFormData] = useState<RegistrationForm>({
