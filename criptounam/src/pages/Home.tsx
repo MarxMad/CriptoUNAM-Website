@@ -150,15 +150,15 @@ const Home = () => {
         <h2>Síguenos en Redes Sociales</h2>
         <p>Mantente al día con las últimas novedades y eventos</p>
         <div className="social-links">
-          <a href="https://discord.gg/criptounam" className="social-link discord" target="_blank" rel="noopener noreferrer">
+          <a href="https://discord.gg/Pmu4JQeNR6" className="social-link discord" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-discord"></i>
             Discord
           </a>
-          <a href="https://t.me/criptounam" className="social-link telegram" target="_blank" rel="noopener noreferrer">
+          <a href="https://t.me/+tPgjd4cOxG05NmVh" className="social-link telegram" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-telegram"></i>
             Telegram
           </a>
-          <a href="https://twitter.com/criptounam" className="social-link twitter" target="_blank" rel="noopener noreferrer">
+          <a href="https://x.com/Cripto_UNAM" className="social-link twitter" target="_blank" rel="noopener noreferrer">
             <i className="fab fa-twitter"></i>
             Twitter
           </a>

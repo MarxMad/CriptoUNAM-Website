@@ -10,6 +10,7 @@ import { WalletProvider } from './context/WalletContext'
 import { ThemeProvider } from './context/ThemeContext'
 import ThemeToggle from './components/ThemeToggle'
 import './App.css'
+import RegistroCurso from './pages/RegistroCurso'
 
 function App() {
   const [walletConnected, setWalletConnected] = useState(false)
@@ -164,6 +165,7 @@ function App() {
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/newsletter" element={<Newsletter />} />
                 <Route path="/newsletter/:id" element={<NewsletterEntry />} />
+                <Route path="/curso/:id/registro" element={<RegistroCurso />} />
               </Routes>
             </main>
           </div>

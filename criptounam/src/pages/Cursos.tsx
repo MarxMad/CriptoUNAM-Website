@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
 
 interface Curso {
@@ -20,10 +21,10 @@ const cursosData: Curso[] = [
     id: '1',
     titulo: 'Introducción a Blockchain',
     nivel: 'Principiante',
-    duracion: '6 semanas',
+    duracion: '2 semanas',
     imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
     descripcion: 'Aprende los fundamentos de la tecnología blockchain y sus aplicaciones.',
-    instructor: 'Dr. Juan Pérez',
+    instructor: 'Gerardo Pedrizco Vela',
     precio: 0,
     estudiantes: 1200,
     rating: 4.8,
@@ -33,10 +34,10 @@ const cursosData: Curso[] = [
     id: '2',
     titulo: 'Smart Contracts con Solidity',
     nivel: 'Intermedio',
-    duracion: '8 semanas',
+    duracion: '4 semanas',
     imagen: IMAGES.CURSOS.SMART_CONTRACTS,
     descripcion: 'Desarrolla contratos inteligentes en la red Ethereum.',
-    instructor: 'Ing. María González',
+    instructor: 'Adrian Armenta Sequeira',
     precio: 0,
     estudiantes: 800,
     rating: 4.9,
@@ -46,10 +47,10 @@ const cursosData: Curso[] = [
     id: '3',
     titulo: 'DeFi y Finanzas Descentralizadas',
     nivel: 'Avanzado',
-    duracion: '10 semanas',
+    duracion: '2 semanas',
     imagen: IMAGES.CURSOS.DEFI,
     descripcion: 'Explora el mundo de las finanzas descentralizadas y sus protocolos.',
-    instructor: 'Mtro. Carlos Ruiz',
+    instructor: 'Fernanda Tello Arzate',
     precio: 0,
     estudiantes: 600,
     rating: 4.7,
@@ -164,9 +165,9 @@ const Cursos = () => {
                   <span className="stars">{'★'.repeat(Math.floor(curso.rating))}</span>
                   <span className="rating-number">{curso.rating}</span>
                 </div>
-                <button className="inscribirse-btn">
+                <Link to={`/curso/${curso.id}/registro`} className="inscribirse-btn">
                   Inscribirse
-                </button>
+                </Link>
               </div>
             </div>
           </div>
