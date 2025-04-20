@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faGraduationCap, faCalendarAlt, faCertificate, faTrophy, faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { handleNewsletterSubscription } from '../api/telegram'
 import '../styles/Newsletter.css'
 
 interface NewsletterEntry {
@@ -12,13 +15,47 @@ interface NewsletterEntry {
 
 const Newsletter = () => {
   const [email, setEmail] = useState('')
+  const [isSubscribed, setIsSubscribed] = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (isSubscribed) {
+      timeoutId = setTimeout(() => {
+        setIsSubscribed(false);
+      }, 5000);
+    }
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isSubscribed]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Aquí se puede agregar la lógica para enviar el email a un backend
-    console.log('Email suscrito:', email)
-    setEmail('')
-    alert('¡Gracias por suscribirte a nuestra newsletter!')
+    setError('')
+    setLoading(true)
+
+    try {
+      if (!email || !email.includes('@')) {
+        throw new Error('Por favor ingresa un email válido')
+      }
+
+      const { success, error: telegramError } = await handleNewsletterSubscription(email)
+      
+      if (!success) {
+        throw new Error(telegramError || 'Error al enviar la suscripción')
+      }
+
+      setIsSubscribed(true)
+      setEmail('')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al procesar la suscripción')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const entries: NewsletterEntry[] = [
@@ -49,7 +86,7 @@ const Newsletter = () => {
     <div className="newsletter-page">
       <header className="newsletter-header">
         <h1>Newsletter CriptoUNAM</h1>
-        <p>Mantente informado sobre las últimas novedades en blockchain y Web3</p>
+        <p>Mantente actualizado con las últimas noticias y eventos sobre blockchain y criptomonedas</p>
       </header>
 
       <div className="sections-container">
@@ -82,21 +119,71 @@ const Newsletter = () => {
 
         <section className="subscription-section">
           <h2>Suscríbete a Nuestra Newsletter</h2>
-          <p>Recibe las últimas actualizaciones directamente en tu correo</p>
-          <form onSubmit={handleSubscribe} className="subscription-form">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Tu correo electrónico"
-              required
-            />
-            <button type="submit">
-              Suscribirse
-              <i className="fas fa-paper-plane"></i>
-            </button>
-          </form>
+          <p className="subscription-description">
+            Únete a nuestra comunidad y recibe contenido exclusivo sobre blockchain, criptomonedas y tecnología Web3
+          </p>
+          <div className="newsletter-form-container">
+            <form onSubmit={handleSubmit} className="newsletter-form">
+              <div className="form-group">
+                <label htmlFor="email">
+                  <FontAwesomeIcon icon={faEnvelope} /> Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="tu@email.com"
+                  required
+                />
+              </div>
+
+              {error && <div className="error-message">{error}</div>}
+              {isSubscribed && (
+                <div className="success-message">
+                  ¡Gracias por suscribirte! Te mantendremos informado.
+                </div>
+              )}
+
+              <button type="submit" className="subscribe-btn" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="loading-spinner"></span>
+                    Procesando...
+                  </>
+                ) : (
+                  'Suscribirse Ahora'
+                )}
+              </button>
+            </form>
+          </div>
         </section>
+      </div>
+
+      <div className="benefits-section">
+        <h2>Beneficios de Suscribirte</h2>
+        <div className="benefits-grid">
+          <div className="benefit-card">
+            <FontAwesomeIcon icon={faGraduationCap} className="benefit-icon" />
+            <h3>Cursos Exclusivos</h3>
+            <p>Acceso a cursos especializados en blockchain y criptomonedas</p>
+          </div>
+          <div className="benefit-card">
+            <FontAwesomeIcon icon={faCalendarAlt} className="benefit-icon" />
+            <h3>Eventos Prioritarios</h3>
+            <p>Información anticipada sobre eventos y conferencias</p>
+          </div>
+          <div className="benefit-card">
+            <FontAwesomeIcon icon={faCertificate} className="benefit-icon" />
+            <h3>Certificaciones</h3>
+            <p>Oportunidades para obtener certificaciones reconocidas</p>
+          </div>
+          <div className="benefit-card">
+            <FontAwesomeIcon icon={faTrophy} className="benefit-icon" />
+            <h3>Logros y Recompensas</h3>
+            <p>Participa en programas de recompensas y logros</p>
+          </div>
+        </div>
       </div>
     </div>
   )

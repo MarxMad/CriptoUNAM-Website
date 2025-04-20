@@ -151,7 +151,7 @@
   font-weight: 800;
 }
 
-.newsletter-page .subscription-section p {
+.newsletter-page .subscription-description {
   font-size: 1.2rem;
   color: var(--text-secondary) !important;
   margin-bottom: 2rem;
@@ -160,49 +160,114 @@
   margin-right: auto;
 }
 
-.newsletter-page .subscription-form {
-  max-width: 500px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.newsletter-page .newsletter-form-container {
+  background: var(--light-beige);
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  max-width: 600px;
+  transition: transform 0.3s ease;
 }
 
-.newsletter-page .subscription-form input {
+.newsletter-page .newsletter-form-container:hover {
+  transform: translateY(-5px);
+}
+
+.newsletter-page .newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.newsletter-page .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.newsletter-page .form-group label {
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.newsletter-page .form-group input {
   padding: 1.2rem;
-  border: 2px solid rgba(0, 0, 0, 0.08);
+  border: 2px solid var(--primary-gold);
   border-radius: 12px;
   font-size: 1.1rem;
   transition: all 0.3s ease;
-  background: #f8f9fa !important;
+  background: white;
 }
 
-.newsletter-page .subscription-form input:focus {
+.newsletter-page .form-group input:focus {
   outline: none;
-  border-color: var(--primary-gold) !important;
-  box-shadow: 0 0 0 4px rgba(var(--primary-gold-rgb), 0.1);
-  background: white !important;
+  border-color: var(--dark-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
-.newsletter-page .subscription-form button {
-  padding: 1.2rem;
-  background: linear-gradient(135deg, var(--primary-gold), var(--dark-gold)) !important;
-  color: white !important;
+.newsletter-page .subscribe-btn {
+  background: var(--primary-gold);
+  color: white;
+  padding: 1.2rem 2rem;
   border: none;
   border-radius: 12px;
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
 }
 
-.newsletter-page .subscription-form button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.newsletter-page .subscribe-btn:hover {
+  background: var(--dark-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+}
+
+.newsletter-page .subscribe-btn:disabled {
+  background: var(--light-gold);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.newsletter-page .success-message,
+.newsletter-page .error-message {
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease;
+}
+
+.newsletter-page .success-message {
+  background: rgba(40, 167, 69, 0.1);
+  color: #13da41;
+  border: 1px solid rgba(40, 167, 69, 0.2);
+}
+
+.newsletter-page .error-message {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Modo oscuro para secciones */
@@ -276,13 +341,21 @@
     font-size: 1.1rem;
   }
 
-  .newsletter-page .subscription-form {
-    gap: 1.25rem;
+  .newsletter-page .newsletter-form-container {
+    padding: 2rem;
   }
 
-  .newsletter-page .subscription-form input,
-  .newsletter-page .subscription-form button {
+  .newsletter-page .newsletter-form {
+    gap: 1.5rem;
+  }
+
+  .newsletter-page .form-group input {
     padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .newsletter-page .subscribe-btn {
+    padding: 1rem 1.5rem;
     font-size: 1.1rem;
   }
 }
@@ -309,14 +382,22 @@
     font-size: 1rem;
   }
 
-  .newsletter-page .subscription-form {
-    gap: 1rem;
+  .newsletter-page .newsletter-form-container {
+    padding: 2rem;
   }
 
-  .newsletter-page .subscription-form input,
-  .newsletter-page .subscription-form button {
+  .newsletter-page .newsletter-form {
+    gap: 1.5rem;
+  }
+
+  .newsletter-page .form-group input {
     padding: 0.9rem;
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .newsletter-page .subscribe-btn {
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
   }
 }
 

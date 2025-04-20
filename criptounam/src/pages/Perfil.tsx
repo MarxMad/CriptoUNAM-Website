@@ -1,7 +1,19 @@
 import { useState, useEffect } from 'react'
 import { useWallet } from '../context/WalletContext'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWallet, faNetworkWired, faGraduationCap, faCalendarAlt, faCertificate, faTrophy, faImage, faExchangeAlt, faBell, faBellSlash, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { 
+  faWallet, 
+  faNetworkWired,
+  faGraduationCap, 
+  faCalendarAlt, 
+  faCertificate, 
+  faTrophy,
+  faBell,
+  faBellSlash,
+  faEye,
+  faEyeSlash
+} from '@fortawesome/free-solid-svg-icons'
+import '../styles/Perfil.css'
 
 interface UserProfile {
   cursosCompletados: {
@@ -53,7 +65,7 @@ interface UserProfile {
 }
 
 const Perfil = () => {
-  const { walletAddress, isConnected } = useWallet()
+  const { walletAddress } = useWallet()
   const [networkName, setNetworkName] = useState<string>('')
   const [userProfile, setUserProfile] = useState<UserProfile>({
     cursosCompletados: [],
