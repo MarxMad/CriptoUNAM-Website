@@ -449,13 +449,13 @@ p {
 /* Hero Section */
 .hero {
   text-align: center;
-  padding: 8rem 2rem;
+  padding: 2rem 2rem;
   position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('/images/hero-bg.jpg'); /* Asegúrate de tener esta imagen */
+ 
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
