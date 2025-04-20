@@ -446,90 +446,6 @@ p {
   cursor: pointer;
 }
 
-/* Hero Section */
-.hero {
-  text-align: center;
-  padding: 2rem 2rem;
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
- 
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-}
-
-/* Overlay oscuro para mejorar la legibilidad */
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    rgba(16, 41, 52, 0.85),
-    rgba(16, 41, 52, 0.95)
-  );
-  z-index: 1;
-}
-
-.hero-content {
-  max-width: 800px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
-  padding: 2rem;
-  border-radius: var(--border-radius-lg);
-  backdrop-filter: blur(5px);
-  background: rgba(16, 41, 52, 0.3);
-}
-
-.hero h1 {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  font-weight: 800;
-}
-
-.hero h2 {
-  font-size: 2rem;
-  margin-bottom: 3rem;
-  color: var(--light-beige);
-  line-height: 1.4;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Ajustes para modo oscuro */
-[data-theme='dark'] .hero::before {
-  background: linear-gradient(
-    rgba(0, 0, 0, 0.85),
-    rgba(0, 0, 0, 0.95)
-  );
-}
-
-[data-theme='dark'] .hero-content {
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 215, 0, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='dark'] .hero h1 {
-  color: var(--dark-gold);
-  text-shadow: var(--text-shadow-dark);
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-[data-theme='dark'] .hero h2 {
-  color: var(--dark-text);
-  text-shadow: var(--text-shadow-dark);
-  font-weight: 500;
-}
 
 .cta-button {
   background: var(--primary-gold);
@@ -1142,9 +1058,7 @@ p {
     font-size: 2.8rem;
   }
 
-  .hero {
-    padding: 4rem 1rem;
-  }
+  
 
   .newsletter-form {
     flex-direction: column;
@@ -1214,9 +1128,6 @@ p {
   }
 }
 
-.hero-content, .section {
-  animation: fadeIn 1s ease-out;
-}
 
 /* Animaciones adicionales */
 .resource-card,
@@ -2206,9 +2117,7 @@ p {
 }
 
 /* Ajustes generales para modo oscuro */
-[data-theme='dark'] .hero {
-  background: linear-gradient(to bottom, var(--dark-surface) 0%, var(--dark-bg) 100%);
-}
+
 
 [data-theme='dark'] .section {
   background-color: var(--dark-surface);
@@ -2771,32 +2680,7 @@ p {
   box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
 }
 
-/* Ajustes para la sección hero */
-.hero {
-  text-align: center;
-  padding: 6rem 2rem;
-  background: linear-gradient(rgba(16, 41, 52, 0.9), rgba(16, 41, 52, 0.8));
-  position: relative;
-}
 
-.hero-content {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.hero h1 {
-  font-size: 3.5rem;
-  margin-bottom: 1.5rem;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.hero h2 {
-  font-size: 1.8rem;
-  margin-bottom: 2.5rem;
-  color: var(--light-beige);
-  line-height: 1.4;
-}
 
 /* Animación para el botón */
 @keyframes pulse {
