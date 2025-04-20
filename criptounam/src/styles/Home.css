@@ -543,10 +543,41 @@
 @media (max-width: 480px) {
   .hero {
     padding: 0.5rem;
+    min-height: auto;
+    gap: 0.2rem;
+  }
+
+  .hero-content {
+    padding: 0.25rem;
+  }
+
+  .hero-content h1 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-content p {
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
   }
 
   .hero-buttons {
     flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .primary-button, .secondary-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-image {
+    padding: 0.25rem;
+  }
+
+  .hero-image img {
+    max-width: 90%;
+    border-radius: 10px;
   }
 
   .stats-section {
