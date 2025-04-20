@@ -103,7 +103,7 @@ const Home = () => {
 
     try {
       console.log('Llamando a handleNewsletterSubscription...')
-      const result = await handleNewsletterSubscription(email)
+      const result = await handleNewsletterSubscription(email, 'home')
       console.log('Resultado de la suscripción:', result)
       
       if (result.success) {

@@ -43,7 +43,7 @@ const Newsletter = () => {
         throw new Error('Por favor ingresa un email válido')
       }
 
-      const { success, error: telegramError } = await handleNewsletterSubscription(email)
+      const { success, error: telegramError } = await handleNewsletterSubscription(email, 'newsletter')
       
       if (!success) {
         throw new Error(telegramError || 'Error al enviar la suscripción')

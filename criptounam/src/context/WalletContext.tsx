@@ -1,4 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import { handleWalletNotification } from '../api/telegram'
+
+interface ConnectedWallet {
+  address: string
+  timestamp: string
+  provider: string
+}
 
 interface WalletContextType {
   walletAddress: string
@@ -6,21 +13,40 @@ interface WalletContextType {
   error?: string | null
   connectWallet: () => Promise<void>
   disconnectWallet: () => void
+  connectedWallets: ConnectedWallet[]
 }
 
 const WalletContext = createContext<WalletContextType>({
   connectWallet: async () => {},
   disconnectWallet: () => {},
   isConnected: false,
-  walletAddress: ''
+  walletAddress: '',
+  connectedWallets: []
 })
 
 export const useWallet = () => useContext(WalletContext)
+
+const sendTelegramNotification = async (address: string, provider: string) => {
+  try {
+    await handleWalletNotification(address, provider)
+  } catch (error) {
+    console.error('Error al enviar notificación a Telegram:', error)
+  }
+}
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState<string>('')
   const [isConnected, setIsConnected] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [connectedWallets, setConnectedWallets] = useState<ConnectedWallet[]>([])
+
+  useEffect(() => {
+    // Cargar wallets conectadas del localStorage
+    const savedWallets = localStorage.getItem('connectedWallets')
+    if (savedWallets) {
+      setConnectedWallets(JSON.parse(savedWallets))
+    }
+  }, [])
 
   useEffect(() => {
     const checkWalletConnection = async () => {
@@ -39,7 +65,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     checkWalletConnection()
 
-    // Escuchar cambios en la cuenta
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', (accounts: string[]) => {
         if (accounts.length === 0) {
@@ -56,9 +81,24 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       if (window.ethereum) {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        setWalletAddress(accounts[0])
+        const address = accounts[0]
+        setWalletAddress(address)
         setIsConnected(true)
         setError(null)
+
+        // Registrar la nueva wallet conectada
+        const newWallet: ConnectedWallet = {
+          address,
+          timestamp: new Date().toISOString(),
+          provider: 'MetaMask' // Podemos detectar el proveedor específico aquí
+        }
+
+        const updatedWallets = [...connectedWallets, newWallet]
+        setConnectedWallets(updatedWallets)
+        localStorage.setItem('connectedWallets', JSON.stringify(updatedWallets))
+
+        // Enviar notificación a Telegram
+        await sendTelegramNotification(address, 'MetaMask')
       } else {
         setError('Por favor instala MetaMask')
       }
@@ -75,7 +115,14 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }
 
   return (
-    <WalletContext.Provider value={{ walletAddress, isConnected, error, connectWallet, disconnectWallet }}>
+    <WalletContext.Provider value={{ 
+      walletAddress, 
+      isConnected, 
+      error, 
+      connectWallet, 
+      disconnectWallet,
+      connectedWallets 
+    }}>
       {children}
     </WalletContext.Provider>
   )
