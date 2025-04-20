@@ -158,7 +158,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4rem 2rem;
+ 
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-brown) 100%);
   color: var(--light-beige);
   min-height: 80vh;
