@@ -31,6 +31,12 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
     const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
     const telegramChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 
+    // Log para debugging en producción
+    console.log('Intentando enviar mensaje a Telegram...');
+    console.log('Bot Token presente:', !!botToken);
+    console.log('Chat ID proporcionado:', chatId);
+    console.log('Chat ID de variables de entorno:', telegramChatId);
+
     if (!botToken) {
       console.error('Error: VITE_TELEGRAM_BOT_TOKEN no está definido');
       return { success: false, message: 'Token del bot de Telegram no configurado' };
@@ -41,14 +47,22 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
       return { success: false, message: 'Chat ID de Telegram no configurado' };
     }
 
+    const finalChatId = chatId || telegramChatId;
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    console.log('URL de la API:', url);
+    console.log('Chat ID final:', finalChatId);
+
     const response = await axios.post<TelegramResponse>(
-      `https://api.telegram.org/bot${botToken}/sendMessage`,
+      url,
       {
-        chat_id: chatId || telegramChatId,
+        chat_id: finalChatId,
         text: message,
         parse_mode: 'HTML'
       }
     );
+
+    console.log('Respuesta de Telegram:', response.data);
 
     if (response.data.ok) {
       return { success: true, message: 'Mensaje enviado correctamente' };
@@ -59,6 +73,11 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
   } catch (error) {
     console.error('Error al enviar mensaje a Telegram:', error);
     if (axios.isAxiosError(error)) {
+      console.error('Detalles del error Axios:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
       return { 
         success: false, 
         message: error.response?.data?.description || 'Error al enviar el mensaje' 
