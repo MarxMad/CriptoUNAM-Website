@@ -16,56 +16,39 @@ interface RegistrationData {
 }
 
 interface TelegramResponse {
-  success: boolean
-  error?: string
+  ok: boolean;
+  result?: any;
+  description?: string;
 }
 
-const sendTelegramMessage = async (message: string): Promise<TelegramResponse> => {
+interface ApiResponse {
+  success: boolean;
+  message: string;
+}
+
+export const sendTelegramMessage = async (message: string, chatId: string): Promise<ApiResponse> => {
   try {
-    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN
-    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID
-
-    if (!botToken) {
-      console.error('Error: VITE_TELEGRAM_BOT_TOKEN no está definido')
-      throw new Error('Token del bot de Telegram no configurado')
-    }
-
-    if (!chatId) {
-      console.error('Error: VITE_TELEGRAM_CHAT_ID no está definido')
-      throw new Error('Chat ID de Telegram no configurado')
-    }
-
-    console.log('Enviando mensaje a Telegram...')
-    console.log('Bot Token:', botToken ? 'Definido' : 'No definido')
-    console.log('Chat ID:', chatId ? 'Definido' : 'No definido')
-
-    const response = await axios.post(
-      `https://api.telegram.org/bot${botToken}/sendMessage`,
+    const response = await axios.post<TelegramResponse>(
+      `https://api.telegram.org/bot${import.meta.env.VITE_TELEGRAM_BOT_TOKEN}/sendMessage`,
       {
         chat_id: chatId,
         text: message,
-        parse_mode: 'Markdown',
-        disable_web_page_preview: true
+        parse_mode: 'HTML'
       }
-    )
+    );
 
     if (response.data.ok) {
-      console.log('Mensaje enviado exitosamente a Telegram')
-      return { success: true }
+      return { success: true, message: 'Mensaje enviado correctamente' };
     } else {
-      console.error('Error en la respuesta de Telegram:', response.data)
-      throw new Error('Error al enviar el mensaje a Telegram')
+      return { success: false, message: 'Error al enviar el mensaje' };
     }
   } catch (error) {
-    console.error('Error detallado al enviar mensaje a Telegram:', error)
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Error desconocido'
-    }
+    console.error('Error al enviar mensaje a Telegram:', error);
+    return { success: false, message: 'Error al enviar el mensaje' };
   }
-}
+};
 
-export const handleRegistration = async (data: RegistrationData) => {
+export const handleRegistration = async (data: RegistrationData): Promise<ApiResponse> => {
   const mensaje = `
 🎓 *Nuevo Registro en CriptoUNAM* 🎓
 
@@ -86,10 +69,10 @@ ${data.motivacion}
 • 👍 Facebook: ${data.facebook || 'No proporcionado'}
   `
 
-  return await sendTelegramMessage(mensaje)
+  return await sendTelegramMessage(mensaje, data.telegram)
 }
 
-export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<TelegramResponse> => {
+export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<ApiResponse> => {
   const message = source === 'home' 
     ? `
 📧 *Nueva Suscripción desde el Home*
@@ -108,10 +91,10 @@ export const handleNewsletterSubscription = async (email: string, source: 'home'
 ----------------------------
 `
 
-  return await sendTelegramMessage(message)
+  return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
 }
 
-export const handleWalletNotification = async (address: string, provider: string): Promise<TelegramResponse> => {
+export const handleWalletNotification = async (address: string, provider: string): Promise<ApiResponse> => {
   const message = `
 🔐 *Nueva Wallet Conectada*
 ----------------------------
@@ -121,5 +104,5 @@ export const handleWalletNotification = async (address: string, provider: string
 ----------------------------
 `
 
-  return await sendTelegramMessage(message)
+  return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
 } 
