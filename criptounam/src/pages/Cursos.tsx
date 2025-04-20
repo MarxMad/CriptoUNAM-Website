@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
-import '../styles/Cursos.css'
+
 interface Curso {
   id: string
   titulo: string
