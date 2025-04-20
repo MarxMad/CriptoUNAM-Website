@@ -28,10 +28,23 @@ interface ApiResponse {
 
 export const sendTelegramMessage = async (message: string, chatId: string): Promise<ApiResponse> => {
   try {
+    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+    const telegramChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+    if (!botToken) {
+      console.error('Error: VITE_TELEGRAM_BOT_TOKEN no está definido');
+      return { success: false, message: 'Token del bot de Telegram no configurado' };
+    }
+
+    if (!chatId && !telegramChatId) {
+      console.error('Error: No se proporcionó un chat ID válido');
+      return { success: false, message: 'Chat ID de Telegram no configurado' };
+    }
+
     const response = await axios.post<TelegramResponse>(
-      `https://api.telegram.org/bot${import.meta.env.VITE_TELEGRAM_BOT_TOKEN}/sendMessage`,
+      `https://api.telegram.org/bot${botToken}/sendMessage`,
       {
-        chat_id: chatId,
+        chat_id: chatId || telegramChatId,
         text: message,
         parse_mode: 'HTML'
       }
@@ -40,10 +53,17 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
     if (response.data.ok) {
       return { success: true, message: 'Mensaje enviado correctamente' };
     } else {
-      return { success: false, message: 'Error al enviar el mensaje' };
+      console.error('Error en la respuesta de Telegram:', response.data);
+      return { success: false, message: response.data.description || 'Error al enviar el mensaje' };
     }
   } catch (error) {
     console.error('Error al enviar mensaje a Telegram:', error);
+    if (axios.isAxiosError(error)) {
+      return { 
+        success: false, 
+        message: error.response?.data?.description || 'Error al enviar el mensaje' 
+      };
+    }
     return { success: false, message: 'Error al enviar el mensaje' };
   }
 };
