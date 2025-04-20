@@ -27,9 +27,9 @@ function AppContent() {
     }, 3000)
   }
 
-  const handleConnectWallet = async (provider: string) => {
+  const handleConnectWallet = async () => {
     try {
-      await connectWallet(provider)
+      await connectWallet()
       setShowWalletOptions(false)
       showTemporaryNotification('¡Wallet conectada exitosamente!')
     } catch (error) {
@@ -93,15 +93,15 @@ function AppContent() {
                   </button>
                   {showWalletOptions && (
                     <div className="wallet-options">
-                      <button onClick={() => handleConnectWallet('metamask')}>
+                      <button onClick={() => handleConnectWallet()}>
                         <img src="/metamask-logo.png" alt="MetaMask" />
                         MetaMask
                       </button>
-                      <button onClick={() => handleConnectWallet('coinbase')}>
+                      <button onClick={() => handleConnectWallet()}>
                         <img src="/coinbase-logo.png" alt="Coinbase" />
                         Coinbase Wallet
                       </button>
-                      <button onClick={() => handleConnectWallet('walletconnect')}>
+                      <button onClick={() => handleConnectWallet()}>
                         <img src="/walletconnect-logo.png" alt="WalletConnect" />
                         WalletConnect
                       </button>

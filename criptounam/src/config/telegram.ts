@@ -1,7 +1,7 @@
 // Configuración de Telegram
 export const TELEGRAM_CONFIG = {
   BOT_TOKEN: '7988985791:AAH6jDjFDkUXomzJT3yFtH05POJRnr1yEsA', // Reemplaza con tu token de bot
-  CHAT_ID: '1608242541' // ID del chat donde se enviarán los mensajes
+  CHAT_ID: '7756944278' // ID del chat donde se enviarán los mensajes
 }
 
 // Función para enviar mensajes a Telegram
