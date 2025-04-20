@@ -2830,17 +2830,7 @@ p {
   margin: 80px auto 0; /* Centrado y espacio para navbar */
 }
 
-/* Ajustes responsive para la barra lateral */
-.filtros-sidebar {
-  background: white;
-  padding: 1.5rem;
-  border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
-  height: fit-content;
-  position: sticky;
-  top: 100px; /* Ajustado para la navbar */
-  transition: all 0.3s ease;
-}
+
 
 .search-box {
   margin-bottom: 2rem;
@@ -3061,25 +3051,7 @@ p {
     position: relative;
   }
 
-  .filtros-sidebar {
-    position: fixed;
-    top: 70px;
-    left: 0;
-    right: 0;
-    z-index: 10; /* Reducido para que esté por debajo de la navbar */
-    border-radius: 0;
-    max-height: 40vh;
-    overflow-y: auto;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
-    background: var(--primary-dark);
-    color: var(--light-beige);
-    padding: 1rem;
-  }
-
-  .filtros-sidebar.expanded {
-    transform: translateY(0);
-  }
+  
 
   .cursos-grid {
     grid-template-columns: 1fr;
@@ -3683,7 +3655,7 @@ p {
   }
 
   .community-header p {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     text-align: center;
   }
 }

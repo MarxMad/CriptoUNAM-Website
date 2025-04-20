@@ -38,10 +38,8 @@
   width: 100%;
 }
 
-/* Filtros - ocultos por defecto */
-.filtros-sidebar {
-  display: none !important; /* Forzar ocultamiento */
-}
+
+
 
 /* Mostrar filtros SOLO en pantallas grandes */
 @media screen and (min-width: 1200px) {
@@ -358,5 +356,15 @@
 
   .inscribirse-btn {
     padding: 0.8rem 1.5rem;
+  }
+
+  .filtros-sidebar {
+    display: block !important;
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
   }
 } 

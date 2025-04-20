@@ -1,7 +1,8 @@
 import { useParams } from 'react-router-dom'
-import '../styles/Newsletter.css'
-import { Link } from 'react-router-dom'; // si estás usando React Router
-
+import { Link } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import '../styles/NewsletterEntry.css'
 
 interface NewsletterEntry {
   id: number
@@ -10,6 +11,8 @@ interface NewsletterEntry {
   content: string
   fullContent: string
   imageUrl?: string
+  author?: string
+  tags?: string[]
 }
 
 const NewsletterEntry = () => {
@@ -34,7 +37,9 @@ En esta edición especial, cubriremos:
 - El futuro de la descentralización
 
 Además, tendremos una entrevista exclusiva con expertos en el campo que compartirán sus perspectivas sobre el futuro de esta tecnología revolucionaria.`,
-      imageUrl: 'src/constants/images/web3-intro.jpg'
+      imageUrl: '/images/web3-intro.jpg',
+      author: 'Dr. Blockchain',
+      tags: ['Web3', 'Blockchain', 'Descentralización']
     },
     {
       id: 2,
@@ -53,7 +58,9 @@ En esta edición especial, exploramos:
 - Estrategias de inversión recomendadas
 
 También incluimos una sección especial con gráficos y análisis técnico detallado para ayudar a los inversores a tomar decisiones informadas.`,
-      imageUrl: 'src/constants/images/bitcoin-halving.jpg'
+      imageUrl: '/images/bitcoin-halving.jpg',
+      author: 'Crypto Analyst',
+      tags: ['Bitcoin', 'Halving', 'Mercado']
     },
     {
       id: 3,
@@ -72,7 +79,9 @@ En esta edición, exploramos:
 - El futuro de la educación con Web3
 
 Incluimos entrevistas con profesores y estudiantes que están implementando estas innovaciones, así como una guía práctica para instituciones educativas interesadas en adoptar esta tecnología.`,
-      imageUrl: 'src/constants/images/nft-education.jpg'
+      imageUrl: '/images/nft-education.jpg',
+      author: 'EduTech Expert',
+      tags: ['NFTs', 'Educación', 'Innovación']
     }
   ]
 
@@ -85,7 +94,7 @@ Incluimos entrevistas con profesores y estudiantes que están implementando esta
           <h2>Entrada no encontrada</h2>
           <p>La entrada que buscas no existe o ha sido eliminada.</p>
           <Link to="/newsletter" className="back-link">
-            Volver al Newsletter
+            <FontAwesomeIcon icon={faArrowLeft} /> Volver al Newsletter
           </Link>
         </div>
       </div>
@@ -101,15 +110,31 @@ Incluimos entrevistas con profesores y estudiantes que están implementando esta
           </div>
         )}
         <div className="entry-content">
+          <div className="entry-meta">
+            <span className="entry-date">
+              <FontAwesomeIcon icon={faCalendarAlt} /> {entry.date}
+            </span>
+            {entry.author && (
+              <span className="entry-author">
+                Por {entry.author}
+              </span>
+            )}
+          </div>
           <h1>{entry.title}</h1>
-          <span className="entry-date">{entry.date}</span>
+          {entry.tags && entry.tags.length > 0 && (
+            <div className="entry-tags">
+              {entry.tags.map((tag, index) => (
+                <span key={index} className="tag">{tag}</span>
+              ))}
+            </div>
+          )}
           <div className="entry-body">
             {entry.fullContent.split('\n\n').map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
           </div>
           <Link to="/newsletter" className="back-link">
-            Volver al Newsletter
+            <FontAwesomeIcon icon={faArrowLeft} /> Volver al Newsletter
           </Link>
         </div>
       </article>
