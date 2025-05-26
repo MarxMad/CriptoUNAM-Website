@@ -15,24 +15,24 @@ import './styles/global.css'
 const App = () => {
   return (
     <WalletProvider>
-      <Router>
+    <Router>
         <div className="app">
           <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/cursos" element={<Cursos />} />
-              <Route path="/comunidad" element={<Comunidad />} />
-              <Route path="/perfil" element={<Perfil />} />
-              <Route path="/registro-curso" element={<RegistroCurso />} />
-              <Route path="/newsletter" element={<Newsletter />} />
-              <Route path="/newsletter/:id" element={<NewsletterEntry />} />
-            </Routes>
-          </main>
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/cursos" element={<Cursos />} />
+            <Route path="/comunidad" element={<Comunidad />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/registro-curso/:id" element={<RegistroCurso />} />
+            <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/newsletter/:id" element={<NewsletterEntry />} />
+          </Routes>
+        </main>
           <Footer />
-        </div>
-      </Router>
-    </WalletProvider>
+      </div>
+    </Router>
+      </WalletProvider>
   )
 }
 

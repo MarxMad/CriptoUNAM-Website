@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useBalance, useContractRead } from 'wagmi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faWallet, 
@@ -11,9 +11,35 @@ import {
   faBell,
   faBellSlash,
   faEye,
-  faEyeSlash
+  faEyeSlash,
+  faCoins,
+  faCopy,
+  faCheck
 } from '@fortawesome/free-solid-svg-icons'
+import { formatEther } from 'viem'
 import '../styles/global.css'
+
+// ABI para el contrato de certificados
+const CERTIFICATE_ABI = [
+  {
+    "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
+    "name": "getUserCertificates",
+    "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+
+// ABI para el contrato de cursos
+const COURSE_ABI = [
+  {
+    "inputs": [{"internalType": "address", "name": "user", "type": "address"}],
+    "name": "getUserCourses",
+    "outputs": [{"internalType": "uint256[]", "name": "", "type": "uint256[]"}],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
 
 interface UserProfile {
   cursosCompletados: {
@@ -21,18 +47,21 @@ interface UserProfile {
     titulo: string;
     fecha: string;
     progreso: number;
+    certificadoHash?: string;
   }[];
   eventosAsistidos: {
     id: number;
     nombre: string;
     fecha: string;
     tipo: string;
+    asistenciaVerificada: boolean;
   }[];
   certificaciones: {
     id: number;
     nombre: string;
     fecha: string;
     hash: string;
+    red: string;
   }[];
   logros: {
     id: number;
@@ -64,9 +93,32 @@ interface UserProfile {
   };
 }
 
+const NETWORKS: Record<number, { name: string; logo: string }> = {
+  1: { name: 'Ethereum', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
+  5: { name: 'Goerli', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
+  11155111: { name: 'Sepolia', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
+  137: { name: 'Polygon', logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png?v=026' },
+  80001: { name: 'Polygon Mumbai', logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png?v=026' },
+  56: { name: 'Binance Smart Chain', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png?v=026' },
+  97: { name: 'BSC Testnet', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png?v=026' },
+  42161: { name: 'Arbitrum One', logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=026' },
+  10: { name: 'Optimism', logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png?v=026' },
+  43114: { name: 'Avalanche C-Chain', logo: 'https://cryptologos.cc/logos/avalanche-avax-logo.png?v=026' },
+}
+
+const getChainId = () => {
+  if (window && (window as any).ethereum && (window as any).ethereum.networkVersion) {
+    return parseInt((window as any).ethereum.networkVersion)
+  }
+  return undefined
+}
+
 const Perfil = () => {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useAccount()
+  const { data: balance } = useBalance({ address })
+  
   const [networkName, setNetworkName] = useState<string>('')
+  const [networkLogo, setNetworkLogo] = useState<string>('')
   const [userProfile, setUserProfile] = useState<UserProfile>({
     cursosCompletados: [],
     eventosAsistidos: [],
@@ -81,6 +133,23 @@ const Perfil = () => {
     }
   })
   const [loading, setLoading] = useState(true)
+  const [copied, setCopied] = useState(false)
+
+  // Leer certificados del contrato
+  const { data: certificates } = useContractRead({
+    address: '0x...', // Dirección del contrato de certificados
+    abi: CERTIFICATE_ABI,
+    functionName: 'getUserCertificates',
+    args: [address],
+  })
+
+  // Leer cursos del contrato
+  const { data: courses } = useContractRead({
+    address: '0x...', // Dirección del contrato de cursos
+    abi: COURSE_ABI,
+    functionName: 'getUserCourses',
+    args: [address],
+  })
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -91,109 +160,24 @@ const Perfil = () => {
 
       try {
         setLoading(true)
-        // Obtener nombre de la red
-        const network = getNetworkName()
-        setNetworkName(network)
+        // Deducir nombre de la red por chainId
+        const chainId = getChainId()
+        if (chainId) {
+          setNetworkName(NETWORKS[chainId].name)
+          setNetworkLogo(NETWORKS[chainId].logo)
+        } else {
+          setNetworkName('Desconocida')
+          setNetworkLogo('')
+        }
 
-        // Simular obtención de datos del usuario
-        // En producción, esto vendría de tu backend o smart contract
-        const mockUserData: UserProfile = {
-          cursosCompletados: [
-            {
-              id: 1,
-              titulo: "Introducción a Blockchain",
-              fecha: "2024-02-15",
-              progreso: 100
-            },
-            {
-              id: 2,
-              titulo: "Smart Contracts con Solidity",
-              fecha: "2024-03-01",
-              progreso: 75
-            }
-          ],
-          eventosAsistidos: [
-            {
-              id: 1,
-              nombre: "Hackathon Web3 2024",
-              fecha: "2024-03-15",
-              tipo: "Presencial"
-            },
-            {
-              id: 2,
-              nombre: "DeFi Workshop",
-              fecha: "2024-02-20",
-              tipo: "Virtual"
-            }
-          ],
-          certificaciones: [
-            {
-              id: 1,
-              nombre: "Blockchain Developer Level 1",
-              fecha: "2024-03-01",
-              hash: "0x123..."
-            }
-          ],
-          logros: [
-            {
-              id: 1,
-              nombre: "Primer Curso Completado",
-              descripcion: "Completaste tu primer curso",
-              icono: "fa-certificate",
-              fecha: "2024-02-15",
-              nivel: 'bronce'
-            },
-            {
-              id: 2,
-              nombre: "Primer Evento Asistido",
-              descripcion: "Asististe a tu primer evento",
-              icono: "fa-calendar-alt",
-              fecha: "2024-02-20",
-              nivel: 'bronce'
-            },
-            {
-              id: 3,
-              nombre: "Primer Certificado Obtenido",
-              descripcion: "Obtuviste tu primer certificado",
-              icono: "fa-award",
-              fecha: "2024-03-01",
-              nivel: 'bronce'
-            }
-          ],
-          nfts: [
-            {
-              id: 1,
-              nombre: "NFT 1",
-              descripcion: "Descripción del NFT 1",
-              imagen: "https://example.com/nft1.jpg",
-              tokenId: "0x123...",
-              openseaLink: "https://opensea.io/asset/0x123..."
-            },
-            {
-              id: 2,
-              nombre: "NFT 2",
-              descripcion: "Descripción del NFT 2",
-              imagen: "https://example.com/nft2.jpg",
-              tokenId: "0x456...",
-              openseaLink: "https://opensea.io/asset/0x456..."
-            }
-          ],
-          transacciones: [
-            {
-              hash: "0x123...",
-              tipo: "envio",
-              descripcion: "Transferencia a 0x123...",
-              fecha: "2024-03-01",
-              cantidad: "0.1"
-            },
-            {
-              hash: "0x456...",
-              tipo: "envio",
-              descripcion: "Transferencia a 0x456...",
-              fecha: "2024-03-02",
-              cantidad: "0.05"
-            }
-          ],
+        // Obtener datos reales de la blockchain
+        const userData: UserProfile = {
+          cursosCompletados: [],
+          eventosAsistidos: [],
+          certificaciones: [],
+          logros: [],
+          nfts: [],
+          transacciones: [],
           settings: {
             emailNotifications: true,
             pushNotifications: true,
@@ -201,7 +185,48 @@ const Perfil = () => {
           }
         }
 
-        setUserProfile(mockUserData)
+        // Procesar certificados de la blockchain
+        if (Array.isArray(certificates)) {
+          userData.certificaciones = certificates.map((cert: any) => ({
+            id: cert.toNumber(),
+            nombre: `Certificado #${cert.toNumber()}`,
+            fecha: new Date().toISOString(),
+            hash: cert.toString(),
+            red: networkName
+          }))
+        }
+
+        // Procesar cursos de la blockchain
+        if (Array.isArray(courses)) {
+          userData.cursosCompletados = courses.map((course: any) => ({
+            id: course.toNumber(),
+            titulo: `Curso #${course.toNumber()}`,
+            fecha: new Date().toISOString(),
+            progreso: 100
+          }))
+        }
+
+        // Obtener NFTs del usuario (ejemplo con OpenSea API)
+        try {
+          const nftsResponse = await fetch(
+            `https://api.opensea.io/api/v1/assets?owner=${address}&order_direction=desc&offset=0&limit=20`
+          )
+          const nftsData = await nftsResponse.json()
+          if (nftsData.assets && Array.isArray(nftsData.assets)) {
+            userData.nfts = nftsData.assets.map((nft: any) => ({
+              id: nft.id,
+              nombre: nft.name,
+              descripcion: nft.description,
+              imagen: nft.image_url,
+              tokenId: nft.token_id,
+              openseaLink: nft.permalink
+            }))
+          }
+        } catch (error) {
+          console.error('Error al obtener NFTs:', error)
+        }
+
+        setUserProfile(userData)
       } catch (error) {
         console.error('Error al cargar datos del usuario:', error)
       } finally {
@@ -210,17 +235,31 @@ const Perfil = () => {
     }
 
     fetchUserData()
-  }, [address])
+  }, [address, certificates, courses])
 
-  const getNetworkName = (): string => {
-    const networks: { [key: number]: string } = {
-      1: 'Ethereum Mainnet',
-      5: 'Goerli Testnet',
-      137: 'Polygon Mainnet',
-      80001: 'Mumbai Testnet',
+  // Actualiza red y logo al cambiar de red
+  useEffect(() => {
+    const updateNetwork = () => {
+      const chainId = getChainId()
+      if (chainId && NETWORKS[chainId]) {
+        setNetworkName(NETWORKS[chainId].name)
+        setNetworkLogo(NETWORKS[chainId].logo)
+      } else if (chainId) {
+        setNetworkName(`Chain ID: ${chainId}`)
+        setNetworkLogo('')
+      } else {
+        setNetworkName('Desconocida')
+        setNetworkLogo('')
+      }
     }
-    return networks[1] || `Chain ID: 1`
-  }
+    updateNetwork()
+    if (window && (window as any).ethereum) {
+      (window as any).ethereum.on('chainChanged', updateNetwork)
+      return () => {
+        (window as any).ethereum.removeListener('chainChanged', updateNetwork)
+      }
+    }
+  }, [address])
 
   if (!isConnected || !address) {
     return (
@@ -248,163 +287,107 @@ const Perfil = () => {
   return (
     <div className="profile-page">
       <div className="profile-header">
-        <div className="header-content">
-          <h1>Mi Perfil</h1>
-        </div>
-        <div className="wallet-info">
-          <div className="info-card">
-            <FontAwesomeIcon icon={faWallet} className="info-icon" />
-            <h3>Dirección</h3>
-            <p>{`${address.slice(0, 6)}...${address.slice(-4)}`}</p>
-          </div>
-          <div className="info-card">
-            <FontAwesomeIcon icon={faNetworkWired} className="info-icon" />
-            <h3>Red</h3>
-            <p>{networkName}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Estadísticas */}
-      <div className="activity-stats">
-        <div className="stat-card">
-          <FontAwesomeIcon icon={faGraduationCap} className="stat-icon" />
-          <div className="stat-number">{userProfile.cursosCompletados.length}</div>
-          <div className="stat-label">Cursos Completados</div>
-        </div>
-        <div className="stat-card">
-          <FontAwesomeIcon icon={faCalendarAlt} className="stat-icon" />
-          <div className="stat-number">{userProfile.eventosAsistidos.length}</div>
-          <div className="stat-label">Eventos Asistidos</div>
-        </div>
-        <div className="stat-card">
-          <FontAwesomeIcon icon={faCertificate} className="stat-icon" />
-          <div className="stat-number">{userProfile.certificaciones.length}</div>
-          <div className="stat-label">Certificaciones</div>
-        </div>
-        <div className="stat-card">
-          <FontAwesomeIcon icon={faTrophy} className="stat-icon" />
-          <div className="stat-number">{userProfile.logros.length}</div>
-          <div className="stat-label">Logros</div>
+        <div className="profile-wallet-info">
+          <h2>
+            <FontAwesomeIcon icon={faWallet} />
+            <span style={{wordBreak:'break-all'}}>{address}</span>
+            <button
+              className="copy-btn"
+              style={{marginLeft:'1rem', background:'none', border:'none', cursor:'pointer', color:'var(--primary-gold)', fontSize:'1.1rem'}}
+              onClick={() => {
+                navigator.clipboard.writeText(address || '')
+                setCopied(true)
+                setTimeout(() => setCopied(false), 1200)
+              }}
+              title="Copiar dirección"
+            >
+              <FontAwesomeIcon icon={copied ? faCheck : faCopy} />
+            </button>
+          </h2>
+          <p>
+            <FontAwesomeIcon icon={faNetworkWired} />{' '}
+            {networkLogo && <img src={networkLogo} alt={networkName} style={{height:24, width:24, verticalAlign:'middle', marginRight:8, borderRadius:'50%', background:'#fff'}} />}
+            {networkName}
+          </p>
+          {balance && (
+            <p>
+              <FontAwesomeIcon icon={faCoins} /> Balance: {formatEther(balance.value)} {balance.symbol}
+            </p>
+          )}
         </div>
       </div>
 
       <div className="profile-content">
-        {/* Cursos Completados */}
-        <section className="profile-section">
-          <h2><FontAwesomeIcon icon={faGraduationCap} /> Mis Cursos</h2>
-          <div className="courses-grid">
-            {userProfile.cursosCompletados.map(curso => (
-              <div key={curso.id} className="course-card">
-                <div className="course-progress">
+        <div className="profile-section">
+          <h3><FontAwesomeIcon icon={faGraduationCap} /> Cursos Completados</h3>
+          {userProfile.cursosCompletados.length > 0 ? (
+            <div className="courses-grid">
+              {userProfile.cursosCompletados.map(curso => (
+                <div key={curso.id} className="course-card">
+                  <h4>{curso.titulo}</h4>
+                  <p>Fecha: {new Date(curso.fecha).toLocaleDateString()}</p>
                   <div className="progress-bar">
                     <div 
-                      className="progress" 
-                      style={{ width: `${curso.progreso}%` }}
-                    >
-                      {curso.progreso}%
-                    </div>
+                      className="progress-fill" 
+                      style={{width: `${curso.progreso}%`}}
+                    ></div>
                   </div>
+                  <p>Progreso: {curso.progreso}%</p>
                 </div>
-                <h3>{curso.titulo}</h3>
-                <p className="course-date">
-                  <FontAwesomeIcon icon={faCalendarAlt} /> {curso.fecha}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Eventos Asistidos */}
-        <section className="profile-section">
-          <h2><FontAwesomeIcon icon={faCalendarAlt} /> Eventos Asistidos</h2>
-          <div className="events-grid">
-            {userProfile.eventosAsistidos.map(evento => (
-              <div key={evento.id} className="event-card">
-                <h3>{evento.nombre}</h3>
-                <p className="event-date">
-                  <FontAwesomeIcon icon={faCalendarAlt} /> {evento.fecha}
-                </p>
-                <p className="event-type">
-                  <FontAwesomeIcon icon={faNetworkWired} /> {evento.tipo}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Certificaciones */}
-        <section className="profile-section">
-          <h2><FontAwesomeIcon icon={faCertificate} /> Certificaciones</h2>
-          <div className="certs-grid">
-            {userProfile.certificaciones.map(cert => (
-              <div key={cert.id} className="cert-card">
-                <h3>{cert.nombre}</h3>
-                <p className="cert-date">
-                  <FontAwesomeIcon icon={faCalendarAlt} /> {cert.fecha}
-                </p>
-                <p className="cert-hash">
-                  <FontAwesomeIcon icon={faNetworkWired} /> {cert.hash}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Configuración */}
-        <section className="profile-section">
-          <h2>Configuración</h2>
-          <div className="settings-grid">
-            <div className="setting-item">
-              <FontAwesomeIcon icon={userProfile.settings.emailNotifications ? faBell : faBellSlash} />
-              <span>Notificaciones por Email</span>
-              <button 
-                className={`toggle-btn ${userProfile.settings.emailNotifications ? 'active' : ''}`}
-                onClick={() => setUserProfile(prev => ({
-                  ...prev,
-                  settings: {
-                    ...prev.settings,
-                    emailNotifications: !prev.settings.emailNotifications
-                  }
-                }))}
-              >
-                {userProfile.settings.emailNotifications ? 'Activado' : 'Desactivado'}
-              </button>
+              ))}
             </div>
-            <div className="setting-item">
-              <FontAwesomeIcon icon={userProfile.settings.pushNotifications ? faBell : faBellSlash} />
-              <span>Notificaciones Push</span>
-              <button 
-                className={`toggle-btn ${userProfile.settings.pushNotifications ? 'active' : ''}`}
-                onClick={() => setUserProfile(prev => ({
-                  ...prev,
-                  settings: {
-                    ...prev.settings,
-                    pushNotifications: !prev.settings.pushNotifications
-                  }
-                }))}
-              >
-                {userProfile.settings.pushNotifications ? 'Activado' : 'Desactivado'}
-              </button>
+          ) : (
+            <p>No has completado ningún curso aún.</p>
+          )}
+        </div>
+
+        <div className="profile-section">
+          <h3><FontAwesomeIcon icon={faCertificate} /> Certificaciones</h3>
+          {userProfile.certificaciones.length > 0 ? (
+            <div className="certificates-grid">
+              {userProfile.certificaciones.map(cert => (
+                <div key={cert.id} className="certificate-card">
+                  <h4>{cert.nombre}</h4>
+                  <p>Fecha: {new Date(cert.fecha).toLocaleDateString()}</p>
+                  <p>Red: {cert.red}</p>
+                  <a 
+                    href={`https://polygonscan.com/tx/${cert.hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Ver en Explorer
+                  </a>
+                </div>
+              ))}
             </div>
-            <div className="setting-item">
-              <FontAwesomeIcon icon={userProfile.settings.showActivity ? faEye : faEyeSlash} />
-              <span>Mostrar Actividad</span>
-              <button 
-                className={`toggle-btn ${userProfile.settings.showActivity ? 'active' : ''}`}
-                onClick={() => setUserProfile(prev => ({
-                  ...prev,
-                  settings: {
-                    ...prev.settings,
-                    showActivity: !prev.settings.showActivity
-                  }
-                }))}
-              >
-                {userProfile.settings.showActivity ? 'Activado' : 'Desactivado'}
-              </button>
+          ) : (
+            <p>No tienes certificaciones aún.</p>
+          )}
+        </div>
+
+        <div className="profile-section">
+          <h3><FontAwesomeIcon icon={faTrophy} /> NFTs</h3>
+          {userProfile.nfts.length > 0 ? (
+            <div className="nfts-grid">
+              {userProfile.nfts.map(nft => (
+                <div key={nft.id} className="nft-card">
+                  <img src={nft.imagen} alt={nft.nombre} />
+                  <h4>{nft.nombre}</h4>
+                  <p>{nft.descripcion}</p>
+                  <a 
+                    href={nft.openseaLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Ver en OpenSea
+                  </a>
+                </div>
+              ))}
             </div>
-          </div>
-        </section>
+          ) : (
+            <p>No tienes NFTs aún.</p>
+          )}
+        </div>
       </div>
     </div>
   )

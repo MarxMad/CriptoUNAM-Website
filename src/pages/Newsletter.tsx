@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faGraduationCap, faCalendarAlt, faCertificate, faTrophy, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { handleNewsletterSubscription } from '../api/telegram'
 import '../styles/global.css'
-import { newsletterEntries } from './newsletterData'
+import { useWallet } from '../context/WalletContext'
+import axios from 'axios'
 
 interface NewsletterEntry {
   id: number
@@ -14,11 +15,41 @@ interface NewsletterEntry {
   imageUrl?: string
 }
 
+const ADMIN_WALLET = '0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217'.toLowerCase();
+
 const Newsletter = () => {
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { walletAddress, isConnected } = useWallet();
+  const isAdmin = isConnected && walletAddress.toLowerCase() === ADMIN_WALLET;
+
+  // Estado para modal, nueva entrada y entradas desde backend
+  const [showModal, setShowModal] = useState(false);
+  const [nuevaEntrada, setNuevaEntrada] = useState({
+    title: '',
+    date: '',
+    content: '',
+    imageFile: null as File | null,
+    author: '',
+    tags: '' // string separada por comas
+  });
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [entradas, setEntradas] = useState<NewsletterEntry[]>([]);
+
+  // Cargar entradas desde backend
+  useEffect(() => {
+    const fetchEntradas = async () => {
+      try {
+        const res = await axios.get<NewsletterEntry[]>('http://localhost:4000/newsletter');
+        setEntradas(res.data);
+      } catch (error) {
+        console.error('Error al cargar entradas de newsletter:', error);
+      }
+    };
+    fetchEntradas();
+  }, []);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -59,6 +90,55 @@ const Newsletter = () => {
     }
   }
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setNuevaEntrada({ ...nuevaEntrada, [e.target.name]: e.target.value });
+  };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNuevaEntrada({ ...nuevaEntrada, imageFile: e.target.files[0] });
+      setPreviewImage(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const uploadToPinata = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await axios.post<{ ipfsUrl: string }>('http://localhost:4000/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data.ipfsUrl;
+    } catch (error) {
+      console.error('Error al subir a Pinata (vía backend):', error);
+      throw error;
+    }
+  };
+
+  const handleAgregarEntrada = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nuevaEntrada.title || !nuevaEntrada.date || !nuevaEntrada.content || !nuevaEntrada.imageFile || !nuevaEntrada.author) return;
+    try {
+      const imagenUrl = await uploadToPinata(nuevaEntrada.imageFile);
+      const entradaData = {
+        title: nuevaEntrada.title,
+        date: nuevaEntrada.date,
+        content: nuevaEntrada.content,
+        imageUrl: imagenUrl,
+        author: nuevaEntrada.author,
+        tags: nuevaEntrada.tags.split(',').map(t => t.trim()).filter(Boolean),
+      };
+      await axios.post('http://localhost:4000/newsletter', entradaData);
+      setShowModal(false);
+      setNuevaEntrada({ title: '', date: '', content: '', imageFile: null, author: '', tags: '' });
+      setPreviewImage(null);
+      // Recargar entradas
+      const res = await axios.get<NewsletterEntry[]>('http://localhost:4000/newsletter');
+      setEntradas(res.data);
+    } catch (error: any) {
+      alert('Error al subir la entrada: ' + (error?.message || error));
+    }
+  };
+
   return (
     <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', paddingTop:'2rem'}}>
       <header className="newsletter-header" style={{textAlign:'center', marginBottom:'2.5rem'}}>
@@ -70,7 +150,7 @@ const Newsletter = () => {
         <section className="entries-section" style={{flex:'2 1 480px', minWidth:320, maxWidth:700}}>
           <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.3rem', marginBottom:'1.2rem'}}>Últimas Entradas</h2>
           <div className="newsletter-entries" style={{display:'flex', flexDirection:'column', gap:'2.2rem'}}>
-            {newsletterEntries.map((entry) => (
+            {entradas.map((entry) => (
               <article key={entry.id} className="card newsletter-entry" style={{padding:'1.2rem', display:'flex', flexDirection:'column', gap:'0.7rem', minHeight:320, maxWidth:'100%', margin:'0 auto'}}>
                 {entry.imageUrl && (
                   <div className="entry-image" style={{width:'100%', height:140, marginBottom:8}}>
@@ -159,6 +239,74 @@ const Newsletter = () => {
           </div>
         </div>
       </div>
+
+      {isAdmin && (
+        <button
+          className="floating-button"
+          onClick={() => setShowModal(true)}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            padding: '10px 20px',
+            backgroundColor: '#D4AF37',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontWeight: 600,
+            zIndex: 1100,
+          }}
+        >
+          Agregar Nueva Entrada
+        </button>
+      )}
+      {showModal && (
+        <div className="modal-overlay" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1200,
+        }}>
+          <div className="modal-content" style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '10px',
+            width: '90%',
+            maxWidth: '500px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 8px 32px #00000044',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+          }}>
+            <h2>Agregar Nueva Entrada de Newsletter</h2>
+            <form onSubmit={handleAgregarEntrada} style={{display:'flex', flexDirection:'column', gap:14}}>
+              <input name="title" value={nuevaEntrada.title} onChange={handleInputChange} placeholder="Título" required style={{padding:8, borderRadius:8}} />
+              <input name="date" value={nuevaEntrada.date} onChange={handleInputChange} placeholder="Fecha (ej. 15 de Abril, 2024)" required style={{padding:8, borderRadius:8}} />
+              <input name="author" value={nuevaEntrada.author} onChange={handleInputChange} placeholder="Instructor" required style={{padding:8, borderRadius:8}} />
+              <input name="tags" value={nuevaEntrada.tags} onChange={handleInputChange} placeholder="Tags (separados por coma)" style={{padding:8, borderRadius:8}} />
+              <textarea name="content" value={nuevaEntrada.content} onChange={handleInputChange} placeholder="Contenido" required style={{padding:8, borderRadius:8, minHeight:100}} />
+              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Imagen de la entrada</label>
+              <input type="file" onChange={handleImageChange} accept="image/*" required style={{padding:8, borderRadius:8}} />
+              {previewImage && (
+                <img src={previewImage} alt="Previsualización" style={{width: '100%', maxWidth: 320, margin: '0 auto 10px auto', borderRadius: 12, boxShadow: '0 2px 12px #1E3A8A33'}} />
+              )}
+              <div style={{ marginTop: '20px' }}>
+                <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
+                <button type="button" onClick={() => setShowModal(false)}>Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

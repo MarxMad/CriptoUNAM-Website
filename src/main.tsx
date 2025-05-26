@@ -7,7 +7,7 @@ import { AppKitProvider } from './context/AppKitProvider'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AppKitProvider>
-      <App />
+    <App />
     </AppKitProvider>
   </StrictMode>,
 )

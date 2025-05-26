@@ -10,6 +10,26 @@ interface SocialProfile {
   email?: string;
 }
 
+const NETWORKS: Record<number, { name: string; logo: string }> = {
+  1: { name: 'Ethereum', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
+  5: { name: 'Goerli', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
+  11155111: { name: 'Sepolia', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
+  137: { name: 'Polygon', logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png?v=026' },
+  80001: { name: 'Polygon Mumbai', logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png?v=026' },
+  56: { name: 'Binance Smart Chain', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png?v=026' },
+  97: { name: 'BSC Testnet', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png?v=026' },
+  42161: { name: 'Arbitrum One', logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png?v=026' },
+  10: { name: 'Optimism', logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png?v=026' },
+  43114: { name: 'Avalanche C-Chain', logo: 'https://cryptologos.cc/logos/avalanche-avax-logo.png?v=026' },
+}
+
+const getChainId = () => {
+  if (window && (window as any).ethereum && (window as any).ethereum.networkVersion) {
+    return parseInt((window as any).ethereum.networkVersion)
+  }
+  return undefined
+}
+
 const Navbar = () => {
   const { disconnect } = useDisconnect()
   const { address, isConnected } = useAccount()
@@ -17,11 +37,36 @@ const Navbar = () => {
   const { open } = useAppKit()
   const appKitAccount = useAppKitAccount()
   const [menuOpen, setMenuOpen] = useState(false)
+  const [networkName, setNetworkName] = useState<string>('')
+  const [networkLogo, setNetworkLogo] = useState<string>('')
 
   useEffect(() => {
     console.log('AppKit Account:', appKitAccount)
     console.log('Wagmi Account:', { address, isConnected })
   }, [appKitAccount, address, isConnected])
+
+  useEffect(() => {
+    const updateNetwork = () => {
+      const chainId = getChainId()
+      if (chainId && NETWORKS[chainId]) {
+        setNetworkName(NETWORKS[chainId].name)
+        setNetworkLogo(NETWORKS[chainId].logo)
+      } else if (chainId) {
+        setNetworkName(`Chain ID: ${chainId}`)
+        setNetworkLogo('')
+      } else {
+        setNetworkName('Desconocida')
+        setNetworkLogo('')
+      }
+    }
+    updateNetwork()
+    if (window && (window as any).ethereum) {
+      (window as any).ethereum.on('chainChanged', updateNetwork)
+      return () => {
+        (window as any).ethereum.removeListener('chainChanged', updateNetwork)
+      }
+    }
+  }, [])
 
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
@@ -50,7 +95,7 @@ const Navbar = () => {
 
       if (socialData) {
         return (
-          <>
+          <div className="wallet-info-container">
             <div className="flex items-center gap-2">
               {socialData.picture && (
                 <img 
@@ -61,9 +106,11 @@ const Navbar = () => {
               )}
               <span className="text-primary-gold">{socialData.name || 'Usuario'}</span>
             </div>
-            <button className="secondary-button" onClick={() => disconnect()}>Desconectar</button>
-            <Link to="/perfil" className="text-primary-gold" onClick={closeMenu}>Perfil</Link>
-          </>
+            <div className="wallet-buttons">
+              <button className="secondary-button" onClick={() => disconnect()}>Desconectar</button>
+              <Link to="/perfil" className="text-primary-gold" onClick={closeMenu}>Perfil</Link>
+            </div>
+          </div>
         )
       }
     }
@@ -71,13 +118,15 @@ const Navbar = () => {
     // Si es una wallet
     if (address) {
       return (
-        <>
+        <div className="wallet-info-container">
           <span className="text-primary-gold" style={{fontWeight:600}}>
             {ensName || formatAddress(address)}
           </span>
-          <button className="secondary-button" onClick={() => disconnect()}>Desconectar</button>
-          <Link to="/perfil" className="text-primary-gold" onClick={closeMenu}>Perfil</Link>
-        </>
+          <div className="wallet-buttons">
+            <button className="secondary-button" onClick={() => disconnect()}>Desconectar</button>
+            <Link to="/perfil" className="text-primary-gold" onClick={closeMenu}>Perfil</Link>
+          </div>
+        </div>
       )
     }
 
@@ -93,9 +142,15 @@ const Navbar = () => {
           <Link to="/cursos" className="nav-link-tech">Cursos</Link>
           <Link to="/comunidad" className="nav-link-tech">Comunidad</Link>
           <Link to="/newsletter" className="nav-link-tech">Newsletter</Link>
-          <div style={{marginTop:'1rem'}}>
+          <div className="wallet-section">
             {isConnected ? (
-              renderUserInfo()
+              <>
+                <div className="network-info" style={{display:'flex', alignItems:'center', gap:8, marginBottom:6}}>
+                  {networkLogo && <img src={networkLogo} alt={networkName} style={{height:20, width:20, borderRadius:'50%', background:'#fff'}} />}
+                  <span style={{color:'#D4AF37', fontWeight:600, fontSize:'1rem'}}>{networkName}</span>
+                </div>
+                {renderUserInfo()}
+              </>
             ) : (
               <button className="primary-button login-mini" onClick={handleLogin}>
                 Iniciar sesión / Conectar Wallet

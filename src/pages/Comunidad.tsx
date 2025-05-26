@@ -1,104 +1,189 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../styles/global.css'
+import { useWallet } from '../context/WalletContext'
+import axios from 'axios'
+
+interface BackendPinataResponse {
+  ipfsUrl: string;
+}
+
+interface EventoBackend {
+  tipo: string;
+  titulo: string;
+  fecha: string;
+  hora?: string;
+  lugar: string;
+  cupo: number;
+  descripcion?: string;
+  imagen?: string;
+  imagenPrincipal?: string;
+  fotos?: string[];
+  videos?: string[];
+  presentaciones?: string[];
+  registroLink?: string;
+  creadoEn?: string;
+  _id?: string;
+}
 
 const Comunidad = () => {
-  const [showGallery, setShowGallery] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState<any>(null)
-  const [galleryType, setGalleryType] = useState<'photos' | 'videos' | 'presentations'>('photos')
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  // Comentado el estado no utilizado
+  // const [showGallery, setShowGallery] = useState(false)
+  // const [selectedEvent, setSelectedEvent] = useState<any>(null)
+  // const [galleryType, setGalleryType] = useState<'photos' | 'videos' | 'presentations'>('photos')
+  // const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { walletAddress, isConnected } = useWallet();
+  const ADMIN_WALLET = '0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217'.toLowerCase();
+  const isAdmin = isConnected && walletAddress.toLowerCase() === ADMIN_WALLET;
 
-  const eventos = [
-    {
-      id: 1,
-      titulo: "Hackathon Web3 2024",
-      fecha: "Marzo 2024",
-      lugar: "Ciudad Universitaria",
-      imagen: "images/eventos/hackathon2024.jpg",
-      descripcion: "Primer hackathon enfocado en desarrollo blockchain en la UNAM",
-      fotos: [
-        "/eventos/hackathon/foto1.jpg",
-        "/eventos/hackathon/foto2.jpg",
-        "/eventos/hackathon/foto3.jpg",
-      ],
-      videos: [
-        "/eventos/hackathon/video1.mp4",
-        "/eventos/hackathon/video2.mp4",
-      ],
-      presentaciones: [
-        "/eventos/hackathon/pres1.pdf",
-        "/eventos/hackathon/pres2.pdf",
-      ]
-    },
+  // Estado para eventos agregados dinámicamente
+  const [eventosDinamicos, setEventosDinamicos] = useState<any[]>([]);
+  const [eventosAnterioresDinamicos, setEventosAnterioresDinamicos] = useState<any[]>([]);
+  const [imagenEventoFile, setImagenEventoFile] = useState<File | null>(null);
+  const [previewImagenEvento, setPreviewImagenEvento] = useState<string | null>(null);
 
-    {
-      id: 2,
-      titulo: "Hackathon Web3 2024",
-      fecha: "Marzo 2024",
-      lugar: "Ciudad Universitaria",
-      imagen: "images/eventos/hackathon2024.jpg",
-      descripcion: "Primer hackathon enfocado en desarrollo blockchain en la UNAM",
-      fotos: [
-        "/eventos/hackathon/foto1.jpg",
-        "/eventos/hackathon/foto2.jpg",
-        "/eventos/hackathon/foto3.jpg",
-      ],
-      videos: [
-        "/eventos/hackathon/video1.mp4",
-        "/eventos/hackathon/video2.mp4",
-      ],
-      presentaciones: [
-        "/eventos/hackathon/pres1.pdf",
-        "/eventos/hackathon/pres2.pdf",
-      ]
-    },
-    
-    {
-      id: 2,
-      titulo: "Workshop DeFi",
-      fecha: "Febrero 2024",
-      lugar: "Facultad de Ingeniería",
-      imagen: "/eventos/workshop-defi.jpg",
-      descripcion: "Taller práctico sobre finanzas descentralizadas"
-    },
-    {
-      id: 3,
-      titulo: "Meetup Blockchain",
-      fecha: "Enero 2024",
-      lugar: "Facultad de Contaduría",
-      imagen: "/eventos/meetup-blockchain.jpg",
-      descripcion: "Encuentro mensual de la comunidad blockchain"
+  // Estado del formulario
+  const [nuevoEvento, setNuevoEvento] = useState({
+    titulo: '',
+    fecha: '',
+    hora: '',
+    lugar: '',
+    cupo: '',
+    registroLink: '',
+  });
+  const [nuevoEventoAnterior, setNuevoEventoAnterior] = useState({
+    titulo: '',
+    fecha: '',
+    lugar: '',
+    cupo: '',
+    descripcion: '',
+    imagenPrincipal: '',
+  });
+  const [imagenPrincipalFile, setImagenPrincipalFile] = useState<File | null>(null);
+  const [previewImagenPrincipal, setPreviewImagenPrincipal] = useState<string | null>(null);
+  const [fotosFiles, setFotosFiles] = useState<File[]>([]);
+  const [previewFotos, setPreviewFotos] = useState<string[]>([]);
+  const [videosFiles, setVideosFiles] = useState<File[]>([]);
+  const [presentacionesFiles, setPresentacionesFiles] = useState<File[]>([]);
+
+  // Estado para el modal de nuevo evento
+  const [showNuevoEventoModal, setShowNuevoEventoModal] = useState(false);
+  // Estado para el modal de evento pasado
+  const [showEventoPasadoModal, setShowEventoPasadoModal] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNuevoEvento({ ...nuevoEvento, [e.target.name]: e.target.value });
+  };
+  const handleInputChangeAnterior = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNuevoEventoAnterior({ ...nuevoEventoAnterior, [e.target.name]: e.target.value });
+  };
+  const handleImagenPrincipalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImagenPrincipalFile(e.target.files[0]);
+      setPreviewImagenPrincipal(URL.createObjectURL(e.target.files[0]));
     }
-  ]
-//proximos eventos
-  const proximosEventos = [
-    {
-      id: 1,
-      titulo: "Smart Contracts Workshop",
-      fecha: "15 de Abril, 2024",
-      hora: "16:00",
-      lugar: "Auditorio de la Facultad de Ingeniería",
-      cupo: 50,
-      registroLink: "https://www.google.com",
-      imagen: "/eventos/proximo1.jpg"
-    },
-    {
-      id: 2,
-      titulo: "Crypto Trading Masterclass",
-      fecha: "22 de Abril, 2024",
-      hora: "18:00",
-      lugar: "Facultad de Contaduría",
-      cupo: 30,
-      registroLink: "https://www.google.com",
-      imagen: "/eventos/proximo2.jpg"
+  };
+  const handleFotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFotosFiles(Array.from(e.target.files));
+      setPreviewFotos(Array.from(e.target.files).map(file => URL.createObjectURL(file)));
     }
-    
-  ]
+  };
+  const handleVideosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setVideosFiles(Array.from(e.target.files));
+    }
+  };
+  const handlePresentacionesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setPresentacionesFiles(Array.from(e.target.files));
+    }
+  };
+  const handleImagenEventoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImagenEventoFile(e.target.files[0]);
+      setPreviewImagenEvento(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
+  const uploadToPinata = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const response = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data.ipfsUrl;
+    } catch (error) {
+      console.error('Error al subir a Pinata (vía backend):', error);
+      throw error;
+    }
+  };
+
+  const handleAgregarEvento = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nuevoEvento.titulo || !nuevoEvento.fecha || !nuevoEvento.hora || !nuevoEvento.lugar || !nuevoEvento.cupo || !imagenEventoFile) return;
+    try {
+      const imagenUrl = await uploadToPinata(imagenEventoFile);
+      const eventoData = {
+        tipo: 'proximo',
+        titulo: nuevoEvento.titulo,
+        fecha: nuevoEvento.fecha,
+        hora: nuevoEvento.hora,
+        lugar: nuevoEvento.lugar,
+        cupo: Number(nuevoEvento.cupo),
+        imagen: imagenUrl,
+        registroLink: nuevoEvento.registroLink || '',
+      };
+      const res = await axios.post('http://localhost:4000/evento', eventoData);
+      setEventosDinamicos([res.data, ...eventosDinamicos]);
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', registroLink: '' });
+      setImagenEventoFile(null);
+      setPreviewImagenEvento(null);
+    } catch (error: any) {
+      console.error('Error al subir la imagen del evento:', error);
+      alert('Error al subir la imagen. Detalle: ' + (error?.message || error));
+    }
+  };
+  const handleAgregarEventoAnterior = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nuevoEventoAnterior.titulo || !nuevoEventoAnterior.fecha || !nuevoEventoAnterior.lugar || !nuevoEventoAnterior.cupo || !nuevoEventoAnterior.descripcion || !imagenPrincipalFile) return;
+    try {
+      const imagenPrincipalUrl = await uploadToPinata(imagenPrincipalFile);
+      const fotosUrls = fotosFiles.length > 0 ? await Promise.all(fotosFiles.map(uploadToPinata)) : [];
+      const videosUrls = videosFiles.length > 0 ? await Promise.all(videosFiles.map(uploadToPinata)) : [];
+      const presentacionesUrls = presentacionesFiles.length > 0 ? await Promise.all(presentacionesFiles.map(uploadToPinata)) : [];
+      const eventoData = {
+        tipo: 'anterior',
+        titulo: nuevoEventoAnterior.titulo,
+        fecha: nuevoEventoAnterior.fecha,
+        lugar: nuevoEventoAnterior.lugar,
+        cupo: Number(nuevoEventoAnterior.cupo),
+        descripcion: nuevoEventoAnterior.descripcion,
+        imagenPrincipal: imagenPrincipalUrl,
+        fotos: fotosUrls,
+        videos: videosUrls,
+        presentaciones: presentacionesUrls,
+      };
+      const res = await axios.post('http://localhost:4000/evento', eventoData);
+      setEventosAnterioresDinamicos([res.data, ...eventosAnterioresDinamicos]);
+      setNuevoEventoAnterior({ titulo: '', fecha: '', lugar: '', cupo: '', descripcion: '', imagenPrincipal: '' });
+      setImagenPrincipalFile(null);
+      setPreviewImagenPrincipal(null);
+      setFotosFiles([]);
+      setPreviewFotos([]);
+      setVideosFiles([]);
+      setPresentacionesFiles([]);
+    } catch (error: any) {
+      console.error('Error al subir archivos:', error);
+      alert('Error al subir archivos. Detalle: ' + (error?.message || error));
+    }
+  };
 
   const handleOpenGallery = (evento: any, type: 'photos' | 'videos' | 'presentations') => {
-    setSelectedEvent(evento)
-    setGalleryType(type)
-    setCurrentImageIndex(0)
-    setShowGallery(true)
+    // setSelectedEvent(evento)
+    // setGalleryType(type)
+    // setCurrentImageIndex(0)
+    // setShowGallery(true)
   }
 
  /* const handleCloseGallery = () => {
@@ -124,6 +209,20 @@ const Comunidad = () => {
     }
   }
 */
+
+  useEffect(() => {
+    const fetchEventos = async () => {
+      try {
+        const res = await axios.get<EventoBackend[]>('http://localhost:4000/eventos');
+        setEventosDinamicos(res.data.filter((e) => e.tipo === 'proximo'));
+        setEventosAnterioresDinamicos(res.data.filter((e) => e.tipo === 'anterior'));
+      } catch (error) {
+        console.error('Error al cargar eventos:', error);
+      }
+    };
+    fetchEventos();
+  }, []);
+
   return (
     <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', paddingTop:'2rem'}}>
       <header className="community-header" style={{textAlign:'center', marginBottom:'2.5rem'}}>
@@ -141,16 +240,160 @@ const Comunidad = () => {
               <i className={stat.icon+" stat-icon"} style={{fontSize:'2.2rem', color:'#D4AF37', marginBottom:10}}></i>
               <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'2rem', margin:0}}>{stat.num}</h3>
               <p style={{color:'#E0E0E0', margin:0}}>{stat.text}</p>
-            </div>
+          </div>
           ))}
         </div>
       </div>
+
+      {/* Próximos y Anteriores Eventos: Botones flotantes juntos */}
+      {isAdmin && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          display: 'flex',
+          gap: '12px',
+          zIndex: 1100,
+        }}>
+          <button
+            className="floating-button"
+            onClick={() => setShowNuevoEventoModal(true)}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#D4AF37',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            Agregar Nuevo Evento
+          </button>
+          <button
+            className="floating-button"
+            onClick={() => setShowEventoPasadoModal(true)}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#D4AF37',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            Agregar Evento Anterior
+          </button>
+        </div>
+      )}
+      {/* Modales */}
+      {showNuevoEventoModal && (
+        <div className="modal-overlay" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1200,
+        }}>
+          <div className="modal-content" style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '10px',
+            width: '90%',
+            maxWidth: '500px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 8px 32px #00000044',
+          }}>
+            <h2>Agregar Nuevo Evento</h2>
+            <form onSubmit={handleAgregarEvento} style={{display:'flex', flexDirection:'column', gap:14}}>
+              <input name="titulo" value={nuevoEvento.titulo} onChange={handleInputChange} placeholder="Título del evento" required style={{padding:8, borderRadius:8}} />
+              <input name="fecha" value={nuevoEvento.fecha} onChange={handleInputChange} placeholder="Fecha (ej. 15 de Abril, 2024)" required style={{padding:8, borderRadius:8}} />
+              <input name="hora" value={nuevoEvento.hora} onChange={handleInputChange} placeholder="Hora (ej. 16:00)" required style={{padding:8, borderRadius:8}} />
+              <input name="lugar" value={nuevoEvento.lugar} onChange={handleInputChange} placeholder="Lugar" required style={{padding:8, borderRadius:8}} />
+              <input name="cupo" value={nuevoEvento.cupo} onChange={handleInputChange} placeholder="Cupo" type="number" min="1" required style={{padding:8, borderRadius:8}} />
+              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Imagen del evento</label>
+              <input type="file" onChange={handleImagenEventoChange} accept="image/*" required style={{padding:8, borderRadius:8}} />
+              {previewImagenEvento && (
+                <img src={previewImagenEvento} alt="Previsualización" style={{width: '100%', maxWidth: 320, margin: '0 auto 10px auto', borderRadius: 12, boxShadow: '0 2px 12px #1E3A8A33'}} />
+              )}
+              <input name="registroLink" value={nuevoEvento.registroLink} onChange={handleInputChange} placeholder="Link de registro (opcional)" style={{padding:8, borderRadius:8}} />
+              <div style={{ marginTop: '20px' }}>
+                <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
+                <button type="button" onClick={() => setShowNuevoEventoModal(false)}>Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {showEventoPasadoModal && (
+        <div className="modal-overlay" style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1200,
+        }}>
+          <div className="modal-content" style={{
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '10px',
+            width: '90%',
+            maxWidth: '500px',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            boxShadow: '0 8px 32px #00000044',
+          }}>
+            <h2>Agregar Evento Anterior</h2>
+            <form onSubmit={handleAgregarEventoAnterior} style={{display:'flex', flexDirection:'column', gap:14}}>
+              <input name="titulo" value={nuevoEventoAnterior.titulo} onChange={handleInputChangeAnterior} placeholder="Título del evento" required style={{padding:8, borderRadius:8}} />
+              <input name="fecha" value={nuevoEventoAnterior.fecha} onChange={handleInputChangeAnterior} placeholder="Fecha (ej. Marzo 2024)" required style={{padding:8, borderRadius:8}} />
+              <input name="lugar" value={nuevoEventoAnterior.lugar} onChange={handleInputChangeAnterior} placeholder="Lugar" required style={{padding:8, borderRadius:8}} />
+              <input name="cupo" value={nuevoEventoAnterior.cupo} onChange={handleInputChangeAnterior} placeholder="Cupo" type="number" min="1" required style={{padding:8, borderRadius:8}} />
+              <input name="descripcion" value={nuevoEventoAnterior.descripcion} onChange={handleInputChangeAnterior} placeholder="Descripción" required style={{padding:8, borderRadius:8}} />
+              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Imagen principal (solo una imagen)</label>
+              <input type="file" onChange={handleImagenPrincipalChange} accept="image/*" required style={{padding:8, borderRadius:8}} />
+              {previewImagenPrincipal && (
+                <img src={previewImagenPrincipal} alt="Previsualización" style={{width: '100%', maxWidth: 320, margin: '0 auto 10px auto', borderRadius: 12, boxShadow: '0 2px 12px #1E3A8A33'}} />
+              )}
+              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Fotos (galería interna, puedes seleccionar varias imágenes)</label>
+              <input type="file" multiple onChange={handleFotosChange} accept="image/*" style={{padding:8, borderRadius:8}} />
+              {previewFotos.length > 0 && (
+                <div style={{display:'flex', flexWrap:'wrap', gap:8, margin:'8px 0'}}>
+                  {previewFotos.map((src, idx) => (
+                    <img key={idx} src={src} alt={`Foto ${idx+1}`} style={{width:60, height:60, objectFit:'cover', borderRadius:8, boxShadow:'0 1px 6px #1E3A8A22'}} />
+                  ))}
+                </div>
+              )}
+              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Videos (puedes seleccionar varios videos)</label>
+              <input type="file" multiple onChange={handleVideosChange} accept="video/*" style={{padding:8, borderRadius:8}} />
+              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Presentaciones (puedes seleccionar varios archivos PDF, PPT, etc.)</label>
+              <input type="file" multiple onChange={handlePresentacionesChange} accept=".pdf,.ppt,.pptx,.key,.odp" style={{padding:8, borderRadius:8}} />
+              <div style={{ marginTop: '20px' }}>
+                <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
+                <button type="button" onClick={() => setShowEventoPasadoModal(false)}>Cancelar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Próximos Eventos */}
       <section className="upcoming-events" style={{margin:'0 auto 2.5rem auto', maxWidth:1200}}>
         <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', marginBottom:'1.5rem', fontSize:'1.7rem'}}>Próximos Eventos</h2>
         <div className="events-timeline grid-4">
-          {proximosEventos.map(evento => (
+          {eventosDinamicos.map(evento => (
             <div key={evento.id} className="card" style={{padding:'1.5rem', display:'flex', flexDirection:'column', gap:'0.7rem', minHeight:200, justifyContent:'space-between'}}>
               {evento.imagen && (
                 <img src={evento.imagen} alt={evento.titulo} style={{width:'100%', height:140, objectFit:'cover', borderRadius:16, boxShadow:'0 4px 18px 0 #1E3A8A22', marginBottom:12}} />
@@ -167,7 +410,7 @@ const Comunidad = () => {
                 <button 
                   className="primary-button"
                   style={{marginTop:'0.7rem', fontWeight:700, borderRadius:18, fontSize:'1rem', padding:'0.5rem 1.2rem'}}
-                  onClick={() => window.open(evento.registroLink, '_blank')}
+                onClick={() => window.open(evento.registroLink, '_blank')}
                 >Registrarse</button>
               </div>
             </div>
@@ -179,9 +422,16 @@ const Comunidad = () => {
       <section className="events-gallery" style={{margin:'0 auto 2.5rem auto', maxWidth:1200}}>
         <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', marginBottom:'1.5rem', fontSize:'1.7rem'}}>Eventos Anteriores</h2>
         <div className="gallery-grid grid-4">
-          {eventos.map(evento => (
+          {eventosAnterioresDinamicos.map((evento) => (
             <div key={evento.id} className="card gallery-item" style={{padding:'1.2rem', display:'flex', flexDirection:'column', alignItems:'center', gap:'0.7rem', minHeight:320}}>
-              <img src={evento.imagen} alt={evento.titulo} style={{width:'100%', maxWidth:320, height:170, objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33', marginBottom:8}} />
+              {/* Imagen principal única */}
+              {evento.imagenPrincipal && (
+                <img src={evento.imagenPrincipal} alt={evento.titulo} style={{width:'100%', maxWidth:320, height:170, objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33', marginBottom:8}} />
+              )}
+              {/* Galería interna de fotos */}
+              {evento.fotos && evento.fotos.length > 0 && (
+                <GaleriaFotosInterna fotos={evento.fotos} titulo={evento.titulo} />
+              )}
               <div className="gallery-caption" style={{width:'100%'}}>
                 <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.2rem 0'}}>{evento.titulo}</h3>
                 <p className="event-date" style={{color:'#2563EB', margin:'0 0 0.2rem 0'}}>
@@ -196,51 +446,6 @@ const Comunidad = () => {
           ))}
         </div>
       </section>
-
-      {/* Modal de Galería mejorado */}
-      {showGallery && selectedEvent && (
-        <div className="gallery-modal">
-          <div className="modal-content">
-            <button className="modal-close" onClick={() => setShowGallery(false)}>
-              <i className="fas fa-times"></i>
-            </button>
-            
-            {galleryType === 'photos' && (
-              // Contenido de fotos
-              <>
-                <img 
-                  src={selectedEvent.fotos[currentImageIndex]} 
-                  alt={`${selectedEvent.titulo} - foto ${currentImageIndex + 1}`}
-                  className="gallery-image"
-                />
-                {/* ... navegación de fotos ... */}
-              </>
-            )}
-            
-            {galleryType === 'videos' && (
-              // Contenido de videos
-              <div className="video-player">
-                <video 
-                  src={selectedEvent.videos[currentImageIndex]}
-                  controls
-                  className="gallery-video"
-                />
-              </div>
-            )}
-            
-            {galleryType === 'presentations' && (
-              // Contenido de presentaciones
-              <div className="presentation-viewer">
-                <iframe
-                  src={selectedEvent.presentaciones[currentImageIndex]}
-                  title="Presentación"
-                  className="gallery-presentation"
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Unirse a la Comunidad */}
       <section className="join-community">
@@ -263,5 +468,54 @@ const Comunidad = () => {
     </div>
   )
 }
+
+// Galería simple para imágenes principales
+
+const GaleriaImagenesPrincipales = ({ imagenes, titulo }: { imagenes: string[], titulo: string }) => {
+  const [indice, setIndice] = useState(0);
+  if (!imagenes || imagenes.length === 0) return null;
+  const siguiente = () => setIndice((prev) => (prev + 1) % imagenes.length);
+  const anterior = () => setIndice((prev) => (prev - 1 + imagenes.length) % imagenes.length);
+  return (
+    <div style={{position:'relative', width:'100%', maxWidth:320, marginBottom:8}}>
+      <img src={imagenes[indice]} alt={titulo} style={{width:'100%', height:170, objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33'}} />
+      {imagenes.length > 1 && (
+        <>
+          <button onClick={anterior} style={{position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'#181A20cc', color:'#D4AF37', border:'none', borderRadius:12, padding:'2px 8px', cursor:'pointer'}}>‹</button>
+          <button onClick={siguiente} style={{position:'absolute', right:8, top:'50%', transform:'translateY(-50%)', background:'#181A20cc', color:'#D4AF37', border:'none', borderRadius:12, padding:'2px 8px', cursor:'pointer'}}>›</button>
+        </>
+      )}
+      <div style={{display:'flex', justifyContent:'center', gap:4, marginTop:4}}>
+        {imagenes.map((img, i) => (
+          <span key={i} style={{width:8, height:8, borderRadius:'50%', background: i === indice ? '#D4AF37' : '#888', display:'inline-block'}}></span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Carrusel para galería interna de fotos
+const GaleriaFotosInterna = ({ fotos, titulo }: { fotos: string[], titulo: string }) => {
+  const [indice, setIndice] = useState(0);
+  if (!fotos || fotos.length === 0) return null;
+  const siguiente = () => setIndice((prev) => (prev + 1) % fotos.length);
+  const anterior = () => setIndice((prev) => (prev - 1 + fotos.length) % fotos.length);
+  return (
+    <div style={{position:'relative', width:'100%', maxWidth:320, marginBottom:8}}>
+      <img src={fotos[indice]} alt={titulo + ' galería'} style={{width:'100%', height:120, objectFit:'cover', borderRadius:12, boxShadow:'0 2px 12px 0 #1E3A8A33'}} />
+      {fotos.length > 1 && (
+        <>
+          <button onClick={anterior} style={{position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'#181A20cc', color:'#D4AF37', border:'none', borderRadius:12, padding:'2px 8px', cursor:'pointer'}}>‹</button>
+          <button onClick={siguiente} style={{position:'absolute', right:8, top:'50%', transform:'translateY(-50%)', background:'#181A20cc', color:'#D4AF37', border:'none', borderRadius:12, padding:'2px 8px', cursor:'pointer'}}>›</button>
+        </>
+      )}
+      <div style={{display:'flex', justifyContent:'center', gap:4, marginTop:4}}>
+        {fotos.map((img, i) => (
+          <span key={i} style={{width:8, height:8, borderRadius:'50%', background: i === indice ? '#D4AF37' : '#888', display:'inline-block'}}></span>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default Comunidad 

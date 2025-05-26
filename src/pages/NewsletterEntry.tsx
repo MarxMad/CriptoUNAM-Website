@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
-import { newsletterEntries } from './newsletterData'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 interface NewsletterEntry {
   id: number
@@ -19,9 +20,36 @@ interface NewsletterEntry {
 const NewsletterEntry = () => {
   const { id } = useParams()
   
-  const entry = newsletterEntries.find(e => e.id === Number(id))
+  const [entry, setEntry] = useState<NewsletterEntry | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
-  if (!entry) {
+  useEffect(() => {
+    const fetchEntry = async () => {
+      try {
+        const res = await axios.get<NewsletterEntry>(`http://localhost:4000/newsletter/${id}`);
+        setEntry(res.data);
+        setNotFound(false);
+      } catch (error) {
+        setNotFound(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEntry();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="section" style={{minHeight:'60vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+        <div className="card" style={{padding:'2rem', textAlign:'center', maxWidth:400}}>
+          <h2 style={{color:'#D4AF37', fontFamily:'Orbitron'}}>Cargando entrada...</h2>
+        </div>
+      </div>
+    );
+  }
+
+  if (notFound || !entry) {
     return (
       <div className="section" style={{minHeight:'60vh', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
         <div className="card" style={{padding:'2rem', textAlign:'center', maxWidth:400}}>
