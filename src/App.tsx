@@ -9,6 +9,8 @@ import Perfil from './pages/Perfil'
 import RegistroCurso from './pages/RegistroCurso'
 import Newsletter from './pages/Newsletter'
 import NewsletterEntry from './pages/NewsletterEntry'
+import Juegos from './pages/Juegos'
+import JuegoIndividual from './pages/JuegoIndividual'
 import { WalletProvider } from './context/WalletContext'
 import './styles/global.css'
 
@@ -27,6 +29,8 @@ const App = () => {
             <Route path="/registro-curso/:id" element={<RegistroCurso />} />
             <Route path="/newsletter" element={<Newsletter />} />
             <Route path="/newsletter/:id" element={<NewsletterEntry />} />
+            <Route path="/juegos" element={<Juegos />} />
+            <Route path="/juegos/:id" element={<JuegoIndividual />} />
           </Routes>
         </main>
           <Footer />

@@ -9,8 +9,9 @@ import { useWallet } from '../context/WalletContext'
 
 interface Leccion {
   titulo: string;
-  video: string;
+  video: string; // Puede ser URL de IPFS o YouTube
   descripcion: string;
+  videoFile?: File | null; // Archivo temporal antes de subir
 }
 
 interface CursoBackend {
@@ -26,7 +27,7 @@ interface CursoBackend {
   rating: number;
   categorias: string[];
   requisitos?: string;
-  lecciones?: Leccion[];
+  lecciones: Leccion[];
   creadoEn?: string;
 }
 
@@ -48,15 +49,24 @@ const Cursos = () => {
   const [showCursosModal, setShowCursosModal] = useState(false);
   const [nuevoCurso, setNuevoCurso] = useState({
     titulo: '',
+    nivel: 'Principiante',
+    duracion: '',
     descripcion: '',
-    fecha: '',
-    cupo: '',
-    imagenPrincipal: '',
     instructor: '',
-    tags: '', // string separada por comas
+    precio: 0,
+    categorias: [] as string[],
+    requisitos: '',
+    lecciones: [] as Leccion[],
   });
   const [imagenCursoFile, setImagenCursoFile] = useState<File | null>(null);
   const [previewImagenCurso, setPreviewImagenCurso] = useState<string | null>(null);
+
+  const [leccionActual, setLeccionActual] = useState({
+    titulo: '',
+    video: '',
+    descripcion: '',
+    videoFile: null as File | null,
+  });
 
   useEffect(() => {
     const fetchCursos = async () => {
@@ -79,8 +89,13 @@ const Cursos = () => {
     return cumpleFiltroNivel && cumpleBusqueda && cumpleCategoria
   })
 
-  const handleInputChangeCurso = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNuevoCurso({ ...nuevoCurso, [e.target.name]: e.target.value });
+  const handleInputChangeCurso = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    if (name === 'precio') {
+      setNuevoCurso({ ...nuevoCurso, [name]: Math.max(0, Number(value)) });
+    } else {
+      setNuevoCurso({ ...nuevoCurso, [name]: value });
+    }
   };
 
   const handleImagenCursoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,32 +112,90 @@ const Cursos = () => {
       alert('Por favor selecciona una imagen para el curso');
       return;
     }
+
     try {
+      // Subir imagen del curso
       const formData = new FormData();
       formData.append('file', imagenCursoFile);
-      const response = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
-      const ipfsUrl = response.data.ipfsUrl;
+      const imagenResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
+      const imagenUrl = imagenResponse.data.ipfsUrl;
+
+      // Procesar lecciones
+      const leccionesProcesadas = await Promise.all(
+        nuevoCurso.lecciones.map(async (leccion) => {
+          if (leccion.video.startsWith('https://gateway.pinata.cloud/ipfs/') || 
+              leccion.video.includes('youtube.com/') || 
+              leccion.video.includes('youtu.be/')) {
+            return leccion; // Si ya es una URL válida, la dejamos como está
+          }
+          // Si no es una URL válida, asumimos que es un archivo
+          const videoFormData = new FormData();
+          videoFormData.append('file', leccion.videoFile!);
+          const videoResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', videoFormData);
+          return {
+            ...leccion,
+            video: videoResponse.data.ipfsUrl
+          };
+        })
+      );
+
       const cursoData = {
         ...nuevoCurso,
-        imagenPrincipal: ipfsUrl,
-        instructor: nuevoCurso.instructor,
-        categorias: nuevoCurso.tags.split(',').map(t => t.trim()).filter(Boolean),
+        imagen: imagenUrl,
+        lecciones: leccionesProcesadas,
       };
-      await axios.post('http://localhost:4000/api/cursos', cursoData);
+
+      await axios.post('http://localhost:4000/curso', cursoData);
       setShowCursosModal(false);
       setNuevoCurso({
         titulo: '',
+        nivel: 'Principiante',
+        duracion: '',
         descripcion: '',
-        fecha: '',
-        cupo: '',
-        imagenPrincipal: '',
         instructor: '',
-        tags: '',
+        precio: 0,
+        categorias: [],
+        requisitos: '',
+        lecciones: [],
       });
       setImagenCursoFile(null);
       setPreviewImagenCurso(null);
     } catch (error) {
       console.error('Error al subir el curso:', error);
+    }
+  };
+
+  const handleAgregarLeccion = () => {
+    if (!leccionActual.titulo || !leccionActual.descripcion || (!leccionActual.video && !leccionActual.videoFile)) {
+      alert('Por favor completa todos los campos de la lección');
+      return;
+    }
+
+    setNuevoCurso(prev => ({
+      ...prev,
+      lecciones: [...prev.lecciones, {
+        titulo: leccionActual.titulo,
+        video: leccionActual.video || '', // URL de YouTube o IPFS
+        descripcion: leccionActual.descripcion,
+        videoFile: leccionActual.videoFile, // Archivo de video si se subió uno
+      }]
+    }));
+
+    setLeccionActual({
+      titulo: '',
+      video: '',
+      descripcion: '',
+      videoFile: null,
+    });
+  };
+
+  const handleEliminarCurso = async (id: string) => {
+    if (!window.confirm('¿Seguro que quieres eliminar este curso?')) return;
+    try {
+      await axios.delete(`http://localhost:4000/curso/${id}`);
+      setCursos(cursos.filter((c: any) => c._id !== id));
+    } catch (error) {
+      alert('Error al eliminar el curso');
     }
   };
 
@@ -176,8 +249,8 @@ const Cursos = () => {
       </aside>
         {/* Grid de cursos glass */}
         <main className="cursos-grid" style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:'2rem', width:'100%'}}>
-        {cursosFiltrados.map(curso => (
-            <div key={curso.id} className="card curso-card" style={{padding:'2.2rem 1.5rem 1.7rem 1.5rem', position:'relative', overflow:'hidden', minHeight:440, display:'flex', flexDirection:'column', justifyContent:'flex-start', gap:'1.1rem'}}>
+        {cursosFiltrados.map((curso: any) => (
+            <div key={curso._id} className="card curso-card" style={{padding:'2.2rem 1.5rem 1.7rem 1.5rem', position:'relative', overflow:'hidden', minHeight:440, display:'flex', flexDirection:'column', justifyContent:'flex-start', gap:'1.1rem'}}>
               <div className="curso-imagen" style={{position:'relative', marginBottom:'1.2rem'}}>
                 <img src={curso.imagen} alt={curso.titulo} style={{width:'100%', height:170, objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33'}} />
                 <span className={`nivel-badge ${curso.nivel.toLowerCase()}`} style={{position:'absolute', top:16, left:16, background:'linear-gradient(45deg,#D4AF37,#2563EB)', color:'#0A0A0A', borderRadius:16, padding:'0.3rem 1.1rem', fontWeight:700, fontFamily:'Orbitron', fontSize:'1rem', boxShadow:'0 2px 8px #1E3A8A22', zIndex:2, letterSpacing:'0.5px'}}>
@@ -201,7 +274,10 @@ const Cursos = () => {
                     <span className="stars" style={{fontSize:'1.1rem'}}>{'★'.repeat(Math.floor(curso.rating))}</span>
                     <span className="rating-number" style={{marginLeft:2, fontSize:'1rem'}}>{curso.rating}</span>
                 </div>
-                  <Link to={`/registro-curso/${curso.id}`} className="primary-button" style={{fontSize:'1rem', padding:'0.6rem 1.5rem', borderRadius:20, fontWeight:700, letterSpacing:'1px'}}>Inscribirse</Link>
+                  <Link to={`/registro-curso/${curso._id}`} className="primary-button" style={{fontSize:'1rem', padding:'0.6rem 1.5rem', borderRadius:20, fontWeight:700, letterSpacing:'1px'}}>Inscribirse</Link>
+                  {isAdmin && (
+                    <button onClick={() => handleEliminarCurso(curso._id)} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Eliminar</button>
+                  )}
               </div>
             </div>
           </div>
@@ -265,30 +341,34 @@ const Cursos = () => {
                     />
                   </div>
                   <div>
+                    <label>Nivel:</label>
+                    <select
+                      name="nivel"
+                      value={nuevoCurso.nivel}
+                      onChange={handleInputChangeCurso}
+                      required
+                    >
+                      <option value="Principiante">Principiante</option>
+                      <option value="Intermedio">Intermedio</option>
+                      <option value="Avanzado">Avanzado</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label>Duración:</label>
+                    <input
+                      type="text"
+                      name="duracion"
+                      value={nuevoCurso.duracion}
+                      onChange={handleInputChangeCurso}
+                      placeholder="ej. 4 semanas"
+                      required
+                    />
+                  </div>
+                  <div>
                     <label>Descripción:</label>
                     <textarea
                       name="descripcion"
                       value={nuevoCurso.descripcion}
-                      onChange={handleInputChangeCurso}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label>Fecha:</label>
-                    <input
-                      type="date"
-                      name="fecha"
-                      value={nuevoCurso.fecha}
-                      onChange={handleInputChangeCurso}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label>Cupo:</label>
-                    <input
-                      type="number"
-                      name="cupo"
-                      value={nuevoCurso.cupo}
                       onChange={handleInputChangeCurso}
                       required
                     />
@@ -304,13 +384,35 @@ const Cursos = () => {
                     />
                   </div>
                   <div>
-                    <label>Tags (separados por coma):</label>
+                    <label>Precio:</label>
+                    <input
+                      type="number"
+                      name="precio"
+                      value={nuevoCurso.precio}
+                      onChange={handleInputChangeCurso}
+                      min="0"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label>Categorías (separadas por coma):</label>
                     <input
                       type="text"
-                      name="tags"
-                      value={nuevoCurso.tags}
-                      onChange={handleInputChangeCurso}
+                      name="categorias"
+                      value={nuevoCurso.categorias.join(', ')}
+                      onChange={(e) => setNuevoCurso(prev => ({
+                        ...prev,
+                        categorias: e.target.value.split(',').map(c => c.trim()).filter(Boolean)
+                      }))}
                       placeholder="Blockchain, Ethereum, DeFi"
+                    />
+                  </div>
+                  <div>
+                    <label>Requisitos:</label>
+                    <textarea
+                      name="requisitos"
+                      value={nuevoCurso.requisitos}
+                      onChange={handleInputChangeCurso}
                     />
                   </div>
                   <div>
@@ -327,6 +429,67 @@ const Cursos = () => {
                         alt="Preview"
                         style={{ maxWidth: '100%', marginTop: '10px' }}
                       />
+                    )}
+                  </div>
+                  <div>
+                    <h3>Lecciones</h3>
+                    <div style={{marginBottom: '1rem'}}>
+                      <input
+                        type="text"
+                        placeholder="Título de la lección"
+                        value={leccionActual.titulo}
+                        onChange={(e) => setLeccionActual(prev => ({ ...prev, titulo: e.target.value }))}
+                        style={{padding:8, borderRadius:8, marginBottom:8}}
+                      />
+                      <textarea
+                        placeholder="Descripción de la lección"
+                        value={leccionActual.descripcion}
+                        onChange={(e) => setLeccionActual(prev => ({ ...prev, descripcion: e.target.value }))}
+                        style={{padding:8, borderRadius:8, marginBottom:8}}
+                      />
+                      <div style={{marginBottom:8}}>
+                        <label>Video (URL de YouTube o archivo):</label>
+                        <input
+                          type="text"
+                          placeholder="URL de YouTube"
+                          value={leccionActual.video}
+                          onChange={(e) => setLeccionActual(prev => ({ ...prev, video: e.target.value }))}
+                          style={{padding:8, borderRadius:8, marginBottom:8}}
+                        />
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setLeccionActual(prev => ({ ...prev, videoFile: e.target.files![0] }));
+                            }
+                          }}
+                          style={{padding:8, borderRadius:8}}
+                        />
+                      </div>
+                      <button type="button" onClick={handleAgregarLeccion}>Agregar Lección</button>
+                    </div>
+                    {nuevoCurso.lecciones.length > 0 && (
+                      <div>
+                        <h4>Lecciones agregadas:</h4>
+                        <ul>
+                          {nuevoCurso.lecciones.map((leccion, idx) => (
+                            <li key={idx}>
+                              {leccion.titulo}
+                              <button
+                                type="button"
+                                onClick={() => setNuevoCurso(prev => ({
+                                  ...prev,
+                                  lecciones: prev.lecciones.filter((_, i) => i !== idx)
+                                }))}
+                                style={{marginLeft:8, color:'red'}}
+                              >
+                                ×
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     )}
                   </div>
                   <div style={{ marginTop: '20px' }}>

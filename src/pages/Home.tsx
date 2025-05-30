@@ -317,6 +317,8 @@ const Home = () => {
   const [btcDominance, setBtcDominance] = useState<{ date: string, dominance: number }[]>([])
   const [networkName, setNetworkName] = useState<string>('')
   const [networkLogo, setNetworkLogo] = useState<string>('')
+  const [cursosHome, setCursosHome] = useState<any[]>([])
+  const [eventosHome, setEventosHome] = useState<any[]>([])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -600,9 +602,49 @@ const Home = () => {
       (window as any).ethereum.on('chainChanged', updateNetwork)
       return () => {
         (window as any).ethereum.removeListener('chainChanged', updateNetwork)
-  }
+      }
     }
   }, [])
+
+  // Ejemplo de cursos y eventos destacados (puedes reemplazar con fetch real)
+  const cursosDestacados = [
+    {
+      titulo: 'Introducción a Blockchain',
+      descripcion: 'Aprende los fundamentos de la tecnología blockchain y sus aplicaciones.',
+      imagen: IMAGES.CURSOS?.BLOCKCHAIN_BASICS,
+      link: '/cursos',
+    },
+    {
+      titulo: 'Smart Contracts con Solidity',
+      descripcion: 'Desarrolla contratos inteligentes en la red Ethereum.',
+      imagen: IMAGES.CURSOS?.SMART_CONTRACTS,
+      link: '/cursos',
+    },
+  ];
+  const eventosProximos = [
+    {
+      titulo: 'Stellar DEFI',
+      fecha: '28 Mayo 2025',
+      lugar: 'Facultad de Economia',
+      imagen: IMAGES.CURSOS?.BLOCKCHAIN_BASICS,
+      link: '/comunidad',
+    },
+  ];
+
+  useEffect(() => {
+    const fetchCursosYEventos = async () => {
+      try {
+        const cursosRes = await axios.get<any[]>('http://localhost:4000/cursos');
+        setCursosHome(Array.isArray(cursosRes.data) ? cursosRes.data.slice(0, 4) : []);
+        const eventosRes = await axios.get<any[]>('http://localhost:4000/eventos');
+        setEventosHome(Array.isArray(eventosRes.data) ? eventosRes.data.filter((e:any)=>e.tipo==='proximo').slice(0, 4) : []);
+      } catch (e) {
+        setCursosHome([]);
+        setEventosHome([]);
+      }
+    };
+    fetchCursosYEventos();
+  }, []);
 
   return (
     <div className="home-page">
@@ -621,677 +663,549 @@ const Home = () => {
         transition={{ duration: 1 }}
       />
 
-      {/* HERO */}
-      <motion.section 
-        className="hero-section" 
-        style={{
-          paddingTop: '6rem', 
-          paddingBottom: '3rem', 
-          textAlign: 'center',
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'relative',
-          zIndex: 1
-        }}
-        initial={{opacity:0, y:-40}} 
-        animate={{opacity:1, y:0}} 
-        transition={{duration:1}}
-      >
-        <motion.img 
-          src="/images/5.png" 
-          alt="Logo CriptoUNAM" 
-          className="logo-hero"
-          initial={{scale:0.8, opacity:0}} 
-          animate={{scale:1, opacity:1}} 
-          transition={{duration:1, delay:0.2}}
-        />
-        <motion.h1 
-          className="hero-title" 
-          initial={{opacity:0, y:20}} 
-          animate={{opacity:1, y:0}} 
-          transition={{duration:0.8, delay:0.4}}
-        >
-          Bienvenido a CriptoUNAM
-        </motion.h1>
-        <motion.p 
-          className="hero-subtitle" 
-          initial={{opacity:0, y:20}} 
-          animate={{opacity:1, y:0}} 
-          transition={{duration:0.8, delay:0.6}}
-        >
-          La comunidad universitaria de blockchain, criptomonedas y tecnología descentralizada
-        </motion.p>
-        <motion.a
-          href="https://t.me/criptounam"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="primary-button"
-          whileHover={{scale:1.05}}
-          whileTap={{scale:0.95}}
-          style={{
-            display:'inline-block', 
-            textDecoration:'none',
-            marginTop: '2rem'
-          }}
-        >
-          Únete Ahora
-        </motion.a>
-        <motion.img 
-          src="/images/hero-tech.svg" 
-          alt="Tech Illustration" 
-          style={{
-            width:'100%', 
-            maxWidth:420, 
-            margin:'2rem auto 0 auto', 
-            opacity:0.85
-          }} 
-          initial={{opacity:0, y:30}} 
-          animate={{opacity:1, y:0}} 
-          transition={{duration:1, delay:0.8}} 
-        />
-      </motion.section>
+      {/* Hero principal */}
+      <section className="section" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'60vh', textAlign:'center', paddingTop:60}}>
+        <img src={IMAGES?.LOGO} alt="CriptoUNAM" className="logo-hero" style={{marginBottom:24}} />
+        <h1 style={{fontFamily:'Orbitron', fontSize:'2.5rem', color:'#D4AF37', marginBottom:12}}>Bienvenido a CriptoUNAM</h1>
+        <p style={{color:'#E0E0E0', fontSize:'1.2rem', marginBottom:24}}>La comunidad universitaria líder en blockchain, criptomonedas y Web3 en México.</p>
+        <Link to="/cursos" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem'}}>Explora los cursos</Link>
+      </section>
 
-      {/* GRAPHS SECTION */}
-      <ParallaxSection id={2}>
-        <section className="section" style={{paddingTop:0}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Tendencias en Blockchain</h2>
-          <div className="graphs-container">
-            <div className="graph-card">
-              <h3 style={{color:'#D4AF37', marginBottom:'1rem'}}>Precio de Bitcoin (BTC) - Últimos 30 días</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={btcHistory} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="date" stroke="#D4AF37" minTickGap={10} />
-                  <YAxis stroke="#D4AF37" domain={['auto', 'auto']} />
-                  <Tooltip contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.8)', border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '8px' }} />
-                  <Line type="monotone" dataKey="price" stroke="#D4AF37" strokeWidth={3} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-              <a href="https://www.coingecko.com/es/monedas/bitcoin" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: CoinGecko</a>
-              </div>
-            <div className="graph-card">
-              <h3 style={{color:'#D4AF37', marginBottom:'1rem'}}>Mempool Goggles (Treemap de transacciones)</h3>
-              <ResponsiveContainer width="100%" height={300} style={{marginBottom: '2rem'}}>
-                {mempoolTxs.filter(tx => tx && typeof tx.vsize === 'number' && typeof tx.fee === 'number' && typeof tx.hash === 'string' && tx.vsize > 0 && tx.fee >= 0).length === 0 ? (
-                  <Treemap
-                    data={generateFakeMempoolTxs()}
-                    dataKey="size"
-                    nameKey="name"
-                    stroke="#2563EB"
-                    aspectRatio={4/1}
-                    content={<MempoolGogglesContent />}
-                  >
-                    <RechartsTooltip content={<MempoolGogglesTooltip />} />
-                  </Treemap>
-                ) : (
-                  <Treemap
-                    data={mempoolTxs
-                      .filter(tx => tx && typeof tx.vsize === 'number' && typeof tx.fee === 'number' && typeof tx.hash === 'string' && tx.vsize > 0 && tx.fee >= 0)
-                      .map((tx) => ({
-                        name: tx.hash,
-                        size: tx.vsize,
-                        hash: tx.hash,
-                        fee: tx.fee,
-                        vsize: tx.vsize,
-                        feePerVByte: Math.round(tx.fee / tx.vsize)
-                      }))}
-                    dataKey="size"
-                    nameKey="name"
-                    stroke="#2563EB"
-                    aspectRatio={4/1}
-                    content={<MempoolGogglesContent />}
-                  >
-                    <RechartsTooltip content={<MempoolGogglesTooltip />} />
-                  </Treemap>
-                )}
-              </ResponsiveContainer>
-              <a href="https://mempool.space/es/goggles" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: mempool.space</a>
-            </div>
-            <div className="graph-card">
-              <h3 style={{color:'#2563EB', marginBottom:'1rem'}}>Capitalización de mercado de criptomonedas (USD)</h3>
-              <ResponsiveContainer width="100%" height={340}>
-                <AreaChart data={marketCap} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorCapBlue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="date" stroke="#2563EB" minTickGap={10} />
-                  <YAxis stroke="#2563EB" domain={['auto', 'auto']} tickFormatter={formatMarketCap} ticks={marketCap.length > 0 ? [marketCap[0].cap, marketCap[Math.floor(marketCap.length/2)].cap, marketCap[marketCap.length-1].cap] : undefined} />
-                  <Tooltip contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.8)', border: '1px solid #2563EB', borderRadius: '8px' }} formatter={v => formatMarketCap(Number(v))} />
-                  <Area type="monotone" dataKey="cap" stroke="#2563EB" fillOpacity={1} fill="url(#colorCapBlue)" />
-                </AreaChart>
-              </ResponsiveContainer>
-              <a href="https://www.coingecko.com/es/global-charts" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: CoinGecko</a>
-              </div>
-            <div className="graph-card">
-              <h3 style={{color:'#2563EB', marginBottom:'1rem'}}>Dominancia de Bitcoin en el mercado (%)</h3>
-              <ResponsiveContainer width="100%" height={340}>
-                <AreaChart data={btcDominance} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="colorDominance" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                  <XAxis dataKey="date" stroke="#2563EB" minTickGap={10} />
-                  <YAxis stroke="#2563EB" domain={['auto', 'auto']} tickFormatter={v => v + '%'} />
-                  <Tooltip contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.8)', border: '1px solid #2563EB', borderRadius: '8px' }} formatter={v => v + '%'} />
-                  <Area type="monotone" dataKey="dominance" stroke="#2563EB" fillOpacity={1} fill="url(#colorDominance)" />
-                </AreaChart>
-              </ResponsiveContainer>
-              <a href="https://www.coingecko.com/es/global-charts" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: CoinGecko</a>
-          </div>
+      {/* ¿Por qué CriptoUNAM? */}
+      <section className="section" style={{background:'rgba(26,26,26,0.7)', borderRadius:18, maxWidth:900, margin:'0 auto 2.5rem auto', boxShadow:'0 4px 24px #1E3A8A22'}}>
+        <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', marginBottom:'1.5rem'}}>¿Por qué CriptoUNAM?</h2>
+        <div className="grid-4" style={{gap:'2rem'}}>
+          <TechCard icon={faUsers} title="+500 Miembros" description="Comunidad activa y colaborativa de estudiantes y entusiastas." />
+          <TechCard icon={faGraduationCap} title="Cursos Gratuitos" description="Aprende sobre blockchain, DeFi, NFTs y más, sin costo." />
+          <TechCard icon={faCertificate} title="Certificados NFT" description="Obtén certificados digitales únicos por tu aprendizaje." />
+          <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en eventos, hackathons y talleres exclusivos." />
         </div>
       </section>
-      </ParallaxSection>
 
-      {/* VIDEO SECTION */}
-      <ParallaxSection id={3}>
-        <section className="section" style={{paddingTop:0}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Conoce Más Sobre Blockchain</h2>
+      {/* Cursos destacados reales */}
+      {cursosHome.length > 0 && (
+        <section className="section" style={{maxWidth:1200, margin:'0 auto 2.5rem auto'}}>
+          <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.5rem', marginBottom:'1.2rem'}}>Cursos Destacados</h2>
+          <div className="grid-4" style={{gap:'2rem'}}>
+            {cursosHome.map((curso, idx) => (
+              <div key={curso._id || idx} className="card" style={{textAlign:'center', minHeight:260, display:'flex', flexDirection:'column', justifyContent:'space-between'}}>
+                <img src={curso.imagen} alt={curso.titulo} style={{width:'100%', maxWidth:180, margin:'0 auto 1rem auto', borderRadius:12, boxShadow:'0 2px 12px #1E3A8A33'}} />
+                <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.5rem 0'}}>{curso.titulo}</h3>
+                <p style={{color:'#E0E0E0', fontSize:'1rem', marginBottom:12}}>{curso.descripcion}</p>
+                <Link to={`/registro-curso/${curso._id}`} className="primary-button" style={{fontSize:'1rem', borderRadius:16, padding:'0.5rem 1.2rem'}}>Ver curso</Link>
+              </div>
+            ))}
+        </div>
+      </section>
+      )}
+
+      {/* Próximos eventos reales */}
+      {eventosHome.length > 0 && (
+        <section className="section" style={{maxWidth:1200, margin:'0 auto 2.5rem auto'}}>
+          <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.5rem', marginBottom:'1.2rem'}}>Próximos Eventos</h2>
+          <div className="grid-4" style={{gap:'2rem'}}>
+            {eventosHome.map((evento, idx) => (
+              <div key={evento._id || idx} className="card" style={{textAlign:'center', minHeight:220, display:'flex', flexDirection:'column', justifyContent:'space-between'}}>
+                <img src={evento.imagen} alt={evento.titulo} style={{width:'100%', maxWidth:180, margin:'0 auto 1rem auto', borderRadius:12, boxShadow:'0 2px 12px #1E3A8A33'}} />
+                <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.5rem 0'}}>{evento.titulo}</h3>
+                <p style={{color:'#E0E0E0', fontSize:'1rem', marginBottom:8}}>{evento.fecha} - {evento.lugar}</p>
+                {evento.registroLink && <a href={evento.registroLink} target="_blank" rel="noopener noreferrer" className="primary-button" style={{fontSize:'1rem', borderRadius:16, padding:'0.5rem 1.2rem'}}>Ver evento</a>}
+          </div>
+            ))}
+        </div>
+      </section>
+      )}
+
+      {/* GRÁFICAS Y TENDENCIAS */}
+      <section className="section" style={{paddingTop:0}}>
+        <h2 className="text-center" style={{marginBottom: '2rem'}}>Tendencias en Blockchain</h2>
+        <div className="graphs-container">
+          <div className="graph-card">
+            <h3 style={{color:'#D4AF37', marginBottom:'1rem'}}>Precio de Bitcoin (BTC) - Últimos 30 días</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={btcHistory} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="date" stroke="#D4AF37" minTickGap={10} />
+                <YAxis stroke="#D4AF37" domain={['auto', 'auto']} />
+                <Tooltip contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.8)', border: '1px solid rgba(212, 175, 55, 0.2)', borderRadius: '8px' }} />
+                <Line type="monotone" dataKey="price" stroke="#D4AF37" strokeWidth={3} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+            <a href="https://www.coingecko.com/es/monedas/bitcoin" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: CoinGecko</a>
+          </div>
+          <div className="graph-card">
+            <h3 style={{color:'#D4AF37', marginBottom:'1rem'}}>Mempool Goggles (Treemap de transacciones)</h3>
+            <ResponsiveContainer width="100%" height={300} style={{marginBottom: '2rem'}}>
+              {mempoolTxs.filter(tx => tx && typeof tx.vsize === 'number' && typeof tx.fee === 'number' && typeof tx.hash === 'string' && tx.vsize > 0 && tx.fee >= 0).length === 0 ? (
+                <Treemap
+                  data={generateFakeMempoolTxs()}
+                  dataKey="size"
+                  nameKey="name"
+                  stroke="#2563EB"
+                  aspectRatio={4/1}
+                  content={<MempoolGogglesContent />}
+                >
+                  <RechartsTooltip content={<MempoolGogglesTooltip />} />
+                </Treemap>
+              ) : (
+                <Treemap
+                  data={mempoolTxs
+                    .filter(tx => tx && typeof tx.vsize === 'number' && typeof tx.fee === 'number' && typeof tx.hash === 'string' && tx.vsize > 0 && tx.fee >= 0)
+                    .map((tx) => ({
+                      name: tx.hash,
+                      size: tx.vsize,
+                      hash: tx.hash,
+                      fee: tx.fee,
+                      vsize: tx.vsize,
+                      feePerVByte: Math.round(tx.fee / tx.vsize)
+                    }))}
+                  dataKey="size"
+                  nameKey="name"
+                  stroke="#2563EB"
+                  aspectRatio={4/1}
+                  content={<MempoolGogglesContent />}
+                >
+                  <RechartsTooltip content={<MempoolGogglesTooltip />} />
+                </Treemap>
+              )}
+            </ResponsiveContainer>
+            <a href="https://mempool.space/es/goggles" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: mempool.space</a>
+          </div>
+          <div className="graph-card">
+            <h3 style={{color:'#2563EB', marginBottom:'1rem'}}>Capitalización de mercado de criptomonedas (USD)</h3>
+            <ResponsiveContainer width="100%" height={340}>
+              <AreaChart data={marketCap} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorCapBlue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="date" stroke="#2563EB" minTickGap={10} />
+                <YAxis stroke="#2563EB" domain={['auto', 'auto']} tickFormatter={formatMarketCap} ticks={marketCap.length > 0 ? [marketCap[0].cap, marketCap[Math.floor(marketCap.length/2)].cap, marketCap[marketCap.length-1].cap] : undefined} />
+                <Tooltip contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.8)', border: '1px solid #2563EB', borderRadius: '8px' }} formatter={v => formatMarketCap(Number(v))} />
+                <Area type="monotone" dataKey="cap" stroke="#2563EB" fillOpacity={1} fill="url(#colorCapBlue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+            <a href="https://www.coingecko.com/es/global-charts" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: CoinGecko</a>
+          </div>
+          <div className="graph-card">
+            <h3 style={{color:'#2563EB', marginBottom:'1rem'}}>Dominancia de Bitcoin en el mercado (%)</h3>
+            <ResponsiveContainer width="100%" height={340}>
+              <AreaChart data={btcDominance} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorDominance" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="date" stroke="#2563EB" minTickGap={10} />
+                <YAxis stroke="#2563EB" domain={['auto', 'auto']} tickFormatter={v => v + '%'} />
+                <Tooltip contentStyle={{ backgroundColor: 'rgba(10, 10, 10, 0.8)', border: '1px solid #2563EB', borderRadius: '8px' }} formatter={v => v + '%'} />
+                <Area type="monotone" dataKey="dominance" stroke="#2563EB" fillOpacity={1} fill="url(#colorDominance)" />
+              </AreaChart>
+            </ResponsiveContainer>
+            <a href="https://www.coingecko.com/es/global-charts" target="_blank" rel="noopener noreferrer" style={{fontSize:'0.95rem', color:'#2563EB', textDecoration:'underline', display:'block', marginTop:8, textAlign:'center', width:'100%'}}>Fuente: CoinGecko</a>
+        </div>
+          </div>
+      </section>
+
+    {/* VIDEO SECTION */}
+    <section className="section" style={{paddingTop:0}}>
+      <h2 className="text-center" style={{marginBottom: '2rem'}}>Conoce Más Sobre Blockchain</h2>
         <div className="video-container">
             <iframe
-              width="100%"
-              height="500"
-              src="https://www.youtube.com/embed/your-video-id"
-              title="Blockchain Explained"
-              frameBorder="0"
+          width="100%"
+          height="500"
+          src="https://www.youtube.com/embed/your-video-id"
+          title="Blockchain Explained"
+          frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+          style={{
+            borderRadius: '20px',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+            border: '1px solid rgba(212, 175, 55, 0.2)'
+          }}
+        />
+          </div>
+    </section>
+
+    {/* BLOCKCHAIN TECH */}
+    <section className="section" style={{paddingTop:0}}>
+      <h2 className="text-center" style={{marginBottom: '2rem'}}>Tecnologías Blockchain</h2>
+      <div className="grid-4">
+        {[
+          { icon: faEthereum, title: 'Ethereum', description: 'Plataforma líder para contratos inteligentes y aplicaciones descentralizadas.' },
+          { icon: faBitcoin, title: 'Bitcoin', description: 'La primera y más grande criptomoneda, fundamento de la tecnología blockchain.' },
+          { icon: faCode, title: 'Solidity', description: 'Lenguaje de programación para desarrollar contratos inteligentes en Ethereum.' },
+          { icon: faShieldAlt, title: 'Seguridad', description: 'Principios de criptografía y seguridad en el desarrollo blockchain.' },
+          { icon: faDatabase, title: 'Bases de Datos Distribuidas', description: 'Estructuras de datos descentralizadas para almacenar información de forma segura.' },
+          { icon: faGlobe, title: 'Web3', description: 'La nueva generación de la web basada en descentralización y blockchain.' }
+        ].map((tech, i) => (
+          <TechCard key={i} {...tech} />
+        ))}
+        </div>
+      </section>
+
+  {/* LEARNING PATH */}
+  <section className="section" style={{paddingTop:0}}>
+    <h2 className="text-center" style={{marginBottom: '2rem'}}>Tu Camino de Aprendizaje</h2>
+    <div className="learning-path-grid">
+      {[
+        { number: 1, title: 'Fundamentos', description: 'Blockchain, Bitcoin, Ethereum y conceptos básicos' },
+        { number: 2, title: 'Desarrollo', description: 'Smart Contracts, DApps y desarrollo Web3' },
+        { number: 3, title: 'Especialización', description: 'DeFi, NFTs, DAOs y más' }
+      ].map((step, i) => (
+        <motion.div key={i} className="card" variants={itemVariants} initial="hidden" whileInView="visible" viewport={{once:true}} whileHover={{scale:1.05}}>
+          <div
+            style={{
+              width: 50,
+              height: 50,
+              borderRadius: '50%',
+              background: 'rgba(212, 175, 55, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1rem auto',
+              border: '1px solid rgba(212, 175, 55, 0.2)',
+              backdropFilter: 'blur(10px)',
+              color: '#D4AF37',
+              fontWeight: 700,
+              fontSize: '1.2rem',
+              position: 'relative',
+            }}
+          >
+            {step.number}
+            <motion.span
+              initial={{ scale: 0, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5 + i * 0.2, type: 'spring', stiffness: 200 }}
               style={{
-                borderRadius: '20px',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-                border: '1px solid rgba(212, 175, 55, 0.2)'
+                position: 'absolute',
+                right: -12,
+                bottom: -12,
+                color: '#4ade80',
+                fontSize: 28,
+                filter: 'drop-shadow(0 0 6px #4ade80cc)',
               }}
-            />
-        </div>
-      </section>
-      </ParallaxSection>
-
-      {/* BLOCKCHAIN TECH */}
-      <ParallaxSection id={4}>
-        <section className="section" style={{paddingTop:0}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Tecnologías Blockchain</h2>
-          <div className="grid-4">
-            {[
-              { icon: faEthereum, title: 'Ethereum', description: 'Plataforma líder para contratos inteligentes y aplicaciones descentralizadas.' },
-              { icon: faBitcoin, title: 'Bitcoin', description: 'La primera y más grande criptomoneda, fundamento de la tecnología blockchain.' },
-              { icon: faCode, title: 'Solidity', description: 'Lenguaje de programación para desarrollar contratos inteligentes en Ethereum.' },
-              { icon: faShieldAlt, title: 'Seguridad', description: 'Principios de criptografía y seguridad en el desarrollo blockchain.' },
-              { icon: faDatabase, title: 'Bases de Datos Distribuidas', description: 'Estructuras de datos descentralizadas para almacenar información de forma segura.' },
-              { icon: faGlobe, title: 'Web3', description: 'La nueva generación de la web basada en descentralización y blockchain.' }
-            ].map((tech, i) => (
-              <TechCard key={i} {...tech} />
-            ))}
-        </div>
-      </section>
-      </ParallaxSection>
-
-      {/* FEATURES - ahora formulario de registro con botón */}
-      <ParallaxSection id={5}>
-        <section className="section" style={{paddingTop:0, maxWidth: 600, margin: '0 auto'}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Únete a la Comunidad</h2>
-          <div style={{display:'flex', justifyContent:'center', marginBottom:'2rem'}}>
-            <button
-              className="glow-button"
-              style={{display:'flex', alignItems:'center', gap:'0.7rem', fontWeight:700, fontSize:'1.1rem', padding:'0.8rem 2rem', borderRadius: '12px', border:'none', background:'#1E3A8A', color:'#fff', boxShadow:'0 0 16px 4px #2563EB99, 0 0 32px 8px #D4AF3755', cursor:'pointer', transition:'box-shadow 0.3s'}}
-              onClick={()=>setShowJoinForm(v=>!v)}
             >
-              <img src="/images/5.png" alt="Logo CriptoUNAM" style={{width:32, height:32, borderRadius:'50%', background:'#fff', boxShadow:'0 0 8px #D4AF37'}} />
-              Forma parte del equipo de CriptoUNAM
-            </button>
-          </div>
-          {showJoinForm && (
-            <div className="card" style={{maxWidth: 600, margin: '0 auto', padding: '2rem'}}>
-              <form onSubmit={handleSubmit}>
-                <div className="form-group"><label>Nombre*</label><input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required /></div>
-                <div className="form-group"><label>Apellidos*</label><input type="text" name="apellidos" value={formData.apellidos} onChange={handleChange} required /></div>
-                <div className="form-group"><label>Edad*</label><input type="number" name="edad" value={formData.edad} onChange={handleChange} required min="15" max="99" /></div>
-                <div className="form-group"><label>Carrera*</label><input type="text" name="carrera" value={formData.carrera} onChange={handleChange} required /></div>
-                <div className="form-group"><label>Plantel*</label><input type="text" name="plantel" value={formData.plantel} onChange={handleChange} required /></div>
-                <div className="form-group"><label>Número de Cuenta*</label><input type="text" name="numeroCuenta" value={formData.numeroCuenta} onChange={handleChange} required pattern="\d{9}" title="El número de cuenta debe tener 9 dígitos" /></div>
-                <div className="form-group"><label>¿Por qué quieres formar parte de CriptoUNAM?*</label><textarea name="motivacion" value={formData.motivacion} onChange={handleChange} required rows={3} /></div>
-                <div className="form-group"><label>Usuario de Telegram*</label><input type="text" name="telegram" value={formData.telegram} onChange={handleChange} required placeholder="@usuario" /></div>
-                <div className="form-group"><label>Redes Sociales</label>
-                  <div className="grid" style={{gridTemplateColumns:'1fr 1fr', gap:'1rem'}}>
-                    <input type="text" name="instagram" placeholder="Instagram" value={formData.instagram} onChange={handleChange} />
-                    <input type="text" name="linkedin" placeholder="LinkedIn" value={formData.linkedin} onChange={handleChange} />
-                    <input type="text" name="facebook" placeholder="Facebook" value={formData.facebook} onChange={handleChange} />
-                    <input type="text" name="twitter" placeholder="Twitter" value={formData.twitter} onChange={handleChange} />
-                  </div>
-                </div>
-                <button type="submit" className="primary-button" style={{width:'100%', marginTop:12}}>Enviar Registro</button>
-        </form>
-              {showSuccessMessage && <p style={{color:'#34d399', marginTop:8}}>¡Registro exitoso! Te contactaremos pronto.</p>}
-              {showErrorMessage && <p style={{color:'#ff4444', marginTop:8}}>Hubo un error. Por favor, intenta de nuevo.</p>}
+              <FontAwesomeIcon icon={faCheckCircle} />
+            </motion.span>
             </div>
-          )}
-      </section>
-      </ParallaxSection>
-
-      {/* NEWSLETTER */}
-      <ParallaxSection id={6}>
-        <section className="section" style={{paddingTop:0}}>
-          <div className="flex flex-center">
-            <motion.div className="card" style={{maxWidth: 600, width:'100%'}} initial="hidden" whileInView="visible" viewport={{once:true}}>
-              <h2 style={{marginBottom:8}}>Mantente Informado</h2>
-              <p style={{marginBottom:16}}>Suscríbete a nuestro newsletter para recibir las últimas noticias y actualizaciones</p>
-              <form onSubmit={handleNewsletterSubmit} className="flex gap-1" style={{alignItems:'center'}}>
-                <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Tu correo electrónico" required style={{flex:1}} />
-                <motion.button type="submit" className="primary-button" whileHover={{scale:1.05}} whileTap={{scale:0.95}}>Suscribirse</motion.button>
-              </form>
-              {showNewsletterSuccess && <p style={{color:'#D4AF37', marginTop:8}}>¡Gracias por suscribirte!</p>}
-              {showNewsletterError && <p style={{color:'#ff4444', marginTop:8}}>Hubo un error. Por favor, intenta de nuevo.</p>}
-            </motion.div>
+          <h3 style={{color:'#D4AF37', fontSize:'1.3rem', margin:0}}>{step.title}</h3>
+          <p style={{margin:0}}>{step.description}</p>
+        </motion.div>
+      ))}
         </div>
       </section>
-      </ParallaxSection>
 
-      {/* LEARNING PATH */}
-      <ParallaxSection id={7}>
-        <section className="section" style={{paddingTop:0}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Tu Camino de Aprendizaje</h2>
-          <div className="learning-path-grid">
-            {[
-              { number: 1, title: 'Fundamentos', description: 'Blockchain, Bitcoin, Ethereum y conceptos básicos' },
-              { number: 2, title: 'Desarrollo', description: 'Smart Contracts, DApps y desarrollo Web3' },
-              { number: 3, title: 'Especialización', description: 'DeFi, NFTs, DAOs y más' }
-            ].map((step, i) => (
-              <motion.div key={i} className="card" variants={itemVariants} initial="hidden" whileInView="visible" viewport={{once:true}} whileHover={{scale:1.05}}>
-                <div
-                  style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: '50%',
-                    background: 'rgba(212, 175, 55, 0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 1rem auto',
-                    border: '1px solid rgba(212, 175, 55, 0.2)',
-                    backdropFilter: 'blur(10px)',
-                    color: '#D4AF37',
-                    fontWeight: 700,
-                    fontSize: '1.2rem',
-                    position: 'relative',
-                  }}
-                >
-                  {step.number}
-                  <motion.span
-                    initial={{ scale: 0, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + i * 0.2, type: 'spring', stiffness: 200 }}
-                    style={{
-                      position: 'absolute',
-                      right: -12,
-                      bottom: -12,
-                      color: '#4ade80',
-                      fontSize: 28,
-                      filter: 'drop-shadow(0 0 6px #4ade80cc)',
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faCheckCircle} />
-                  </motion.span>
+  {/* PARTNERS - Ticker */}
+  <section className="section" style={{paddingTop:0}}>
+    <h2 className="text-center" style={{marginBottom: '2rem'}}>Nuestros Aliados</h2>
+    <div className="ticker-container">
+      <div className="ticker-track">
+        {[
+          { img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', alt: 'JavaScript' },
+          { img: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Python_logo.png', alt: 'Python' },
+          { img: 'https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg', alt: 'C' },
+          { img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', alt: 'JavaScript' },
+          { img: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Python_logo.png', alt: 'Python' },
+          { img: 'https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg', alt: 'C' },
+        ].map((p, i) => (
+          <div key={i} className="ticker-item card">
+            <img src={p.img} alt={p.alt} style={{maxWidth:100, maxHeight:60, objectFit:'contain'}} />
           </div>
-                <h3 style={{color:'#D4AF37', fontSize:'1.3rem', margin:0}}>{step.title}</h3>
-                <p style={{margin:0}}>{step.description}</p>
-              </motion.div>
-            ))}
-        </div>
-      </section>
-      </ParallaxSection>
-
-      {/* TESTIMONIOS - Carrusel */}
-      <ParallaxSection id={8}>
-        <section className="section" style={{paddingTop:0}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Lo Que Dicen Nuestros Estudiantes</h2>
-          <div className="testimonios-carousel-container-wide">
-            <Slider {...sliderSettings}>
-              {testimonios.map((t, i) => (
-                <motion.div key={i} className="testimonio-card-wide card" style={{display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', minHeight:420, padding:'4rem 3rem', maxWidth:900, margin:'0 auto'}}
-                  initial={{opacity:0, y:30}} whileInView={{opacity:1, y:0}} viewport={{once:true}} transition={{duration:0.7}}>
-                  <img src={t.img} alt={t.name} style={{width:120, height:120, borderRadius:'50%', objectFit:'cover', marginBottom:28, border:'3px solid #D4AF37', boxShadow:'0 2px 18px #1E3A8A33'}} />
-                  <motion.div className="stars-row" style={{display:'flex', gap:8, marginBottom:22, justifyContent:'center'}}>
-                    {[...Array(5)].map((_, idx) => (
-                      <motion.span
-                        key={idx}
-                        initial={{ scale: 0, opacity: 0 }}
-                        whileInView={{ scale: 1, opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: 0.2 + idx * 0.12, type: 'spring', stiffness: 200 }}
-                        style={{
-                          color: '#FFD700',
-                          fontSize: 36,
-                          filter: 'drop-shadow(0 0 10px #FFD70099)',
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faStar} />
-                      </motion.span>
-                    ))}
-                  </motion.div>
-                  <p style={{fontStyle:'italic', marginBottom:28, color:'#E0E0E0', fontSize:'1.35rem', lineHeight:1.7}}>{t.quote}</p>
-                  <h4 style={{color:'#D4AF37', margin:0, fontSize:'1.5rem'}}>{t.name}</h4>
-                  <p style={{margin:0, fontSize:'1.15rem', color:'#2563EB'}}>{t.role}</p>
-                </motion.div>
-              ))}
-            </Slider>
-        </div>
-      </section>
-      </ParallaxSection>
-
-      {/* PARTNERS - Ticker */}
-      <ParallaxSection id={9}>
-        <section className="section" style={{paddingTop:0}}>
-          <h2 className="text-center" style={{marginBottom: '2rem'}}>Nuestros Aliados</h2>
-          <div className="ticker-container">
-            <div className="ticker-track">
-              {[
-                { img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', alt: 'JavaScript' },
-                { img: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Python_logo.png', alt: 'Python' },
-                { img: 'https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg', alt: 'C' },
-                { img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', alt: 'JavaScript' },
-                { img: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Python_logo.png', alt: 'Python' },
-                { img: 'https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg', alt: 'C' },
-              ].map((p, i) => (
-                <div key={i} className="ticker-item card">
-                  <img src={p.img} alt={p.alt} style={{maxWidth:100, maxHeight:60, objectFit:'contain'}} />
-          </div>
-              ))}
+        ))}
           </div>
         </div>
       </section>
-      </ParallaxSection>
 
-      <style>{`
+    <style>{`
+      html {
+        scroll-behavior: smooth;
+        scroll-snap-type: y proximity;
+      }
+
+      .parallax-section {
+        min-height: 100vh;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+        scroll-margin-top: 0;
+      }
+
+      .section-content {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 3rem;
+        position: relative;
+        z-index: 1;
+        background: rgba(10, 10, 10, 0.3);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        transform: translateZ(0);
+        will-change: transform;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* Ajustes para el scroll suave */
+      @media (prefers-reduced-motion: no-preference) {
         html {
           scroll-behavior: smooth;
+        }
+      }
+
+      /* Ajustes específicos para trackpad */
+      @media (hover: none) and (pointer: coarse) {
+        .parallax-section {
+          scroll-snap-type: y mandatory;
+        }
+      }
+
+      /* Ajustes para mouse/trackpad */
+      @media (hover: hover) and (pointer: fine) {
+        .parallax-section {
           scroll-snap-type: y proximity;
         }
+      }
 
+      .video-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+        width: 100%;
+      }
+
+      .video-container iframe {
+        width: 100%;
+        height: 70vh;
+        min-height: 500px;
+      }
+
+      .graphs-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 2rem;
+        width: 100%;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .graph-card {
+        background: rgba(10, 10, 10, 0.3);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        padding: 2rem;
+        transition: transform 0.3s ease;
+        height: 100%;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+      }
+
+      .graph-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+      }
+
+      .graph-card .recharts-wrapper {
+        height: 100% !important;
+        width: 100% !important;
+        min-width: 0;
+        padding: 1rem;
+      }
+
+      .progress-bar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #D4AF37, #2563EB);
+        bottom: 0;
+        transform-origin: 0%;
+        z-index: 1000;
+        opacity: 0.8;
+      }
+
+      /* Ajustes para el grid de stats */
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+        gap: 3rem !important;
+        width: 100%;
+      }
+
+      /* Ajustes para el grid de features */
+      .grid-4 {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 3rem !important;
+        width: 100%;
+      }
+
+      /* Ajustes para el grid de blockchain tech */
+      .blockchain-tech-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+        gap: 3rem !important;
+        width: 100%;
+      }
+
+      .ticker-container {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+        margin: 0 auto;
+        padding: 1.5rem 0;
+        background: rgba(10, 10, 10, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(30,58,138,0.08);
+      }
+      .ticker-track {
+        display: flex;
+        width: max-content;
+        animation: ticker 18s linear infinite;
+      }
+      .ticker-container:hover .ticker-track {
+        animation-play-state: paused;
+      }
+      .ticker-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 180px;
+        margin: 0 2rem;
+        background: rgba(30,58,138,0.10);
+        border: 1px solid rgba(212, 175, 55, 0.10);
+        border-radius: 16px;
+        box-shadow: 0 2px 12px #1E3A8A22;
+        padding: 1rem 2rem;
+        transition: transform 0.2s;
+      }
+      .ticker-item img {
+        filter: drop-shadow(0 2px 8px #1E3A8A33);
+      }
+      @keyframes ticker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+      @media (max-width: 900px) {
         .parallax-section {
-          min-height: 100vh;
-          scroll-snap-align: start;
-          scroll-snap-stop: always;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-          overflow: hidden;
-          padding: 2rem 0;
-          scroll-margin-top: 0;
+          min-height: 70vh;
+          padding: 1.2rem 0;
         }
-
         .section-content {
-          width: 100%;
-          max-width: 1400px;
-          margin: 0 auto;
-          padding: 3rem;
-          position: relative;
-          z-index: 1;
-          background: rgba(10, 10, 10, 0.3);
-          backdrop-filter: blur(10px);
-          border-radius: 20px;
-          border: 1px solid rgba(212, 175, 55, 0.1);
-          transform: translateZ(0);
-          will-change: transform;
-          min-height: 80vh;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
+          padding: 1.2rem;
+          min-height: 60vh;
         }
-
-        /* Ajustes para el scroll suave */
-        @media (prefers-reduced-motion: no-preference) {
-          html {
-            scroll-behavior: smooth;
-          }
-        }
-
-        /* Ajustes específicos para trackpad */
-        @media (hover: none) and (pointer: coarse) {
-          .parallax-section {
-            scroll-snap-type: y mandatory;
-          }
-        }
-
-        /* Ajustes para mouse/trackpad */
-        @media (hover: hover) and (pointer: fine) {
-          .parallax-section {
-            scroll-snap-type: y proximity;
-          }
-        }
-
-        .video-container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 1rem;
-          width: 100%;
-        }
-
-        .video-container iframe {
-          width: 100%;
-          height: 70vh;
-          min-height: 500px;
-        }
-
         .graphs-container {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-          gap: 2rem;
-          width: 100%;
-          margin: 0 auto;
-          padding: 1rem;
+          grid-template-columns: 1fr;
+          gap: 1.2rem;
+          padding: 0.5rem;
         }
-
         .graph-card {
-          background: rgba(10, 10, 10, 0.3);
-          backdrop-filter: blur(10px);
-          border-radius: 20px;
-          border: 1px solid rgba(212, 175, 55, 0.1);
-          padding: 2rem;
-          transition: transform 0.3s ease;
-          height: 100%;
-          min-height: 400px;
+          min-height: 320px;
+          padding: 0;
+          overflow-x: auto;
           display: flex;
           flex-direction: column;
           justify-content: stretch;
         }
-
         .graph-card h3 {
-          font-size: 1.5rem;
-          margin-bottom: 1.5rem;
-          padding: 1rem;
+          font-size: 1.1rem;
+          margin-bottom: 1rem;
         }
-
         .graph-card .recharts-wrapper {
           height: 100% !important;
           width: 100% !important;
           min-width: 0;
-          padding: 1rem;
         }
-
-        .progress-bar {
-          position: fixed;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, #D4AF37, #2563EB);
-          bottom: 0;
-          transform-origin: 0%;
-          z-index: 1000;
-          opacity: 0.8;
+      }
+      @media (max-width: 600px) {
+        .parallax-section {
+          min-height: 50vh;
+          padding: 0.5rem 0;
         }
-
-        /* Ajustes para el grid de stats */
-        .grid {
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-          gap: 3rem !important;
-          width: 100%;
+        .section-content {
+          padding: 0.5rem;
+          min-height: 40vh;
         }
-
-        /* Ajustes para el grid de features */
-        .grid-4 {
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-          gap: 3rem !important;
-          width: 100%;
-        }
-
-        /* Ajustes para el grid de blockchain tech */
-        .blockchain-tech-grid {
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
-          gap: 3rem !important;
-          width: 100%;
-        }
-
-        .ticker-container {
-          width: 100%;
-          overflow: hidden;
-          position: relative;
-          margin: 0 auto;
-          padding: 1.5rem 0;
-          background: rgba(10, 10, 10, 0.2);
-          border-radius: 20px;
-          box-shadow: 0 4px 24px rgba(30,58,138,0.08);
-        }
-        .ticker-track {
+        .graph-card {
+          min-height: 220px;
+          padding: 0;
+          overflow-x: auto;
           display: flex;
-          width: max-content;
-          animation: ticker 18s linear infinite;
+          flex-direction: column;
+          justify-content: stretch;
         }
-        .ticker-container:hover .ticker-track {
-          animation-play-state: paused;
+        .graph-card h3 {
+          font-size: 1rem;
         }
-        .ticker-item {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          min-width: 180px;
-          margin: 0 2rem;
-          background: rgba(30,58,138,0.10);
-          border: 1px solid rgba(212, 175, 55, 0.10);
-          border-radius: 16px;
-          box-shadow: 0 2px 12px #1E3A8A22;
-          padding: 1rem 2rem;
-          transition: transform 0.2s;
+        .graph-card .recharts-wrapper {
+          height: 100% !important;
+          width: 100% !important;
+          min-width: 0;
         }
-        .ticker-item img {
-          filter: drop-shadow(0 2px 8px #1E3A8A33);
-        }
-        @keyframes ticker {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        @media (max-width: 900px) {
-          .parallax-section {
-            min-height: 70vh;
-            padding: 1.2rem 0;
-          }
-          .section-content {
-            padding: 1.2rem;
-            min-height: 60vh;
-          }
-          .graphs-container {
-            grid-template-columns: 1fr;
-            gap: 1.2rem;
-            padding: 0.5rem;
-          }
-          .graph-card {
-            min-height: 320px;
-            padding: 0;
-            overflow-x: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: stretch;
-          }
-          .graph-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-          }
-          .graph-card .recharts-wrapper {
-            height: 100% !important;
-            width: 100% !important;
-            min-width: 0;
-          }
-        }
-        @media (max-width: 600px) {
-          .parallax-section {
-            min-height: 50vh;
-            padding: 0.5rem 0;
-          }
-          .section-content {
-            padding: 0.5rem;
-            min-height: 40vh;
-          }
-          .graph-card {
-            min-height: 220px;
-            padding: 0;
-            overflow-x: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: stretch;
-          }
-          .graph-card h3 {
-            font-size: 1rem;
-          }
-          .graph-card .recharts-wrapper {
-            height: 100% !important;
-            width: 100% !important;
-            min-width: 0;
-          }
-        }
+      }
+      .learning-path-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      @media (max-width: 900px) {
         .learning-path-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 3rem;
-          max-width: 900px;
-          margin: 0 auto;
+          grid-template-columns: 1fr;
+          gap: 2rem;
         }
-        @media (max-width: 900px) {
-          .learning-path-grid {
-            grid-template-columns: 1fr;
-            gap: 2rem;
-          }
-        }
+      }
+      .testimonios-carousel-container-wide {
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto;
+      }
+      .testimonio-card-wide {
+        max-width: 900px !important;
+        min-width: 500px;
+        min-height: 420px;
+      }
+      @media (max-width: 1200px) {
         .testimonios-carousel-container-wide {
-          max-width: 1400px;
-          width: 100%;
-          margin: 0 auto;
+          max-width: 98vw;
         }
         .testimonio-card-wide {
-          max-width: 900px !important;
-          min-width: 500px;
-          min-height: 420px;
+          max-width: 98vw !important;
+          min-width: unset;
+          padding: 2rem 0.5rem;
         }
-        @media (max-width: 1200px) {
-          .testimonios-carousel-container-wide {
-            max-width: 98vw;
-          }
-          .testimonio-card-wide {
-            max-width: 98vw !important;
-            min-width: unset;
-            padding: 2rem 0.5rem;
-          }
+      }
+      @media (max-width: 700px) {
+        .testimonio-card-wide {
+          padding: 1.2rem 0.2rem;
+          min-height: 320px;
         }
-        @media (max-width: 700px) {
-          .testimonio-card-wide {
-            padding: 1.2rem 0.2rem;
-            min-height: 320px;
-          }
-        }
-        .glow-button:hover {
-          box-shadow: 0 0 32px 8px #D4AF37cc, 0 0 48px 16px #2563EB99;
-          background: linear-gradient(90deg, #1E3A8A 60%, #D4AF37 100%);
-          color: #fff;
-        }
-      `}</style>
+      }
+      .glow-button:hover {
+        box-shadow: 0 0 32px 8px #D4AF37cc, 0 0 48px 16px #2563EB99;
+        background: linear-gradient(90deg, #1E3A8A 60%, #D4AF37 100%);
+        color: #fff;
+      }
+    `}</style>
     </div>
   )
 }

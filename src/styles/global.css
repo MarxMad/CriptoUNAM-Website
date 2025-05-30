@@ -571,4 +571,18 @@ input:focus, select:focus, textarea:focus {
   .profile-wallet-info p {
     font-size: 1rem;
   }
+}
+
+/* Ajuste para que el contenido no se oculte detrás del sidebar */
+@media (min-width: 901px) {
+  .app {
+    padding-left: 240px !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 900px) {
+  .app {
+    padding-left: 0 !important;
+  }
 } 

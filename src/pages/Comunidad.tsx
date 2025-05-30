@@ -7,6 +7,10 @@ interface BackendPinataResponse {
   ipfsUrl: string;
 }
 
+interface BackendMultipleFilesResponse {
+  urls: string[];
+}
+
 interface EventoBackend {
   tipo: string;
   titulo: string;
@@ -48,6 +52,7 @@ const Comunidad = () => {
     hora: '',
     lugar: '',
     cupo: '',
+    descripcion: '',
     registroLink: '',
   });
   const [nuevoEventoAnterior, setNuevoEventoAnterior] = useState({
@@ -57,6 +62,7 @@ const Comunidad = () => {
     cupo: '',
     descripcion: '',
     imagenPrincipal: '',
+    videos: [] as string[], // Array para URLs de YouTube
   });
   const [imagenPrincipalFile, setImagenPrincipalFile] = useState<File | null>(null);
   const [previewImagenPrincipal, setPreviewImagenPrincipal] = useState<string | null>(null);
@@ -70,7 +76,11 @@ const Comunidad = () => {
   // Estado para el modal de evento pasado
   const [showEventoPasadoModal, setShowEventoPasadoModal] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Estado para edición
+  const [editandoEvento, setEditandoEvento] = useState<any | null>(null);
+  const [editandoTipo, setEditandoTipo] = useState<'proximo' | 'anterior' | null>(null);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNuevoEvento({ ...nuevoEvento, [e.target.name]: e.target.value });
   };
   const handleInputChangeAnterior = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +131,7 @@ const Comunidad = () => {
 
   const handleAgregarEvento = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevoEvento.titulo || !nuevoEvento.fecha || !nuevoEvento.hora || !nuevoEvento.lugar || !nuevoEvento.cupo || !imagenEventoFile) return;
+    if (!nuevoEvento.titulo || !nuevoEvento.fecha || !nuevoEvento.hora || !nuevoEvento.lugar || !nuevoEvento.cupo || !nuevoEvento.descripcion || !imagenEventoFile) return;
     try {
       const imagenUrl = await uploadToPinata(imagenEventoFile);
       const eventoData = {
@@ -131,12 +141,13 @@ const Comunidad = () => {
         hora: nuevoEvento.hora,
         lugar: nuevoEvento.lugar,
         cupo: Number(nuevoEvento.cupo),
+        descripcion: nuevoEvento.descripcion,
         imagen: imagenUrl,
         registroLink: nuevoEvento.registroLink || '',
       };
       const res = await axios.post('http://localhost:4000/evento', eventoData);
       setEventosDinamicos([res.data, ...eventosDinamicos]);
-      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', registroLink: '' });
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registroLink: '' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
     } catch (error: any) {
@@ -147,11 +158,43 @@ const Comunidad = () => {
   const handleAgregarEventoAnterior = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nuevoEventoAnterior.titulo || !nuevoEventoAnterior.fecha || !nuevoEventoAnterior.lugar || !nuevoEventoAnterior.cupo || !nuevoEventoAnterior.descripcion || !imagenPrincipalFile) return;
+    
     try {
-      const imagenPrincipalUrl = await uploadToPinata(imagenPrincipalFile);
-      const fotosUrls = fotosFiles.length > 0 ? await Promise.all(fotosFiles.map(uploadToPinata)) : [];
-      const videosUrls = videosFiles.length > 0 ? await Promise.all(videosFiles.map(uploadToPinata)) : [];
-      const presentacionesUrls = presentacionesFiles.length > 0 ? await Promise.all(presentacionesFiles.map(uploadToPinata)) : [];
+      // Subir imagen principal
+      const formData = new FormData();
+      formData.append('file', imagenPrincipalFile);
+      const imagenResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
+      const imagenPrincipalUrl = imagenResponse.data.ipfsUrl;
+
+      // Subir fotos si hay
+      let fotosUrls: string[] = [];
+      if (fotosFiles.length > 0) {
+        const fotosFormData = new FormData();
+        fotosFiles.forEach(file => fotosFormData.append('files', file));
+        const fotosResponse = await axios.post<BackendMultipleFilesResponse>('http://localhost:4000/upload-multiple', fotosFormData);
+        fotosUrls = fotosResponse.data.urls;
+      }
+
+      // Subir presentaciones si hay
+      let presentacionesUrls: string[] = [];
+      if (presentacionesFiles.length > 0) {
+        const presentacionesFormData = new FormData();
+        presentacionesFiles.forEach(file => presentacionesFormData.append('files', file));
+        const presentacionesResponse = await axios.post<BackendMultipleFilesResponse>('http://localhost:4000/upload-multiple', presentacionesFormData);
+        presentacionesUrls = presentacionesResponse.data.urls;
+      }
+
+      // Combinar videos de IPFS y YouTube
+      let videosUrls: string[] = [];
+      if (videosFiles.length > 0) {
+        const videosFormData = new FormData();
+        videosFiles.forEach(file => videosFormData.append('files', file));
+        const videosResponse = await axios.post<BackendMultipleFilesResponse>('http://localhost:4000/upload-multiple', videosFormData);
+        videosUrls = videosResponse.data.urls;
+      }
+      // Agregar URLs de YouTube si hay
+      videosUrls = [...videosUrls, ...nuevoEventoAnterior.videos];
+
       const eventoData = {
         tipo: 'anterior',
         titulo: nuevoEventoAnterior.titulo,
@@ -164,9 +207,20 @@ const Comunidad = () => {
         videos: videosUrls,
         presentaciones: presentacionesUrls,
       };
+
       const res = await axios.post('http://localhost:4000/evento', eventoData);
       setEventosAnterioresDinamicos([res.data, ...eventosAnterioresDinamicos]);
-      setNuevoEventoAnterior({ titulo: '', fecha: '', lugar: '', cupo: '', descripcion: '', imagenPrincipal: '' });
+      
+      // Limpiar formulario
+      setNuevoEventoAnterior({
+        titulo: '',
+        fecha: '',
+        lugar: '',
+        cupo: '',
+        descripcion: '',
+        imagenPrincipal: '',
+        videos: [],
+      });
       setImagenPrincipalFile(null);
       setPreviewImagenPrincipal(null);
       setFotosFiles([]);
@@ -176,6 +230,18 @@ const Comunidad = () => {
     } catch (error: any) {
       console.error('Error al subir archivos:', error);
       alert('Error al subir archivos. Detalle: ' + (error?.message || error));
+    }
+  };
+
+  // Agregar función para manejar URLs de YouTube
+  const handleYouTubeUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const url = e.target.value;
+    if (url && (url.includes('youtube.com/') || url.includes('youtu.be/'))) {
+      setNuevoEventoAnterior(prev => ({
+        ...prev,
+        videos: [...prev.videos, url]
+      }));
+      e.target.value = ''; // Limpiar input
     }
   };
 
@@ -222,6 +288,109 @@ const Comunidad = () => {
     };
     fetchEventos();
   }, []);
+
+  // Al abrir modal de editar evento próximo
+  const handleEditarEvento = (evento: any) => {
+    setNuevoEvento({
+      titulo: evento.titulo,
+      fecha: evento.fecha,
+      hora: evento.hora,
+      lugar: evento.lugar,
+      cupo: evento.cupo.toString(),
+      descripcion: evento.descripcion,
+      registroLink: evento.registroLink || '',
+    });
+    setPreviewImagenEvento(evento.imagen || null);
+    setEditandoEvento(evento);
+    setEditandoTipo('proximo');
+    setShowNuevoEventoModal(true);
+  };
+  // Al abrir modal de editar evento anterior
+  const handleEditarEventoAnterior = (evento: any) => {
+    setNuevoEventoAnterior({
+      titulo: evento.titulo,
+      fecha: evento.fecha,
+      lugar: evento.lugar,
+      cupo: evento.cupo.toString(),
+      descripcion: evento.descripcion,
+      imagenPrincipal: evento.imagenPrincipal || '',
+      videos: evento.videos || [],
+    });
+    setPreviewImagenPrincipal(evento.imagenPrincipal || null);
+    setEditandoEvento(evento);
+    setEditandoTipo('anterior');
+    setShowEventoPasadoModal(true);
+  };
+  // Eliminar evento
+  const handleEliminarEvento = async (evento: any, tipo: 'proximo' | 'anterior') => {
+    if (!window.confirm('¿Seguro que quieres eliminar este evento?')) return;
+    try {
+      await axios.delete(`http://localhost:4000/evento/${evento._id}`);
+      if (tipo === 'proximo') {
+        setEventosDinamicos(eventosDinamicos.filter(e => e._id !== evento._id));
+      } else {
+        setEventosAnterioresDinamicos(eventosAnterioresDinamicos.filter(e => e._id !== evento._id));
+      }
+    } catch (error) {
+      alert('Error al eliminar el evento');
+    }
+  };
+  // Guardar edición evento próximo
+  const handleGuardarEdicionEvento = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editandoEvento) return;
+    try {
+      let imagenUrl = previewImagenEvento;
+      if (imagenEventoFile) {
+        imagenUrl = await uploadToPinata(imagenEventoFile);
+      }
+      const eventoData = {
+        ...nuevoEvento,
+        cupo: Number(nuevoEvento.cupo),
+        imagen: imagenUrl,
+      };
+      const res = await axios.put(`http://localhost:4000/evento/${editandoEvento._id}`, eventoData);
+      setEventosDinamicos(eventosDinamicos.map(e => e._id === editandoEvento._id ? res.data : e));
+      setShowNuevoEventoModal(false);
+      setEditandoEvento(null);
+      setEditandoTipo(null);
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registroLink: '' });
+      setImagenEventoFile(null);
+      setPreviewImagenEvento(null);
+    } catch (error) {
+      alert('Error al editar el evento');
+    }
+  };
+  // Guardar edición evento anterior
+  const handleGuardarEdicionEventoAnterior = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editandoEvento) return;
+    try {
+      let imagenPrincipalUrl = previewImagenPrincipal;
+      if (imagenPrincipalFile) {
+        const formData = new FormData();
+        formData.append('file', imagenPrincipalFile);
+        const imagenResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
+        imagenPrincipalUrl = imagenResponse.data.ipfsUrl;
+      }
+      // No se permite editar fotos, videos ni presentaciones aquí para simplificar
+      const eventoData = {
+        ...nuevoEventoAnterior,
+        cupo: Number(nuevoEventoAnterior.cupo),
+        imagenPrincipal: imagenPrincipalUrl,
+      };
+      const res = await axios.put(`http://localhost:4000/evento/${editandoEvento._id}`, eventoData);
+      setEventosAnterioresDinamicos(eventosAnterioresDinamicos.map(e => e._id === editandoEvento._id ? res.data : e));
+      setShowEventoPasadoModal(false);
+      setEditandoEvento(null);
+      setEditandoTipo(null);
+      setNuevoEventoAnterior({ titulo: '', fecha: '', lugar: '', cupo: '', descripcion: '', imagenPrincipal: '', videos: [] });
+      setImagenPrincipalFile(null);
+      setPreviewImagenPrincipal(null);
+    } catch (error) {
+      alert('Error al editar el evento');
+    }
+  };
 
   return (
     <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', paddingTop:'2rem'}}>
@@ -312,12 +481,13 @@ const Comunidad = () => {
             boxShadow: '0 8px 32px #00000044',
           }}>
             <h2>Agregar Nuevo Evento</h2>
-            <form onSubmit={handleAgregarEvento} style={{display:'flex', flexDirection:'column', gap:14}}>
+            <form onSubmit={editandoEvento ? handleGuardarEdicionEvento : handleAgregarEvento} style={{display:'flex', flexDirection:'column', gap:14}}>
               <input name="titulo" value={nuevoEvento.titulo} onChange={handleInputChange} placeholder="Título del evento" required style={{padding:8, borderRadius:8}} />
               <input name="fecha" value={nuevoEvento.fecha} onChange={handleInputChange} placeholder="Fecha (ej. 15 de Abril, 2024)" required style={{padding:8, borderRadius:8}} />
               <input name="hora" value={nuevoEvento.hora} onChange={handleInputChange} placeholder="Hora (ej. 16:00)" required style={{padding:8, borderRadius:8}} />
               <input name="lugar" value={nuevoEvento.lugar} onChange={handleInputChange} placeholder="Lugar" required style={{padding:8, borderRadius:8}} />
               <input name="cupo" value={nuevoEvento.cupo} onChange={handleInputChange} placeholder="Cupo" type="number" min="1" required style={{padding:8, borderRadius:8}} />
+              <textarea name="descripcion" value={nuevoEvento.descripcion} onChange={handleInputChange} placeholder="Descripción del evento" required style={{padding:8, borderRadius:8}} />
               <label style={{color:'#D4AF37', fontWeight:'bold'}}>Imagen del evento</label>
               <input type="file" onChange={handleImagenEventoChange} accept="image/*" required style={{padding:8, borderRadius:8}} />
               {previewImagenEvento && (
@@ -356,7 +526,7 @@ const Comunidad = () => {
             boxShadow: '0 8px 32px #00000044',
           }}>
             <h2>Agregar Evento Anterior</h2>
-            <form onSubmit={handleAgregarEventoAnterior} style={{display:'flex', flexDirection:'column', gap:14}}>
+            <form onSubmit={editandoEvento ? handleGuardarEdicionEventoAnterior : handleAgregarEventoAnterior} style={{display:'flex', flexDirection:'column', gap:14}}>
               <input name="titulo" value={nuevoEventoAnterior.titulo} onChange={handleInputChangeAnterior} placeholder="Título del evento" required style={{padding:8, borderRadius:8}} />
               <input name="fecha" value={nuevoEventoAnterior.fecha} onChange={handleInputChangeAnterior} placeholder="Fecha (ej. Marzo 2024)" required style={{padding:8, borderRadius:8}} />
               <input name="lugar" value={nuevoEventoAnterior.lugar} onChange={handleInputChangeAnterior} placeholder="Lugar" required style={{padding:8, borderRadius:8}} />
@@ -380,10 +550,41 @@ const Comunidad = () => {
               <input type="file" multiple onChange={handleVideosChange} accept="video/*" style={{padding:8, borderRadius:8}} />
               <label style={{color:'#D4AF37', fontWeight:'bold'}}>Presentaciones (puedes seleccionar varios archivos PDF, PPT, etc.)</label>
               <input type="file" multiple onChange={handlePresentacionesChange} accept=".pdf,.ppt,.pptx,.key,.odp" style={{padding:8, borderRadius:8}} />
+              <div>
+                <label style={{color:'#D4AF37', fontWeight:'bold'}}>URL de YouTube (opcional)</label>
+                <input
+                  type="text"
+                  placeholder="Pega la URL de YouTube"
+                  onChange={handleYouTubeUrlChange}
+                  style={{padding:8, borderRadius:8}}
+                />
+                {nuevoEventoAnterior.videos.length > 0 && (
+                  <div style={{marginTop:8}}>
+                    <p>Videos agregados:</p>
+                    <ul>
+                      {nuevoEventoAnterior.videos.map((url, idx) => (
+                        <li key={idx} style={{fontSize:'0.9rem', marginBottom:4}}>
+                          {url}
+                          <button
+                            type="button"
+                            onClick={() => setNuevoEventoAnterior(prev => ({
+                              ...prev,
+                              videos: prev.videos.filter((_, i) => i !== idx)
+                            }))}
+                            style={{marginLeft:8, color:'red'}}
+                          >
+                            ×
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
               <div style={{ marginTop: '20px' }}>
                 <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
                 <button type="button" onClick={() => setShowEventoPasadoModal(false)}>Cancelar</button>
-              </div>
+          </div>
             </form>
           </div>
         </div>
@@ -407,6 +608,10 @@ const Comunidad = () => {
                 <p style={{margin:'0 0 0.2rem 0', color:'#E0E0E0'}}><i className="far fa-clock"></i> {evento.hora}</p>
                 <p style={{margin:'0 0 0.2rem 0', color:'#E0E0E0'}}><i className="fas fa-map-marker-alt"></i> {evento.lugar}</p>
                 <p style={{margin:'0 0 0.2rem 0', color:'#E0E0E0'}}><i className="fas fa-users"></i> Cupo: {evento.cupo} personas</p>
+                <div style={{display:'flex', gap:8, marginBottom:8}}>
+                  <button onClick={() => handleEditarEvento(evento)} style={{background:'#2563EB', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Editar</button>
+                  <button onClick={() => handleEliminarEvento(evento, 'proximo')} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Eliminar</button>
+                </div>
                 <button 
                   className="primary-button"
                   style={{marginTop:'0.7rem', fontWeight:700, borderRadius:18, fontSize:'1rem', padding:'0.5rem 1.2rem'}}
@@ -442,6 +647,12 @@ const Comunidad = () => {
                 </p>
                 <p className="event-description" style={{color:'#E0E0E0', margin:'0 0 0.2rem 0', fontSize:'0.98rem'}}>{evento.descripcion}</p>
               </div>
+              {isAdmin && (
+                <div style={{display:'flex', gap:8, marginBottom:8}}>
+                  <button onClick={() => handleEditarEventoAnterior(evento)} style={{background:'#2563EB', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Editar</button>
+                  <button onClick={() => handleEliminarEvento(evento, 'anterior')} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Eliminar</button>
+                </div>
+              )}
             </div>
           ))}
         </div>

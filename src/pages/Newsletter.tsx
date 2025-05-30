@@ -139,6 +139,16 @@ const Newsletter = () => {
     }
   };
 
+  const handleEliminarEntrada = async (id: string) => {
+    if (!window.confirm('¿Seguro que quieres eliminar esta entrada?')) return;
+    try {
+      await axios.delete(`http://localhost:4000/newsletter/${id}`);
+      setEntradas(entradas.filter(e => (e as any)._id !== id));
+    } catch (error) {
+      alert('Error al eliminar la entrada');
+    }
+  };
+
   return (
     <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', paddingTop:'2rem'}}>
       <header className="newsletter-header" style={{textAlign:'center', marginBottom:'2.5rem'}}>
@@ -164,6 +174,9 @@ const Newsletter = () => {
                   </span>
                   <p style={{color:'#E0E0E0', fontSize:'0.98rem'}}>{entry.content}</p>
                   <Link to={`/newsletter/${entry.id}`} className="primary-button" style={{marginTop:'0.5rem', fontSize:'0.98rem', borderRadius:16, fontWeight:700, letterSpacing:'1px', padding:'0.4rem 1.2rem', width:'fit-content'}}>Leer más <i className="fas fa-arrow-right"></i></Link>
+                  {isAdmin && (
+                    <button onClick={() => handleEliminarEntrada(entry._id)} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600, marginTop:8}}>Eliminar</button>
+                  )}
                 </div>
               </article>
             ))}

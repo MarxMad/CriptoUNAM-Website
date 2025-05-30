@@ -1,7 +1,7 @@
 export const IMAGES = {
   // Hero y elementos generales
   HERO_BG: '/images/5.png',
-  LOGO: '/images/logo.png',
+  LOGO: '/images/5.png',
   
   // Imágenes de cursos
   CURSOS: {

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { useNavigate, useParams } from 'react-router-dom'
-import { cursosData, Curso } from '../constants/cursosData'
+import axios from 'axios'
 import { sendTelegramMessage } from '../api/telegram'
 import '../styles/global.css'
 
@@ -9,7 +9,8 @@ const RegistroCurso = () => {
   const { address, isConnected } = useAccount()
   const { id } = useParams()
   const navigate = useNavigate()
-  const curso: Curso | undefined = cursosData.find(c => c.id === id)
+  const [curso, setCurso] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [inscrito, setInscrito] = useState(false)
   const [formData, setFormData] = useState({
     nombre: '',
@@ -19,8 +20,21 @@ const RegistroCurso = () => {
   const [leccionActual, setLeccionActual] = useState(0)
   const [leccionesCompletadas, setLeccionesCompletadas] = useState<number[]>([])
 
-  // Log de depuración
-  console.log({ id, curso, isConnected, address })
+  useEffect(() => {
+    const fetchCurso = async () => {
+      try {
+        const res = await axios.get(`http://localhost:4000/curso/${id}`)
+        setCurso(res.data)
+      } catch (e) {
+        setCurso(null)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchCurso()
+  }, [id])
+
+  if (loading) return <div style={{minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center', color:'#D4AF37'}}>Cargando...</div>
 
   if (!curso) {
     return (
@@ -60,16 +74,16 @@ const RegistroCurso = () => {
   const handleCompletarLeccion = () => {
     if (!leccionesCompletadas.includes(leccionActual)) {
       setLeccionesCompletadas([...leccionesCompletadas, leccionActual])
-    }
+  }
   }
 
   if (!inscrito) {
-    return (
-      <div className="registro-curso-container">
-        <div className="registro-header">
-          <h1>{curso.titulo}</h1>
-          <p className="curso-id">ID del Curso: {id}</p>
-        </div>
+  return (
+    <div className="registro-curso-container">
+      <div className="registro-header">
+          <h1 style={{paddingLeft:'1.5rem', marginLeft:0}}>{curso.titulo}</h1>
+          <p className="curso-id" style={{paddingLeft:'1.5rem', marginLeft:0}}>ID del Curso: {id}</p>
+      </div>
         <div className="registro-content" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'60vh'}}>
           <button className="primary-button" style={{marginBottom:24, fontSize:'1.2rem'}} onClick={handleInscribirse}>
             Inscribirse con Wallet
@@ -79,14 +93,14 @@ const RegistroCurso = () => {
           </button>
           {showForm && (
             <form className="registro-form" style={{maxWidth:400, margin:'0 auto'}} onSubmit={e=>{e.preventDefault(); handleInscribirse()}}>
-              <div className="form-group">
+            <div className="form-group">
                 <label>Nombre completo</label>
                 <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required />
-              </div>
-              <div className="form-group">
+            </div>
+            <div className="form-group">
                 <label>Correo electrónico</label>
                 <input type="email" name="email" value={formData.email} onChange={handleFormChange} required />
-              </div>
+            </div>
               <button className="primary-button" type="submit">Inscribirse y obtener constancia</button>
             </form>
           )}
@@ -131,16 +145,16 @@ const RegistroCurso = () => {
               </button>
               <div style={{marginTop:16, color:'#34d399', fontWeight:600}}>
                 Progreso del curso: {progreso}%
-              </div>
+            </div>
             </>
           )}
-        </div>
+          </div>
         {/* Sidebar de lecciones */}
         <div className="curso-lecciones-sidebar" style={{flex:1, minWidth:220, background:'#101014', borderRadius:16, boxShadow:'0 2px 12px #2563EB22', padding:24}}>
           <h3 style={{color:'#2563EB', marginBottom:16}}>Lecciones</h3>
           <ul style={{listStyle:'none', padding:0, margin:0}}>
-            {curso.lecciones && curso.lecciones.map((l, idx) => (
-              <li key={l.id} style={{marginBottom:12}}>
+            {curso.lecciones && curso.lecciones.map((l: any, idx: number) => (
+              <li key={l.titulo || idx} style={{marginBottom:12}}>
                 <button
                   style={{
                     width:'100%',
@@ -157,7 +171,7 @@ const RegistroCurso = () => {
                   onClick={()=>setLeccionActual(idx)}
                 >
                   {l.titulo} {leccionesCompletadas.includes(idx) && '✔️'}
-                </button>
+            </button>
               </li>
             ))}
           </ul>
