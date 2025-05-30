@@ -32,12 +32,21 @@ const getChainId = () => {
   return undefined
 }
 
+// Tipo para notificaciones globales
+interface Notificacion {
+  _id: string;
+  titulo: string;
+  mensaje: string;
+  fecha: string;
+  leida: boolean;
+}
+
 const Navbar = () => {
   const { disconnect } = useDisconnect()
   const { address, isConnected } = useAccount()
   const { data: ensName } = useEnsName({ address, chainId: 1 })
   const { data: ensAvatar } = useEnsAvatar(ensName ? { name: ensName } : { name: undefined })
-  const { data: balanceData } = useBalance({ address: address as `0x${string}` | undefined, watch: true })
+  const { data: balanceData } = useBalance({ address: address as `0x${string}` | undefined })
   const { open } = useAppKit()
   const appKitAccount = useAppKitAccount()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -46,10 +55,10 @@ const Navbar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900)
   // Estado de notificaciones globales (fetch real al backend)
-  const [notificaciones, setNotificaciones] = useState([])
+  const [notificaciones, setNotificaciones] = useState<Notificacion[]>([])
   const [panelNotif, setPanelNotif] = useState(false)
-  const noLeidas = notificaciones.filter(n=>!n.leida).length
-  const marcarLeida = (id) => setNotificaciones(nots => nots.map(n => n.id === id ? { ...n, leida: true } : n))
+  const noLeidas = notificaciones.filter((n) => !n.leida).length
+  const marcarLeida = (id: string) => setNotificaciones((nots) => nots.map((n) => n._id === id ? { ...n, leida: true } : n))
 
   useEffect(() => {
     console.log('AppKit Account:', appKitAccount)
@@ -91,8 +100,7 @@ const Navbar = () => {
   useEffect(() => {
     fetch('http://localhost:4000/notificaciones')
       .then(res => res.json())
-      .then(data => {
-        // Inicializar todas como no leídas en el frontend (por ahora)
+      .then((data: any[]) => {
         setNotificaciones(data.map(n => ({ ...n, leida: false })));
       })
       .catch(err => console.error('Error al cargar notificaciones:', err));
@@ -230,10 +238,10 @@ const Navbar = () => {
                 <h4 style={{color:'#D4AF37', marginBottom:10, fontWeight:700, fontSize:'1.1rem'}}>Notificaciones</h4>
                 {notificaciones.length === 0 && <div style={{color:'#aaa'}}>No hay notificaciones.</div>}
                 {notificaciones.map(n=>(
-                  <div key={n.id} style={{marginBottom:16, background:n.leida?'#23233a':'#1E3A8A22', borderRadius:8, padding:'0.7rem 0.8rem'}}>
+                  <div key={n._id} style={{marginBottom:16, background:n.leida?'#23233a':'#1E3A8A22', borderRadius:8, padding:'0.7rem 0.8rem'}}>
                     <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:8, marginBottom:2}}>
                       <div style={{fontWeight:700, color:'#D4AF37', fontSize:'1.02rem'}}>{n.titulo}</div>
-                      {!n.leida && <button onClick={()=>marcarLeida(n.id)} style={{background:'none', border:'none', color:'#34d399', fontWeight:700, fontSize:'0.95rem', cursor:'pointer', marginLeft:8}}>Marcar leída</button>}
+                      {!n.leida && <button onClick={()=>marcarLeida(n._id)} style={{background:'none', border:'none', color:'#34d399', fontWeight:700, fontSize:'0.95rem', cursor:'pointer', marginLeft:8}}>Marcar leída</button>}
                     </div>
                     <div style={{fontSize:'0.98rem', marginBottom:4}}>{n.mensaje}</div>
                     <div style={{fontSize:'0.85rem', color:'#aaa'}}>{n.fecha}</div>
