@@ -6,11 +6,7 @@ import '../styles/global.css'
 import { faBell } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-interface SocialProfile {
-  picture?: string;
-  name?: string;
-  email?: string;
-}
+
 
 const NETWORKS: Record<number, { name: string; logo: string }> = {
   1: { name: 'Ethereum', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=026' },
@@ -45,13 +41,13 @@ const Navbar = () => {
   const { disconnect } = useDisconnect()
   const { address, isConnected } = useAccount()
   const { data: ensName } = useEnsName({ address, chainId: 1 })
-  const { data: ensAvatar } = useEnsAvatar(ensName ? { name: ensName } : { name: undefined })
-  const { data: balanceData } = useBalance({ address: address as `0x${string}` | undefined })
+ // const { data: ensAvatar } = useEnsAvatar(ensName ? { name: ensName } : { name: undefined })
+ // const { data: balanceData } = useBalance({ address: address as `0x${string}` | undefined })
   const { open } = useAppKit()
   const appKitAccount = useAppKitAccount()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [networkName, setNetworkName] = useState<string>('')
-  const [networkLogo, setNetworkLogo] = useState<string>('')
+ // const [networkName, setNetworkName] = useState<string>('')
+ // const [networkLogo, setNetworkLogo] = useState<string>('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 900)
   // Estado de notificaciones globales (fetch real al backend)
@@ -116,60 +112,10 @@ const Navbar = () => {
     }
   }
 
-  const handleHamburger = () => setMenuOpen(!menuOpen)
-  const closeMenu = () => setMenuOpen(false)
+ // const handleHamburger = () => setMenuOpen(!menuOpen)
+ // const closeMenu = () => setMenuOpen(false)
 
-  const renderUserInfo = () => {
-    console.log('Rendering user info with account:', appKitAccount)
-    
-    // Verificar si es una cuenta social
-    const isSocialAccount = appKitAccount && 'authMethod' in appKitAccount && appKitAccount.authMethod === 'google'
-    console.log('Is social account:', isSocialAccount)
-
-    if (isSocialAccount) {
-      // Intentar obtener el perfil social
-      const socialData = (appKitAccount as any).socialData
-      console.log('Social data:', socialData)
-
-      if (socialData) {
-        return (
-          <div className="wallet-info-container">
-            <div className="flex items-center gap-2">
-              {socialData.picture && (
-                <img 
-                  src={socialData.picture} 
-                  alt={socialData.name || 'Usuario'} 
-                  className="w-8 h-8 rounded-full"
-                />
-              )}
-              <span className="text-primary-gold">{socialData.name || 'Usuario'}</span>
-            </div>
-            <div className="wallet-buttons">
-              <button className="secondary-button" onClick={() => disconnect()}>Desconectar</button>
-              <Link to="/perfil" className="text-primary-gold" onClick={closeMenu}>Perfil</Link>
-            </div>
-          </div>
-        )
-      }
-    }
-
-    // Si es una wallet
-    if (address) {
-      return (
-        <div className="wallet-info-container">
-          <span className="text-primary-gold" style={{fontWeight:600}}>
-            {ensName || formatAddress(address)}
-          </span>
-          <div className="wallet-buttons">
-            <button className="secondary-button" onClick={() => disconnect()}>Desconectar</button>
-            <Link to="/perfil" className="text-primary-gold" onClick={closeMenu}>Perfil</Link>
-          </div>
-        </div>
-      )
-    }
-
-    return null
-  }
+  
 
   return (
     <>
