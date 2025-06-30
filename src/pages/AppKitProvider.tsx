@@ -3,6 +3,8 @@ import { WagmiProvider } from 'wagmi'
 import { arbitrum, mainnet } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { useEffect } from 'react'
+import { applyMobileWalletFixes } from '../utils/mobileWalletFix'
 
 // 0. Setup queryClient
 const queryClient = new QueryClient()
@@ -28,18 +30,37 @@ const wagmiAdapter = new WagmiAdapter({
   ssr: true
 })
 
-// 5. Inicializa AppKit
+// 5. Inicializa AppKit con configuración mejorada para móviles
 createAppKit({
   adapters: [wagmiAdapter],
   networks: [mainnet, arbitrum],
   projectId,
   metadata,
+  themeMode: 'dark',
+  themeVariables: {
+    '--w3m-font-family': 'Inter, system-ui, sans-serif',
+    '--w3m-accent': '#D4AF37',
+    '--w3m-color-mix': '#D4AF37',
+    '--w3m-color-mix-strength': 20,
+    '--w3m-border-radius-master': '12px'
+  },
   features: {
-    analytics: true // Opcional
-  }
+    analytics: true,
+    email: false,
+    socials: [],
+    emailShowWallets: true
+  },
+  // Configuración específica para móviles
+  enableEIP6963: true,
+  enableCoinbase: true
 })
 
 export function AppKitProvider({ children }: { children: React.ReactNode }) {
+  // Aplicar correcciones para móviles al montar el componente
+  useEffect(() => {
+    applyMobileWalletFixes();
+  }, []);
+
   return (
     <WagmiProvider config={wagmiAdapter.wagmiConfig}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
