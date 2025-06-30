@@ -16,6 +16,7 @@
     "express": "^5.1.0",
     "form-data": "^4.0.2",
     "mongoose": "^8.15.0",
-    "multer": "^2.0.0"
+    "multer": "^2.0.0",
+    "slick-carousel": "^1.8.1"
   }
 }

@@ -26,7 +26,6 @@ import {
   useTransform, 
   useAnimate,
   useScroll,
-  useSpring,
   MotionValue
 } from 'framer-motion'
 import Particles from 'react-tsparticles'
@@ -281,12 +280,7 @@ const getChainId = () => {
 }
 
 const Home = () => {
-  const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 50,
-    damping: 20,
-    restDelta: 0.001,
-  })
+
   const [showForm, setShowForm] = useState(false)
   const [email, setEmail] = useState('')
   const [formData, setFormData] = useState<RegistrationForm>({
@@ -655,13 +649,7 @@ const Home = () => {
         className="particles-container"
       />
 
-      <motion.div 
-        className="progress-bar" 
-        style={{ scaleX }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      />
+
 
       {/* Hero principal */}
       <section className="section" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'60vh', textAlign:'center', paddingTop:60}}>
