@@ -18,6 +18,8 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ethers-vendor': ['ethers'],
           'ui-vendor': [ '@emotion/react', '@emotion/styled', 'framer-motion'],
+          'web3-vendor': ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi', 'viem'],
+          'charts-vendor': ['recharts'],
         },
       },
     },
@@ -25,4 +27,10 @@ export default defineConfig({
   assetsInclude: ['**/*.jpg', '**/*.png', '**/*.svg', '**/*.gif'],
   publicDir: 'public',
   base: '/',
+  define: {
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
+  },
 })
