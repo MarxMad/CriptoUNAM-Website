@@ -12,8 +12,12 @@ export const isMobile = (): boolean => {
 
 // Función para obtener la altura real del viewport en móviles
 export const getViewportHeight = (): number => {
-  // Usar window.innerHeight en lugar de document.documentElement.clientHeight
-  // para obtener la altura real del viewport en móviles
+  // Para iOS Safari, usar visualViewport si está disponible
+  if (window.visualViewport) {
+    return window.visualViewport.height;
+  }
+  
+  // Para otros navegadores, usar window.innerHeight
   return window.innerHeight;
 };
 
@@ -62,13 +66,27 @@ export const centerModal = (): void => {
   if (modal && isMobile()) {
     const modalElement = modal as HTMLElement;
     const viewportHeight = getViewportHeight();
+    const safeAreaTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-top)')) || 0;
+    const safeAreaBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('env(safe-area-inset-bottom)')) || 0;
+    
+    // Calcular altura disponible considerando safe areas
+    const availableHeight = viewportHeight - safeAreaTop - safeAreaBottom;
     
     modalElement.style.display = 'flex';
     modalElement.style.alignItems = 'center';
     modalElement.style.justifyContent = 'center';
-    modalElement.style.padding = '1rem';
+    modalElement.style.padding = '5vh 1rem';
     modalElement.style.boxSizing = 'border-box';
-    modalElement.style.height = `${viewportHeight}px`;
+    modalElement.style.height = `${availableHeight}px`;
+    modalElement.style.minHeight = `${Math.min(400, availableHeight * 0.8)}px`;
+    modalElement.style.maxHeight = `${availableHeight}px`;
+    
+    // Ajustar el contenido del modal
+    const modalContainer = modal.shadowRoot?.querySelector('[part="container"]') as HTMLElement;
+    if (modalContainer) {
+      modalContainer.style.maxHeight = `${availableHeight * 0.8}px`;
+      modalContainer.style.overflow = 'hidden';
+    }
   }
 };
 

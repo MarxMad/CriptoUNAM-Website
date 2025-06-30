@@ -582,13 +582,13 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Layout centrado para la nueva navbar tipo app */
-.app {
+  .app {
   padding-left: 0 !important;
   padding-right: 0 !important;
   max-width: 100%;
   margin: 0 auto;
-  box-sizing: border-box;
-}
+    box-sizing: border-box;
+  }
 
 /* Contenedor principal para centrar contenido */
 .home-page {
@@ -1806,8 +1806,8 @@ input:focus, select:focus, textarea:focus {
   w3m-modal::part(container) {
     position: relative !important;
     max-width: 90vw !important;
-    max-height: 85vh !important;
-    max-height: 85dvh !important;
+    max-height: 75vh !important;
+    max-height: 75dvh !important;
     width: 100% !important;
     margin: auto !important;
     border-radius: 16px !important;
@@ -1817,6 +1817,8 @@ input:focus, select:focus, textarea:focus {
     left: auto !important;
     right: auto !important;
     bottom: auto !important;
+    /* Asegurar que el modal no se corte */
+    min-height: 300px !important;
   }
 
   /* Modal content */
@@ -1912,12 +1914,20 @@ input:focus, select:focus, textarea:focus {
 @supports (-webkit-touch-callout: none) {
   @media (max-width: 768px) {
     w3m-modal::part(overlay) {
+      height: 100vh !important;
       height: -webkit-fill-available !important;
+      padding: 5vh 1rem !important;
+      box-sizing: border-box !important;
     }
     
     w3m-modal::part(container) {
-      max-height: 85vh !important;
+      max-height: 70vh !important;
       max-height: -webkit-fill-available !important;
+      margin: auto !important;
+      /* Centrar verticalmente */
+      position: relative !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
     }
   }
 }

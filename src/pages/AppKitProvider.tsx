@@ -9,8 +9,14 @@ import { applyMobileWalletFixes } from '../utils/mobileWalletFix'
 // 0. Setup queryClient
 const queryClient = new QueryClient()
 
-// 1. Obtén tu projectId desde https://cloud.reown.com
-const projectId = 'TU_PROJECT_ID'
+// 1. Obtén tu projectId desde tu archivo .env
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID?.trim()
+
+if (!projectId) {
+  throw new Error('VITE_WALLET_CONNECT_PROJECT_ID no está definido en el archivo .env')
+}
+
+console.log('Project ID cargado:', projectId ? 'Sí ✅' : 'No ❌')
 
 // 2. Metadata opcional
 const metadata = {
