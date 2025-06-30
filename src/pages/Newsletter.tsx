@@ -175,7 +175,7 @@ const Newsletter = () => {
                   <p style={{color:'#E0E0E0', fontSize:'0.98rem'}}>{entry.content}</p>
                   <Link to={`/newsletter/${entry.id}`} className="primary-button" style={{marginTop:'0.5rem', fontSize:'0.98rem', borderRadius:16, fontWeight:700, letterSpacing:'1px', padding:'0.4rem 1.2rem', width:'fit-content'}}>Leer más <i className="fas fa-arrow-right"></i></Link>
                   {isAdmin && (
-                    <button onClick={() => handleEliminarEntrada(entry._id)} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600, marginTop:8}}>Eliminar</button>
+                    <button onClick={() => handleEliminarEntrada((entry as any)._id || entry.id.toString())} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600, marginTop:8}}>Eliminar</button>
                   )}
                 </div>
               </article>

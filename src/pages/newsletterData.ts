@@ -1,5 +1,6 @@
 export interface NewsletterEntry {
   id: number
+  _id?: string
   title: string
   date: string
   content: string

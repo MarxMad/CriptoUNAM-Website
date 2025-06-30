@@ -19,11 +19,11 @@ const metadata = {
 }
 
 // 3. Redes soportadas
-const networks = [mainnet, arbitrum]
+const networks = [mainnet, arbitrum] as const
 
 // 4. Adapter de wagmi
 const wagmiAdapter = new WagmiAdapter({
-  networks,
+  networks: [mainnet, arbitrum],
   projectId,
   ssr: true
 })
@@ -31,7 +31,7 @@ const wagmiAdapter = new WagmiAdapter({
 // 5. Inicializa AppKit
 createAppKit({
   adapters: [wagmiAdapter],
-  networks,
+  networks: [mainnet, arbitrum],
   projectId,
   metadata,
   features: {

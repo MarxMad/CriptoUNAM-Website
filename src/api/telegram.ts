@@ -81,10 +81,11 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
         message: response.data.description || 'Error al enviar el mensaje a Telegram' 
       };
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error al enviar mensaje a Telegram:', error);
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.description || error.message;
+    if (error.response) {
+      // Error de respuesta HTTP
+      const errorMessage = error.response?.data?.description || error.message || 'Error de respuesta del servidor';
       console.error('Detalles del error:', {
         status: error.response?.status,
         message: errorMessage,
