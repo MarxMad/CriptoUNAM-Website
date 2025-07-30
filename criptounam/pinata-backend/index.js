@@ -7,6 +7,7 @@ const FormData = require('form-data');
 const mongoose = require('mongoose');
 const notificacionesRouter = require('./routes/notificaciones');
 const Notificacion = require('./models/Notificacion');
+const { requireAdmin, optionalAdmin } = require('./middleware/auth');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -85,8 +86,8 @@ app.post('/upload-multiple', (req, res) => {
   });
 });
 
-// Endpoint para guardar un evento
-app.post('/evento', express.json(), async (req, res) => {
+// Endpoint para guardar un evento (solo admin)
+app.post('/evento', requireAdmin, express.json(), async (req, res) => {
   try {
     const { tipo, titulo, fecha, hora, lugar, cupo, descripcion, imagen, imagenPrincipal, fotos, videos, presentaciones, registroLink } = req.body;
     
@@ -163,7 +164,7 @@ app.get('/eventos', async (req, res) => {
 });
 
 // Endpoint para borrar un evento por ID
-app.delete('/evento/:id', async (req, res) => {
+app.delete('/evento/:id', requireAdmin, async (req, res) => {
   try {
     console.log('Intentando eliminar evento con ID:', req.params.id);
     const deleted = await Evento.findByIdAndDelete(req.params.id);
@@ -192,8 +193,8 @@ app.put('/evento/:id', express.json(), async (req, res) => {
   }
 });
 
-// Endpoint para guardar un curso
-app.post('/curso', express.json(), async (req, res) => {
+// Endpoint para guardar un curso (solo admin)
+app.post('/curso', requireAdmin, express.json(), async (req, res) => {
   try {
     const {
       titulo,
@@ -284,7 +285,7 @@ app.get('/curso/:id', async (req, res) => {
 });
 
 // Endpoint para borrar un curso por ID
-app.delete('/curso/:id', async (req, res) => {
+app.delete('/curso/:id', requireAdmin, async (req, res) => {
   try {
     const deleted = await Curso.findByIdAndDelete(req.params.id);
     if (!deleted) {
@@ -307,7 +308,7 @@ app.get('/newsletter', async (req, res) => {
 });
 
 // Endpoint para crear una nueva entrada de newsletter
-app.post('/newsletter', express.json(), async (req, res) => {
+app.post('/newsletter', requireAdmin, express.json(), async (req, res) => {
   try {
     const { title, date, content, imageUrl, author, tags } = req.body;
     const entry = new Newsletter({ title, date, content, imageUrl, author, tags });
@@ -324,7 +325,7 @@ app.post('/newsletter', express.json(), async (req, res) => {
 });
 
 // Endpoint para borrar una entrada de newsletter por ID
-app.delete('/newsletter/:id', async (req, res) => {
+app.delete('/newsletter/:id', requireAdmin, async (req, res) => {
   try {
     const deleted = await Newsletter.findByIdAndDelete(req.params.id);
     if (!deleted) {

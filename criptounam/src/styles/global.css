@@ -22,6 +22,49 @@ body, html {
   position: relative;
 }
 
+/* Asegurar que el footer siempre esté en la parte inferior */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+footer {
+  margin-top: auto;
+  padding: 2rem 0 4rem 0; /* Aumentado el padding inferior */
+  background: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(12px);
+  border-top: 2px solid rgba(212, 175, 55, 0.3);
+  position: relative;
+  z-index: 10;
+}
+
+/* Asegurar que el contenido principal tenga espacio para el navbar */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px; /* Espacio para el navbar inferior */
+}
+
+/* Ajustar el navbar inferior para que no se superponga */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(26, 26, 26, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 2px solid rgba(212, 175, 55, 0.3);
+}
+
 body::before {
   content: '';
   position: fixed;

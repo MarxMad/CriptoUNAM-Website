@@ -63,37 +63,320 @@ const Footer = () => {
   }
 
   return (
-    <footer className="section" style={{position:'relative'}}>
-      <div className="flex flex-center gap-2" style={{flexWrap:'wrap', justifyContent:'center'}}>
-        <div className="flex gap-2">
-          <Link to="/" className="text-primary-gold">Home</Link>
-          <Link to="/cursos" className="text-primary-gold">Cursos</Link>
-          <Link to="/comunidad" className="text-primary-gold">Comunidad</Link>
-          <Link to="/newsletter" className="text-primary-gold">Newsletter</Link>
+    <footer className="section" style={{
+      position: 'relative',
+      background: 'linear-gradient(135deg, rgba(26,26,26,0.9), rgba(30,58,138,0.2))',
+      backdropFilter: 'blur(12px)',
+      borderTop: '2px solid rgba(212, 175, 55, 0.3)',
+      padding: '3rem 2rem 4rem 2rem', // Aumentado el padding inferior
+      marginBottom: '80px' // Espacio adicional para el navbar
+    }}>
+      {/* Sección principal del footer */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '2rem',
+        marginBottom: '2rem',
+        maxWidth: '1200px',
+        margin: '0 auto 2rem auto'
+      }}>
+        {/* Logo y descripción */}
+        <div style={{ textAlign: 'center' }}>
+          <h3 style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: '1.5rem',
+            margin: '0 0 1rem 0',
+            fontWeight: 'bold'
+          }}>
+            CriptoUNAM
+          </h3>
+          <p style={{
+            color: '#E0E0E0',
+            fontSize: '0.9rem',
+            lineHeight: '1.6',
+            maxWidth: '300px',
+            margin: '0 auto'
+          }}>
+            La comunidad líder en blockchain y criptomonedas de la UNAM. 
+            Educando y conectando a la próxima generación de desarrolladores Web3.
+          </p>
         </div>
-        <div className="flex gap-2">
-          <a href="https://discord.gg/Pmu4JQeNR6" target="_blank" rel="noopener noreferrer" className="text-primary-gold">
-            <FontAwesomeIcon icon={faDiscord} />
-          </a>
-          <a href="https://t.me/+tPgjd4cOxG05NmVh" target="_blank" rel="noopener noreferrer" className="text-primary-gold">
-            <FontAwesomeIcon icon={faTelegram} />
-          </a>
-          <a href="https://x.com/Cripto_UNAM" target="_blank" rel="noopener noreferrer" className="text-primary-gold">
-            <FontAwesomeIcon icon={faTwitter} />
-          </a>
+
+        {/* Enlaces rápidos */}
+        <div style={{ textAlign: 'center' }}>
+          <h4 style={{
+            color: '#D4AF37',
+            fontSize: '1.1rem',
+            margin: '0 0 1rem 0',
+            fontWeight: 'bold'
+          }}>
+            Enlaces Rápidos
+          </h4>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem'
+          }}>
+            <Link to="/" style={{
+              color: '#E0E0E0',
+              textDecoration: 'none',
+              transition: 'color 0.3s ease',
+              fontSize: '0.9rem'
+            }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#D4AF37'} onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#E0E0E0'}>
+              Home
+            </Link>
+            <Link to="/cursos" style={{
+              color: '#E0E0E0',
+              textDecoration: 'none',
+              transition: 'color 0.3s ease',
+              fontSize: '0.9rem'
+            }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#D4AF37'} onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#E0E0E0'}>
+              Cursos
+            </Link>
+            <Link to="/comunidad" style={{
+              color: '#E0E0E0',
+              textDecoration: 'none',
+              transition: 'color 0.3s ease',
+              fontSize: '0.9rem'
+            }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#D4AF37'} onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#E0E0E0'}>
+              Comunidad
+            </Link>
+            <Link to="/newsletter" style={{
+              color: '#E0E0E0',
+              textDecoration: 'none',
+              transition: 'color 0.3s ease',
+              fontSize: '0.9rem'
+            }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#D4AF37'} onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#E0E0E0'}>
+              Newsletter
+            </Link>
+          </div>
+        </div>
+
+        {/* Redes sociales */}
+        <div style={{ textAlign: 'center' }}>
+          <h4 style={{
+            color: '#D4AF37',
+            fontSize: '1.1rem',
+            margin: '0 0 1rem 0',
+            fontWeight: 'bold'
+          }}>
+            Síguenos
+          </h4>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '1rem',
+            flexWrap: 'wrap'
+          }}>
+            <a href="https://discord.gg/Pmu4JQeNR6" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 width: '40px',
+                 height: '40px',
+                 background: 'linear-gradient(135deg, #5865F2, #4752C4)',
+                 color: 'white',
+                 borderRadius: '50%',
+                 textDecoration: 'none',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 2px 8px rgba(88, 101, 242, 0.3)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.1)';
+                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(88, 101, 242, 0.5)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(88, 101, 242, 0.3)';
+               }}
+            >
+              <FontAwesomeIcon icon={faDiscord} />
+            </a>
+            <a href="https://t.me/+tPgjd4cOxG05NmVh" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 width: '40px',
+                 height: '40px',
+                 background: 'linear-gradient(135deg, #0088CC, #0077B3)',
+                 color: 'white',
+                 borderRadius: '50%',
+                 textDecoration: 'none',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 2px 8px rgba(0, 136, 204, 0.3)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.1)';
+                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 136, 204, 0.5)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 136, 204, 0.3)';
+               }}
+            >
+              <FontAwesomeIcon icon={faTelegram} />
+            </a>
+            <a href="https://x.com/Cripto_UNAM" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 width: '40px',
+                 height: '40px',
+                 background: 'linear-gradient(135deg, #1DA1F2, #0D8BD9)',
+                 color: 'white',
+                 borderRadius: '50%',
+                 textDecoration: 'none',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 2px 8px rgba(29, 161, 242, 0.3)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.1)';
+                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(29, 161, 242, 0.5)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(29, 161, 242, 0.3)';
+               }}
+            >
+              <FontAwesomeIcon icon={faTwitter} />
+            </a>
+          </div>
         </div>
       </div>
-      {/* Botones destacados */}
-      <div className="flex flex-center gap-2" style={{margin:'2rem 0', flexWrap:'wrap', justifyContent:'center'}}>
-        <button className="glow-button" style={{fontWeight:700, fontSize:'1.1rem', padding:'0.8rem 2rem', borderRadius: '12px', border:'none', background:'#1E3A8A', color:'#fff', boxShadow:'0 0 16px 4px #2563EB99, 0 0 32px 8px #D4AF3755', cursor:'pointer', transition:'box-shadow 0.3s'}} onClick={()=>setShowJoinModal(true)}>
-          Únete a la comunidad
-        </button>
-        <form onSubmit={handleNewsletterSubmit} className="flex gap-1" style={{alignItems:'center', background:'#18181b', borderRadius:12, padding:'0.5rem 1rem', boxShadow:'0 2px 12px #2563EB22', border:'1px solid #D4AF37'}}>
-          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Tu correo electrónico" required style={{flex:1, border:'none', outline:'none', background:'transparent', color:'#fff', fontSize:'1rem'}} />
-          <button type="submit" className="primary-button" style={{borderRadius:8, fontWeight:600}}>Suscribirse</button>
-        </form>
-        {showNewsletterSuccess && <p style={{color:'#D4AF37', marginTop:8}}>¡Gracias por suscribirte!</p>}
-        {showNewsletterError && <p style={{color:'#ff4444', marginTop:8}}>Hubo un error. Por favor, intenta de nuevo.</p>}
+      {/* Sección de acción */}
+      <div style={{
+        textAlign: 'center',
+        margin: '2rem 0',
+        padding: '2rem',
+        background: 'rgba(212, 175, 55, 0.1)',
+        borderRadius: '16px',
+        border: '1px solid rgba(212, 175, 55, 0.2)',
+        maxWidth: '800px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      }}>
+        <h3 style={{
+          color: '#D4AF37',
+          fontSize: '1.3rem',
+          margin: '0 0 1rem 0',
+          fontFamily: 'Orbitron',
+          fontWeight: 'bold'
+        }}>
+          ¿Quieres ser parte de nuestra comunidad?
+        </h3>
+        <p style={{
+          color: '#E0E0E0',
+          fontSize: '1rem',
+          margin: '0 0 1.5rem 0',
+          lineHeight: '1.6'
+        }}>
+          Únete a nosotros y accede a contenido exclusivo, eventos y networking profesional.
+        </p>
+        
+        <div style={{
+          display: 'flex',
+          gap: '1rem',
+          justifyContent: 'center',
+          flexWrap: 'wrap',
+          alignItems: 'center'
+        }}>
+          <button 
+            className="glow-button" 
+            style={{
+              fontWeight: 700, 
+              fontSize: '1.1rem', 
+              padding: '0.8rem 2rem', 
+              borderRadius: '12px', 
+              border: 'none', 
+              background: 'linear-gradient(135deg, #1E3A8A, #2563EB)', 
+              color: '#fff', 
+              boxShadow: '0 0 16px 4px rgba(37, 99, 235, 0.6), 0 0 32px 8px rgba(212, 175, 55, 0.3)', 
+              cursor: 'pointer', 
+              transition: 'all 0.3s ease'
+            }} 
+            onClick={() => setShowJoinModal(true)}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 4px 20px rgba(37, 99, 235, 0.8), 0 8px 40px rgba(212, 175, 55, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 0 16px 4px rgba(37, 99, 235, 0.6), 0 0 32px 8px rgba(212, 175, 55, 0.3)';
+            }}
+          >
+            Únete a la comunidad
+          </button>
+          
+          <form onSubmit={handleNewsletterSubmit} style={{
+            display: 'flex',
+            alignItems: 'center',
+            background: 'rgba(26, 26, 26, 0.8)',
+            borderRadius: '12px',
+            padding: '0.5rem 1rem',
+            boxShadow: '0 2px 12px rgba(37, 99, 235, 0.2)',
+            border: '1px solid #D4AF37',
+            gap: '0.5rem'
+          }}>
+            <input 
+              type="email" 
+              value={email} 
+              onChange={e => setEmail(e.target.value)} 
+              placeholder="Tu correo electrónico" 
+              required 
+              style={{
+                border: 'none',
+                outline: 'none',
+                background: 'transparent',
+                color: '#fff',
+                fontSize: '1rem',
+                minWidth: '200px'
+              }} 
+            />
+            <button 
+              type="submit" 
+              className="primary-button" 
+              style={{
+                borderRadius: '8px',
+                fontWeight: 600,
+                padding: '0.5rem 1rem',
+                fontSize: '0.9rem'
+              }}
+            >
+              Suscribirse
+            </button>
+          </form>
+        </div>
+        
+        {showNewsletterSuccess && (
+          <p style={{
+            color: '#D4AF37', 
+            marginTop: '1rem',
+            fontWeight: 'bold',
+            fontSize: '0.9rem'
+          }}>
+            ¡Gracias por suscribirte!
+          </p>
+        )}
+        {showNewsletterError && (
+          <p style={{
+            color: '#ff4444', 
+            marginTop: '1rem',
+            fontWeight: 'bold',
+            fontSize: '0.9rem'
+          }}>
+            Hubo un error. Por favor, intenta de nuevo.
+          </p>
+        )}
       </div>
       {/* Modal de comunidad */}
       {showJoinModal && (
@@ -125,7 +408,32 @@ const Footer = () => {
           </div>
         </div>
       )}
-      <p className="text-center mt-2">© 2024 CriptoUNAM. Todos los derechos reservados.</p>
+      
+      {/* Copyright */}
+      <div style={{
+        textAlign: 'center',
+        marginTop: '2rem',
+        paddingTop: '2rem',
+        paddingBottom: '1rem', // Espacio adicional abajo
+        borderTop: '1px solid rgba(212, 175, 55, 0.2)'
+      }}>
+        <p style={{
+          color: '#E0E0E0',
+          fontSize: '0.9rem',
+          margin: '0',
+          opacity: '0.8'
+        }}>
+          © 2024 CriptoUNAM. Todos los derechos reservados.
+        </p>
+        <p style={{
+          color: '#D4AF37',
+          fontSize: '0.8rem',
+          margin: '0.5rem 0 0 0',
+          opacity: '0.7'
+        }}>
+          Construyendo el futuro de la educación blockchain
+        </p>
+      </div>
     </footer>
   )
 }

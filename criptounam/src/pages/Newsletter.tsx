@@ -5,6 +5,7 @@ import { faGraduationCap, faCalendarAlt, faCertificate, faTrophy, faEnvelope } f
 import { handleNewsletterSubscription } from '../api/telegram'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
+import { useAdmin } from '../hooks/useAdmin'
 import axios from 'axios'
 
 interface NewsletterEntry {
@@ -15,15 +16,13 @@ interface NewsletterEntry {
   imageUrl?: string
 }
 
-const ADMIN_WALLET = '0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217'.toLowerCase();
-
 const Newsletter = () => {
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { walletAddress, isConnected } = useWallet();
-  const isAdmin = isConnected && walletAddress.toLowerCase() === ADMIN_WALLET;
+  const { isAdmin, canCreateNewsletter, canDeleteNewsletter } = useAdmin();
 
   // Estado para modal, nueva entrada y entradas desde backend
   const [showModal, setShowModal] = useState(false);
@@ -51,6 +50,20 @@ const Newsletter = () => {
     fetchEntradas();
   }, []);
 
+  // Verificar si se debe abrir el modal desde URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldOpenModal = urlParams.get('openModal');
+    
+    if (shouldOpenModal === 'true') {
+      console.log('📧 Newsletter: Abriendo modal desde URL');
+      setShowModal(true);
+      // Limpiar el parámetro de la URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, []);
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (isSubscribed) {
@@ -64,6 +77,8 @@ const Newsletter = () => {
       }
     };
   }, [isSubscribed]);
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -116,6 +131,10 @@ const Newsletter = () => {
 
   const handleAgregarEntrada = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canCreateNewsletter) {
+      alert('No tienes permisos para crear entradas de newsletter');
+      return;
+    }
     if (!nuevaEntrada.title || !nuevaEntrada.date || !nuevaEntrada.content || !nuevaEntrada.imageFile || !nuevaEntrada.author) return;
     try {
       const imagenUrl = await uploadToPinata(nuevaEntrada.imageFile);
@@ -127,7 +146,11 @@ const Newsletter = () => {
         author: nuevaEntrada.author,
         tags: nuevaEntrada.tags.split(',').map(t => t.trim()).filter(Boolean),
       };
-      await axios.post('http://localhost:4000/newsletter', entradaData);
+      await axios.post('http://localhost:4000/newsletter', entradaData, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       setShowModal(false);
       setNuevaEntrada({ title: '', date: '', content: '', imageFile: null, author: '', tags: '' });
       setPreviewImage(null);
@@ -141,8 +164,16 @@ const Newsletter = () => {
 
   const handleEliminarEntrada = async (id: string) => {
     if (!window.confirm('¿Seguro que quieres eliminar esta entrada?')) return;
+    if (!canDeleteNewsletter) {
+      alert('No tienes permisos para eliminar entradas');
+      return;
+    }
     try {
-      await axios.delete(`http://localhost:4000/newsletter/${id}`);
+      await axios.delete(`http://localhost:4000/newsletter/${id}`, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       setEntradas(entradas.filter(e => (e as any)._id !== id));
     } catch (error) {
       alert('Error al eliminar la entrada');
@@ -253,27 +284,7 @@ const Newsletter = () => {
         </div>
       </div>
 
-      {isAdmin && (
-        <button
-          className="floating-button"
-          onClick={() => setShowModal(true)}
-          style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
-            padding: '10px 20px',
-            backgroundColor: '#D4AF37',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontWeight: 600,
-            zIndex: 1100,
-          }}
-        >
-          Agregar Nueva Entrada
-        </button>
-      )}
+
       {showModal && (
         <div className="modal-overlay" style={{
           position: 'fixed',
@@ -281,40 +292,267 @@ const Newsletter = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 1200,
+          padding: '20px',
         }}>
           <div className="modal-content" style={{
             backgroundColor: 'white',
             padding: '20px',
-            borderRadius: '10px',
-            width: '90%',
-            maxWidth: '500px',
-            maxHeight: '90vh',
+            borderRadius: '12px',
+            width: '100%',
+            maxWidth: '450px',
+            maxHeight: '80vh',
             overflowY: 'auto',
-            boxShadow: '0 8px 32px #00000044',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'flex-start',
+            position: 'relative',
           }}>
-            <h2>Agregar Nueva Entrada de Newsletter</h2>
-            <form onSubmit={handleAgregarEntrada} style={{display:'flex', flexDirection:'column', gap:14}}>
-              <input name="title" value={nuevaEntrada.title} onChange={handleInputChange} placeholder="Título" required style={{padding:8, borderRadius:8}} />
-              <input name="date" value={nuevaEntrada.date} onChange={handleInputChange} placeholder="Fecha (ej. 15 de Abril, 2024)" required style={{padding:8, borderRadius:8}} />
-              <input name="author" value={nuevaEntrada.author} onChange={handleInputChange} placeholder="Instructor" required style={{padding:8, borderRadius:8}} />
-              <input name="tags" value={nuevaEntrada.tags} onChange={handleInputChange} placeholder="Tags (separados por coma)" style={{padding:8, borderRadius:8}} />
-              <textarea name="content" value={nuevaEntrada.content} onChange={handleInputChange} placeholder="Contenido" required style={{padding:8, borderRadius:8, minHeight:100}} />
-              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Imagen de la entrada</label>
-              <input type="file" onChange={handleImageChange} accept="image/*" required style={{padding:8, borderRadius:8}} />
-              {previewImage && (
-                <img src={previewImage} alt="Previsualización" style={{width: '100%', maxWidth: 320, margin: '0 auto 10px auto', borderRadius: 12, boxShadow: '0 2px 12px #1E3A8A33'}} />
-              )}
-              <div style={{ marginTop: '20px' }}>
-                <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
-                <button type="button" onClick={() => setShowModal(false)}>Cancelar</button>
+            {/* Header del modal */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px',
+              borderBottom: '2px solid #D4AF37',
+              paddingBottom: '12px'
+            }}>
+              <h2 style={{
+                color: '#D4AF37',
+                margin: 0,
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                fontFamily: 'Orbitron'
+              }}>
+                Agregar Nueva Entrada de Newsletter
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: '#666',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Contenido del formulario */}
+            <form onSubmit={handleAgregarEntrada} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              flex: 1,
+              overflowY: 'auto'
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Título *
+                </label>
+                <input 
+                  name="title" 
+                  value={nuevaEntrada.title} 
+                  onChange={handleInputChange} 
+                  placeholder="Título de la entrada" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Fecha *
+                </label>
+                <input 
+                  name="date" 
+                  value={nuevaEntrada.date} 
+                  onChange={handleInputChange} 
+                  placeholder="Fecha (ej. 15 de Abril, 2024)" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Autor *
+                </label>
+                <input 
+                  name="author" 
+                  value={nuevaEntrada.author} 
+                  onChange={handleInputChange} 
+                  placeholder="Nombre del autor" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Tags
+                </label>
+                <input 
+                  name="tags" 
+                  value={nuevaEntrada.tags} 
+                  onChange={handleInputChange} 
+                  placeholder="Tags (separados por coma)" 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Contenido *
+                </label>
+                <textarea 
+                  name="content" 
+                  value={nuevaEntrada.content} 
+                  onChange={handleInputChange} 
+                  placeholder="Contenido de la entrada..." 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    minHeight: '120px',
+                    resize: 'vertical',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Imagen de la entrada *
+                </label>
+                <input 
+                  type="file" 
+                  onChange={handleImageChange} 
+                  accept="image/*" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                />
+                {previewImage && (
+                  <img 
+                    src={previewImage} 
+                    alt="Previsualización" 
+                    style={{
+                      width: '100%',
+                      maxWidth: '320px',
+                      margin: '8px auto',
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 12px rgba(30, 58, 138, 0.2)'
+                    }} 
+                  />
+                )}
+              </div>
+
+              {/* Botones de acción */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                marginTop: '20px',
+                paddingTop: '16px',
+                borderTop: '1px solid #e0e0e0'
+              }}>
+                <button 
+                  type="submit" 
+                  style={{
+                    background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                    color: '#000',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    flex: 1
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  Guardar Entrada
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowModal(false)}
+                  style={{
+                    background: '#f5f5f5',
+                    color: '#666',
+                    border: '2px solid #e0e0e0',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    flex: 1
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#e0e0e0';
+                    e.currentTarget.style.color = '#333';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#f5f5f5';
+                    e.currentTarget.style.color = '#666';
+                  }}
+                >
+                  Cancelar
+                </button>
               </div>
             </form>
           </div>

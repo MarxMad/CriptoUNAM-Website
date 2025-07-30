@@ -4,6 +4,7 @@ import { IMAGES } from '../constants/images'
 import axios from 'axios'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
+import { useAdmin } from '../hooks/useAdmin'
 
 // Mover cursosData y la interfaz Curso a src/constants/cursosData.ts
 
@@ -42,8 +43,7 @@ const Cursos = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [cursos, setCursos] = useState<any[]>([])
   const { walletAddress, isConnected } = useWallet();
-  const ADMIN_WALLET = '0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217'.toLowerCase();
-  const isAdmin = isConnected && walletAddress.toLowerCase() === ADMIN_WALLET;
+  const { isAdmin, canCreateCourse, canDeleteCourse } = useAdmin();
 
   // Estado para el modal de cursos
   const [showCursosModal, setShowCursosModal] = useState(false);
@@ -80,6 +80,20 @@ const Cursos = () => {
     fetchCursos();
   }, []);
 
+  // Verificar si se debe abrir el modal desde URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldOpenModal = urlParams.get('openModal');
+    
+    if (shouldOpenModal === 'true') {
+      console.log('📚 Cursos: Abriendo modal desde URL');
+      setShowCursosModal(true);
+      // Limpiar el parámetro de la URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, []);
+
   const cursosFiltrados = cursos.filter(curso => {
     const cumpleFiltroNivel = filtroNivel === 'todos' || curso.nivel.toLowerCase() === filtroNivel
     const cumpleBusqueda = curso.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -108,6 +122,10 @@ const Cursos = () => {
 
   const handleSubmitCurso = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canCreateCourse) {
+      alert('No tienes permisos para crear cursos');
+      return;
+    }
     if (!imagenCursoFile) {
       alert('Por favor selecciona una imagen para el curso');
       return;
@@ -145,7 +163,11 @@ const Cursos = () => {
         lecciones: leccionesProcesadas,
       };
 
-      await axios.post('http://localhost:4000/curso', cursoData);
+      await axios.post('http://localhost:4000/curso', cursoData, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       setShowCursosModal(false);
       setNuevoCurso({
         titulo: '',
@@ -191,8 +213,16 @@ const Cursos = () => {
 
   const handleEliminarCurso = async (id: string) => {
     if (!window.confirm('¿Seguro que quieres eliminar este curso?')) return;
+    if (!canDeleteCourse) {
+      alert('No tienes permisos para eliminar cursos');
+      return;
+    }
     try {
-      await axios.delete(`http://localhost:4000/curso/${id}`);
+      await axios.delete(`http://localhost:4000/curso/${id}`, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       setCursos(cursos.filter((c: any) => c._id !== id));
     } catch (error) {
       alert('Error al eliminar el curso');
@@ -282,79 +312,132 @@ const Cursos = () => {
             </div>
           </div>
         ))}
-      </main>
-      </div>
-      {isAdmin && (
-        <>
-          <button
-            className="floating-button"
-            onClick={() => setShowCursosModal(true)}
-            style={{
-              position: 'fixed',
-              bottom: '20px',
-              right: '20px',
-              padding: '10px 20px',
-              backgroundColor: '#D4AF37',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-            }}
-          >
-            Agregar Curso
-          </button>
-          {showCursosModal && (
+              </main>
+        </div>
+        {showCursosModal && (
             <div className="modal-overlay" style={{
               position: 'fixed',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              zIndex: 1000,
+              zIndex: 1200,
+              padding: '20px',
             }}>
               <div className="modal-content" style={{
                 backgroundColor: 'white',
                 padding: '20px',
-                borderRadius: '10px',
-                width: '90%',
-                maxWidth: '500px',
-                maxHeight: '90vh',
+                borderRadius: '12px',
+                width: '100%',
+                maxWidth: '450px',
+                maxHeight: '80vh',
                 overflowY: 'auto',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'flex-start',
+                position: 'relative',
               }}>
-                <h2>Agregar Nuevo Curso</h2>
-                <form onSubmit={handleSubmitCurso} style={{display:'flex', flexDirection:'column', gap:14}}>
-                  <div>
-                    <label>Título:</label>
+                {/* Header del modal */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '20px',
+                  borderBottom: '2px solid #D4AF37',
+                  paddingBottom: '12px'
+                }}>
+                  <h2 style={{
+                    color: '#D4AF37',
+                    margin: 0,
+                    fontSize: '1.5rem',
+                    fontWeight: 'bold',
+                    fontFamily: 'Orbitron'
+                  }}>
+                    Agregar Nuevo Curso
+                  </h2>
+                  <button
+                    onClick={() => setShowCursosModal(false)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '1.5rem',
+                      cursor: 'pointer',
+                      color: '#666',
+                      padding: '4px',
+                      borderRadius: '4px',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'}
+                    onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
+                  >
+                    ×
+                  </button>
+                </div>
+
+                {/* Contenido del formulario */}
+                <form onSubmit={handleSubmitCurso} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                  flex: 1,
+                  overflowY: 'auto'
+                }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Título *
+                    </label>
                     <input
                       type="text"
                       name="titulo"
                       value={nuevoCurso.titulo}
                       onChange={handleInputChangeCurso}
+                      placeholder="Título del curso"
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Nivel:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Nivel *
+                    </label>
                     <select
                       name="nivel"
                       value={nuevoCurso.nivel}
                       onChange={handleInputChangeCurso}
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     >
                       <option value="Principiante">Principiante</option>
                       <option value="Intermedio">Intermedio</option>
                       <option value="Avanzado">Avanzado</option>
                     </select>
                   </div>
-                  <div>
-                    <label>Duración:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Duración *
+                    </label>
                     <input
                       type="text"
                       name="duracion"
@@ -362,40 +445,93 @@ const Cursos = () => {
                       onChange={handleInputChangeCurso}
                       placeholder="ej. 4 semanas"
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Descripción:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Descripción *
+                    </label>
                     <textarea
                       name="descripcion"
                       value={nuevoCurso.descripcion}
                       onChange={handleInputChangeCurso}
+                      placeholder="Descripción del curso..."
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        minHeight: '80px',
+                        resize: 'vertical',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Instructor:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Instructor *
+                    </label>
                     <input
                       type="text"
                       name="instructor"
                       value={nuevoCurso.instructor}
                       onChange={handleInputChangeCurso}
+                      placeholder="Nombre del instructor"
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Precio:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Precio *
+                    </label>
                     <input
                       type="number"
                       name="precio"
                       value={nuevoCurso.precio}
                       onChange={handleInputChangeCurso}
                       min="0"
+                      placeholder="0"
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Categorías (separadas por coma):</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Categorías
+                    </label>
                     <input
                       type="text"
                       name="categorias"
@@ -405,56 +541,140 @@ const Cursos = () => {
                         categorias: e.target.value.split(',').map(c => c.trim()).filter(Boolean)
                       }))}
                       placeholder="Blockchain, Ethereum, DeFi"
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Requisitos:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Requisitos
+                    </label>
                     <textarea
                       name="requisitos"
                       value={nuevoCurso.requisitos}
                       onChange={handleInputChangeCurso}
+                      placeholder="Requisitos previos..."
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        minHeight: '80px',
+                        resize: 'vertical',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                     />
                   </div>
-                  <div>
-                    <label>Imagen:</label>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                      Imagen del curso *
+                    </label>
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleImagenCursoChange}
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
                     />
                     {previewImagenCurso && (
                       <img
                         src={previewImagenCurso}
                         alt="Preview"
-                        style={{ maxWidth: '100%', marginTop: '10px' }}
+                        style={{
+                          width: '100%',
+                          maxWidth: '320px',
+                          margin: '8px auto',
+                          borderRadius: '8px',
+                          boxShadow: '0 2px 12px rgba(30, 58, 138, 0.2)'
+                        }}
                       />
                     )}
                   </div>
-                  <div>
-                    <h3>Lecciones</h3>
-                    <div style={{marginBottom: '1rem'}}>
+
+                  {/* Sección de Lecciones */}
+                  <div style={{ 
+                    borderTop: '1px solid #e0e0e0', 
+                    paddingTop: '16px',
+                    marginTop: '8px'
+                  }}>
+                    <h3 style={{ 
+                      color: '#D4AF37', 
+                      margin: '0 0 16px 0',
+                      fontSize: '1.2rem',
+                      fontWeight: 'bold'
+                    }}>
+                      Lecciones
+                    </h3>
+                    <div style={{ marginBottom: '16px' }}>
                       <input
                         type="text"
                         placeholder="Título de la lección"
                         value={leccionActual.titulo}
                         onChange={(e) => setLeccionActual(prev => ({ ...prev, titulo: e.target.value }))}
-                        style={{padding:8, borderRadius:8, marginBottom:8}}
+                        style={{
+                          padding: '12px',
+                          borderRadius: '8px',
+                          border: '2px solid #e0e0e0',
+                          fontSize: '1rem',
+                          marginBottom: '8px',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                        onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                       />
                       <textarea
                         placeholder="Descripción de la lección"
                         value={leccionActual.descripcion}
                         onChange={(e) => setLeccionActual(prev => ({ ...prev, descripcion: e.target.value }))}
-                        style={{padding:8, borderRadius:8, marginBottom:8}}
+                        style={{
+                          padding: '12px',
+                          borderRadius: '8px',
+                          border: '2px solid #e0e0e0',
+                          fontSize: '1rem',
+                          marginBottom: '8px',
+                          minHeight: '60px',
+                          resize: 'vertical',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                        onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                       />
-                      <div style={{marginBottom:8}}>
-                        <label>Video (URL de YouTube o archivo):</label>
+                      <div style={{ marginBottom: '8px' }}>
+                        <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem', display: 'block', marginBottom: '4px' }}>
+                          Video (URL de YouTube o archivo)
+                        </label>
                         <input
                           type="text"
                           placeholder="URL de YouTube"
                           value={leccionActual.video}
                           onChange={(e) => setLeccionActual(prev => ({ ...prev, video: e.target.value }))}
-                          style={{padding:8, borderRadius:8, marginBottom:8}}
+                          style={{
+                            padding: '12px',
+                            borderRadius: '8px',
+                            border: '2px solid #e0e0e0',
+                            fontSize: '1rem',
+                            marginBottom: '8px',
+                            transition: 'all 0.3s ease'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                          onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                         />
                         <input
                           type="file"
@@ -464,17 +684,43 @@ const Cursos = () => {
                               setLeccionActual(prev => ({ ...prev, videoFile: e.target.files![0] }));
                             }
                           }}
-                          style={{padding:8, borderRadius:8}}
+                          style={{
+                            padding: '12px',
+                            borderRadius: '8px',
+                            border: '2px solid #e0e0e0',
+                            fontSize: '1rem',
+                            transition: 'all 0.3s ease'
+                          }}
                         />
                       </div>
-                      <button type="button" onClick={handleAgregarLeccion}>Agregar Lección</button>
+                      <button 
+                        type="button" 
+                        onClick={handleAgregarLeccion}
+                        style={{
+                          background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                          color: '#000',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '6px',
+                          fontSize: '0.9rem',
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        Agregar Lección
+                      </button>
                     </div>
                     {nuevoCurso.lecciones.length > 0 && (
                       <div>
-                        <h4>Lecciones agregadas:</h4>
-                        <ul>
+                        <h4 style={{ color: '#333', margin: '0 0 8px 0', fontSize: '1rem' }}>
+                          Lecciones agregadas:
+                        </h4>
+                        <ul style={{ margin: 0, paddingLeft: '20px' }}>
                           {nuevoCurso.lecciones.map((leccion, idx) => (
-                            <li key={idx}>
+                            <li key={idx} style={{ marginBottom: '4px', color: '#333' }}>
                               {leccion.titulo}
                               <button
                                 type="button"
@@ -482,7 +728,15 @@ const Cursos = () => {
                                   ...prev,
                                   lecciones: prev.lecciones.filter((_, i) => i !== idx)
                                 }))}
-                                style={{marginLeft:8, color:'red'}}
+                                style={{
+                                  marginLeft: '8px',
+                                  color: 'red',
+                                  background: 'none',
+                                  border: 'none',
+                                  cursor: 'pointer',
+                                  fontSize: '1.2rem',
+                                  fontWeight: 'bold'
+                                }}
                               >
                                 ×
                               </button>
@@ -492,17 +746,66 @@ const Cursos = () => {
                       </div>
                     )}
                   </div>
-                  <div style={{ marginTop: '20px' }}>
-                    <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
-                    <button type="button" onClick={() => setShowCursosModal(false)}>Cancelar</button>
+
+                  {/* Botones de acción */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    marginTop: '20px',
+                    paddingTop: '16px',
+                    borderTop: '1px solid #e0e0e0'
+                  }}>
+                    <button 
+                      type="submit" 
+                      style={{
+                        background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                        color: '#000',
+                        border: 'none',
+                        padding: '12px 24px',
+                        borderRadius: '8px',
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        flex: 1
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    >
+                      Guardar Curso
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={() => setShowCursosModal(false)}
+                      style={{
+                        background: '#f5f5f5',
+                        color: '#666',
+                        border: '2px solid #e0e0e0',
+                        padding: '12px 24px',
+                        borderRadius: '8px',
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        flex: 1
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#e0e0e0';
+                        e.currentTarget.style.color = '#333';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#f5f5f5';
+                        e.currentTarget.style.color = '#666';
+                      }}
+                    >
+                      Cancelar
+                    </button>
                   </div>
                 </form>
               </div>
             </div>
           )}
-        </>
-      )}
-    </div>
+      </div>
   )
 }
 

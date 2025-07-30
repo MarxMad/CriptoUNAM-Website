@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAccount, useDisconnect, useEnsName, useEnsAvatar, useBalance } from 'wagmi'
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import '../styles/global.css'
+import { useAdmin } from '../hooks/useAdmin'
 import { 
   faBell, 
   faHome, 
@@ -11,7 +12,10 @@ import {
   faEnvelope, 
   faGamepad,
   faTimes,
-  faWallet
+  faWallet,
+  faPlus,
+  faNewspaper,
+  faCalendarPlus
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -59,6 +63,7 @@ const Navbar = () => {
   const { data: balanceData } = useBalance({ address: address as `0x${string}` | undefined })
   const { open } = useAppKit()
   const appKitAccount = useAppKitAccount()
+  const { isAdmin, canCreateCourse, canCreateNewsletter, canCreateEvent } = useAdmin()
   const [networkName, setNetworkName] = useState<string>('')
   const [networkLogo, setNetworkLogo] = useState<string>('')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
@@ -76,6 +81,8 @@ const Navbar = () => {
     console.log('AppKit Account:', appKitAccount)
     console.log('Wagmi Account:', { address, isConnected })
   }, [appKitAccount, address, isConnected])
+
+
 
   useEffect(() => {
     const updateNetwork = () => {
@@ -299,8 +306,8 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Wallet */}
-          <div style={{ position: 'relative' }}>
+          {/* Wallet y Botones de Admin */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {isConnected ? (
               <button
                 onClick={() => setWalletPanelOpen(!walletPanelOpen)}
@@ -315,11 +322,28 @@ const Navbar = () => {
                   fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  position: 'relative'
                 }}
               >
                 <FontAwesomeIcon icon={faWallet} />
                 {!isMobile && (ensName || (address ? formatAddress(address) : ''))}
+                {isAdmin && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-4px',
+                    right: '-4px',
+                    background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                    color: '#000',
+                    fontSize: '8px',
+                    fontWeight: 'bold',
+                    padding: '2px 4px',
+                    borderRadius: '4px',
+                    border: '1px solid #000'
+                  }}>
+                    ADMIN
+                  </span>
+                )}
               </button>
             ) : (
               <button 
@@ -342,6 +366,96 @@ const Navbar = () => {
                 {!isMobile && 'Conectar'}
               </button>
             )}
+
+            {/* Botones de Admin */}
+            {isAdmin && isConnected && (
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {/* Botón para Cursos */}
+                {canCreateCourse && (
+                  <button
+                    onClick={() => {
+                      const event = new CustomEvent('openCursosModal');
+                      window.dispatchEvent(event);
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      width: '32px',
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.4)',
+                      fontSize: '12px',
+                      color: '#000',
+                      fontWeight: 'bold'
+                    }}
+                    title="Agregar Curso"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </button>
+                )}
+                
+                {/* Botón para Newsletter */}
+                {canCreateNewsletter && (
+                  <button
+                    onClick={() => {
+                      const event = new CustomEvent('openNewsletterModal');
+                      window.dispatchEvent(event);
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      width: '32px',
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.4)',
+                      fontSize: '12px',
+                      color: '#000',
+                      fontWeight: 'bold'
+                    }}
+                    title="Agregar Entrada"
+                  >
+                    <FontAwesomeIcon icon={faNewspaper} />
+                  </button>
+                )}
+                
+                {/* Botón para Comunidad */}
+                {canCreateEvent && (
+                  <button
+                    onClick={() => {
+                      const event = new CustomEvent('openComunidadModal');
+                      window.dispatchEvent(event);
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      width: '32px',
+                      height: '32px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.4)',
+                      fontSize: '12px',
+                      color: '#000',
+                      fontWeight: 'bold'
+                    }}
+                    title="Agregar Evento"
+                  >
+                    <FontAwesomeIcon icon={faCalendarPlus} />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
 
             {/* Panel de wallet */}
             {walletPanelOpen && isConnected && (
@@ -418,7 +532,6 @@ const Navbar = () => {
               </div>
             )}
           </div>
-        </div>
       </header>
 
       {/* Menú Inferior - Navegación principal */}

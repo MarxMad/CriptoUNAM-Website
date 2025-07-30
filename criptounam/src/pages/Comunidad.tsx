@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
+import { useAdmin } from '../hooks/useAdmin'
 import axios from 'axios'
 
 interface BackendPinataResponse {
@@ -36,8 +37,7 @@ const Comunidad = () => {
   // const [galleryType, setGalleryType] = useState<'photos' | 'videos' | 'presentations'>('photos')
   // const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const { walletAddress, isConnected } = useWallet();
-  const ADMIN_WALLET = '0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217'.toLowerCase();
-  const isAdmin = isConnected && walletAddress.toLowerCase() === ADMIN_WALLET;
+  const { isAdmin, canCreateEvent, canDeleteEvent } = useAdmin();
 
   // Estado para eventos agregados dinámicamente
   const [eventosDinamicos, setEventosDinamicos] = useState<any[]>([]);
@@ -131,6 +131,10 @@ const Comunidad = () => {
 
   const handleAgregarEvento = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canCreateEvent) {
+      alert('No tienes permisos para crear eventos');
+      return;
+    }
     if (!nuevoEvento.titulo || !nuevoEvento.fecha || !nuevoEvento.hora || !nuevoEvento.lugar || !nuevoEvento.cupo || !nuevoEvento.descripcion || !imagenEventoFile) return;
     try {
       const imagenUrl = await uploadToPinata(imagenEventoFile);
@@ -145,7 +149,11 @@ const Comunidad = () => {
         imagen: imagenUrl,
         registroLink: nuevoEvento.registroLink || '',
       };
-      const res = await axios.post('http://localhost:4000/evento', eventoData);
+      const res = await axios.post('http://localhost:4000/evento', eventoData, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       setEventosDinamicos([res.data, ...eventosDinamicos]);
       setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registroLink: '' });
       setImagenEventoFile(null);
@@ -208,7 +216,11 @@ const Comunidad = () => {
         presentaciones: presentacionesUrls,
       };
 
-      const res = await axios.post('http://localhost:4000/evento', eventoData);
+      const res = await axios.post('http://localhost:4000/evento', eventoData, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       setEventosAnterioresDinamicos([res.data, ...eventosAnterioresDinamicos]);
       
       // Limpiar formulario
@@ -289,6 +301,20 @@ const Comunidad = () => {
     fetchEventos();
   }, []);
 
+  // Verificar si se debe abrir el modal desde URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldOpenModal = urlParams.get('openModal');
+    
+    if (shouldOpenModal === 'true') {
+      console.log('🎪 Comunidad: Abriendo modal desde URL');
+      setShowNuevoEventoModal(true);
+      // Limpiar el parámetro de la URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, []);
+
   // Al abrir modal de editar evento próximo
   const handleEditarEvento = (evento: any) => {
     setNuevoEvento({
@@ -324,8 +350,16 @@ const Comunidad = () => {
   // Eliminar evento
   const handleEliminarEvento = async (evento: any, tipo: 'proximo' | 'anterior') => {
     if (!window.confirm('¿Seguro que quieres eliminar este evento?')) return;
+    if (!canDeleteEvent) {
+      alert('No tienes permisos para eliminar eventos');
+      return;
+    }
     try {
-      await axios.delete(`http://localhost:4000/evento/${evento._id}`);
+      await axios.delete(`http://localhost:4000/evento/${evento._id}`, {
+        headers: {
+          'x-wallet-address': walletAddress
+        }
+      });
       if (tipo === 'proximo') {
         setEventosDinamicos(eventosDinamicos.filter(e => e._id !== evento._id));
       } else {
@@ -414,48 +448,7 @@ const Comunidad = () => {
         </div>
       </div>
 
-      {/* Próximos y Anteriores Eventos: Botones flotantes juntos */}
-      {isAdmin && (
-        <div style={{
-          position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          display: 'flex',
-          gap: '12px',
-          zIndex: 1100,
-        }}>
-          <button
-            className="floating-button"
-            onClick={() => setShowNuevoEventoModal(true)}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#D4AF37',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontWeight: 600,
-            }}
-          >
-            Agregar Nuevo Evento
-          </button>
-          <button
-            className="floating-button"
-            onClick={() => setShowEventoPasadoModal(true)}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#D4AF37',
-              color: 'white',
-              border: 'none',
-              borderRadius: '5px',
-              cursor: 'pointer',
-              fontWeight: 600,
-            }}
-          >
-            Agregar Evento Anterior
-          </button>
-        </div>
-      )}
+
       {/* Modales */}
       {showNuevoEventoModal && (
         <div className="modal-overlay" style={{
@@ -464,39 +457,313 @@ const Comunidad = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 1200,
+          padding: '20px',
         }}>
           <div className="modal-content" style={{
             backgroundColor: 'white',
             padding: '20px',
-            borderRadius: '10px',
-            width: '90%',
-            maxWidth: '500px',
-            maxHeight: '90vh',
+            borderRadius: '12px',
+            width: '100%',
+            maxWidth: '450px',
+            maxHeight: '80vh',
             overflowY: 'auto',
-            boxShadow: '0 8px 32px #00000044',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
           }}>
-            <h2>Agregar Nuevo Evento</h2>
-            <form onSubmit={editandoEvento ? handleGuardarEdicionEvento : handleAgregarEvento} style={{display:'flex', flexDirection:'column', gap:14}}>
-              <input name="titulo" value={nuevoEvento.titulo} onChange={handleInputChange} placeholder="Título del evento" required style={{padding:8, borderRadius:8}} />
-              <input name="fecha" value={nuevoEvento.fecha} onChange={handleInputChange} placeholder="Fecha (ej. 15 de Abril, 2024)" required style={{padding:8, borderRadius:8}} />
-              <input name="hora" value={nuevoEvento.hora} onChange={handleInputChange} placeholder="Hora (ej. 16:00)" required style={{padding:8, borderRadius:8}} />
-              <input name="lugar" value={nuevoEvento.lugar} onChange={handleInputChange} placeholder="Lugar" required style={{padding:8, borderRadius:8}} />
-              <input name="cupo" value={nuevoEvento.cupo} onChange={handleInputChange} placeholder="Cupo" type="number" min="1" required style={{padding:8, borderRadius:8}} />
-              <textarea name="descripcion" value={nuevoEvento.descripcion} onChange={handleInputChange} placeholder="Descripción del evento" required style={{padding:8, borderRadius:8}} />
-              <label style={{color:'#D4AF37', fontWeight:'bold'}}>Imagen del evento</label>
-              <input type="file" onChange={handleImagenEventoChange} accept="image/*" required style={{padding:8, borderRadius:8}} />
+            {/* Header del modal */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '20px',
+              borderBottom: '2px solid #D4AF37',
+              paddingBottom: '12px'
+            }}>
+              <h2 style={{
+                color: '#D4AF37',
+                margin: 0,
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                fontFamily: 'Orbitron'
+              }}>
+                {editandoEvento ? 'Editar Evento' : 'Agregar Nuevo Evento'}
+              </h2>
+              <button
+                onClick={() => setShowNuevoEventoModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: '#666',
+                  padding: '4px',
+                  borderRadius: '4px',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#D4AF37'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Contenido del formulario */}
+            <form onSubmit={editandoEvento ? handleGuardarEdicionEvento : handleAgregarEvento} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              flex: 1,
+              overflowY: 'auto'
+            }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Título del evento *
+                </label>
+                <input 
+                  name="titulo" 
+                  value={nuevoEvento.titulo} 
+                  onChange={handleInputChange} 
+                  placeholder="Título del evento" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Fecha *
+                </label>
+                <input 
+                  name="fecha" 
+                  value={nuevoEvento.fecha} 
+                  onChange={handleInputChange} 
+                  placeholder="Fecha (ej. 15 de Abril, 2024)" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Hora *
+                </label>
+                <input 
+                  name="hora" 
+                  value={nuevoEvento.hora} 
+                  onChange={handleInputChange} 
+                  placeholder="Hora (ej. 16:00)" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Lugar *
+                </label>
+                <input 
+                  name="lugar" 
+                  value={nuevoEvento.lugar} 
+                  onChange={handleInputChange} 
+                  placeholder="Lugar del evento" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Cupo *
+                </label>
+                <input 
+                  name="cupo" 
+                  value={nuevoEvento.cupo} 
+                  onChange={handleInputChange} 
+                  placeholder="Número de cupos" 
+                  type="number" 
+                  min="1" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Descripción *
+                </label>
+                <textarea 
+                  name="descripcion" 
+                  value={nuevoEvento.descripcion} 
+                  onChange={handleInputChange} 
+                  placeholder="Descripción del evento..." 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    minHeight: '100px',
+                    resize: 'vertical',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Imagen del evento *
+                </label>
+                <input 
+                  type="file" 
+                  onChange={handleImagenEventoChange} 
+                  accept="image/*" 
+                  required 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                />
               {previewImagenEvento && (
-                <img src={previewImagenEvento} alt="Previsualización" style={{width: '100%', maxWidth: 320, margin: '0 auto 10px auto', borderRadius: 12, boxShadow: '0 2px 12px #1E3A8A33'}} />
-              )}
-              <input name="registroLink" value={nuevoEvento.registroLink} onChange={handleInputChange} placeholder="Link de registro (opcional)" style={{padding:8, borderRadius:8}} />
-              <div style={{ marginTop: '20px' }}>
-                <button type="submit" style={{ marginRight: '10px' }}>Guardar</button>
-                <button type="button" onClick={() => setShowNuevoEventoModal(false)}>Cancelar</button>
+                  <img 
+                    src={previewImagenEvento} 
+                    alt="Previsualización" 
+                    style={{
+                      width: '100%',
+                      maxWidth: '320px',
+                      margin: '8px auto',
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 12px rgba(30, 58, 138, 0.2)'
+                    }} 
+                  />
+                )}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Link de registro
+                </label>
+                <input 
+                  name="registroLink" 
+                  value={nuevoEvento.registroLink} 
+                  onChange={handleInputChange} 
+                  placeholder="Link de registro (opcional)" 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                />
+              </div>
+
+              {/* Botones de acción */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                marginTop: '20px',
+                paddingTop: '16px',
+                borderTop: '1px solid #e0e0e0'
+              }}>
+                <button 
+                  type="submit" 
+                  style={{
+                    background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                    color: '#000',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    flex: 1
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.02)'}
+                  onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                >
+                  {editandoEvento ? 'Actualizar Evento' : 'Guardar Evento'}
+                </button>
+                <button 
+                  type="button" 
+                  onClick={() => setShowNuevoEventoModal(false)}
+                  style={{
+                    background: '#f5f5f5',
+                    color: '#666',
+                    border: '2px solid #e0e0e0',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    flex: 1
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#e0e0e0';
+                    e.currentTarget.style.color = '#333';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#f5f5f5';
+                    e.currentTarget.style.color = '#666';
+                  }}
+                >
+                  Cancelar
+                </button>
               </div>
             </form>
           </div>
@@ -659,20 +926,317 @@ const Comunidad = () => {
       </section>
 
       {/* Unirse a la Comunidad */}
-      <section className="join-community">
-        <div className="join-content">
-          <h2>¿Quieres ser parte de nuestra comunidad?</h2>
-          <p>Únete a nuestros canales y participa en nuestros eventos</p>
-          <div className="social-buttons">
-            <a href="https://discord.gg/Pmu4JQeNR6" className="discord-btn" target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-discord"></i> Unirse al Discord
+      <section className="join-community" style={{
+        margin: '4rem auto',
+        maxWidth: '1200px',
+        padding: '3rem 2rem',
+        background: 'linear-gradient(135deg, rgba(26,26,26,0.8), rgba(30,58,138,0.1))',
+        borderRadius: '24px',
+        border: '2px solid rgba(212, 175, 55, 0.3)',
+        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+        backdropFilter: 'blur(12px)',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Elementos decorativos */}
+        <div style={{
+          position: 'absolute',
+          top: '-50px',
+          right: '-50px',
+          width: '200px',
+          height: '200px',
+          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%)',
+          borderRadius: '50%',
+          zIndex: 0
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          bottom: '-30px',
+          left: '-30px',
+          width: '150px',
+          height: '150px',
+          background: 'radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%)',
+          borderRadius: '50%',
+          zIndex: 0
+        }}></div>
+
+        <div className="join-content" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{
+              fontFamily: 'Orbitron',
+              color: '#D4AF37',
+              fontSize: '2.5rem',
+              margin: '0 0 1rem 0',
+              fontWeight: 'bold',
+              textShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+            }}>
+              ¿Quieres ser parte de nuestra comunidad?
+            </h2>
+            <p style={{
+              color: '#E0E0E0',
+              fontSize: '1.2rem',
+              margin: '0',
+              maxWidth: '600px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              lineHeight: '1.6'
+            }}>
+              Únete a nuestros canales y participa en nuestros eventos. Conecta con otros entusiastas de blockchain y criptomonedas.
+            </p>
+          </div>
+
+          <div className="social-buttons" style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '1.5rem',
+            maxWidth: '900px',
+            margin: '0 auto'
+          }}>
+            {/* Discord */}
+            <a href="https://discord.gg/Pmu4JQeNR6" 
+               className="discord-btn" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '12px',
+                 padding: '1.2rem 2rem',
+                 background: 'linear-gradient(135deg, #5865F2, #4752C4)',
+                 color: 'white',
+                 textDecoration: 'none',
+                 borderRadius: '16px',
+                 fontWeight: 'bold',
+                 fontSize: '1.1rem',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 16px rgba(88, 101, 242, 0.4)',
+                 border: '2px solid rgba(255, 255, 255, 0.1)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(88, 101, 242, 0.6)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(88, 101, 242, 0.4)';
+               }}
+            >
+              <i className="fab fa-discord" style={{ fontSize: '1.5rem' }}></i>
+              <span>Unirse al Discord</span>
             </a>
-            <a href="https://t.me/+tPgjd4cOxG05NmVh" className="telegram-btn" target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-telegram"></i> Grupo de Telegram
+
+            {/* Telegram */}
+            <a href="https://t.me/+tPgjd4cOxG05NmVh" 
+               className="telegram-btn" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '12px',
+                 padding: '1.2rem 2rem',
+                 background: 'linear-gradient(135deg, #0088CC, #0077B3)',
+                 color: 'white',
+                 textDecoration: 'none',
+                 borderRadius: '16px',
+                 fontWeight: 'bold',
+                 fontSize: '1.1rem',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 16px rgba(0, 136, 204, 0.4)',
+                 border: '2px solid rgba(255, 255, 255, 0.1)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 136, 204, 0.6)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 136, 204, 0.4)';
+               }}
+            >
+              <i className="fab fa-telegram" style={{ fontSize: '1.5rem' }}></i>
+              <span>Grupo de Telegram</span>
             </a>
-            <a href="https://wa.me/+525512345678" className="whatsapp-btn" target="_blank" rel="noopener noreferrer">
-              <i className="fab fa-whatsapp"></i> Grupo de WhatsApp
+
+            {/* WhatsApp */}
+            <a href="https://wa.me/+525512345678" 
+               className="whatsapp-btn" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '12px',
+                 padding: '1.2rem 2rem',
+                 background: 'linear-gradient(135deg, #25D366, #128C7E)',
+                 color: 'white',
+                 textDecoration: 'none',
+                 borderRadius: '16px',
+                 fontWeight: 'bold',
+                 fontSize: '1.1rem',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 16px rgba(37, 211, 102, 0.4)',
+                 border: '2px solid rgba(255, 255, 255, 0.1)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(37, 211, 102, 0.6)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(37, 211, 102, 0.4)';
+               }}
+            >
+              <i className="fab fa-whatsapp" style={{ fontSize: '1.5rem' }}></i>
+              <span>Grupo de WhatsApp</span>
             </a>
+
+            {/* Twitter/X */}
+            <a href="https://x.com/Cripto_UNAM" 
+               className="twitter-btn" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '12px',
+                 padding: '1.2rem 2rem',
+                 background: 'linear-gradient(135deg, #1DA1F2, #0D8BD9)',
+                 color: 'white',
+                 textDecoration: 'none',
+                 borderRadius: '16px',
+                 fontWeight: 'bold',
+                 fontSize: '1.1rem',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 16px rgba(29, 161, 242, 0.4)',
+                 border: '2px solid rgba(255, 255, 255, 0.1)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(29, 161, 242, 0.6)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(29, 161, 242, 0.4)';
+               }}
+            >
+              <i className="fab fa-twitter" style={{ fontSize: '1.5rem' }}></i>
+              <span>Síguenos en X</span>
+            </a>
+
+            {/* Instagram */}
+            <a href="https://instagram.com/criptounam" 
+               className="instagram-btn" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '12px',
+                 padding: '1.2rem 2rem',
+                 background: 'linear-gradient(135deg, #E4405F, #C13584)',
+                 color: 'white',
+                 textDecoration: 'none',
+                 borderRadius: '16px',
+                 fontWeight: 'bold',
+                 fontSize: '1.1rem',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 16px rgba(228, 64, 95, 0.4)',
+                 border: '2px solid rgba(255, 255, 255, 0.1)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(228, 64, 95, 0.6)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(228, 64, 95, 0.4)';
+               }}
+            >
+              <i className="fab fa-instagram" style={{ fontSize: '1.5rem' }}></i>
+              <span>Síguenos en Instagram</span>
+            </a>
+
+            {/* LinkedIn */}
+            <a href="https://linkedin.com/company/criptounam" 
+               className="linkedin-btn" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 gap: '12px',
+                 padding: '1.2rem 2rem',
+                 background: 'linear-gradient(135deg, #0077B5, #005885)',
+                 color: 'white',
+                 textDecoration: 'none',
+                 borderRadius: '16px',
+                 fontWeight: 'bold',
+                 fontSize: '1.1rem',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 4px 16px rgba(0, 119, 181, 0.4)',
+                 border: '2px solid rgba(255, 255, 255, 0.1)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 119, 181, 0.6)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 119, 181, 0.4)';
+               }}
+            >
+              <i className="fab fa-linkedin" style={{ fontSize: '1.5rem' }}></i>
+              <span>Síguenos en LinkedIn</span>
+            </a>
+          </div>
+
+          {/* Información adicional */}
+          <div style={{
+            textAlign: 'center',
+            marginTop: '3rem',
+            padding: '2rem',
+            background: 'rgba(212, 175, 55, 0.1)',
+            borderRadius: '16px',
+            border: '1px solid rgba(212, 175, 55, 0.2)'
+          }}>
+            <h3 style={{
+              color: '#D4AF37',
+              fontSize: '1.3rem',
+              margin: '0 0 1rem 0',
+              fontFamily: 'Orbitron'
+            }}>
+              ¿Por qué unirse a nuestra comunidad?
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '1rem',
+              marginTop: '1rem'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <i className="fas fa-users" style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '0.5rem' }}></i>
+                <p style={{ color: '#E0E0E0', margin: '0', fontSize: '0.9rem' }}>500+ Miembros Activos</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <i className="fas fa-calendar-check" style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '0.5rem' }}></i>
+                <p style={{ color: '#E0E0E0', margin: '0', fontSize: '0.9rem' }}>Eventos Mensuales</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <i className="fas fa-graduation-cap" style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '0.5rem' }}></i>
+                <p style={{ color: '#E0E0E0', margin: '0', fontSize: '0.9rem' }}>Cursos Gratuitos</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <i className="fas fa-network-wired" style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '0.5rem' }}></i>
+                <p style={{ color: '#E0E0E0', margin: '0', fontSize: '0.9rem' }}>Networking Profesional</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
