@@ -5,6 +5,7 @@ import axios from 'axios'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
+import { API_ENDPOINTS } from '../config/api'
 
 // Mover cursosData y la interfaz Curso a src/constants/cursosData.ts
 
@@ -71,7 +72,7 @@ const Cursos = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const res = await axios.get<CursoBackend[]>('http://localhost:4000/cursos');
+        const res = await axios.get<CursoBackend[]>(API_ENDPOINTS.CURSOS);
         setCursos(res.data);
       } catch (error) {
         console.error('Error al cargar cursos:', error);
@@ -149,7 +150,7 @@ const Cursos = () => {
       // Subir imagen del curso
       const formData = new FormData();
       formData.append('file', imagenCursoFile);
-      const imagenResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
+      const imagenResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData);
       const imagenUrl = imagenResponse.data.ipfsUrl;
 
       // Procesar lecciones
@@ -163,7 +164,7 @@ const Cursos = () => {
           // Si no es una URL válida, asumimos que es un archivo
           const videoFormData = new FormData();
           videoFormData.append('file', leccion.videoFile!);
-          const videoResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', videoFormData);
+          const videoResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, videoFormData);
           return {
             ...leccion,
             video: videoResponse.data.ipfsUrl
@@ -177,7 +178,7 @@ const Cursos = () => {
         lecciones: leccionesProcesadas,
       };
 
-      await axios.post('http://localhost:4000/curso', cursoData, {
+      await axios.post(API_ENDPOINTS.CURSOS, cursoData, {
         headers: {
           'x-wallet-address': walletAddress
         }
@@ -232,7 +233,7 @@ const Cursos = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:4000/curso/${id}`, {
+      await axios.delete(API_ENDPOINTS.CURSO(id), {
         headers: {
           'x-wallet-address': walletAddress
         }

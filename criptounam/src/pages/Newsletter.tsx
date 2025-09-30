@@ -7,6 +7,7 @@ import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
 import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 interface NewsletterEntry {
   id: number
@@ -41,7 +42,7 @@ const Newsletter = () => {
   useEffect(() => {
     const fetchEntradas = async () => {
       try {
-        const res = await axios.get<NewsletterEntry[]>('http://localhost:4000/newsletter');
+        const res = await axios.get<NewsletterEntry[]>(API_ENDPOINTS.NEWSLETTER);
         setEntradas(res.data);
       } catch (error) {
         console.error('Error al cargar entradas de newsletter:', error);
@@ -133,7 +134,7 @@ const Newsletter = () => {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const response = await axios.post<{ ipfsUrl: string }>('http://localhost:4000/upload', formData, {
+      const response = await axios.post<{ ipfsUrl: string }>(API_ENDPOINTS.UPLOAD, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       return response.data.ipfsUrl;
@@ -160,7 +161,7 @@ const Newsletter = () => {
         author: nuevaEntrada.author,
         tags: nuevaEntrada.tags.split(',').map(t => t.trim()).filter(Boolean),
       };
-      await axios.post('http://localhost:4000/newsletter', entradaData, {
+      await axios.post(API_ENDPOINTS.NEWSLETTER, entradaData, {
         headers: {
           'x-wallet-address': walletAddress
         }
@@ -169,7 +170,7 @@ const Newsletter = () => {
       setNuevaEntrada({ title: '', date: '', content: '', imageFile: null, author: '', tags: '' });
       setPreviewImage(null);
       // Recargar entradas
-      const res = await axios.get<NewsletterEntry[]>('http://localhost:4000/newsletter');
+      const res = await axios.get<NewsletterEntry[]>(API_ENDPOINTS.NEWSLETTER);
       setEntradas(res.data);
     } catch (error: any) {
       alert('Error al subir la entrada: ' + (error?.message || error));
@@ -183,7 +184,7 @@ const Newsletter = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:4000/newsletter/${id}`, {
+      await axios.delete(API_ENDPOINTS.NEWSLETTER_ENTRY(id), {
         headers: {
           'x-wallet-address': walletAddress
         }

@@ -5,6 +5,7 @@ import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 interface NewsletterEntry {
   id: number
@@ -27,7 +28,7 @@ const NewsletterEntry = () => {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        const res = await axios.get<NewsletterEntry>(`http://localhost:4000/newsletter/${id}`);
+        const res = await axios.get<NewsletterEntry>(API_ENDPOINTS.NEWSLETTER_ENTRY(id));
         setEntry(res.data);
         setNotFound(false);
       } catch (error) {

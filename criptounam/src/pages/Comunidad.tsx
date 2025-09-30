@@ -3,6 +3,7 @@ import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
 import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 interface BackendPinataResponse {
   ipfsUrl: string;
@@ -119,7 +120,7 @@ const Comunidad = () => {
     const formData = new FormData();
     formData.append('file', file);
     try {
-      const response = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData, {
+      const response = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       return response.data.ipfsUrl;
@@ -149,7 +150,7 @@ const Comunidad = () => {
         imagen: imagenUrl,
         registroLink: nuevoEvento.registroLink || '',
       };
-      const res = await axios.post('http://localhost:4000/evento', eventoData, {
+      const res = await axios.post(API_ENDPOINTS.EVENTOS, eventoData, {
         headers: {
           'x-wallet-address': walletAddress
         }
@@ -171,7 +172,7 @@ const Comunidad = () => {
       // Subir imagen principal
       const formData = new FormData();
       formData.append('file', imagenPrincipalFile);
-      const imagenResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
+      const imagenResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData);
       const imagenPrincipalUrl = imagenResponse.data.ipfsUrl;
 
       // Subir fotos si hay
@@ -179,7 +180,7 @@ const Comunidad = () => {
       if (fotosFiles.length > 0) {
         const fotosFormData = new FormData();
         fotosFiles.forEach(file => fotosFormData.append('files', file));
-        const fotosResponse = await axios.post<BackendMultipleFilesResponse>('http://localhost:4000/upload-multiple', fotosFormData);
+        const fotosResponse = await axios.post<BackendMultipleFilesResponse>(API_ENDPOINTS.UPLOAD_MULTIPLE, fotosFormData);
         fotosUrls = fotosResponse.data.urls;
       }
 
@@ -188,7 +189,7 @@ const Comunidad = () => {
       if (presentacionesFiles.length > 0) {
         const presentacionesFormData = new FormData();
         presentacionesFiles.forEach(file => presentacionesFormData.append('files', file));
-        const presentacionesResponse = await axios.post<BackendMultipleFilesResponse>('http://localhost:4000/upload-multiple', presentacionesFormData);
+        const presentacionesResponse = await axios.post<BackendMultipleFilesResponse>(API_ENDPOINTS.UPLOAD_MULTIPLE, presentacionesFormData);
         presentacionesUrls = presentacionesResponse.data.urls;
       }
 
@@ -197,7 +198,7 @@ const Comunidad = () => {
       if (videosFiles.length > 0) {
         const videosFormData = new FormData();
         videosFiles.forEach(file => videosFormData.append('files', file));
-        const videosResponse = await axios.post<BackendMultipleFilesResponse>('http://localhost:4000/upload-multiple', videosFormData);
+        const videosResponse = await axios.post<BackendMultipleFilesResponse>(API_ENDPOINTS.UPLOAD_MULTIPLE, videosFormData);
         videosUrls = videosResponse.data.urls;
       }
       // Agregar URLs de YouTube si hay
@@ -216,7 +217,7 @@ const Comunidad = () => {
         presentaciones: presentacionesUrls,
       };
 
-      const res = await axios.post('http://localhost:4000/evento', eventoData, {
+      const res = await axios.post(API_ENDPOINTS.EVENTOS, eventoData, {
         headers: {
           'x-wallet-address': walletAddress
         }
@@ -291,7 +292,7 @@ const Comunidad = () => {
   useEffect(() => {
     const fetchEventos = async () => {
       try {
-        const res = await axios.get<EventoBackend[]>('http://localhost:4000/eventos');
+        const res = await axios.get<EventoBackend[]>(API_ENDPOINTS.EVENTOS);
         setEventosDinamicos(res.data.filter((e) => e.tipo === 'proximo'));
         setEventosAnterioresDinamicos(res.data.filter((e) => e.tipo === 'anterior'));
       } catch (error) {
@@ -369,7 +370,7 @@ const Comunidad = () => {
       return;
     }
     try {
-      await axios.delete(`http://localhost:4000/evento/${evento._id}`, {
+      await axios.delete(API_ENDPOINTS.EVENTO(evento._id), {
         headers: {
           'x-wallet-address': walletAddress
         }
@@ -397,7 +398,7 @@ const Comunidad = () => {
         cupo: Number(nuevoEvento.cupo),
         imagen: imagenUrl,
       };
-      const res = await axios.put(`http://localhost:4000/evento/${editandoEvento._id}`, eventoData);
+      const res = await axios.put(API_ENDPOINTS.EVENTO(editandoEvento._id), eventoData);
       setEventosDinamicos(eventosDinamicos.map(e => e._id === editandoEvento._id ? res.data : e));
       setShowNuevoEventoModal(false);
       setEditandoEvento(null);
@@ -418,7 +419,7 @@ const Comunidad = () => {
       if (imagenPrincipalFile) {
         const formData = new FormData();
         formData.append('file', imagenPrincipalFile);
-        const imagenResponse = await axios.post<BackendPinataResponse>('http://localhost:4000/upload', formData);
+        const imagenResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData);
         imagenPrincipalUrl = imagenResponse.data.ipfsUrl;
       }
       // No se permite editar fotos, videos ni presentaciones aquí para simplificar
@@ -427,7 +428,7 @@ const Comunidad = () => {
         cupo: Number(nuevoEventoAnterior.cupo),
         imagenPrincipal: imagenPrincipalUrl,
       };
-      const res = await axios.put(`http://localhost:4000/evento/${editandoEvento._id}`, eventoData);
+      const res = await axios.put(API_ENDPOINTS.EVENTO(editandoEvento._id), eventoData);
       setEventosAnterioresDinamicos(eventosAnterioresDinamicos.map(e => e._id === editandoEvento._id ? res.data : e));
       setShowEventoPasadoModal(false);
       setEditandoEvento(null);

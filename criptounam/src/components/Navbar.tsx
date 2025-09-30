@@ -4,6 +4,7 @@ import { useAccount, useDisconnect, useEnsName, useEnsAvatar, useBalance } from 
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import '../styles/global.css'
 import { useAdmin } from '../hooks/useAdmin'
+import { API_ENDPOINTS } from '../config/api'
 import { 
   faBell, 
   faHome, 
@@ -116,7 +117,7 @@ const Navbar = () => {
   }, [])
 
   useEffect(() => {
-    fetch('http://localhost:4000/notificaciones')
+    fetch(API_ENDPOINTS.NOTIFICACIONES)
       .then(res => res.json())
       .then(data => {
         setNotificaciones(data.map((n: any) => ({ ...n, leida: false })));
