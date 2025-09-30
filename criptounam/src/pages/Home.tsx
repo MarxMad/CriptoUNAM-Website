@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
 import { handleRegistration, handleNewsletterSubscription } from '../api/telegram'
+import { API_ENDPOINTS } from '../config/api'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faGraduationCap, 
@@ -617,9 +618,9 @@ const Home = () => {
   useEffect(() => {
     const fetchCursosYEventos = async () => {
       try {
-        const cursosRes = await axios.get<any[]>('http://localhost:4000/cursos');
+        const cursosRes = await axios.get<any[]>(API_ENDPOINTS.CURSOS);
         setCursosHome(Array.isArray(cursosRes.data) ? cursosRes.data.slice(0, 4) : []);
-        const eventosRes = await axios.get<any[]>('http://localhost:4000/eventos');
+        const eventosRes = await axios.get<any[]>(API_ENDPOINTS.EVENTOS);
         setEventosHome(Array.isArray(eventosRes.data) ? eventosRes.data.filter((e:any)=>e.tipo==='proximo').slice(0, 4) : []);
       } catch (e) {
         setCursosHome([]);

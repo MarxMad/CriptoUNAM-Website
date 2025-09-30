@@ -3,6 +3,7 @@ import { useAccount } from 'wagmi'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import { sendTelegramMessage } from '../api/telegram'
+import { API_ENDPOINTS } from '../config/api'
 import '../styles/global.css'
 
 const RegistroCurso = () => {
@@ -23,7 +24,7 @@ const RegistroCurso = () => {
   useEffect(() => {
     const fetchCurso = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/curso/${id}`)
+        const res = await axios.get(API_ENDPOINTS.CURSO(id))
         setCurso(res.data)
       } catch (e) {
         setCurso(null)

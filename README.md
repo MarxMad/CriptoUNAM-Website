@@ -9,9 +9,9 @@
 
 **🎓 Plataforma educativa descentralizada para aprender sobre blockchain, criptomonedas y Web3.**
 
-**🚀 [Ver sitio web en vivo](https://cripto-unam-website.vercel.app/)**
+**🚀 [Ver sitio web en vivo](https://criptounam.xyz/)**
 
-[![Website Status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A//cripto-unam-website.vercel.app/)](https://cripto-unam-website.vercel.app/)
+[![Website Status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A//criptounam.xyz/)](https://criptounam.xyz/)
 
 [📚 Documentación](https://github.com/MarxMad/CriptoUNAM-Website) · [🐛 Reportar bug](https://github.com/MarxMad/CriptoUNAM-Website/issues)
 
@@ -45,9 +45,9 @@ CriptoUNAM es una plataforma educativa descentralizada diseñada para la comunid
 
 ## 🖼️ Vista previa
 
-![CriptoUNAM Homepage](https://cripto-unam-website.vercel.app/)
+![CriptoUNAM Homepage](https://criptounam.xyz/)
 
-> 📸 *Visita el [sitio web en vivo](https://cripto-unam-website.vercel.app/) para explorar todas las funcionalidades*
+> 📸 *Visita el [sitio web en vivo](https://criptounam.xyz/) para explorar todas las funcionalidades*
 
 ## 📋 Prerrequisitos
 
@@ -261,7 +261,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 
 ## 📞 Contacto y enlaces
 
-- **🌐 Website**: [cripto-unam-website.vercel.app](https://cripto-unam-website.vercel.app/)
+- **🌐 Website**: [criptounam.xyz](https://criptounam.xyz/)
 - **📧 Email**: criptounam@gmail.com
 - **🐦 Twitter**: [@Cripto_UNAM](https://twitter.com/Cripto_UNAM)
 - **💬 Discord**: Servidor de CriptoUNAM
@@ -272,7 +272,7 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 
 Este proyecto está en **desarrollo activo**. Nuevas funcionalidades se agregan regularmente. 
 
-[![Website Status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A//cripto-unam-website.vercel.app/)](https://cripto-unam-website.vercel.app/)
+[![Website Status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A//criptounam.xyz/)](https://criptounam.xyz/)
 
 ## 🙏 Agradecimientos
 
