@@ -315,6 +315,20 @@ const Comunidad = () => {
     }
   }, []);
 
+  // Listener para el botón de admin
+  useEffect(() => {
+    const handleOpenComunidadModal = () => {
+      console.log('🎪 Comunidad: Abriendo modal desde botón admin');
+      setShowNuevoEventoModal(true);
+    };
+
+    window.addEventListener('openComunidadModal', handleOpenComunidadModal);
+    
+    return () => {
+      window.removeEventListener('openComunidadModal', handleOpenComunidadModal);
+    };
+  }, []);
+
   // Al abrir modal de editar evento próximo
   const handleEditarEvento = (evento: any) => {
     setNuevoEvento({

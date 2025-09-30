@@ -94,6 +94,20 @@ const Cursos = () => {
     }
   }, []);
 
+  // Listener para el botón de admin
+  useEffect(() => {
+    const handleOpenCursosModal = () => {
+      console.log('📚 Cursos: Abriendo modal desde botón admin');
+      setShowCursosModal(true);
+    };
+
+    window.addEventListener('openCursosModal', handleOpenCursosModal);
+    
+    return () => {
+      window.removeEventListener('openCursosModal', handleOpenCursosModal);
+    };
+  }, []);
+
   const cursosFiltrados = cursos.filter(curso => {
     const cumpleFiltroNivel = filtroNivel === 'todos' || curso.nivel.toLowerCase() === filtroNivel
     const cumpleBusqueda = curso.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
