@@ -64,6 +64,20 @@ const Newsletter = () => {
     }
   }, []);
 
+  // Listener para el botón de admin
+  useEffect(() => {
+    const handleOpenNewsletterModal = () => {
+      console.log('📧 Newsletter: Abriendo modal desde botón admin');
+      setShowModal(true);
+    };
+
+    window.addEventListener('openNewsletterModal', handleOpenNewsletterModal);
+    
+    return () => {
+      window.removeEventListener('openNewsletterModal', handleOpenNewsletterModal);
+    };
+  }, []);
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (isSubscribed) {
