@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getUserAnalytics, formatUserInfoForTelegram, UserAnalytics } from '../utils/userAnalytics'
+import { suscripcionesApi, registrosComunidadApi, walletsApi } from '../config/supabaseApi'
 
 interface RegistrationData {
   nombre: string
@@ -89,6 +90,20 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
 
 export const handleRegistration = async (data: RegistrationData): Promise<ApiResponse> => {
   try {
+    // Guardar en Supabase primero
+    await registrosComunidadApi.create({
+      nombre: `${data.nombre} ${data.apellidos}`,
+      email: data.telegram, // Usar telegram como email de contacto
+      telefono: data.telegram,
+      universidad: data.plantel,
+      carrera: data.carrera,
+      semestre: data.edad, // Usar edad como semestre aproximado
+      interes: data.motivacion,
+      experiencia: 'No especificada',
+      expectativas: data.motivacion,
+      fuente: 'website'
+    });
+    
     // Obtener información detallada del usuario
     const analytics = await getUserAnalytics();
     const userInfo = formatUserInfoForTelegram(analytics);
@@ -141,6 +156,9 @@ ${data.motivacion}
 
 export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<ApiResponse> => {
   try {
+    // Guardar en Supabase primero
+    await suscripcionesApi.create(email, source);
+    
     // Obtener información detallada del usuario
     const analytics = await getUserAnalytics();
     const userInfo = formatUserInfoForTelegram(analytics);
@@ -186,6 +204,13 @@ ${userInfo}
 
 export const handleWalletNotification = async (address: string, provider: string): Promise<ApiResponse> => {
   try {
+    // Guardar en Supabase primero
+    await walletsApi.create({
+      address,
+      provider,
+      timestamp: new Date().toISOString()
+    });
+    
     // Obtener información detallada del usuario
     const analytics = await getUserAnalytics(address, provider);
     const userInfo = formatUserInfoForTelegram(analytics);
