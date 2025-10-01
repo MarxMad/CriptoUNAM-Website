@@ -10,7 +10,14 @@ const queryClient = new QueryClient()
 // 1. Obtén el projectId desde las variables de entorno
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID?.trim()
 
+console.log('Variables de entorno:', {
+  VITE_WALLET_CONNECT_PROJECT_ID: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
+  projectId: projectId,
+  NODE_ENV: import.meta.env.NODE_ENV
+})
+
 if (!projectId) {
+  console.error('VITE_WALLET_CONNECT_PROJECT_ID no está definido')
   throw new Error('VITE_WALLET_CONNECT_PROJECT_ID no está definido en el archivo .env')
 }
 
@@ -34,28 +41,19 @@ const wagmiAdapter = new WagmiAdapter({
   ssr: true
 })
 
-// 5. Inicializa AppKit con configuración mejorada
+// 5. Inicializa AppKit con configuración simplificada
 createAppKit({
   adapters: [wagmiAdapter],
   networks: [mainnet, arbitrum],
   projectId,
   metadata,
   themeMode: 'dark',
-  themeVariables: {
-    '--w3m-font-family': 'Inter, system-ui, sans-serif',
-    '--w3m-accent': '#D4AF37',
-    '--w3m-color-mix': '#D4AF37',
-    '--w3m-color-mix-strength': 20,
-    '--w3m-border-radius-master': '12px'
-  },
   features: {
     analytics: true,
-    email: false,
-    socials: [],
+    email: true,
+    socials: ['google', 'discord', 'github'],
     emailShowWallets: true
-  },
-  enableEIP6963: true,
-  enableCoinbase: true
+  }
 })
 
 export function AppKitProvider({ children }: { children: React.ReactNode }) {
