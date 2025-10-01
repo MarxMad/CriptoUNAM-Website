@@ -35,6 +35,14 @@ const Comunidad = () => {
     registrolink: '',
     tipo: 'proximo' as 'proximo' | 'anterior',
   });
+  
+  // Estados para archivos adicionales
+  const [fotosFiles, setFotosFiles] = useState<File[]>([]);
+  const [videosFiles, setVideosFiles] = useState<File[]>([]);
+  const [presentacionesFiles, setPresentacionesFiles] = useState<File[]>([]);
+  const [previewFotos, setPreviewFotos] = useState<string[]>([]);
+  const [videoUrls, setVideoUrls] = useState<string[]>([]);
+  const [presentacionUrls, setPresentacionUrls] = useState<string[]>([]);
   const [nuevoEventoAnterior, setNuevoEventoAnterior] = useState({
     titulo: '',
     fecha: '',
@@ -119,6 +127,44 @@ const Comunidad = () => {
     }
   };
 
+  // Manejar múltiples fotos
+  const handleFotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setFotosFiles(files);
+      const previews = files.map(file => URL.createObjectURL(file));
+      setPreviewFotos(previews);
+    }
+  };
+
+  // Manejar videos (URLs de YouTube)
+  const handleVideoUrlAdd = () => {
+    const url = prompt('Ingresa la URL del video de YouTube:');
+    if (url && url.includes('youtube.com')) {
+      setVideoUrls([...videoUrls, url]);
+    } else if (url) {
+      alert('Por favor ingresa una URL válida de YouTube');
+    }
+  };
+
+  // Manejar presentaciones (URLs)
+  const handlePresentacionUrlAdd = () => {
+    const url = prompt('Ingresa la URL de la presentación (Google Drive, Dropbox, etc.):');
+    if (url) {
+      setPresentacionUrls([...presentacionUrls, url]);
+    }
+  };
+
+  // Eliminar video
+  const removeVideo = (index: number) => {
+    setVideoUrls(videoUrls.filter((_, i) => i !== index));
+  };
+
+  // Eliminar presentación
+  const removePresentacion = (index: number) => {
+    setPresentacionUrls(presentacionUrls.filter((_, i) => i !== index));
+  };
+
   const uploadToSupabase = async (file: File): Promise<string> => {
     try {
       return await eventosApi.uploadEventImage(file);
@@ -136,7 +182,15 @@ const Comunidad = () => {
     }
     if (!nuevoEvento.titulo || !nuevoEvento.fecha || !nuevoEvento.hora || !nuevoEvento.lugar || !nuevoEvento.cupo || !nuevoEvento.descripcion || !imagenEventoFile) return;
     try {
+      // Subir imagen principal
       const imagenUrl = await uploadToSupabase(imagenEventoFile);
+      
+      // Subir fotos adicionales si las hay
+      let fotosUrls: string[] = [];
+      if (fotosFiles.length > 0) {
+        fotosUrls = await eventosApi.uploadMultipleImages(fotosFiles);
+      }
+      
       const eventoData: Omit<Evento, 'id' | 'creadoEn'> = {
         tipo: nuevoEvento.tipo,
         titulo: nuevoEvento.titulo,
@@ -146,13 +200,22 @@ const Comunidad = () => {
         cupo: Number(nuevoEvento.cupo),
         descripcion: nuevoEvento.descripcion,
         imagen: imagenUrl,
+        fotos: fotosUrls,
+        videos: videoUrls,
+        presentaciones: presentacionUrls,
         registrolink: nuevoEvento.registrolink || '',
       };
       const nuevoEventoData = await eventosApi.create(eventoData);
       setEventosDinamicos([nuevoEventoData, ...eventosDinamicos]);
+      
+      // Resetear formulario
       setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '', tipo: 'proximo' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
+      setFotosFiles([]);
+      setPreviewFotos([]);
+      setVideoUrls([]);
+      setPresentacionUrls([]);
       setShowNuevoEventoModal(false);
     } catch (error: any) {
       console.error('Error al crear el evento:', error);
@@ -819,6 +882,168 @@ const Comunidad = () => {
                   onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
                   onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                 />
+              </div>
+
+              {/* Galería de fotos adicionales */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Galería de fotos (opcional)
+                </label>
+                <input 
+                  type="file" 
+                  multiple 
+                  onChange={handleFotosChange} 
+                  accept="image/*" 
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px solid #e0e0e0',
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                />
+                {previewFotos.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px' }}>
+                    {previewFotos.map((preview, index) => (
+                      <img 
+                        key={index}
+                        src={preview} 
+                        alt={`Preview ${index + 1}`} 
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          objectFit: 'cover',
+                          borderRadius: '8px',
+                          border: '2px solid #D4AF37'
+                        }} 
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Videos de YouTube */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Videos de YouTube (opcional)
+                </label>
+                <button 
+                  type="button"
+                  onClick={handleVideoUrlAdd}
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px dashed #D4AF37',
+                    fontSize: '1rem',
+                    background: 'transparent',
+                    color: '#D4AF37',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#D4AF37';
+                    e.currentTarget.style.color = '#000';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#D4AF37';
+                  }}
+                >
+                  + Agregar video de YouTube
+                </button>
+                {videoUrls.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                    {videoUrls.map((url, index) => (
+                      <div key={index} style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px',
+                        padding: '8px',
+                        background: '#f5f5f5',
+                        borderRadius: '4px'
+                      }}>
+                        <span style={{ fontSize: '0.9rem', flex: 1, wordBreak: 'break-all' }}>{url}</span>
+                        <button 
+                          type="button"
+                          onClick={() => removeVideo(index)}
+                          style={{
+                            background: 'red',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Presentaciones */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <label style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  Presentaciones (opcional)
+                </label>
+                <button 
+                  type="button"
+                  onClick={handlePresentacionUrlAdd}
+                  style={{
+                    padding: '12px',
+                    borderRadius: '8px',
+                    border: '2px dashed #D4AF37',
+                    fontSize: '1rem',
+                    background: 'transparent',
+                    color: '#D4AF37',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#D4AF37';
+                    e.currentTarget.style.color = '#000';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.color = '#D4AF37';
+                  }}
+                >
+                  + Agregar presentación
+                </button>
+                {presentacionUrls.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                    {presentacionUrls.map((url, index) => (
+                      <div key={index} style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px',
+                        padding: '8px',
+                        background: '#f5f5f5',
+                        borderRadius: '4px'
+                      }}>
+                        <span style={{ fontSize: '0.9rem', flex: 1, wordBreak: 'break-all' }}>{url}</span>
+                        <button 
+                          type="button"
+                          onClick={() => removePresentacion(index)}
+                          style={{
+                            background: 'red',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '4px 8px',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Botones de acción */}
