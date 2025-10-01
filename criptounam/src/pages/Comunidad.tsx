@@ -2,34 +2,10 @@ import React, { useState, useEffect } from 'react'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
-import axios from 'axios'
-import { API_ENDPOINTS } from '../config/api'
+import { eventosApi, Evento } from '../config/supabaseApi'
+import GaleriaFotos from '../components/GaleriaFotos'
 
-interface BackendPinataResponse {
-  ipfsUrl: string;
-}
-
-interface BackendMultipleFilesResponse {
-  urls: string[];
-}
-
-interface EventoBackend {
-  tipo: string;
-  titulo: string;
-  fecha: string;
-  hora?: string;
-  lugar: string;
-  cupo: number;
-  descripcion?: string;
-  imagen?: string;
-  imagenPrincipal?: string;
-  fotos?: string[];
-  videos?: string[];
-  presentaciones?: string[];
-  registroLink?: string;
-  creadoEn?: string;
-  _id?: string;
-}
+// Usamos el tipo Evento de Supabase
 
 const Comunidad = () => {
   // Comentado el estado no utilizado
@@ -41,9 +17,9 @@ const Comunidad = () => {
   const { isAdmin, canCreateEvent, canDeleteEvent } = useAdmin();
 
   // Estado para eventos agregados dinámicamente
-  const [eventosDinamicos, setEventosDinamicos] = useState<any[]>([]);
-  const [eventosAnterioresDinamicos, setEventosAnterioresDinamicos] = useState<any[]>([]);
-  const [todosLosEventos, setTodosLosEventos] = useState<any[]>([]);
+  const [eventosDinamicos, setEventosDinamicos] = useState<Evento[]>([]);
+  const [eventosAnterioresDinamicos, setEventosAnterioresDinamicos] = useState<Evento[]>([]);
+  const [todosLosEventos, setTodosLosEventos] = useState<Evento[]>([]);
   const [vistaActual, setVistaActual] = useState<'timeline' | 'separada'>('timeline');
   const [imagenEventoFile, setImagenEventoFile] = useState<File | null>(null);
   const [previewImagenEvento, setPreviewImagenEvento] = useState<string | null>(null);
@@ -118,16 +94,11 @@ const Comunidad = () => {
     }
   };
 
-  const uploadToPinata = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
+  const uploadToSupabase = async (file: File): Promise<string> => {
     try {
-      const response = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      return response.data.ipfsUrl;
+      return await eventosApi.uploadEventImage(file);
     } catch (error) {
-      console.error('Error al subir a Pinata (vía backend):', error);
+      console.error('Error al subir imagen a Supabase:', error);
       throw error;
     }
   };
@@ -140,8 +111,8 @@ const Comunidad = () => {
     }
     if (!nuevoEvento.titulo || !nuevoEvento.fecha || !nuevoEvento.hora || !nuevoEvento.lugar || !nuevoEvento.cupo || !nuevoEvento.descripcion || !imagenEventoFile) return;
     try {
-      const imagenUrl = await uploadToPinata(imagenEventoFile);
-      const eventoData = {
+      const imagenUrl = await uploadToSupabase(imagenEventoFile);
+      const eventoData: Omit<Evento, 'id' | 'creadoEn'> = {
         tipo: 'proximo',
         titulo: nuevoEvento.titulo,
         fecha: nuevoEvento.fecha,
@@ -152,18 +123,15 @@ const Comunidad = () => {
         imagen: imagenUrl,
         registroLink: nuevoEvento.registroLink || '',
       };
-      const res = await axios.post(API_ENDPOINTS.EVENTOS, eventoData, {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
-      setEventosDinamicos([res.data, ...eventosDinamicos]);
+      const nuevoEventoData = await eventosApi.create(eventoData);
+      setEventosDinamicos([nuevoEventoData, ...eventosDinamicos]);
       setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registroLink: '' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
+      setShowNuevoEventoModal(false);
     } catch (error: any) {
-      console.error('Error al subir la imagen del evento:', error);
-      alert('Error al subir la imagen. Detalle: ' + (error?.message || error));
+      console.error('Error al crear el evento:', error);
+      alert('Error al crear el evento. Detalle: ' + (error?.message || error));
     }
   };
   const handleAgregarEventoAnterior = async (e: React.FormEvent) => {
@@ -172,41 +140,29 @@ const Comunidad = () => {
     
     try {
       // Subir imagen principal
-      const formData = new FormData();
-      formData.append('file', imagenPrincipalFile);
-      const imagenResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData);
-      const imagenPrincipalUrl = imagenResponse.data.ipfsUrl;
+      const imagenPrincipalUrl = await uploadToSupabase(imagenPrincipalFile);
 
       // Subir fotos si hay
       let fotosUrls: string[] = [];
       if (fotosFiles.length > 0) {
-        const fotosFormData = new FormData();
-        fotosFiles.forEach(file => fotosFormData.append('files', file));
-        const fotosResponse = await axios.post<BackendMultipleFilesResponse>(API_ENDPOINTS.UPLOAD_MULTIPLE, fotosFormData);
-        fotosUrls = fotosResponse.data.urls;
+        fotosUrls = await eventosApi.uploadMultipleImages(fotosFiles);
       }
 
       // Subir presentaciones si hay
       let presentacionesUrls: string[] = [];
       if (presentacionesFiles.length > 0) {
-        const presentacionesFormData = new FormData();
-        presentacionesFiles.forEach(file => presentacionesFormData.append('files', file));
-        const presentacionesResponse = await axios.post<BackendMultipleFilesResponse>(API_ENDPOINTS.UPLOAD_MULTIPLE, presentacionesFormData);
-        presentacionesUrls = presentacionesResponse.data.urls;
+        presentacionesUrls = await eventosApi.uploadMultipleImages(presentacionesFiles);
       }
 
-      // Combinar videos de IPFS y YouTube
+      // Subir videos si hay
       let videosUrls: string[] = [];
       if (videosFiles.length > 0) {
-        const videosFormData = new FormData();
-        videosFiles.forEach(file => videosFormData.append('files', file));
-        const videosResponse = await axios.post<BackendMultipleFilesResponse>(API_ENDPOINTS.UPLOAD_MULTIPLE, videosFormData);
-        videosUrls = videosResponse.data.urls;
+        videosUrls = await eventosApi.uploadMultipleImages(videosFiles);
       }
       // Agregar URLs de YouTube si hay
       videosUrls = [...videosUrls, ...nuevoEventoAnterior.videos];
 
-      const eventoData = {
+      const eventoData: Omit<Evento, 'id' | 'creadoEn'> = {
         tipo: 'anterior',
         titulo: nuevoEventoAnterior.titulo,
         fecha: nuevoEventoAnterior.fecha,
@@ -219,12 +175,8 @@ const Comunidad = () => {
         presentaciones: presentacionesUrls,
       };
 
-      const res = await axios.post(API_ENDPOINTS.EVENTOS, eventoData, {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
-      setEventosAnterioresDinamicos([res.data, ...eventosAnterioresDinamicos]);
+      const nuevoEventoData = await eventosApi.create(eventoData);
+      setEventosAnterioresDinamicos([nuevoEventoData, ...eventosAnterioresDinamicos]);
       
       // Limpiar formulario
       setNuevoEventoAnterior({
@@ -242,9 +194,10 @@ const Comunidad = () => {
       setPreviewFotos([]);
       setVideosFiles([]);
       setPresentacionesFiles([]);
+      setShowEventoPasadoModal(false);
     } catch (error: any) {
-      console.error('Error al subir archivos:', error);
-      alert('Error al subir archivos. Detalle: ' + (error?.message || error));
+      console.error('Error al crear evento anterior:', error);
+      alert('Error al crear evento anterior. Detalle: ' + (error?.message || error));
     }
   };
 
@@ -354,9 +307,9 @@ const Comunidad = () => {
   useEffect(() => {
     const fetchEventos = async () => {
       try {
-        const res = await axios.get<EventoBackend[]>(API_ENDPOINTS.EVENTOS);
-        const eventosProximos = res.data.filter((e) => e.tipo === 'proximo');
-        const eventosAnteriores = res.data.filter((e) => e.tipo === 'anterior');
+        const eventos = await eventosApi.getAll();
+        const eventosProximos = eventos.filter((e) => e.tipo === 'proximo');
+        const eventosAnteriores = eventos.filter((e) => e.tipo === 'anterior');
         
         setEventosDinamicos(eventosProximos);
         setEventosAnterioresDinamicos(eventosAnteriores);
@@ -436,22 +389,18 @@ const Comunidad = () => {
     setShowEventoPasadoModal(true);
   };
   // Eliminar evento
-  const handleEliminarEvento = async (evento: any, tipo: 'proximo' | 'anterior') => {
+  const handleEliminarEvento = async (evento: Evento, tipo: 'proximo' | 'anterior') => {
     if (!window.confirm('¿Seguro que quieres eliminar este evento?')) return;
     if (!canDeleteEvent) {
       alert('No tienes permisos para eliminar eventos');
       return;
     }
     try {
-      await axios.delete(API_ENDPOINTS.EVENTO(evento._id), {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
+      await eventosApi.delete(evento.id!);
       if (tipo === 'proximo') {
-        setEventosDinamicos(eventosDinamicos.filter(e => e._id !== evento._id));
+        setEventosDinamicos(eventosDinamicos.filter(e => e.id !== evento.id));
       } else {
-        setEventosAnterioresDinamicos(eventosAnterioresDinamicos.filter(e => e._id !== evento._id));
+        setEventosAnterioresDinamicos(eventosAnterioresDinamicos.filter(e => e.id !== evento.id));
       }
     } catch (error) {
       alert('Error al eliminar el evento');
@@ -464,15 +413,15 @@ const Comunidad = () => {
     try {
       let imagenUrl = previewImagenEvento;
       if (imagenEventoFile) {
-        imagenUrl = await uploadToPinata(imagenEventoFile);
+        imagenUrl = await uploadToSupabase(imagenEventoFile);
       }
-      const eventoData = {
+      const eventoData: Partial<Evento> = {
         ...nuevoEvento,
         cupo: Number(nuevoEvento.cupo),
         imagen: imagenUrl,
       };
-      const res = await axios.put(API_ENDPOINTS.EVENTO(editandoEvento._id), eventoData);
-      setEventosDinamicos(eventosDinamicos.map(e => e._id === editandoEvento._id ? res.data : e));
+      const eventoActualizado = await eventosApi.update(editandoEvento.id!, eventoData);
+      setEventosDinamicos(eventosDinamicos.map(e => e.id === editandoEvento.id ? eventoActualizado : e));
       setShowNuevoEventoModal(false);
       setEditandoEvento(null);
       setEditandoTipo(null);
@@ -1051,9 +1000,14 @@ const Comunidad = () => {
               {evento.imagenPrincipal && (
                 <img src={evento.imagenPrincipal} alt={evento.titulo} style={{width:'100%', maxWidth:320, height:170, objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33', marginBottom:8}} />
               )}
-              {/* Galería interna de fotos */}
+              {/* Galería de fotos con componente mejorado */}
               {evento.fotos && evento.fotos.length > 0 && (
-                <GaleriaFotosInterna fotos={evento.fotos} titulo={evento.titulo} />
+                <GaleriaFotos 
+                  fotos={evento.fotos} 
+                  titulo={evento.titulo}
+                  maxHeight={200}
+                  showThumbnails={true}
+                />
               )}
               <div className="gallery-caption" style={{width:'100%'}}>
                 <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.2rem 0'}}>{evento.titulo}</h3>
@@ -1578,25 +1532,14 @@ const TimelineEventos = ({
                     )}
 
                     {!evento.esFuturo && evento.fotos && evento.fotos.length > 0 && (
-                      <button 
-                        style={{
-                          background:'linear-gradient(135deg, #2563EB, #1D4ED8)',
-                          color:'white',
-                          border:'none',
-                          borderRadius:'8px',
-                          padding:'8px 16px',
-                          fontSize:'0.9rem',
-                          fontWeight:'bold',
-                          cursor:'pointer',
-                          transition:'all 0.3s ease'
-                        }}
-                        onClick={() => {/* Aquí podrías abrir una galería */}}
-                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                      >
-                        <i className="fas fa-images" style={{marginRight:'6px'}}></i>
-                        Ver Galería
-                      </button>
+                      <div style={{width: '100%', marginTop: '1rem'}}>
+                        <GaleriaFotos 
+                          fotos={evento.fotos} 
+                          titulo={evento.titulo}
+                          maxHeight={150}
+                          showThumbnails={false}
+                        />
+                      </div>
                     )}
 
                     {isAdmin && (
