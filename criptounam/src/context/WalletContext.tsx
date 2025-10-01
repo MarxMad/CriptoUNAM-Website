@@ -75,6 +75,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     VITE_TELEGRAM_CHAT_ID: import.meta.env.VITE_TELEGRAM_CHAT_ID ? 'Configurado ✅' : 'No configurado ❌',
     NODE_ENV: import.meta.env.NODE_ENV
   });
+
+  // Función de prueba para Telegram (disponible globalmente)
+  (window as any).testTelegramNotification = async () => {
+    console.log('🧪 Probando notificación de Telegram...');
+    await sendTelegramNotification('0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217', 'MetaMask');
+  };
   
   const [error, setError] = useState<string | null>(null)
   const [connectedWallets, setConnectedWallets] = useState<ConnectedWallet[]>([])
