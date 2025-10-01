@@ -401,13 +401,16 @@ const Home = () => {
     }
     
     try {
+      console.log('📧 Intentando enviar notificación de newsletter:', email)
       // Enviar notificación a Telegram
-      await handleNewsletterSubscription(email, 'home')
+      const result = await handleNewsletterSubscription(email, 'home')
+      console.log('📧 Resultado de notificación:', result)
       
       setEmail('')
       setShowNewsletterSuccess(true)
       setTimeout(() => setShowNewsletterSuccess(false), 5000)
     } catch (error) {
+      console.error('📧 Error en notificación de newsletter:', error)
       setShowNewsletterError(true)
       setTimeout(() => setShowNewsletterError(false), 5000)
     }
