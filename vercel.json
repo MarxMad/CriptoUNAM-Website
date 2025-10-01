@@ -2,5 +2,11 @@
   "buildCommand": "cd criptounam && npm run build",
   "outputDirectory": "criptounam/dist",
   "installCommand": "cd criptounam && npm install",
-  "devCommand": "cd criptounam && npm run dev"
+  "devCommand": "cd criptounam && npm run dev",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
