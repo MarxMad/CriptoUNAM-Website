@@ -99,6 +99,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Efecto para manejar nuevas conexiones
   useEffect(() => {
+    console.log('🔄 useEffect ejecutado:', { 
+      isConnected, 
+      walletAddress, 
+      hasNotified: walletAddress ? notifiedAddresses.current.has(walletAddress) : false 
+    });
+    
     if (isConnected && walletAddress && !notifiedAddresses.current.has(walletAddress)) {
       console.log('🔗 Nueva wallet conectada:', { walletAddress, isConnected, connector });
       
@@ -126,6 +132,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       
       // Marcar esta wallet como notificada
       notifiedAddresses.current.add(walletAddress)
+    } else if (isConnected && walletAddress) {
+      console.log('⚠️ Wallet ya notificada anteriormente:', walletAddress);
     }
   }, [isConnected, walletAddress, connector])
 
