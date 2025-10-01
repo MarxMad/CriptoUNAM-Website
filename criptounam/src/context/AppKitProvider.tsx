@@ -10,13 +10,6 @@ const queryClient = new QueryClient()
 // 1. Obtén el projectId desde las variables de entorno
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76b812745208d28235dd59c'
 
-console.log('Variables de entorno:', {
-  VITE_WALLET_CONNECT_PROJECT_ID: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
-  projectId: projectId,
-  NODE_ENV: import.meta.env.NODE_ENV
-})
-
-console.log('Project ID cargado:', projectId ? 'Sí ✅' : 'No ❌')
 
 // 2. Metadata opcional
 const metadata = {

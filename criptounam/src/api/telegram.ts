@@ -28,17 +28,9 @@ interface ApiResponse {
 
 export const sendTelegramMessage = async (message: string, chatId: string): Promise<ApiResponse> => {
   try {
-    console.log('📱 sendTelegramMessage llamado con:', { message: message.substring(0, 50) + '...', chatId });
-    
     // Credenciales hardcodeadas temporalmente para que funcione
     const botToken = '7988985791:AAGEvzxwgDa0ERXoKS1G6J5s8XIhxcywYYM';
     const telegramChatId = '1608242541';
-
-    console.log('🔧 Usando credenciales hardcodeadas:', {
-      botToken: 'Configurado ✅',
-      telegramChatId: 'Configurado ✅',
-      chatIdParam: chatId ? 'Configurado ✅' : 'No configurado ❌'
-    });
 
     const finalChatId = chatId || telegramChatId;
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -73,22 +65,15 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
     if (response.data.ok) {
       return { success: true, message: 'Mensaje enviado correctamente' };
     } else {
-      console.error('Error en la respuesta de Telegram:', response.data);
       return { 
         success: false, 
         message: response.data.description || 'Error al enviar el mensaje a Telegram' 
       };
     }
   } catch (error: any) {
-    console.error('Error al enviar mensaje a Telegram:', error);
     if (error.response) {
       // Error de respuesta HTTP
       const errorMessage = error.response?.data?.description || error.message || 'Error de respuesta del servidor';
-      console.error('Detalles del error:', {
-        status: error.response?.status,
-        message: errorMessage,
-        url: error.config?.url
-      });
       return { 
         success: false, 
         message: `Error al enviar el mensaje: ${errorMessage}` 
@@ -126,8 +111,6 @@ ${data.motivacion}
 }
 
 export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<ApiResponse> => {
-  console.log('📧 handleNewsletterSubscription llamado con:', { email, source });
-  
   const message = source === 'home' 
     ? `
 📧 *Nueva Suscripción desde el Home*
@@ -146,13 +129,10 @@ export const handleNewsletterSubscription = async (email: string, source: 'home'
 ----------------------------
 `
 
-  console.log('📧 Enviando notificación de newsletter...');
   return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
 }
 
 export const handleWalletNotification = async (address: string, provider: string): Promise<ApiResponse> => {
-  console.log('🔐 handleWalletNotification llamado con:', { address, provider });
-  
   const message = `
 🔐 *Nueva Wallet Conectada*
 ----------------------------
@@ -162,6 +142,5 @@ export const handleWalletNotification = async (address: string, provider: string
 ----------------------------
 `
 
-  console.log('🔐 Enviando notificación de wallet...');
   return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
 } 
