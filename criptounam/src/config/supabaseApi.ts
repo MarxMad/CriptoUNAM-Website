@@ -191,5 +191,87 @@ export const newsletterApi = {
   }
 }
 
+// API para suscripciones de newsletter
+export const suscripcionesApi = {
+  create: async (email: string, source: string = 'website'): Promise<void> => {
+    const { error } = await supabase
+      .from('suscripciones_newsletter')
+      .insert([{ email, fuente: source, fechaSuscripcion: new Date().toISOString() }])
+    
+    if (error) throw error
+  },
+
+  getAll: async () => {
+    const { data, error } = await supabase
+      .from('suscripciones_newsletter')
+      .select('*')
+      .order('fechaSuscripcion', { ascending: false })
+    
+    if (error) throw error
+    return data
+  }
+}
+
+// API para registros de comunidad
+export const registrosComunidadApi = {
+  create: async (datos: {
+    nombre: string
+    email: string
+    telefono?: string
+    universidad?: string
+    carrera?: string
+    semestre?: string
+    interes?: string
+    experiencia?: string
+    expectativas?: string
+    fuente?: string
+  }): Promise<void> => {
+    const { error } = await supabase
+      .from('registros_comunidad')
+      .insert([{
+        ...datos,
+        fechaRegistro: new Date().toISOString()
+      }])
+    
+    if (error) throw error
+  },
+
+  getAll: async () => {
+    const { data, error } = await supabase
+      .from('registros_comunidad')
+      .select('*')
+      .order('fechaRegistro', { ascending: false })
+    
+    if (error) throw error
+    return data
+  }
+}
+
+// API para wallets conectadas
+export const walletsApi = {
+  create: async (datos: {
+    address: string
+    provider: string
+    chainId?: string
+    timestamp: string
+  }): Promise<void> => {
+    const { error } = await supabase
+      .from('wallets_conectadas')
+      .insert([datos])
+    
+    if (error) throw error
+  },
+
+  getAll: async () => {
+    const { data, error } = await supabase
+      .from('wallets_conectadas')
+      .select('*')
+      .order('timestamp', { ascending: false })
+    
+    if (error) throw error
+    return data
+  }
+}
+
 // Re-exportar tipos para uso externo
 export type { Evento, Curso, NewsletterEntry } from './supabase';
