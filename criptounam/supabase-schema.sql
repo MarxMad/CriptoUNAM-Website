@@ -8,6 +8,9 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- =============================================
 -- TABLA DE EVENTOS
 -- =============================================
+-- Eliminar tabla si existe para recrearla
+DROP TABLE IF EXISTS eventos CASCADE;
+
 CREATE TABLE eventos (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     tipo VARCHAR(20) NOT NULL CHECK (tipo IN ('proximo', 'anterior')),
@@ -17,12 +20,12 @@ CREATE TABLE eventos (
     lugar VARCHAR(255) NOT NULL,
     cupo INTEGER NOT NULL CHECK (cupo > 0),
     descripcion TEXT,
-    imagen TEXT, -- URL de imagen principal
+    imagen TEXT, -- URL de imagen principal para eventos próximos
     imagenPrincipal TEXT, -- URL de imagen principal para eventos pasados
     fotos TEXT[], -- Array de URLs de fotos
     videos TEXT[], -- Array de URLs de videos
     presentaciones TEXT[], -- Array de URLs de presentaciones
-    registroLink TEXT,
+    registroLink TEXT, -- Link de registro para eventos
     creadoEn TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     actualizadoEn TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

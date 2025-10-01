@@ -3,7 +3,11 @@
 -- =============================================
 
 -- Crear buckets para diferentes tipos de archivos
+-- Eliminar buckets existentes si existen
+DELETE FROM storage.buckets WHERE id IN ('eventos', 'cursos', 'newsletter', 'galerias', 'imagenes-publicas');
+
 INSERT INTO storage.buckets (id, name, public) VALUES 
+('imagenes-publicas', 'imagenes-publicas', true),
 ('eventos', 'eventos', true),
 ('cursos', 'cursos', true),
 ('newsletter', 'newsletter', true),
@@ -12,6 +16,19 @@ INSERT INTO storage.buckets (id, name, public) VALUES
 -- =============================================
 -- POLÍTICAS DE STORAGE
 -- =============================================
+
+-- Políticas para bucket de imágenes públicas (principal)
+CREATE POLICY "Permitir lectura pública de imagenes-publicas" ON storage.objects 
+FOR SELECT USING (bucket_id = 'imagenes-publicas');
+
+CREATE POLICY "Permitir subida de imagenes-publicas" ON storage.objects 
+FOR INSERT WITH CHECK (bucket_id = 'imagenes-publicas');
+
+CREATE POLICY "Permitir actualización de imagenes-publicas" ON storage.objects 
+FOR UPDATE USING (bucket_id = 'imagenes-publicas');
+
+CREATE POLICY "Permitir eliminación de imagenes-publicas" ON storage.objects 
+FOR DELETE USING (bucket_id = 'imagenes-publicas');
 
 -- Políticas para bucket de eventos
 CREATE POLICY "Permitir lectura pública de eventos" ON storage.objects 
