@@ -29,19 +29,12 @@ export const useWallet = () => useContext(WalletContext)
 
 const sendTelegramNotification = async (address: string, provider: string) => {
   try {
-    console.log('📱 Enviando notificación a Telegram:', { address, provider });
-    
-    // Usar credenciales hardcodeadas para que funcione
-    console.log('🔧 Usando credenciales hardcodeadas para Telegram');
-    
     const result = await handleWalletNotification(address, provider)
-    if (result.success) {
-      console.log('✅ Notificación enviada exitosamente a Telegram');
-    } else {
-      console.error('❌ Error al enviar notificación:', result.message);
+    if (!result.success) {
+      console.error('Error al enviar notificación:', result.message);
     }
   } catch (error) {
-    console.error('❌ Error al enviar notificación a Telegram:', error)
+    console.error('Error al enviar notificación a Telegram:', error)
   }
 }
 
@@ -67,20 +60,6 @@ const getProviderName = (connector: any) => {
 }
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  console.log('WalletProvider montado');
-  
-  // Debug de variables de entorno
-  console.log('🔧 Variables de entorno en WalletProvider:', {
-    VITE_TELEGRAM_BOT_TOKEN: import.meta.env.VITE_TELEGRAM_BOT_TOKEN ? 'Configurado ✅' : 'No configurado ❌',
-    VITE_TELEGRAM_CHAT_ID: import.meta.env.VITE_TELEGRAM_CHAT_ID ? 'Configurado ✅' : 'No configurado ❌',
-    NODE_ENV: import.meta.env.NODE_ENV
-  });
-
-  // Función de prueba para Telegram (disponible globalmente)
-  (window as any).testTelegramNotification = async () => {
-    console.log('🧪 Probando notificación de Telegram...');
-    await sendTelegramNotification('0x04BEf5bF293BB01d4946dBCfaaeC9a5140316217', 'MetaMask');
-  };
   
   const [error, setError] = useState<string | null>(null)
   const [connectedWallets, setConnectedWallets] = useState<ConnectedWallet[]>([])
@@ -105,15 +84,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Efecto para manejar nuevas conexiones
   useEffect(() => {
-    console.log('🔄 useEffect ejecutado:', { 
-      isConnected, 
-      walletAddress, 
-      hasNotified: walletAddress ? notifiedAddresses.current.has(walletAddress) : false 
-    });
-    
     if (isConnected && walletAddress && !notifiedAddresses.current.has(walletAddress)) {
-      console.log('🔗 Nueva wallet conectada:', { walletAddress, isConnected, connector });
-      
       const providerName = getProviderName(connector);
 
       // Registrar la nueva wallet conectada
@@ -123,8 +94,6 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         provider: providerName
       }
 
-      console.log('📝 Nueva wallet a registrar:', newWallet);
-
       // Actualizar el estado de wallets conectadas
       setConnectedWallets(prevWallets => {
         const updatedWallets = [...prevWallets, newWallet]
@@ -133,30 +102,23 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       })
 
       // Enviar notificación a Telegram
-      console.log('📱 Intentando enviar notificación a Telegram...');
       sendTelegramNotification(walletAddress, providerName)
       
       // Marcar esta wallet como notificada
       notifiedAddresses.current.add(walletAddress)
-    } else if (isConnected && walletAddress) {
-      console.log('⚠️ Wallet ya notificada anteriormente:', walletAddress);
     }
   }, [isConnected, walletAddress, connector])
 
   const connectWallet = async () => {
     try {
-      console.log('Iniciando conexión de wallet...');
       const connector = connectors[0]
       if (connector) {
-        console.log('Conector encontrado:', connector.name);
         await connect({ connector })
         setError(null)
       } else {
-        console.error('No se encontró el conector');
         setError('No se encontró MetaMask')
       }
     } catch (err) {
-      console.error('Error en connectWallet:', err);
       setError('Error al conectar la wallet')
     }
   }
