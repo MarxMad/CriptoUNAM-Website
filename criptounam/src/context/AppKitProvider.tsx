@@ -8,7 +8,13 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 const queryClient = new QueryClient()
 
 // 1. Obtén el projectId desde las variables de entorno
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76b812745208d28235dd59c'
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID?.trim()
+
+if (!projectId) {
+  throw new Error('VITE_WALLET_CONNECT_PROJECT_ID no está definido en el archivo .env')
+}
+
+console.log('Project ID cargado:', projectId ? 'Sí ✅' : 'No ❌')
 
 // 2. Metadata opcional
 const metadata = {
@@ -19,24 +25,37 @@ const metadata = {
 }
 
 // 3. Redes soportadas
-const networks = [mainnet, arbitrum]
+const networks = [mainnet, arbitrum] as const
 
 // 4. Adapter de wagmi
 const wagmiAdapter = new WagmiAdapter({
-  networks: networks as any, // Temporal fix para el tipo
+  networks: [mainnet, arbitrum],
   projectId,
   ssr: true
 })
 
-// 5. Inicializa AppKit
+// 5. Inicializa AppKit con configuración mejorada
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: networks as any, // Temporal fix para el tipo
+  networks: [mainnet, arbitrum],
   projectId,
   metadata,
+  themeMode: 'dark',
+  themeVariables: {
+    '--w3m-font-family': 'Inter, system-ui, sans-serif',
+    '--w3m-accent': '#D4AF37',
+    '--w3m-color-mix': '#D4AF37',
+    '--w3m-color-mix-strength': 20,
+    '--w3m-border-radius-master': '12px'
+  },
   features: {
-    analytics: true // Opcional
-  }
+    analytics: true,
+    email: false,
+    socials: [],
+    emailShowWallets: true
+  },
+  enableEIP6963: true,
+  enableCoinbase: true
 })
 
 export function AppKitProvider({ children }: { children: React.ReactNode }) {

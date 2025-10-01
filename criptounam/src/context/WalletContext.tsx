@@ -30,6 +30,16 @@ export const useWallet = () => useContext(WalletContext)
 const sendTelegramNotification = async (address: string, provider: string) => {
   try {
     console.log('Enviando notificación a Telegram:', { address, provider });
+    
+    // Verificar si las variables de entorno están configuradas
+    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+    
+    if (!botToken || botToken === 'REPLACE_WITH_YOUR_BOT_TOKEN' || !chatId || chatId === 'REPLACE_WITH_YOUR_CHAT_ID') {
+      console.warn('Variables de entorno de Telegram no configuradas correctamente');
+      return;
+    }
+    
     await handleWalletNotification(address, provider)
     console.log('Notificación enviada exitosamente');
   } catch (error) {
