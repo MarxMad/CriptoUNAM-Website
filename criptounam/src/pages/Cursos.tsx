@@ -191,6 +191,9 @@ const Cursos = () => {
         categorias: [],
         requisitos: '',
         lecciones: [],
+        fechaInicio: '',
+        fechaFin: '',
+        cupo: 0,
       });
       setImagenCursoFile(null);
       setPreviewImagenCurso(null);
