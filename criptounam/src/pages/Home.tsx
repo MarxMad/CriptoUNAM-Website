@@ -399,10 +399,18 @@ const Home = () => {
       setTimeout(() => setShowNewsletterError(false), 5000)
       return
     }
-    // Simulación de éxito
-        setEmail('')
-        setShowNewsletterSuccess(true)
-        setTimeout(() => setShowNewsletterSuccess(false), 5000)
+    
+    try {
+      // Enviar notificación a Telegram
+      await handleNewsletterSubscription(email, 'home')
+      
+      setEmail('')
+      setShowNewsletterSuccess(true)
+      setTimeout(() => setShowNewsletterSuccess(false), 5000)
+    } catch (error) {
+      setShowNewsletterError(true)
+      setTimeout(() => setShowNewsletterError(false), 5000)
+    }
   }
 
   const particlesInit = useCallback(async (engine: Engine) => {
