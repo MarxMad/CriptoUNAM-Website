@@ -195,7 +195,8 @@ export const newsletterApi = {
 export const suscripcionesApi = {
   create: async (email: string, source: string = 'website'): Promise<void> => {
     console.log('📧 suscripcionesApi.create iniciado:', { email, source });
-    const dataToInsert = { email, fuente: source, creadoEn: new Date().toISOString() };
+    // Solo usar campos que sabemos que existen, dejar que Supabase maneje el timestamp automáticamente
+    const dataToInsert = { email, fuente: source };
     console.log('📊 Datos a insertar en suscripciones_newsletter:', dataToInsert);
     
     const { error } = await supabase
@@ -213,7 +214,7 @@ export const suscripcionesApi = {
     const { data, error } = await supabase
       .from('suscripciones_newsletter')
       .select('*')
-      .order('creadoEn', { ascending: false })
+      .order('id', { ascending: false })
     
     if (error) throw error
     return data
@@ -237,10 +238,8 @@ export const registrosComunidadApi = {
     telegram?: string
   }): Promise<void> => {
     console.log('🎓 registrosComunidadApi.create iniciado con datos:', datos);
-    const dataToInsert = {
-      ...datos,
-      creadoEn: new Date().toISOString()
-    };
+    // Solo usar campos que sabemos que existen, dejar que Supabase maneje el timestamp automáticamente
+    const dataToInsert = { ...datos };
     console.log('📊 Datos a insertar en registros_comunidad:', dataToInsert);
     
     const { error } = await supabase
@@ -258,7 +257,7 @@ export const registrosComunidadApi = {
     const { data, error } = await supabase
       .from('registros_comunidad')
       .select('*')
-      .order('creadoEn', { ascending: false })
+      .order('id', { ascending: false })
     
     if (error) throw error
     return data
