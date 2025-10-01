@@ -8,18 +8,13 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 const queryClient = new QueryClient()
 
 // 1. Obtén el projectId desde las variables de entorno
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID?.trim()
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76b812745208d28235dd59c'
 
 console.log('Variables de entorno:', {
   VITE_WALLET_CONNECT_PROJECT_ID: import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID,
   projectId: projectId,
   NODE_ENV: import.meta.env.NODE_ENV
 })
-
-if (!projectId) {
-  console.error('VITE_WALLET_CONNECT_PROJECT_ID no está definido')
-  throw new Error('VITE_WALLET_CONNECT_PROJECT_ID no está definido en el archivo .env')
-}
 
 console.log('Project ID cargado:', projectId ? 'Sí ✅' : 'No ❌')
 
@@ -41,19 +36,12 @@ const wagmiAdapter = new WagmiAdapter({
   ssr: true
 })
 
-// 5. Inicializa AppKit con configuración simplificada
+// 5. Inicializa AppKit con configuración mínima
 createAppKit({
   adapters: [wagmiAdapter],
   networks: [mainnet, arbitrum],
   projectId,
-  metadata,
-  themeMode: 'dark',
-  features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'discord', 'github'],
-    emailShowWallets: true
-  }
+  metadata
 })
 
 export function AppKitProvider({ children }: { children: React.ReactNode }) {
