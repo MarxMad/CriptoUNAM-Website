@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { handleNewsletterSubscription } from '../api/telegram'
 
 const Footer = () => {
   // Estado para el modal de comunidad
@@ -57,9 +58,21 @@ const Footer = () => {
       setTimeout(() => setShowNewsletterError(false), 5000)
       return
     }
-    setEmail('')
-    setShowNewsletterSuccess(true)
-    setTimeout(() => setShowNewsletterSuccess(false), 5000)
+    
+    try {
+      console.log('📧 Intentando enviar notificación de newsletter desde Footer:', email)
+      // Enviar notificación a Telegram
+      const result = await handleNewsletterSubscription(email, 'home')
+      console.log('📧 Resultado de notificación:', result)
+      
+      setEmail('')
+      setShowNewsletterSuccess(true)
+      setTimeout(() => setShowNewsletterSuccess(false), 5000)
+    } catch (error) {
+      console.error('📧 Error en notificación de newsletter:', error)
+      setShowNewsletterError(true)
+      setTimeout(() => setShowNewsletterError(false), 5000)
+    }
   }
 
   return (
