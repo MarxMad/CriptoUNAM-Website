@@ -239,17 +239,23 @@ export const registrosComunidadApi = {
   }): Promise<void> => {
     console.log('🎓 registrosComunidadApi.create iniciado con datos:', datos);
     
-    // Mapear solo los campos básicos que sabemos que existen
+    // Mapear todos los campos usando los nombres exactos de la tabla en Supabase
     const dataToInsert = {
       nombre: datos.nombre,
       apellidos: datos.apellidos,
       carrera: datos.carrera,
       plantel: datos.plantel,
+      numerocuenta: datos.numeroCuenta, // Usar el nombre exacto de la columna
       edad: datos.edad,
-      motivacion: datos.motivacion
+      motivacion: datos.motivacion,
+      twitter: datos.twitter || null,
+      instagram: datos.instagram || null,
+      linkedin: datos.linkedin || null,
+      facebook: datos.facebook || null,
+      telegram: datos.telegram || null
     };
     
-    console.log('📊 Datos a insertar en registros_comunidad (solo campos básicos):', dataToInsert);
+    console.log('📊 Datos a insertar en registros_comunidad (todos los campos):', dataToInsert);
     
     const { error } = await supabase
       .from('registros_comunidad')
