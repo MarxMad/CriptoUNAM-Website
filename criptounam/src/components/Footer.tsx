@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { handleNewsletterSubscription } from '../api/telegram'
+import { handleNewsletterSubscription, handleRegistration } from '../api/telegram'
 
 const Footer = () => {
   // Estado para el modal de comunidad
@@ -40,15 +40,26 @@ const Footer = () => {
       setTimeout(() => setShowErrorMessage(false), 5000);
       return;
     }
-    // Aquí deberías llamar a tu API real, por ahora simula éxito
-    setShowSuccessMessage(true);
-    setTimeout(() => {
-      setShowJoinModal(false);
-      setFormData({
-        nombre: '', apellidos: '', edad: '', carrera: '', plantel: '', numeroCuenta: '', motivacion: '', telegram: '', twitter: '', instagram: '', linkedin: '', facebook: ''
-      });
-    }, 700);
-    setTimeout(() => setShowSuccessMessage(false), 5000);
+    
+    try {
+      console.log('🎓 Intentando enviar notificación de registro a comunidad:', formData.nombre)
+      // Enviar notificación a Telegram
+      const result = await handleRegistration(formData)
+      console.log('🎓 Resultado de notificación:', result)
+      
+      setShowSuccessMessage(true);
+      setTimeout(() => {
+        setShowJoinModal(false);
+        setFormData({
+          nombre: '', apellidos: '', edad: '', carrera: '', plantel: '', numeroCuenta: '', motivacion: '', telegram: '', twitter: '', instagram: '', linkedin: '', facebook: ''
+        });
+      }, 700);
+      setTimeout(() => setShowSuccessMessage(false), 5000);
+    } catch (error) {
+      console.error('🎓 Error en notificación de registro:', error)
+      setShowErrorMessage(true);
+      setTimeout(() => setShowErrorMessage(false), 5000);
+    }
   }
   // Newsletter
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
