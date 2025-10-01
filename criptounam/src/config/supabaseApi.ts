@@ -194,11 +194,19 @@ export const newsletterApi = {
 // API para suscripciones de newsletter
 export const suscripcionesApi = {
   create: async (email: string, source: string = 'website'): Promise<void> => {
+    console.log('📧 suscripcionesApi.create iniciado:', { email, source });
+    const dataToInsert = { email, fuente: source, creadoEn: new Date().toISOString() };
+    console.log('📊 Datos a insertar en suscripciones_newsletter:', dataToInsert);
+    
     const { error } = await supabase
       .from('suscripciones_newsletter')
-      .insert([{ email, fuente: source, creadoEn: new Date().toISOString() }])
+      .insert([dataToInsert])
     
-    if (error) throw error
+    if (error) {
+      console.error('❌ Error en suscripcionesApi.create:', error);
+      throw error;
+    }
+    console.log('✅ Suscripción creada exitosamente en Supabase');
   },
 
   getAll: async () => {
@@ -228,14 +236,22 @@ export const registrosComunidadApi = {
     facebook?: string
     telegram?: string
   }): Promise<void> => {
+    console.log('🎓 registrosComunidadApi.create iniciado con datos:', datos);
+    const dataToInsert = {
+      ...datos,
+      creadoEn: new Date().toISOString()
+    };
+    console.log('📊 Datos a insertar en registros_comunidad:', dataToInsert);
+    
     const { error } = await supabase
       .from('registros_comunidad')
-      .insert([{
-        ...datos,
-        creadoEn: new Date().toISOString()
-      }])
+      .insert([dataToInsert])
     
-    if (error) throw error
+    if (error) {
+      console.error('❌ Error en registrosComunidadApi.create:', error);
+      throw error;
+    }
+    console.log('✅ Registro de comunidad creado exitosamente en Supabase');
   },
 
   getAll: async () => {
