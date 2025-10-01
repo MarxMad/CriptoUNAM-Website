@@ -43,6 +43,8 @@ const Comunidad = () => {
   // Estado para eventos agregados dinámicamente
   const [eventosDinamicos, setEventosDinamicos] = useState<any[]>([]);
   const [eventosAnterioresDinamicos, setEventosAnterioresDinamicos] = useState<any[]>([]);
+  const [todosLosEventos, setTodosLosEventos] = useState<any[]>([]);
+  const [vistaActual, setVistaActual] = useState<'timeline' | 'separada'>('timeline');
   const [imagenEventoFile, setImagenEventoFile] = useState<File | null>(null);
   const [previewImagenEvento, setPreviewImagenEvento] = useState<string | null>(null);
 
@@ -289,12 +291,83 @@ const Comunidad = () => {
   }
 */
 
+  // Función para parsear fechas y determinar si un evento es futuro o pasado
+  const parsearFecha = (fechaStr: string): Date => {
+    // Intentar diferentes formatos de fecha
+    const formatos = [
+      // Formato: "15 de Abril, 2024"
+      /(\d{1,2})\s+de\s+(\w+),\s+(\d{4})/,
+      // Formato: "Abril 2024"
+      /(\w+)\s+(\d{4})/,
+      // Formato: "2024-04-15"
+      /(\d{4})-(\d{1,2})-(\d{1,2})/,
+      // Formato: "15/04/2024"
+      /(\d{1,2})\/(\d{1,2})\/(\d{4})/
+    ];
+    
+    for (const formato of formatos) {
+      const match = fechaStr.match(formato);
+      if (match) {
+        if (formato === formatos[0]) { // "15 de Abril, 2024"
+          const [, dia, mes, año] = match;
+          const meses = {
+            'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3, 'mayo': 4, 'junio': 5,
+            'julio': 6, 'agosto': 7, 'septiembre': 8, 'octubre': 9, 'noviembre': 10, 'diciembre': 11
+          };
+          return new Date(parseInt(año), meses[mes.toLowerCase()] || 0, parseInt(dia));
+        } else if (formato === formatos[1]) { // "Abril 2024"
+          const [, mes, año] = match;
+          const meses = {
+            'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3, 'mayo': 4, 'junio': 5,
+            'julio': 6, 'agosto': 7, 'septiembre': 8, 'octubre': 9, 'noviembre': 10, 'diciembre': 11
+          };
+          return new Date(parseInt(año), meses[mes.toLowerCase()] || 0, 1);
+        } else if (formato === formatos[2]) { // "2024-04-15"
+          const [, año, mes, dia] = match;
+          return new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
+        } else if (formato === formatos[3]) { // "15/04/2024"
+          const [, dia, mes, año] = match;
+          return new Date(parseInt(año), parseInt(mes) - 1, parseInt(dia));
+        }
+      }
+    }
+    
+    // Si no se puede parsear, usar la fecha actual
+    return new Date();
+  };
+
+  const esEventoFuturo = (fechaStr: string): boolean => {
+    const fechaEvento = parsearFecha(fechaStr);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    return fechaEvento >= hoy;
+  };
+
+  const ordenarEventosPorFecha = (eventos: any[]): any[] => {
+    return eventos.sort((a, b) => {
+      const fechaA = parsearFecha(a.fecha);
+      const fechaB = parsearFecha(b.fecha);
+      return fechaB.getTime() - fechaA.getTime(); // Más recientes primero
+    });
+  };
+
   useEffect(() => {
     const fetchEventos = async () => {
       try {
         const res = await axios.get<EventoBackend[]>(API_ENDPOINTS.EVENTOS);
-        setEventosDinamicos(res.data.filter((e) => e.tipo === 'proximo'));
-        setEventosAnterioresDinamicos(res.data.filter((e) => e.tipo === 'anterior'));
+        const eventosProximos = res.data.filter((e) => e.tipo === 'proximo');
+        const eventosAnteriores = res.data.filter((e) => e.tipo === 'anterior');
+        
+        setEventosDinamicos(eventosProximos);
+        setEventosAnterioresDinamicos(eventosAnteriores);
+        
+        // Combinar todos los eventos y ordenarlos por fecha
+        const todosEventos = [...eventosProximos, ...eventosAnteriores].map(evento => ({
+          ...evento,
+          esFuturo: esEventoFuturo(evento.fecha)
+        }));
+        
+        setTodosLosEventos(ordenarEventosPorFecha(todosEventos));
       } catch (error) {
         console.error('Error al cargar eventos:', error);
       }
@@ -460,6 +533,56 @@ const Comunidad = () => {
               <p style={{color:'#E0E0E0', margin:0}}>{stat.text}</p>
           </div>
           ))}
+        </div>
+      </div>
+
+      {/* Selector de vista */}
+      <div style={{margin:'0 auto 2rem auto', maxWidth:1200, textAlign:'center'}}>
+        <div style={{
+          display: 'inline-flex',
+          background: 'rgba(212, 175, 55, 0.1)',
+          borderRadius: '12px',
+          padding: '4px',
+          border: '1px solid rgba(212, 175, 55, 0.3)'
+        }}>
+          <button
+            onClick={() => setVistaActual('timeline')}
+            style={{
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              background: vistaActual === 'timeline' ? '#D4AF37' : 'transparent',
+              color: vistaActual === 'timeline' ? '#000' : '#D4AF37',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <i className="fas fa-timeline"></i>
+            Línea de Tiempo
+          </button>
+          <button
+            onClick={() => setVistaActual('separada')}
+            style={{
+              padding: '12px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              background: vistaActual === 'separada' ? '#D4AF37' : 'transparent',
+              color: vistaActual === 'separada' ? '#000' : '#D4AF37',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
+          >
+            <i className="fas fa-th-large"></i>
+            Vista Separada
+          </button>
         </div>
       </div>
 
@@ -872,6 +995,17 @@ const Comunidad = () => {
         </div>
       )}
 
+      {/* Vista de Eventos */}
+      {vistaActual === 'timeline' ? (
+        <TimelineEventos 
+          eventos={todosLosEventos} 
+          isAdmin={isAdmin}
+          onEditarEvento={handleEditarEvento}
+          onEditarEventoAnterior={handleEditarEventoAnterior}
+          onEliminarEvento={handleEliminarEvento}
+        />
+      ) : (
+        <>
       {/* Próximos Eventos */}
       <section className="upcoming-events" style={{margin:'0 auto 2.5rem auto', maxWidth:1200}}>
         <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', marginBottom:'1.5rem', fontSize:'1.7rem'}}>Próximos Eventos</h2>
@@ -890,10 +1024,12 @@ const Comunidad = () => {
                 <p style={{margin:'0 0 0.2rem 0', color:'#E0E0E0'}}><i className="far fa-clock"></i> {evento.hora}</p>
                 <p style={{margin:'0 0 0.2rem 0', color:'#E0E0E0'}}><i className="fas fa-map-marker-alt"></i> {evento.lugar}</p>
                 <p style={{margin:'0 0 0.2rem 0', color:'#E0E0E0'}}><i className="fas fa-users"></i> Cupo: {evento.cupo} personas</p>
+                    {isAdmin && (
                 <div style={{display:'flex', gap:8, marginBottom:8}}>
                   <button onClick={() => handleEditarEvento(evento)} style={{background:'#2563EB', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Editar</button>
                   <button onClick={() => handleEliminarEvento(evento, 'proximo')} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600}}>Eliminar</button>
                 </div>
+                    )}
                 <button 
                   className="primary-button"
                   style={{marginTop:'0.7rem', fontWeight:700, borderRadius:18, fontSize:'1rem', padding:'0.5rem 1.2rem'}}
@@ -939,6 +1075,8 @@ const Comunidad = () => {
           ))}
         </div>
       </section>
+        </>
+      )}
 
       {/* Unirse a la Comunidad */}
       <section className="join-community" style={{
@@ -1259,8 +1397,268 @@ const Comunidad = () => {
   )
 }
 
-// Galería simple para imágenes principales
+// Componente de Línea de Tiempo
+const TimelineEventos = ({ 
+  eventos, 
+  isAdmin, 
+  onEditarEvento, 
+  onEditarEventoAnterior, 
+  onEliminarEvento 
+}: { 
+  eventos: any[], 
+  isAdmin: boolean, 
+  onEditarEvento: (evento: any) => void, 
+  onEditarEventoAnterior: (evento: any) => void, 
+  onEliminarEvento: (evento: any, tipo: 'proximo' | 'anterior') => void 
+}) => {
+  return (
+    <section className="timeline-events" style={{margin:'0 auto 2.5rem auto', maxWidth:1200}}>
+      <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', marginBottom:'2rem', fontSize:'1.7rem', textAlign:'center'}}>
+        Línea de Tiempo de Eventos
+      </h2>
+      
+      <div style={{position:'relative'}}>
+        {/* Línea central vertical */}
+        <div style={{
+          position:'absolute',
+          left:'50%',
+          top:0,
+          bottom:0,
+          width:'4px',
+          background:'linear-gradient(to bottom, #D4AF37, #FFD700)',
+          transform:'translateX(-50%)',
+          borderRadius:'2px',
+          boxShadow:'0 0 20px rgba(212, 175, 55, 0.5)'
+        }}></div>
 
+        {eventos.map((evento, index) => (
+          <div key={evento.id || index} style={{
+            position:'relative',
+            marginBottom:'3rem',
+            display:'flex',
+            alignItems:'center',
+            width:'100%'
+          }}>
+            {/* Punto en la línea de tiempo */}
+            <div style={{
+              position:'absolute',
+              left:'50%',
+              transform:'translateX(-50%)',
+              width:'20px',
+              height:'20px',
+              borderRadius:'50%',
+              background: evento.esFuturo ? '#25D366' : '#6B7280',
+              border:'4px solid #1A1A1A',
+              zIndex:2,
+              boxShadow:'0 0 15px rgba(212, 175, 55, 0.6)',
+              display:'flex',
+              alignItems:'center',
+              justifyContent:'center'
+            }}>
+              <i className={`fas ${evento.esFuturo ? 'fa-calendar-plus' : 'fa-calendar-check'}`} style={{fontSize:'10px', color:'white'}}></i>
+            </div>
+
+            {/* Contenido del evento */}
+            <div style={{
+              width:'45%',
+              marginLeft: evento.esFuturo ? '0' : '55%',
+              marginRight: evento.esFuturo ? '55%' : '0'
+            }}>
+              <div className="card" style={{
+                padding:'1.5rem',
+                background: evento.esFuturo 
+                  ? 'linear-gradient(135deg, rgba(37, 211, 102, 0.1), rgba(37, 211, 102, 0.05))'
+                  : 'linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.05))',
+                border: evento.esFuturo 
+                  ? '2px solid rgba(37, 211, 102, 0.3)'
+                  : '2px solid rgba(107, 114, 128, 0.3)',
+                borderRadius:'16px',
+                position:'relative',
+                overflow:'hidden'
+              }}>
+                {/* Indicador de tipo de evento */}
+                <div style={{
+                  position:'absolute',
+                  top:'12px',
+                  right:'12px',
+                  padding:'4px 8px',
+                  borderRadius:'12px',
+                  background: evento.esFuturo ? '#25D366' : '#6B7280',
+                  color:'white',
+                  fontSize:'0.8rem',
+                  fontWeight:'bold'
+                }}>
+                  {evento.esFuturo ? 'Próximo' : 'Pasado'}
+                </div>
+
+                {/* Imagen del evento */}
+                {(evento.imagen || evento.imagenPrincipal) && (
+                  <img 
+                    src={evento.imagen || evento.imagenPrincipal} 
+                    alt={evento.titulo} 
+                    style={{
+                      width:'100%',
+                      height:'180px',
+                      objectFit:'cover',
+                      borderRadius:'12px',
+                      marginBottom:'1rem',
+                      boxShadow:'0 4px 12px rgba(0,0,0,0.2)'
+                    }} 
+                  />
+                )}
+
+                {/* Información del evento */}
+                <div className="event-info">
+                  <h3 style={{
+                    fontFamily:'Orbitron',
+                    color:'#D4AF37',
+                    fontSize:'1.3rem',
+                    margin:'0 0 0.5rem 0',
+                    fontWeight:'bold'
+                  }}>
+                    {evento.titulo}
+                  </h3>
+
+                  <div style={{marginBottom:'0.5rem'}}>
+                    <p style={{margin:'0 0 0.3rem 0', color:'#E0E0E0', display:'flex', alignItems:'center', gap:'8px'}}>
+                      <i className="far fa-calendar" style={{color:'#2563EB'}}></i>
+                      <span style={{fontWeight:'600'}}>{evento.fecha}</span>
+                    </p>
+                    
+                    {evento.hora && (
+                      <p style={{margin:'0 0 0.3rem 0', color:'#E0E0E0', display:'flex', alignItems:'center', gap:'8px'}}>
+                        <i className="far fa-clock" style={{color:'#2563EB'}}></i>
+                        <span>{evento.hora}</span>
+                      </p>
+                    )}
+                    
+                    <p style={{margin:'0 0 0.3rem 0', color:'#E0E0E0', display:'flex', alignItems:'center', gap:'8px'}}>
+                      <i className="fas fa-map-marker-alt" style={{color:'#2563EB'}}></i>
+                      <span>{evento.lugar}</span>
+                    </p>
+                    
+                    <p style={{margin:'0 0 0.3rem 0', color:'#E0E0E0', display:'flex', alignItems:'center', gap:'8px'}}>
+                      <i className="fas fa-users" style={{color:'#2563EB'}}></i>
+                      <span>Cupo: {evento.cupo} personas</span>
+                    </p>
+                  </div>
+
+                  <p style={{
+                    color:'#E0E0E0',
+                    fontSize:'0.95rem',
+                    lineHeight:'1.5',
+                    margin:'0 0 1rem 0'
+                  }}>
+                    {evento.descripcion}
+                  </p>
+
+                  {/* Botones de acción */}
+                  <div style={{display:'flex', gap:'8px', flexWrap:'wrap'}}>
+                    {evento.esFuturo && evento.registroLink && (
+                      <button 
+                        className="primary-button"
+                        style={{
+                          background:'linear-gradient(135deg, #25D366, #128C7E)',
+                          color:'white',
+                          border:'none',
+                          borderRadius:'8px',
+                          padding:'8px 16px',
+                          fontSize:'0.9rem',
+                          fontWeight:'bold',
+                          cursor:'pointer',
+                          transition:'all 0.3s ease'
+                        }}
+                        onClick={() => window.open(evento.registroLink, '_blank')}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        <i className="fas fa-user-plus" style={{marginRight:'6px'}}></i>
+                        Registrarse
+                      </button>
+                    )}
+
+                    {!evento.esFuturo && evento.fotos && evento.fotos.length > 0 && (
+                      <button 
+                        style={{
+                          background:'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                          color:'white',
+                          border:'none',
+                          borderRadius:'8px',
+                          padding:'8px 16px',
+                          fontSize:'0.9rem',
+                          fontWeight:'bold',
+                          cursor:'pointer',
+                          transition:'all 0.3s ease'
+                        }}
+                        onClick={() => {/* Aquí podrías abrir una galería */}}
+                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        <i className="fas fa-images" style={{marginRight:'6px'}}></i>
+                        Ver Galería
+                      </button>
+                    )}
+
+                    {isAdmin && (
+                      <>
+                        <button 
+                          onClick={() => evento.esFuturo ? onEditarEvento(evento) : onEditarEventoAnterior(evento)}
+                          style={{
+                            background:'#2563EB',
+                            color:'white',
+                            border:'none',
+                            borderRadius:'6px',
+                            padding:'6px 12px',
+                            fontSize:'0.8rem',
+                            fontWeight:'600',
+                            cursor:'pointer'
+                          }}
+                        >
+                          <i className="fas fa-edit" style={{marginRight:'4px'}}></i>
+                          Editar
+                        </button>
+                        <button 
+                          onClick={() => onEliminarEvento(evento, evento.esFuturo ? 'proximo' : 'anterior')}
+                          style={{
+                            background:'#EF4444',
+                            color:'white',
+                            border:'none',
+                            borderRadius:'6px',
+                            padding:'6px 12px',
+                            fontSize:'0.8rem',
+                            fontWeight:'600',
+                            cursor:'pointer'
+                          }}
+                        >
+                          <i className="fas fa-trash" style={{marginRight:'4px'}}></i>
+                          Eliminar
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {eventos.length === 0 && (
+          <div style={{
+            textAlign:'center',
+            padding:'3rem',
+            color:'#E0E0E0'
+          }}>
+            <i className="fas fa-calendar-times" style={{fontSize:'3rem', color:'#6B7280', marginBottom:'1rem'}}></i>
+            <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', marginBottom:'0.5rem'}}>No hay eventos disponibles</h3>
+            <p>Los eventos aparecerán aquí cuando se agreguen.</p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+};
+
+// Galería simple para imágenes principales
 const GaleriaImagenesPrincipales = ({ imagenes, titulo }: { imagenes: string[], titulo: string }) => {
   const [indice, setIndice] = useState(0);
   if (!imagenes || imagenes.length === 0) return null;
