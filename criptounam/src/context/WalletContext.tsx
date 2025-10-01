@@ -29,21 +29,30 @@ export const useWallet = () => useContext(WalletContext)
 
 const sendTelegramNotification = async (address: string, provider: string) => {
   try {
-    console.log('Enviando notificación a Telegram:', { address, provider });
+    console.log('📱 Enviando notificación a Telegram:', { address, provider });
     
     // Verificar si las variables de entorno están configuradas
     const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
     const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
     
+    console.log('🔧 Variables de entorno:', { 
+      botToken: botToken ? 'Configurado ✅' : 'No configurado ❌',
+      chatId: chatId ? 'Configurado ✅' : 'No configurado ❌'
+    });
+    
     if (!botToken || botToken === 'REPLACE_WITH_YOUR_BOT_TOKEN' || !chatId || chatId === 'REPLACE_WITH_YOUR_CHAT_ID') {
-      console.warn('Variables de entorno de Telegram no configuradas correctamente');
+      console.warn('⚠️ Variables de entorno de Telegram no configuradas correctamente');
       return;
     }
     
-    await handleWalletNotification(address, provider)
-    console.log('Notificación enviada exitosamente');
+    const result = await handleWalletNotification(address, provider)
+    if (result.success) {
+      console.log('✅ Notificación enviada exitosamente a Telegram');
+    } else {
+      console.error('❌ Error al enviar notificación:', result.message);
+    }
   } catch (error) {
-    console.error('Error al enviar notificación a Telegram:', error)
+    console.error('❌ Error al enviar notificación a Telegram:', error)
   }
 }
 
@@ -95,31 +104,34 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   // Efecto para manejar nuevas conexiones
   useEffect(() => {
     if (isConnected && walletAddress && !notifiedAddresses.current.has(walletAddress)) {
-      console.log('Wallet conectada:', { walletAddress, isConnected, connector });
+      console.log('🔗 Nueva wallet conectada:', { walletAddress, isConnected, connector });
       
       const providerName = getProviderName(connector);
 
-        // Registrar la nueva wallet conectada
-        const newWallet: ConnectedWallet = {
+      // Registrar la nueva wallet conectada
+      const newWallet: ConnectedWallet = {
         address: walletAddress,
-          timestamp: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
         provider: providerName
-        }
+      }
 
-      console.log('Nueva wallet a registrar:', newWallet);
+      console.log('📝 Nueva wallet a registrar:', newWallet);
 
-        const updatedWallets = [...connectedWallets, newWallet]
-        setConnectedWallets(updatedWallets)
+      // Actualizar el estado de wallets conectadas
+      setConnectedWallets(prevWallets => {
+        const updatedWallets = [...prevWallets, newWallet]
         localStorage.setItem('connectedWallets', JSON.stringify(updatedWallets))
+        return updatedWallets
+      })
 
-        // Enviar notificación a Telegram
-      console.log('Intentando enviar notificación a Telegram...');
+      // Enviar notificación a Telegram
+      console.log('📱 Intentando enviar notificación a Telegram...');
       sendTelegramNotification(walletAddress, providerName)
       
       // Marcar esta wallet como notificada
       notifiedAddresses.current.add(walletAddress)
     }
-  }, [isConnected, walletAddress, connector, connectedWallets])
+  }, [isConnected, walletAddress, connector])
 
   const connectWallet = async () => {
     try {
