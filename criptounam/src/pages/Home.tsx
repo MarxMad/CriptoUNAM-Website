@@ -472,45 +472,31 @@ const Home = () => {
 
 
 
-  // Fetch histórico de BTC y market cap
+  // Fetch histórico de BTC y market cap - Comentado por CORS
   useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        // Precio histórico BTC
-        const btcRes = await axios.get('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30')
-        const btcData = btcRes.data as any
-        const btcPrices = btcData.prices.map((p: [number, number]) => ({
-          date: new Date(p[0]).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
-          price: p[1]
-        }))
-        setBtcHistory(btcPrices)
-        // Market cap global
-        const mcRes = await axios.get('https://api.coingecko.com/api/v3/global')
-        // CoinGecko no da histórico global, así que usamos el market cap de BTC como aproximación
-        const mcPrices = btcData.market_caps.map((p: [number, number]) => ({
-          date: new Date(p[0]).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
-          cap: p[1]
-        }))
-        setMarketCap(mcPrices)
-      } catch (e) {}
-    }
-    fetchHistory()
+    // Datos de ejemplo para evitar errores de CORS
+    const sampleData = [
+      { date: 'Ene 1', price: 45000 },
+      { date: 'Ene 15', price: 47000 },
+      { date: 'Feb 1', price: 46000 },
+      { date: 'Feb 15', price: 48000 },
+      { date: 'Mar 1', price: 50000 }
+    ]
+    setBtcHistory(sampleData)
+    setMarketCap(sampleData.map(d => ({ date: d.date, cap: d.price * 1000000 })))
   }, [])
 
-  // Fetch hashrate histórico (Blockchain.com API)
+  // Fetch hashrate histórico - Comentado por CORS
   useEffect(() => {
-    const fetchHashrate = async () => {
-      try {
-        const res = await axios.get('https://api.blockchain.info/charts/hash-rate?timespan=30days&format=json')
-        const hashData = res.data as any
-        const data = hashData.values.map((v: { x: number, y: number }) => ({
-          date: new Date(v.x * 1000).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
-          value: v.y
-        }))
-        setHashrate(data)
-      } catch (e) {}
-    }
-    fetchHashrate()
+    // Datos de ejemplo para evitar errores de CORS
+    const sampleHashrate = [
+      { date: 'Ene 1', value: 450000000000000 },
+      { date: 'Ene 15', value: 460000000000000 },
+      { date: 'Feb 1', value: 470000000000000 },
+      { date: 'Feb 15', value: 480000000000000 },
+      { date: 'Mar 1', value: 490000000000000 }
+    ]
+    setHashrate(sampleHashrate)
   }, [])
 
   // Fetch contratos inteligentes Ethereum (simulado)
@@ -525,46 +511,26 @@ const Home = () => {
   }, [])
 
   useEffect(() => {
-    const fetchMempoolBlocks = async () => {
-      try {
-        const res = await axios.get('https://mempool.space/api/mempool/blocks')
-        setMempoolBlocks(res.data as any[])
-      } catch (e) {}
-    }
-    fetchMempoolBlocks()
+    // Datos de ejemplo para evitar errores de CORS
+    setMempoolBlocks([])
   }, [])
 
   useEffect(() => {
-    const fetchMempoolTxs = async () => {
-      try {
-        // Solo traemos las primeras 500 transacciones para no saturar el navegador
-        const res = await axios.get('https://mempool.space/api/mempool/recent')
-        setMempoolTxs((res.data as any[]).slice(0, 500))
-      } catch (e) {}
-    }
-    fetchMempoolTxs()
+    // Datos de ejemplo para evitar errores de CORS
+    setMempoolTxs([])
   }, [])
 
-  // Fetch dominancia de BTC (CoinGecko)
+  // Fetch dominancia de BTC - Comentado por CORS
   useEffect(() => {
-    const fetchDominance = async () => {
-      try {
-        const res = await axios.get('https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30')
-        const btcData = res.data as any
-        const totalMarketCap = await axios.get('https://api.coingecko.com/api/v3/global')
-        const totalCap = (totalMarketCap.data as any).data.total_market_cap.usd
-        
-        // Calculamos la dominancia histórica usando el market cap de BTC y el total
-        const dominanceArr = btcData.market_caps.map((p: [number, number]) => ({
-          date: new Date(p[0]).toLocaleDateString('es-MX', { month: 'short', day: 'numeric' }),
-          dominance: (p[1] / totalCap) * 100
-        }))
-        setBtcDominance(dominanceArr)
-      } catch (e) {
-        console.error('Error fetching BTC dominance:', e)
-      }
-    }
-    fetchDominance()
+    // Datos de ejemplo para evitar errores de CORS
+    const sampleDominance = [
+      { date: 'Ene 1', dominance: 42.5 },
+      { date: 'Ene 15', dominance: 43.2 },
+      { date: 'Feb 1', dominance: 41.8 },
+      { date: 'Feb 15', dominance: 44.1 },
+      { date: 'Mar 1', dominance: 43.7 }
+    ]
+    setBtcDominance(sampleDominance)
   }, [])
 
   useEffect(() => {
