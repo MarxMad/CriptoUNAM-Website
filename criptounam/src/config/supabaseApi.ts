@@ -196,7 +196,7 @@ export const suscripcionesApi = {
   create: async (email: string, source: string = 'website'): Promise<void> => {
     const { error } = await supabase
       .from('suscripciones_newsletter')
-      .insert([{ email, fuente: source, fechaSuscripcion: new Date().toISOString() }])
+      .insert([{ email, fuente: source, creadoEn: new Date().toISOString() }])
     
     if (error) throw error
   },
@@ -205,7 +205,7 @@ export const suscripcionesApi = {
     const { data, error } = await supabase
       .from('suscripciones_newsletter')
       .select('*')
-      .order('fechaSuscripcion', { ascending: false })
+      .order('creadoEn', { ascending: false })
     
     if (error) throw error
     return data
@@ -216,21 +216,23 @@ export const suscripcionesApi = {
 export const registrosComunidadApi = {
   create: async (datos: {
     nombre: string
-    email: string
-    telefono?: string
-    universidad?: string
-    carrera?: string
-    semestre?: string
-    interes?: string
-    experiencia?: string
-    expectativas?: string
-    fuente?: string
+    apellidos: string
+    carrera: string
+    plantel: string
+    numeroCuenta: string
+    edad: number
+    motivacion: string
+    twitter?: string
+    instagram?: string
+    linkedin?: string
+    facebook?: string
+    telegram?: string
   }): Promise<void> => {
     const { error } = await supabase
       .from('registros_comunidad')
       .insert([{
         ...datos,
-        fechaRegistro: new Date().toISOString()
+        creadoEn: new Date().toISOString()
       }])
     
     if (error) throw error
@@ -240,7 +242,7 @@ export const registrosComunidadApi = {
     const { data, error } = await supabase
       .from('registros_comunidad')
       .select('*')
-      .order('fechaRegistro', { ascending: false })
+      .order('creadoEn', { ascending: false })
     
     if (error) throw error
     return data

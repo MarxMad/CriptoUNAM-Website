@@ -92,16 +92,18 @@ export const handleRegistration = async (data: RegistrationData): Promise<ApiRes
   try {
     // Guardar en Supabase primero
     await registrosComunidadApi.create({
-      nombre: `${data.nombre} ${data.apellidos}`,
-      email: data.telegram, // Usar telegram como email de contacto
-      telefono: data.telegram,
-      universidad: data.plantel,
+      nombre: data.nombre,
+      apellidos: data.apellidos,
       carrera: data.carrera,
-      semestre: data.edad, // Usar edad como semestre aproximado
-      interes: data.motivacion,
-      experiencia: 'No especificada',
-      expectativas: data.motivacion,
-      fuente: 'website'
+      plantel: data.plantel,
+      numeroCuenta: data.numeroCuenta,
+      edad: parseInt(data.edad),
+      motivacion: data.motivacion,
+      twitter: data.twitter,
+      instagram: data.instagram,
+      linkedin: data.linkedin,
+      facebook: data.facebook,
+      telegram: data.telegram
     });
     
     // Obtener información detallada del usuario
