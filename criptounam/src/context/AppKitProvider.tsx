@@ -15,8 +15,8 @@ const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76
 const metadata = {
   name: 'CriptoUNAM',
   description: 'Plataforma educativa Web3',
-  url: 'https://criptounam.xyz',
-  icons: ['https://criptounam.xyz/favicon.png']
+  url: 'https://www.criptounam.xyz',
+  icons: ['https://www.criptounam.xyz/favicon.png']
 }
 
 // 3. Redes soportadas
