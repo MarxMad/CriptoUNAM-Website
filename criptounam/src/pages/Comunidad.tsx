@@ -54,10 +54,6 @@ const Comunidad = () => {
   });
   const [imagenPrincipalFile, setImagenPrincipalFile] = useState<File | null>(null);
   const [previewImagenPrincipal, setPreviewImagenPrincipal] = useState<string | null>(null);
-  const [fotosFiles, setFotosFiles] = useState<File[]>([]);
-  const [previewFotos, setPreviewFotos] = useState<string[]>([]);
-  const [videosFiles, setVideosFiles] = useState<File[]>([]);
-  const [presentacionesFiles, setPresentacionesFiles] = useState<File[]>([]);
 
   // Estado para el modal de nuevo evento
   const [showNuevoEventoModal, setShowNuevoEventoModal] = useState(false);
@@ -102,12 +98,6 @@ const Comunidad = () => {
     if (e.target.files && e.target.files[0]) {
       setImagenPrincipalFile(e.target.files[0]);
       setPreviewImagenPrincipal(URL.createObjectURL(e.target.files[0]));
-    }
-  };
-  const handleFotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFotosFiles(Array.from(e.target.files));
-      setPreviewFotos(Array.from(e.target.files).map(file => URL.createObjectURL(file)));
     }
   };
   const handleVideosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
