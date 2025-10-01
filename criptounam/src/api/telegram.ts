@@ -28,8 +28,16 @@ interface ApiResponse {
 
 export const sendTelegramMessage = async (message: string, chatId: string): Promise<ApiResponse> => {
   try {
+    console.log('📱 sendTelegramMessage llamado con:', { message: message.substring(0, 50) + '...', chatId });
+    
     const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
     const telegramChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+    console.log('🔧 Variables de entorno en sendTelegramMessage:', {
+      botToken: botToken ? 'Configurado ✅' : 'No configurado ❌',
+      telegramChatId: telegramChatId ? 'Configurado ✅' : 'No configurado ❌',
+      chatIdParam: chatId ? 'Configurado ✅' : 'No configurado ❌'
+    });
 
     // Validaciones de entorno
     if (!botToken) {
@@ -128,6 +136,8 @@ ${data.motivacion}
 }
 
 export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<ApiResponse> => {
+  console.log('📧 handleNewsletterSubscription llamado con:', { email, source });
+  
   const message = source === 'home' 
     ? `
 📧 *Nueva Suscripción desde el Home*
@@ -146,10 +156,13 @@ export const handleNewsletterSubscription = async (email: string, source: 'home'
 ----------------------------
 `
 
+  console.log('📧 Enviando notificación de newsletter...');
   return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
 }
 
 export const handleWalletNotification = async (address: string, provider: string): Promise<ApiResponse> => {
+  console.log('🔐 handleWalletNotification llamado con:', { address, provider });
+  
   const message = `
 🔐 *Nueva Wallet Conectada*
 ----------------------------
@@ -159,5 +172,6 @@ export const handleWalletNotification = async (address: string, provider: string
 ----------------------------
 `
 
+  console.log('🔐 Enviando notificación de wallet...');
   return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
 } 

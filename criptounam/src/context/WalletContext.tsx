@@ -80,6 +80,13 @@ const getProviderName = (connector: any) => {
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   console.log('WalletProvider montado');
   
+  // Debug de variables de entorno
+  console.log('🔧 Variables de entorno en WalletProvider:', {
+    VITE_TELEGRAM_BOT_TOKEN: import.meta.env.VITE_TELEGRAM_BOT_TOKEN ? 'Configurado ✅' : 'No configurado ❌',
+    VITE_TELEGRAM_CHAT_ID: import.meta.env.VITE_TELEGRAM_CHAT_ID ? 'Configurado ✅' : 'No configurado ❌',
+    NODE_ENV: import.meta.env.NODE_ENV
+  });
+  
   const [error, setError] = useState<string | null>(null)
   const [connectedWallets, setConnectedWallets] = useState<ConnectedWallet[]>([])
   const notifiedAddresses = useRef<Set<string>>(new Set())
