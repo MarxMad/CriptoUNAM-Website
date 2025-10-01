@@ -6,16 +6,10 @@ import { handleNewsletterSubscription } from '../api/telegram'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
-import axios from 'axios'
-import { API_ENDPOINTS } from '../config/api'
+import { newsletterApi, NewsletterEntry as SupabaseNewsletterEntry } from '../config/supabaseApi'
 
-interface NewsletterEntry {
-  id: number
-  title: string
-  date: string
-  content: string
-  imageUrl?: string
-}
+// Usamos la interfaz de Supabase
+type NewsletterEntry = SupabaseNewsletterEntry
 
 const Newsletter = () => {
   const [email, setEmail] = useState('')
@@ -38,12 +32,12 @@ const Newsletter = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [entradas, setEntradas] = useState<NewsletterEntry[]>([]);
 
-  // Cargar entradas desde backend
+  // Cargar entradas desde Supabase
   useEffect(() => {
     const fetchEntradas = async () => {
       try {
-        const res = await axios.get<NewsletterEntry[]>(API_ENDPOINTS.NEWSLETTER);
-        setEntradas(res.data);
+        const entradasData = await newsletterApi.getAll();
+        setEntradas(entradasData);
       } catch (error) {
         console.error('Error al cargar entradas de newsletter:', error);
       }
@@ -152,27 +146,26 @@ const Newsletter = () => {
     }
     if (!nuevaEntrada.title || !nuevaEntrada.date || !nuevaEntrada.content || !nuevaEntrada.imageFile || !nuevaEntrada.author) return;
     try {
-      const imagenUrl = await uploadToPinata(nuevaEntrada.imageFile);
-      const entradaData = {
-        title: nuevaEntrada.title,
-        date: nuevaEntrada.date,
-        content: nuevaEntrada.content,
-        imageUrl: imagenUrl,
-        author: nuevaEntrada.author,
-        tags: nuevaEntrada.tags.split(',').map(t => t.trim()).filter(Boolean),
+      // Subir imagen usando Supabase
+      const imagenUrl = await newsletterApi.uploadNewsletterImage(nuevaEntrada.imageFile);
+      
+      // Crear entrada usando Supabase
+      const entradaData: Omit<NewsletterEntry, 'id' | 'creadoEn'> = {
+        titulo: nuevaEntrada.title,
+        contenido: nuevaEntrada.content,
+        autor: nuevaEntrada.author,
+        fecha: nuevaEntrada.date,
+        imagen: imagenUrl,
+        tags: nuevaEntrada.tags.split(',').map(t => t.trim()).filter(Boolean)
       };
-      await axios.post(API_ENDPOINTS.NEWSLETTER, entradaData, {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
+      
+      const entradaCreada = await newsletterApi.create(entradaData);
+      setEntradas([entradaCreada, ...entradas]);
       setShowModal(false);
       setNuevaEntrada({ title: '', date: '', content: '', imageFile: null, author: '', tags: '' });
       setPreviewImage(null);
-      // Recargar entradas
-      const res = await axios.get<NewsletterEntry[]>(API_ENDPOINTS.NEWSLETTER);
-      setEntradas(res.data);
     } catch (error: any) {
+      console.error('Error al crear entrada:', error);
       alert('Error al subir la entrada: ' + (error?.message || error));
     }
   };
@@ -184,13 +177,10 @@ const Newsletter = () => {
       return;
     }
     try {
-      await axios.delete(API_ENDPOINTS.NEWSLETTER_ENTRY(id), {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
-      setEntradas(entradas.filter(e => (e as any)._id !== id));
+      await newsletterApi.delete(id);
+      setEntradas(entradas.filter(e => e.id !== id));
     } catch (error) {
+      console.error('Error al eliminar entrada:', error);
       alert('Error al eliminar la entrada');
     }
   };

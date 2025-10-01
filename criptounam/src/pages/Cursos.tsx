@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
-import axios from 'axios'
 import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
-import { API_ENDPOINTS } from '../config/api'
+import { cursosApi, Curso } from '../config/supabaseApi'
 
 // Mover cursosData y la interfaz Curso a src/constants/cursosData.ts
 
@@ -16,21 +15,13 @@ interface Leccion {
   videoFile?: File | null; // Archivo temporal antes de subir
 }
 
-interface CursoBackend {
-  _id?: string;
-  titulo: string;
-  nivel: string;
-  duracion: string;
-  imagen: string;
-  descripcion: string;
-  instructor: string;
-  precio: number;
-  estudiantes: number;
-  rating: number;
-  categorias: string[];
+// Usamos la interfaz Curso de Supabase, pero agregamos campos adicionales para el frontend
+interface CursoCompleto extends Curso {
+  estudiantes?: number;
+  rating?: number;
+  categorias?: string[];
   requisitos?: string;
-  lecciones: Leccion[];
-  creadoEn?: string;
+  lecciones?: Leccion[];
 }
 
 interface BackendPinataResponse {
@@ -42,7 +33,7 @@ const Cursos = () => {
   const [busqueda, setBusqueda] = useState('')
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('todas')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [cursos, setCursos] = useState<any[]>([])
+  const [cursos, setCursos] = useState<CursoCompleto[]>([])
   const { walletAddress, isConnected } = useWallet();
   const { isAdmin, canCreateCourse, canDeleteCourse } = useAdmin();
 
@@ -72,8 +63,17 @@ const Cursos = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const res = await axios.get<CursoBackend[]>(API_ENDPOINTS.CURSOS);
-        setCursos(res.data);
+        const cursosData = await cursosApi.getAll();
+        // Convertir a CursoCompleto agregando campos por defecto
+        const cursosCompletos: CursoCompleto[] = cursosData.map(curso => ({
+          ...curso,
+          estudiantes: 0,
+          rating: 5.0,
+          categorias: ['Blockchain'],
+          requisitos: 'Conocimientos básicos de programación',
+          lecciones: []
+        }));
+        setCursos(cursosCompletos);
       } catch (error) {
         console.error('Error al cargar cursos:', error);
       }
@@ -147,42 +147,36 @@ const Cursos = () => {
     }
 
     try {
-      // Subir imagen del curso
-      const formData = new FormData();
-      formData.append('file', imagenCursoFile);
-      const imagenResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData);
-      const imagenUrl = imagenResponse.data.ipfsUrl;
+      // Subir imagen del curso usando Supabase
+      const imagenUrl = await cursosApi.uploadCursoImage(imagenCursoFile);
 
-      // Procesar lecciones
-      const leccionesProcesadas = await Promise.all(
-        nuevoCurso.lecciones.map(async (leccion) => {
-          if (leccion.video.startsWith('https://gateway.pinata.cloud/ipfs/') || 
-              leccion.video.includes('youtube.com/') || 
-              leccion.video.includes('youtu.be/')) {
-            return leccion; // Si ya es una URL válida, la dejamos como está
-          }
-          // Si no es una URL válida, asumimos que es un archivo
-          const videoFormData = new FormData();
-          videoFormData.append('file', leccion.videoFile!);
-          const videoResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, videoFormData);
-          return {
-            ...leccion,
-            video: videoResponse.data.ipfsUrl
-          };
-        })
-      );
-
-      const cursoData = {
-        ...nuevoCurso,
+      // Crear el curso usando Supabase
+      const cursoData: Omit<Curso, 'id' | 'creadoEn'> = {
+        titulo: nuevoCurso.titulo,
+        descripcion: nuevoCurso.descripcion,
+        duracion: nuevoCurso.duracion,
+        nivel: nuevoCurso.nivel,
+        instructor: nuevoCurso.instructor,
         imagen: imagenUrl,
-        lecciones: leccionesProcesadas,
+        precio: parseFloat(nuevoCurso.precio),
+        fechaInicio: nuevoCurso.fechaInicio,
+        fechaFin: nuevoCurso.fechaFin,
+        cupo: parseInt(nuevoCurso.cupo)
       };
 
-      await axios.post(API_ENDPOINTS.CURSOS, cursoData, {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
+      const cursoCreado = await cursosApi.create(cursoData);
+      
+      // Agregar el curso a la lista local
+      const cursoCompleto: CursoCompleto = {
+        ...cursoCreado,
+        estudiantes: 0,
+        rating: 5.0,
+        categorias: ['Blockchain'],
+        requisitos: 'Conocimientos básicos de programación',
+        lecciones: []
+      };
+      
+      setCursos([cursoCompleto, ...cursos]);
       setShowCursosModal(false);
       setNuevoCurso({
         titulo: '',
@@ -233,13 +227,10 @@ const Cursos = () => {
       return;
     }
     try {
-      await axios.delete(API_ENDPOINTS.CURSO(id), {
-        headers: {
-          'x-wallet-address': walletAddress
-        }
-      });
-      setCursos(cursos.filter((c: any) => c._id !== id));
+      await cursosApi.delete(id);
+      setCursos(cursos.filter((c: CursoCompleto) => c.id !== id));
     } catch (error) {
+      console.error('Error al eliminar el curso:', error);
       alert('Error al eliminar el curso');
     }
   };
