@@ -28,18 +28,12 @@ interface ApiResponse {
 
 export const sendTelegramMessage = async (message: string, chatId: string): Promise<ApiResponse> => {
   try {
-    console.log('📱 sendTelegramMessage iniciado:', { message: message.substring(0, 50) + '...', chatId });
-    
     // Credenciales hardcodeadas temporalmente para que funcione
     const botToken = '7988985791:AAGEvzxwgDa0ERXoKS1G6J5s8XIhxcywYYM';
     const telegramChatId = '1608242541';
-    
-    console.log('📱 Credenciales configuradas:', { botToken: 'Configurado', telegramChatId });
 
     const finalChatId = chatId || telegramChatId;
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-    
-    console.log('📱 URL y Chat ID finales:', { url, finalChatId });
 
     // Validación de la URL
     if (!url.startsWith('https://api.telegram.org/bot')) {
@@ -53,7 +47,6 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
       return { success: false, message: 'Error: El mensaje no puede estar vacío' };
     }
 
-    console.log('📱 Enviando petición a Telegram...');
     const response = await axios.post<TelegramResponse>(
       url,
       {
@@ -69,13 +62,9 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
       }
     );
 
-    console.log('📱 Respuesta de Telegram:', response.data);
-
     if (response.data.ok) {
-      console.log('✅ Mensaje enviado exitosamente');
       return { success: true, message: 'Mensaje enviado correctamente' };
     } else {
-      console.error('❌ Error en respuesta de Telegram:', response.data);
       return { 
         success: false, 
         message: response.data.description || 'Error al enviar el mensaje a Telegram' 

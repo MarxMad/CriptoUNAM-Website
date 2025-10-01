@@ -42,10 +42,8 @@ const Footer = () => {
     }
     
     try {
-      console.log('🎓 Intentando enviar notificación de registro a comunidad:', formData.nombre)
       // Enviar notificación a Telegram
-      const result = await handleRegistration(formData)
-      console.log('🎓 Resultado de notificación:', result)
+      await handleRegistration(formData)
       
       setShowSuccessMessage(true);
       setTimeout(() => {
@@ -56,7 +54,6 @@ const Footer = () => {
       }, 700);
       setTimeout(() => setShowSuccessMessage(false), 5000);
     } catch (error) {
-      console.error('🎓 Error en notificación de registro:', error)
       setShowErrorMessage(true);
       setTimeout(() => setShowErrorMessage(false), 5000);
     }
@@ -71,16 +68,13 @@ const Footer = () => {
     }
     
     try {
-      console.log('📧 Intentando enviar notificación de newsletter desde Footer:', email)
       // Enviar notificación a Telegram
-      const result = await handleNewsletterSubscription(email, 'home')
-      console.log('📧 Resultado de notificación:', result)
+      await handleNewsletterSubscription(email, 'home')
       
       setEmail('')
       setShowNewsletterSuccess(true)
       setTimeout(() => setShowNewsletterSuccess(false), 5000)
     } catch (error) {
-      console.error('📧 Error en notificación de newsletter:', error)
       setShowNewsletterError(true)
       setTimeout(() => setShowNewsletterError(false), 5000)
     }
