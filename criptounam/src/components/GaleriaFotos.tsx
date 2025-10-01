@@ -170,7 +170,7 @@ const GaleriaFotos: React.FC<GaleriaFotosProps> = ({
                 e.currentTarget.style.transform = 'scale(1.1)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = index === indiceActual ? 1 : 0.7
+                e.currentTarget.style.opacity = index === indiceActual ? '1' : '0.7'
                 e.currentTarget.style.transform = 'scale(1)'
               }}
             />

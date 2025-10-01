@@ -190,3 +190,6 @@ export const newsletterApi = {
     return uploadImageToSupabase(file, 'newsletter')
   }
 }
+
+// Re-exportar tipos para uso externo
+export { Evento, Curso, NewsletterEntry } from './supabase';

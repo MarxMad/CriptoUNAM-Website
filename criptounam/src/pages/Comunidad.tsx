@@ -439,10 +439,7 @@ const Comunidad = () => {
     try {
       let imagenPrincipalUrl = previewImagenPrincipal;
       if (imagenPrincipalFile) {
-        const formData = new FormData();
-        formData.append('file', imagenPrincipalFile);
-        const imagenResponse = await axios.post<BackendPinataResponse>(API_ENDPOINTS.UPLOAD, formData);
-        imagenPrincipalUrl = imagenResponse.data.ipfsUrl;
+        imagenPrincipalUrl = await uploadToSupabase(imagenPrincipalFile);
       }
       // No se permite editar fotos, videos ni presentaciones aquí para simplificar
       const eventoData = {
@@ -450,8 +447,8 @@ const Comunidad = () => {
         cupo: Number(nuevoEventoAnterior.cupo),
         imagenPrincipal: imagenPrincipalUrl,
       };
-      const res = await axios.put(API_ENDPOINTS.EVENTO(editandoEvento._id), eventoData);
-      setEventosAnterioresDinamicos(eventosAnterioresDinamicos.map(e => e._id === editandoEvento._id ? res.data : e));
+      const eventoActualizado = await eventosApi.update(editandoEvento.id!, eventoData);
+      setEventosAnterioresDinamicos(eventosAnterioresDinamicos.map(e => e.id === editandoEvento.id ? eventoActualizado : e));
       setShowEventoPasadoModal(false);
       setEditandoEvento(null);
       setEditandoTipo(null);
