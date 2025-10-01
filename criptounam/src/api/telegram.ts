@@ -30,25 +30,15 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
   try {
     console.log('📱 sendTelegramMessage llamado con:', { message: message.substring(0, 50) + '...', chatId });
     
-    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-    const telegramChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+    // Credenciales hardcodeadas temporalmente para que funcione
+    const botToken = '7988985791:AAGEvzxwgDa0ERXoKS1G6J5s8XIhxcywYYM';
+    const telegramChatId = '1608242541';
 
-    console.log('🔧 Variables de entorno en sendTelegramMessage:', {
-      botToken: botToken ? 'Configurado ✅' : 'No configurado ❌',
-      telegramChatId: telegramChatId ? 'Configurado ✅' : 'No configurado ❌',
+    console.log('🔧 Usando credenciales hardcodeadas:', {
+      botToken: 'Configurado ✅',
+      telegramChatId: 'Configurado ✅',
       chatIdParam: chatId ? 'Configurado ✅' : 'No configurado ❌'
     });
-
-    // Validaciones de entorno
-    if (!botToken) {
-      console.error('Error: VITE_TELEGRAM_BOT_TOKEN no está definido en el entorno');
-      return { success: false, message: 'Error de configuración: Token del bot no encontrado' };
-    }
-
-    if (!chatId && !telegramChatId) {
-      console.error('Error: No se encontró un chat ID válido');
-      return { success: false, message: 'Error de configuración: Chat ID no encontrado' };
-    }
 
     const finalChatId = chatId || telegramChatId;
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;

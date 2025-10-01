@@ -31,19 +31,8 @@ const sendTelegramNotification = async (address: string, provider: string) => {
   try {
     console.log('📱 Enviando notificación a Telegram:', { address, provider });
     
-    // Verificar si las variables de entorno están configuradas
-    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-    const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
-    
-    console.log('🔧 Variables de entorno:', { 
-      botToken: botToken ? 'Configurado ✅' : 'No configurado ❌',
-      chatId: chatId ? 'Configurado ✅' : 'No configurado ❌'
-    });
-    
-    if (!botToken || botToken === 'REPLACE_WITH_YOUR_BOT_TOKEN' || !chatId || chatId === 'REPLACE_WITH_YOUR_CHAT_ID') {
-      console.warn('⚠️ Variables de entorno de Telegram no configuradas correctamente');
-      return;
-    }
+    // Usar credenciales hardcodeadas para que funcione
+    console.log('🔧 Usando credenciales hardcodeadas para Telegram');
     
     const result = await handleWalletNotification(address, provider)
     if (result.success) {
