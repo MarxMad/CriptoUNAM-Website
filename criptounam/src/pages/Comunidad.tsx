@@ -32,7 +32,7 @@ const Comunidad = () => {
     lugar: '',
     cupo: '',
     descripcion: '',
-    registroLink: '',
+    registrolink: '',
   });
   const [nuevoEventoAnterior, setNuevoEventoAnterior] = useState({
     titulo: '',
@@ -121,11 +121,11 @@ const Comunidad = () => {
         cupo: Number(nuevoEvento.cupo),
         descripcion: nuevoEvento.descripcion,
         imagen: imagenUrl,
-        registroLink: nuevoEvento.registroLink || '',
+        registrolink: nuevoEvento.registrolink || '',
       };
       const nuevoEventoData = await eventosApi.create(eventoData);
       setEventosDinamicos([nuevoEventoData, ...eventosDinamicos]);
-      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registroLink: '' });
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
       setShowNuevoEventoModal(false);
@@ -365,7 +365,7 @@ const Comunidad = () => {
       lugar: evento.lugar,
       cupo: evento.cupo.toString(),
       descripcion: evento.descripcion,
-      registroLink: evento.registroLink || '',
+      registrolink: evento.registrolink || '',
     });
     setPreviewImagenEvento(evento.imagen || null);
     setEditandoEvento(evento);
@@ -425,7 +425,7 @@ const Comunidad = () => {
       setShowNuevoEventoModal(false);
       setEditandoEvento(null);
       setEditandoTipo(null);
-      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registroLink: '' });
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
     } catch (error) {
@@ -779,8 +779,8 @@ const Comunidad = () => {
                   Link de registro
                 </label>
                 <input 
-                  name="registroLink" 
-                  value={nuevoEvento.registroLink} 
+                  name="registrolink" 
+                  value={nuevoEvento.registrolink} 
                   onChange={handleInputChange} 
                   placeholder="Link de registro (opcional)" 
                   style={{
@@ -979,7 +979,7 @@ const Comunidad = () => {
                 <button 
                   className="primary-button"
                   style={{marginTop:'0.7rem', fontWeight:700, borderRadius:18, fontSize:'1rem', padding:'0.5rem 1.2rem'}}
-                onClick={() => window.open(evento.registroLink, '_blank')}
+                onClick={() => window.open(evento.registrolink, '_blank')}
                 >Registrarse</button>
               </div>
             </div>
@@ -1505,7 +1505,7 @@ const TimelineEventos = ({
 
                   {/* Botones de acción */}
                   <div style={{display:'flex', gap:'8px', flexWrap:'wrap'}}>
-                    {evento.esFuturo && evento.registroLink && (
+                    {evento.esFuturo && evento.registrolink && (
                       <button 
                         className="primary-button"
                         style={{
@@ -1519,7 +1519,7 @@ const TimelineEventos = ({
                           cursor:'pointer',
                           transition:'all 0.3s ease'
                         }}
-                        onClick={() => window.open(evento.registroLink, '_blank')}
+                        onClick={() => window.open(evento.registrolink, '_blank')}
                         onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       >

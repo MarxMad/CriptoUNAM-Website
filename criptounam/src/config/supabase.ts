@@ -21,7 +21,7 @@ export interface Evento {
   fotos?: string[]
   videos?: string[]
   presentaciones?: string[]
-  registroLink?: string
+  registrolink?: string
   creadoEn?: string
   esFuturo?: boolean
 }
