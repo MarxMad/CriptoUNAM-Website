@@ -238,9 +238,18 @@ export const registrosComunidadApi = {
     telegram?: string
   }): Promise<void> => {
     console.log('🎓 registrosComunidadApi.create iniciado con datos:', datos);
-    // Solo usar campos que sabemos que existen, dejar que Supabase maneje el timestamp automáticamente
-    const dataToInsert = { ...datos };
-    console.log('📊 Datos a insertar en registros_comunidad:', dataToInsert);
+    
+    // Mapear solo los campos básicos que sabemos que existen
+    const dataToInsert = {
+      nombre: datos.nombre,
+      apellidos: datos.apellidos,
+      carrera: datos.carrera,
+      plantel: datos.plantel,
+      edad: datos.edad,
+      motivacion: datos.motivacion
+    };
+    
+    console.log('📊 Datos a insertar en registros_comunidad (solo campos básicos):', dataToInsert);
     
     const { error } = await supabase
       .from('registros_comunidad')
