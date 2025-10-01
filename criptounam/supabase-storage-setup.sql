@@ -3,7 +3,10 @@
 -- =============================================
 
 -- Crear buckets para diferentes tipos de archivos
--- Eliminar buckets existentes si existen
+-- Primero eliminar objetos de los buckets existentes
+DELETE FROM storage.objects WHERE bucket_id IN ('eventos', 'cursos', 'newsletter', 'galerias', 'imagenes-publicas');
+
+-- Luego eliminar buckets existentes si existen
 DELETE FROM storage.buckets WHERE id IN ('eventos', 'cursos', 'newsletter', 'galerias', 'imagenes-publicas');
 
 INSERT INTO storage.buckets (id, name, public) VALUES 
@@ -16,6 +19,32 @@ INSERT INTO storage.buckets (id, name, public) VALUES
 -- =============================================
 -- POLÍTICAS DE STORAGE
 -- =============================================
+
+-- Eliminar políticas existentes para evitar conflictos
+DROP POLICY IF EXISTS "Permitir lectura pública de imagenes-publicas" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir subida de imagenes-publicas" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir actualización de imagenes-publicas" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir eliminación de imagenes-publicas" ON storage.objects;
+
+DROP POLICY IF EXISTS "Permitir lectura pública de eventos" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir subida de eventos" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir actualización de eventos" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir eliminación de eventos" ON storage.objects;
+
+DROP POLICY IF EXISTS "Permitir lectura pública de cursos" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir subida de cursos" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir actualización de cursos" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir eliminación de cursos" ON storage.objects;
+
+DROP POLICY IF EXISTS "Permitir lectura pública de newsletter" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir subida de newsletter" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir actualización de newsletter" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir eliminación de newsletter" ON storage.objects;
+
+DROP POLICY IF EXISTS "Permitir lectura pública de galerias" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir subida de galerias" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir actualización de galerias" ON storage.objects;
+DROP POLICY IF EXISTS "Permitir eliminación de galerias" ON storage.objects;
 
 -- Políticas para bucket de imágenes públicas (principal)
 CREATE POLICY "Permitir lectura pública de imagenes-publicas" ON storage.objects 
