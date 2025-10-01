@@ -8,14 +8,14 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 const queryClient = new QueryClient()
 
 // 1. Obtén el projectId desde las variables de entorno
-const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID
+const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76b812745208d28235dd59c'
 
 // 2. Metadata opcional
 const metadata = {
   name: 'CriptoUNAM',
   description: 'Plataforma educativa Web3',
-  url: 'https://criptounam.com',
-  icons: ['https://criptounam.com/favicon.png']
+  url: 'https://criptounam.xyz',
+  icons: ['https://criptounam.xyz/favicon.png']
 }
 
 // 3. Redes soportadas
