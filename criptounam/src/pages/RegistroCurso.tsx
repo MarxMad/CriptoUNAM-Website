@@ -64,7 +64,7 @@ const RegistroCurso = () => {
     let mensaje = `🚀 Nuevo alumno inscrito en CriptoUNAM\nCurso: ${curso?.titulo || id}\nWallet: ${address}`
     if (formData.nombre) mensaje += `\nNombre: ${formData.nombre}`
     if (formData.email) mensaje += `\nEmail: ${formData.email}`
-    await sendTelegramMessage(mensaje, import.meta.env.VITE_TELEGRAM_CHAT_ID)
+    await sendTelegramMessage(mensaje, '1608242541')
     setInscrito(true)
   }
 
