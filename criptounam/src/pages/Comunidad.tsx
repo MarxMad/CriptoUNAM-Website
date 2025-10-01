@@ -33,6 +33,7 @@ const Comunidad = () => {
     cupo: '',
     descripcion: '',
     registrolink: '',
+    tipo: 'proximo' as 'proximo' | 'anterior',
   });
   const [nuevoEventoAnterior, setNuevoEventoAnterior] = useState({
     titulo: '',
@@ -60,7 +61,31 @@ const Comunidad = () => {
   const [editandoTipo, setEditandoTipo] = useState<'proximo' | 'anterior' | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNuevoEvento({ ...nuevoEvento, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const updatedEvento = { ...nuevoEvento, [name]: value };
+    
+    // Si cambia la fecha, detectar automáticamente el tipo de evento
+    if (name === 'fecha' && value) {
+      const tipoDetectado = detectarTipoEvento(value);
+      updatedEvento.tipo = tipoDetectado;
+    }
+    
+    setNuevoEvento(updatedEvento);
+  };
+
+  // Función para detectar automáticamente si un evento es pasado o futuro
+  const detectarTipoEvento = (fechaStr: string): 'proximo' | 'anterior' => {
+    try {
+      const fechaEvento = parsearFecha(fechaStr);
+      const hoy = new Date();
+      hoy.setHours(0, 0, 0, 0); // Resetear horas para comparar solo fechas
+      fechaEvento.setHours(0, 0, 0, 0);
+      
+      return fechaEvento >= hoy ? 'proximo' : 'anterior';
+    } catch (error) {
+      console.error('Error al parsear fecha:', error);
+      return 'proximo'; // Por defecto, considerar como futuro
+    }
   };
   const handleInputChangeAnterior = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNuevoEventoAnterior({ ...nuevoEventoAnterior, [e.target.name]: e.target.value });
@@ -113,7 +138,7 @@ const Comunidad = () => {
     try {
       const imagenUrl = await uploadToSupabase(imagenEventoFile);
       const eventoData: Omit<Evento, 'id' | 'creadoEn'> = {
-        tipo: 'proximo',
+        tipo: nuevoEvento.tipo,
         titulo: nuevoEvento.titulo,
         fecha: nuevoEvento.fecha,
         hora: nuevoEvento.hora,
