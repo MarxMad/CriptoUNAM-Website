@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
 import { handleNewsletterSubscription, handleRegistration } from '../api/telegram'
+import SuccessPopup from './SuccessPopup'
 
 const Footer = () => {
   // Estado para el modal de comunidad
@@ -28,6 +29,12 @@ const Footer = () => {
   const [email, setEmail] = useState('')
   const [showNewsletterSuccess, setShowNewsletterSuccess] = useState(false)
   const [showNewsletterError, setShowNewsletterError] = useState(false)
+  const [isNewsletterLoading, setIsNewsletterLoading] = useState(false)
+  const [showNewsletterPopup, setShowNewsletterPopup] = useState(false)
+  
+  // Estados de loading y popup para comunidad
+  const [isCommunityLoading, setIsCommunityLoading] = useState(false)
+  const [showCommunityPopup, setShowCommunityPopup] = useState(false)
 
   // Handlers para el formulario de comunidad
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -35,48 +42,56 @@ const Footer = () => {
   }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isCommunityLoading) return;
+    
     if (!formData.nombre || !formData.apellidos || !formData.edad || !formData.carrera || !formData.plantel || !formData.numeroCuenta || !formData.motivacion) {
       setShowErrorMessage(true);
       setTimeout(() => setShowErrorMessage(false), 5000);
       return;
     }
     
+    setIsCommunityLoading(true);
+    
     try {
       // Enviar notificación a Telegram
       await handleRegistration(formData)
       
-      setShowSuccessMessage(true);
-      setTimeout(() => {
-        setShowJoinModal(false);
-        setFormData({
-          nombre: '', apellidos: '', edad: '', carrera: '', plantel: '', numeroCuenta: '', motivacion: '', telegram: '', twitter: '', instagram: '', linkedin: '', facebook: ''
-        });
-      }, 700);
-      setTimeout(() => setShowSuccessMessage(false), 5000);
+      setShowJoinModal(false);
+      setFormData({
+        nombre: '', apellidos: '', edad: '', carrera: '', plantel: '', numeroCuenta: '', motivacion: '', telegram: '', twitter: '', instagram: '', linkedin: '', facebook: ''
+      });
+      setShowCommunityPopup(true);
     } catch (error) {
       setShowErrorMessage(true);
       setTimeout(() => setShowErrorMessage(false), 5000);
+    } finally {
+      setIsCommunityLoading(false);
     }
   }
   // Newsletter
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!email || isNewsletterLoading) return
+    
     if (!email) {
       setShowNewsletterError(true)
       setTimeout(() => setShowNewsletterError(false), 5000)
       return
     }
     
+    setIsNewsletterLoading(true)
+    
     try {
       // Enviar notificación a Telegram
       await handleNewsletterSubscription(email, 'home')
       
       setEmail('')
-      setShowNewsletterSuccess(true)
-      setTimeout(() => setShowNewsletterSuccess(false), 5000)
+      setShowNewsletterPopup(true)
     } catch (error) {
       setShowNewsletterError(true)
       setTimeout(() => setShowNewsletterError(false), 5000)
+    } finally {
+      setIsNewsletterLoading(false)
     }
   }
 
@@ -363,14 +378,17 @@ const Footer = () => {
             <button 
               type="submit" 
               className="primary-button" 
+              disabled={isNewsletterLoading}
               style={{
                 borderRadius: '8px',
                 fontWeight: 600,
                 padding: '0.5rem 1rem',
-                fontSize: '0.9rem'
+                fontSize: '0.9rem',
+                opacity: isNewsletterLoading ? 0.7 : 1,
+                cursor: isNewsletterLoading ? 'not-allowed' : 'pointer'
               }}
             >
-              Suscribirse
+              {isNewsletterLoading ? 'Suscribiendo...' : 'Suscribirse'}
             </button>
           </form>
         </div>
@@ -419,7 +437,19 @@ const Footer = () => {
                   <input type="text" name="twitter" placeholder="Twitter" value={formData.twitter} onChange={handleChange} />
                 </div>
               </div>
-              <button type="submit" className="primary-button" style={{width:'100%', marginTop:12}}>Enviar Registro</button>
+              <button 
+                type="submit" 
+                className="primary-button" 
+                disabled={isCommunityLoading}
+                style={{
+                  width:'100%', 
+                  marginTop:12,
+                  opacity: isCommunityLoading ? 0.7 : 1,
+                  cursor: isCommunityLoading ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isCommunityLoading ? 'Enviando...' : 'Enviar Registro'}
+              </button>
             </form>
             {showSuccessMessage && <p style={{color:'#34d399', marginTop:8}}>¡Registro exitoso! Te contactaremos pronto.</p>}
             {showErrorMessage && <p style={{color:'#ff4444', marginTop:8}}>Hubo un error. Por favor, intenta de nuevo.</p>}
@@ -452,6 +482,23 @@ const Footer = () => {
           Construyendo el futuro de la educación blockchain
         </p>
       </div>
+
+      {/* Popups de éxito */}
+      <SuccessPopup
+        isOpen={showNewsletterPopup}
+        onClose={() => setShowNewsletterPopup(false)}
+        title="¡Suscripción Exitosa!"
+        message="Te has suscrito correctamente al newsletter de CriptoUNAM. Recibirás las últimas noticias y actualizaciones."
+        type="newsletter"
+      />
+
+      <SuccessPopup
+        isOpen={showCommunityPopup}
+        onClose={() => setShowCommunityPopup(false)}
+        title="¡Registro Exitoso!"
+        message="Te has registrado correctamente en la comunidad de CriptoUNAM. Te contactaremos pronto con más información."
+        type="community"
+      />
     </footer>
   )
 }
