@@ -257,7 +257,11 @@ export const walletsApi = {
   }): Promise<void> => {
     const { error } = await supabase
       .from('wallets_conectadas')
-      .insert([datos])
+      .insert([{
+        address: datos.address,
+        provider: datos.provider,
+        conectadoen: datos.timestamp
+      }])
     
     if (error) throw error
   },
@@ -266,7 +270,7 @@ export const walletsApi = {
     const { data, error } = await supabase
       .from('wallets_conectadas')
       .select('*')
-      .order('timestamp', { ascending: false })
+      .order('conectadoen', { ascending: false })
     
     if (error) throw error
     return data
