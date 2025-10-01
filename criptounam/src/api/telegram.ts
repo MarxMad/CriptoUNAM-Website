@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getUserAnalytics, formatUserInfoForTelegram, UserAnalytics } from '../utils/userAnalytics'
 
 interface RegistrationData {
   nombre: string
@@ -87,60 +88,127 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
 };
 
 export const handleRegistration = async (data: RegistrationData): Promise<ApiResponse> => {
-  const mensaje = `
-🎓 *Nuevo Registro en CriptoUNAM* 🎓
+  try {
+    // Obtener información detallada del usuario
+    const analytics = await getUserAnalytics();
+    const userInfo = formatUserInfoForTelegram(analytics);
+    
+    const mensaje = `🎓 **Nuevo Registro en CriptoUNAM** 🎓
 
-👤 *Información Personal*
-• 👨‍🎓 Nombre: ${data.nombre} ${data.apellidos}
-• 📅 Edad: ${data.edad}
-• 🏛️ Carrera: ${data.carrera} (${data.plantel})
-• 🔢 Número de Cuenta: ${data.numeroCuenta}
-• 📱 Telegram: ${data.telegram}
+👤 **Información Personal**
+• 👨‍🎓 **Nombre:** ${data.nombre} ${data.apellidos}
+• 📅 **Edad:** ${data.edad}
+• 🏛️ **Carrera:** ${data.carrera} (${data.plantel})
+• 🔢 **Número de Cuenta:** ${data.numeroCuenta}
+• 📱 **Telegram:** ${data.telegram}
 
-💭 *Motivación*
+💭 **Motivación**
 ${data.motivacion}
 
-🔗 *Redes Sociales*
-• 🐦 Twitter: ${data.twitter || 'No proporcionado'}
-• 📸 Instagram: ${data.instagram || 'No proporcionado'}
-• 💼 LinkedIn: ${data.linkedin || 'No proporcionado'}
-• 👍 Facebook: ${data.facebook || 'No proporcionado'}
-  `
+🔗 **Redes Sociales**
+• 🐦 **Twitter:** ${data.twitter || 'No proporcionado'}
+• 📸 **Instagram:** ${data.instagram || 'No proporcionado'}
+• 💼 **LinkedIn:** ${data.linkedin || 'No proporcionado'}
+• 👍 **Facebook:** ${data.facebook || 'No proporcionado'}
 
-  return await sendTelegramMessage(mensaje, import.meta.env.VITE_TELEGRAM_CHAT_ID)
+📊 **Información del Usuario:**
+${userInfo}`;
+
+    return await sendTelegramMessage(mensaje, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+  } catch (error) {
+    console.error('Error obteniendo analytics del usuario:', error);
+    // Fallback a mensaje simple si hay error
+    const mensaje = `🎓 **Nuevo Registro en CriptoUNAM** 🎓
+
+👤 **Información Personal**
+• 👨‍🎓 **Nombre:** ${data.nombre} ${data.apellidos}
+• 📅 **Edad:** ${data.edad}
+• 🏛️ **Carrera:** ${data.carrera} (${data.plantel})
+• 🔢 **Número de Cuenta:** ${data.numeroCuenta}
+• 📱 **Telegram:** ${data.telegram}
+
+💭 **Motivación**
+${data.motivacion}
+
+🔗 **Redes Sociales**
+• 🐦 **Twitter:** ${data.twitter || 'No proporcionado'}
+• 📸 **Instagram:** ${data.instagram || 'No proporcionado'}
+• 💼 **LinkedIn:** ${data.linkedin || 'No proporcionado'}
+• 👍 **Facebook:** ${data.facebook || 'No proporcionado'}`;
+    return await sendTelegramMessage(mensaje, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+  }
 }
 
 export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<ApiResponse> => {
-  const message = source === 'home' 
-    ? `
-📧 *Nueva Suscripción desde el Home*
-----------------------------
-✉️ Email: ${email}
-📍 Fuente: Página Principal
-⏰ Fecha: ${new Date().toLocaleString()}
-----------------------------
-`
-    : `
-📧 *Nueva Suscripción desde Newsletter*
-----------------------------
-✉️ Email: ${email}
-📍 Fuente: Página de Newsletter
-⏰ Fecha: ${new Date().toLocaleString()}
-----------------------------
-`
+  try {
+    // Obtener información detallada del usuario
+    const analytics = await getUserAnalytics();
+    const userInfo = formatUserInfoForTelegram(analytics);
+    
+    const message = source === 'home' 
+      ? `📧 **Nueva Suscripción desde el Home**
+-----------------------------
+✉️ **Email:** ${email}
+📍 **Fuente:** Página Principal
 
-  return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
+📊 **Información del Usuario:**
+${userInfo}
+-----------------------------`
+      : `📧 **Nueva Suscripción desde Newsletter**
+-----------------------------
+✉️ **Email:** ${email}
+📍 **Fuente:** Página de Newsletter
+
+📊 **Información del Usuario:**
+${userInfo}
+-----------------------------`;
+
+    return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+  } catch (error) {
+    console.error('Error obteniendo analytics del usuario:', error);
+    // Fallback a mensaje simple si hay error
+    const message = source === 'home' 
+      ? `📧 **Nueva Suscripción desde el Home**
+-----------------------------
+✉️ **Email:** ${email}
+📍 **Fuente:** Página Principal
+⏰ **Fecha:** ${new Date().toLocaleString()}
+-----------------------------`
+      : `📧 **Nueva Suscripción desde Newsletter**
+-----------------------------
+✉️ **Email:** ${email}
+📍 **Fuente:** Página de Newsletter
+⏰ **Fecha:** ${new Date().toLocaleString()}
+-----------------------------`;
+    return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+  }
 }
 
 export const handleWalletNotification = async (address: string, provider: string): Promise<ApiResponse> => {
-  const message = `
-🔐 *Nueva Wallet Conectada*
-----------------------------
-💰 Dirección: \`${address}\`
-🔧 Proveedor: ${provider}
-⏰ Fecha: ${new Date().toLocaleString()}
-----------------------------
-`
+  try {
+    // Obtener información detallada del usuario
+    const analytics = await getUserAnalytics(address, provider);
+    const userInfo = formatUserInfoForTelegram(analytics);
+    
+    const message = `🔐 **Nueva Wallet Conectada**
+-----------------------------
+💰 **Dirección:** \`${address}\`
+🔧 **Proveedor:** ${provider}
 
-  return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID)
+📊 **Información del Usuario:**
+${userInfo}
+-----------------------------`;
+
+    return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+  } catch (error) {
+    console.error('Error obteniendo analytics del usuario:', error);
+    // Fallback a mensaje simple si hay error
+    const message = `🔐 **Nueva Wallet Conectada**
+-----------------------------
+💰 **Dirección:** \`${address}\`
+🔧 **Proveedor:** ${provider}
+⏰ **Fecha:** ${new Date().toLocaleString()}
+-----------------------------`;
+    return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+  }
 } 
