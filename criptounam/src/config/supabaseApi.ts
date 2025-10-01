@@ -192,4 +192,4 @@ export const newsletterApi = {
 }
 
 // Re-exportar tipos para uso externo
-export { Evento, Curso, NewsletterEntry } from './supabase';
+export type { Evento, Curso, NewsletterEntry } from './supabase';
