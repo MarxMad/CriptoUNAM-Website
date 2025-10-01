@@ -150,7 +150,7 @@ const Comunidad = () => {
       };
       const nuevoEventoData = await eventosApi.create(eventoData);
       setEventosDinamicos([nuevoEventoData, ...eventosDinamicos]);
-      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '' });
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '', tipo: 'proximo' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
       setShowNuevoEventoModal(false);
@@ -391,6 +391,7 @@ const Comunidad = () => {
       cupo: evento.cupo.toString(),
       descripcion: evento.descripcion,
       registrolink: evento.registrolink || '',
+      tipo: evento.tipo || 'proximo',
     });
     setPreviewImagenEvento(evento.imagen || null);
     setEditandoEvento(evento);
@@ -450,7 +451,7 @@ const Comunidad = () => {
       setShowNuevoEventoModal(false);
       setEditandoEvento(null);
       setEditandoTipo(null);
-      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '' });
+      setNuevoEvento({ titulo: '', fecha: '', hora: '', lugar: '', cupo: '', descripcion: '', registrolink: '', tipo: 'proximo' });
       setImagenEventoFile(null);
       setPreviewImagenEvento(null);
     } catch (error) {

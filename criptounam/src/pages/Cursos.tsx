@@ -49,6 +49,9 @@ const Cursos = () => {
     categorias: [] as string[],
     requisitos: '',
     lecciones: [] as Leccion[],
+    fechaInicio: '',
+    fechaFin: '',
+    cupo: 0,
   });
   const [imagenCursoFile, setImagenCursoFile] = useState<File | null>(null);
   const [previewImagenCurso, setPreviewImagenCurso] = useState<string | null>(null);
@@ -148,7 +151,7 @@ const Cursos = () => {
 
     try {
       // Subir imagen del curso usando Supabase
-      const imagenUrl = await cursosApi.uploadCursoImage(imagenCursoFile);
+      const imagenUrl = await cursosApi.uploadCourseImage(imagenCursoFile);
 
       // Crear el curso usando Supabase
       const cursoData: Omit<Curso, 'id' | 'creadoEn'> = {
@@ -158,10 +161,10 @@ const Cursos = () => {
         nivel: nuevoCurso.nivel,
         instructor: nuevoCurso.instructor,
         imagen: imagenUrl,
-        precio: parseFloat(nuevoCurso.precio),
+        precio: nuevoCurso.precio,
         fechaInicio: nuevoCurso.fechaInicio,
         fechaFin: nuevoCurso.fechaFin,
-        cupo: parseInt(nuevoCurso.cupo)
+        cupo: nuevoCurso.cupo
       };
 
       const cursoCreado = await cursosApi.create(cursoData);

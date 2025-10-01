@@ -124,19 +124,6 @@ const Newsletter = () => {
     }
   };
 
-  const uploadToPinata = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      const response = await axios.post<{ ipfsUrl: string }>(API_ENDPOINTS.UPLOAD, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      return response.data.ipfsUrl;
-    } catch (error) {
-      console.error('Error al subir a Pinata (vía backend):', error);
-      throw error;
-    }
-  };
 
   const handleAgregarEntrada = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,17 +185,17 @@ const Newsletter = () => {
           <div className="newsletter-entries" style={{display:'flex', flexDirection:'column', gap:'2.2rem'}}>
             {entradas.map((entry) => (
               <article key={entry.id} className="card newsletter-entry" style={{padding:'1.2rem', display:'flex', flexDirection:'column', gap:'0.7rem', minHeight:320, maxWidth:'100%', margin:'0 auto'}}>
-                {entry.imageUrl && (
+                {entry.imagen && (
                   <div className="entry-image" style={{width:'100%', height:140, marginBottom:8}}>
-                    <img src={entry.imageUrl} alt={entry.title} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:16, boxShadow:'0 4px 18px 0 #1E3A8A22'}} />
+                    <img src={entry.imagen} alt={entry.titulo} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:16, boxShadow:'0 4px 18px 0 #1E3A8A22'}} />
                   </div>
                 )}
                 <div className="entry-content" style={{display:'flex', flexDirection:'column', gap:'0.3rem'}}>
-                  <h2 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.2rem 0'}}>{entry.title}</h2>
+                  <h2 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.2rem 0'}}>{entry.titulo}</h2>
                   <span className="entry-date" style={{color:'#2563EB', fontSize:'0.98rem', marginBottom:2}}>
-                    <i className="fas fa-calendar"></i> {entry.date}
+                    <i className="fas fa-calendar"></i> {entry.fecha}
                   </span>
-                  <p style={{color:'#E0E0E0', fontSize:'0.98rem'}}>{entry.content}</p>
+                  <p style={{color:'#E0E0E0', fontSize:'0.98rem'}}>{entry.contenido}</p>
                   <Link to={`/newsletter/${entry.id}`} className="primary-button" style={{marginTop:'0.5rem', fontSize:'0.98rem', borderRadius:16, fontWeight:700, letterSpacing:'1px', padding:'0.4rem 1.2rem', width:'fit-content'}}>Leer más <i className="fas fa-arrow-right"></i></Link>
                   {isAdmin && (
                     <button onClick={() => handleEliminarEntrada((entry as any)._id || entry.id.toString())} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600, marginTop:8}}>Eliminar</button>
