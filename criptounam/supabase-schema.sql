@@ -38,6 +38,9 @@ CREATE INDEX idx_eventos_creadoEn ON eventos(creadoEn);
 -- =============================================
 -- TABLA DE CURSOS
 -- =============================================
+-- Eliminar tabla si existe para recrearla
+DROP TABLE IF EXISTS cursos CASCADE;
+
 CREATE TABLE cursos (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
@@ -62,6 +65,9 @@ CREATE INDEX idx_cursos_creadoEn ON cursos(creadoEn);
 -- =============================================
 -- TABLA DE NEWSLETTER
 -- =============================================
+-- Eliminar tabla si existe para recrearla
+DROP TABLE IF EXISTS newsletter CASCADE;
+
 CREATE TABLE newsletter (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     titulo VARCHAR(255) NOT NULL,
@@ -82,6 +88,9 @@ CREATE INDEX idx_newsletter_creadoEn ON newsletter(creadoEn);
 -- =============================================
 -- TABLA DE SUSCRIPCIONES NEWSLETTER
 -- =============================================
+-- Eliminar tabla si existe para recrearla
+DROP TABLE IF EXISTS suscripciones_newsletter CASCADE;
+
 CREATE TABLE suscripciones_newsletter (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -97,6 +106,9 @@ CREATE INDEX idx_suscripciones_activo ON suscripciones_newsletter(activo);
 -- =============================================
 -- TABLA DE REGISTROS DE COMUNIDAD
 -- =============================================
+-- Eliminar tabla si existe para recrearla
+DROP TABLE IF EXISTS registros_comunidad CASCADE;
+
 CREATE TABLE registros_comunidad (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
@@ -121,6 +133,9 @@ CREATE INDEX idx_registros_plantel ON registros_comunidad(plantel);
 -- =============================================
 -- TABLA DE WALLETS CONECTADAS
 -- =============================================
+-- Eliminar tabla si existe para recrearla
+DROP TABLE IF EXISTS wallets_conectadas CASCADE;
+
 CREATE TABLE wallets_conectadas (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     address VARCHAR(42) NOT NULL,
