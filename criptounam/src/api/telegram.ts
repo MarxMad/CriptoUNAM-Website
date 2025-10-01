@@ -90,8 +90,11 @@ export const sendTelegramMessage = async (message: string, chatId: string): Prom
 
 export const handleRegistration = async (data: RegistrationData): Promise<ApiResponse> => {
   try {
+    console.log('🎓 handleRegistration iniciado con datos:', data);
+    
     // Guardar en Supabase primero
-    await registrosComunidadApi.create({
+    console.log('💾 Guardando registro en Supabase...');
+    const registroData = {
       nombre: data.nombre,
       apellidos: data.apellidos,
       carrera: data.carrera,
@@ -104,7 +107,11 @@ export const handleRegistration = async (data: RegistrationData): Promise<ApiRes
       linkedin: data.linkedin,
       facebook: data.facebook,
       telegram: data.telegram
-    });
+    };
+    console.log('📊 Datos a enviar a Supabase:', registroData);
+    
+    await registrosComunidadApi.create(registroData);
+    console.log('✅ Registro guardado en Supabase exitosamente');
     
     // Obtener información detallada del usuario
     const analytics = await getUserAnalytics();
@@ -158,8 +165,12 @@ ${data.motivacion}
 
 export const handleNewsletterSubscription = async (email: string, source: 'home' | 'newsletter' = 'newsletter'): Promise<ApiResponse> => {
   try {
+    console.log('📧 handleNewsletterSubscription iniciado:', { email, source });
+    
     // Guardar en Supabase primero
+    console.log('💾 Guardando suscripción en Supabase...');
     await suscripcionesApi.create(email, source);
+    console.log('✅ Suscripción guardada en Supabase exitosamente');
     
     // Obtener información detallada del usuario
     const analytics = await getUserAnalytics();
