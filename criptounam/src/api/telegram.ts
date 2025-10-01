@@ -204,16 +204,22 @@ ${userInfo}
 
 export const handleWalletNotification = async (address: string, provider: string): Promise<ApiResponse> => {
   try {
+    console.log('🔐 handleWalletNotification iniciado:', { address, provider });
+    
     // Guardar en Supabase primero
+    console.log('💾 Guardando wallet en Supabase...');
     await walletsApi.create({
       address,
       provider,
       timestamp: new Date().toISOString()
     });
+    console.log('✅ Wallet guardada en Supabase exitosamente');
     
     // Obtener información detallada del usuario
+    console.log('📊 Obteniendo analytics del usuario...');
     const analytics = await getUserAnalytics(address, provider);
     const userInfo = formatUserInfoForTelegram(analytics);
+    console.log('📊 Analytics obtenidos:', analytics);
     
     const message = `🔐 **Nueva Wallet Conectada**
 -----------------------------
@@ -224,9 +230,12 @@ export const handleWalletNotification = async (address: string, provider: string
 ${userInfo}
 -----------------------------`;
 
-    return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+    console.log('📱 Enviando mensaje a Telegram...');
+    const result = await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
+    console.log('📱 Resultado de Telegram:', result);
+    return result;
   } catch (error) {
-    console.error('Error obteniendo analytics del usuario:', error);
+    console.error('❌ Error en handleWalletNotification:', error);
     // Fallback a mensaje simple si hay error
     const message = `🔐 **Nueva Wallet Conectada**
 -----------------------------
@@ -234,6 +243,7 @@ ${userInfo}
 🔧 **Proveedor:** ${provider}
 ⏰ **Fecha:** ${new Date().toLocaleString()}
 -----------------------------`;
+    console.log('📱 Enviando mensaje de fallback a Telegram...');
     return await sendTelegramMessage(message, import.meta.env.VITE_TELEGRAM_CHAT_ID);
   }
 } 

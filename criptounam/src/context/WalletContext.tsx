@@ -29,7 +29,9 @@ export const useWallet = () => useContext(WalletContext)
 
 const sendTelegramNotification = async (address: string, provider: string) => {
   try {
+    console.log('🔐 Enviando notificación de wallet:', { address, provider });
     const result = await handleWalletNotification(address, provider)
+    console.log('📱 Resultado de notificación:', result);
     if (!result.success) {
       console.error('Error al enviar notificación:', result.message);
     }
@@ -84,8 +86,12 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   // Efecto para manejar nuevas conexiones
   useEffect(() => {
+    console.log('🔄 WalletContext useEffect:', { isConnected, walletAddress, hasNotified: notifiedAddresses.current.has(walletAddress) });
+    
     if (isConnected && walletAddress && !notifiedAddresses.current.has(walletAddress)) {
+      console.log('✅ Nueva wallet detectada, procesando...');
       const providerName = getProviderName(connector);
+      console.log('🔧 Provider detectado:', providerName);
 
       // Registrar la nueva wallet conectada
       const newWallet: ConnectedWallet = {
@@ -98,6 +104,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       setConnectedWallets(prevWallets => {
         const updatedWallets = [...prevWallets, newWallet]
         localStorage.setItem('connectedWallets', JSON.stringify(updatedWallets))
+        console.log('💾 Wallets guardadas en localStorage:', updatedWallets);
         return updatedWallets
       })
 
@@ -106,6 +113,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       
       // Marcar esta wallet como notificada
       notifiedAddresses.current.add(walletAddress)
+      console.log('✅ Wallet marcada como notificada');
     }
   }, [isConnected, walletAddress, connector])
 
