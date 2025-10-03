@@ -54,7 +54,7 @@ import TeamCard from '../components/TeamCard'
 import ProjectCard from '../components/ProjectCard'
 import ImageGallery from '../components/ImageGallery'
 import StatsSection from '../components/StatsSection'
-import RealSocialFeed from '../components/RealSocialFeed'
+import SimpleSocialFeed from '../components/SimpleSocialFeed'
 import InteractiveCTA from '../components/InteractiveCTA'
 
 interface RegistrationForm {
@@ -1056,10 +1056,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Feed de Redes Sociales Real */}
-      <RealSocialFeed
+      {/* Feed de Redes Sociales */}
+      <SimpleSocialFeed
         title="Síguenos en Redes Sociales"
-        description="Contenido real de @Cripto_UNAM en Instagram y Twitter/X"
+        description="Contenido de @cripto_unam en Instagram y @Cripto_UNAM en Twitter/X"
       />
 
       {/* Sección Interactiva Final */}
