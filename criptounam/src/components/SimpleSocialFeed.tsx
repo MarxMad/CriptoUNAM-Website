@@ -239,7 +239,7 @@ const SimpleSocialFeed: React.FC<SimpleSocialFeedProps> = ({ title, description 
             </div>
 
             {/* Imagen si existe */}
-            {post.image && (
+            {'image' in post && post.image && (
               <div style={{
                 width: '100%',
                 height: '200px',
