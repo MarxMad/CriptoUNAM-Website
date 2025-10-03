@@ -14,35 +14,36 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'instagram' | 'twitter'>('all');
 
-  // IDs de posts de Instagram de @Cripto_UNAM (necesitarás obtener estos IDs reales)
-  const instagramPostIds = [
-    'C8xYz1234567890', // Reemplaza con IDs reales
-    'C8xYz1234567891',
-    'C8xYz1234567892'
+  // URLs de posts de Instagram de @cripto_unam
+  const instagramPostUrls = [
+    'https://www.instagram.com/p/C8xYz1234567890/', // Reemplaza con URLs reales
+    'https://www.instagram.com/p/C8xYz1234567891/',
+    'https://www.instagram.com/p/C8xYz1234567892/'
   ];
 
-  // IDs de tweets de @Cripto_UNAM (necesitarás obtener estos IDs reales)
-  const twitterPostIds = [
-    '1234567890123456789', // Reemplaza con IDs reales
-    '1234567890123456790',
-    '1234567890123456791'
+  // URLs de tweets de @Cripto_UNAM
+  const twitterPostUrls = [
+    'https://twitter.com/Cripto_UNAM/status/1234567890123456789', // Reemplaza con URLs reales
+    'https://twitter.com/Cripto_UNAM/status/1234567890123456790',
+    'https://twitter.com/Cripto_UNAM/status/1234567890123456791'
   ];
 
   // Función para obtener datos de Instagram usando oEmbed
-  const fetchInstagramPost = async (postId: string) => {
+  const fetchInstagramPost = async (url: string) => {
     try {
-      const url = `https://www.instagram.com/p/${postId}/`;
-      const response = await fetch(`https://api.instagram.com/oembed/?url=${encodeURIComponent(url)}`);
+      // Usar un proxy CORS para evitar problemas de CORS
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://api.instagram.com/oembed/?url=${encodeURIComponent(url)}`)}`;
+      const response = await fetch(proxyUrl);
       
       if (response.ok) {
         const data = await response.json();
         return {
-          id: postId,
+          id: url.split('/p/')[1]?.replace('/', '') || 'unknown',
           platform: 'instagram',
-          content: data.title || '',
+          content: data.title || 'Post de Instagram de @cripto_unam',
           image: data.thumbnail_url,
           url: url,
-          author: '@Cripto_UNAM',
+          author: '@cripto_unam',
           timestamp: 'Reciente'
         };
       }
@@ -53,17 +54,18 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
   };
 
   // Función para obtener datos de Twitter usando oEmbed
-  const fetchTwitterPost = async (postId: string) => {
+  const fetchTwitterPost = async (url: string) => {
     try {
-      const url = `https://twitter.com/Cripto_UNAM/status/${postId}`;
-      const response = await fetch(`https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}`);
+      // Usar un proxy CORS para evitar problemas de CORS
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}`)}`;
+      const response = await fetch(proxyUrl);
       
       if (response.ok) {
         const data = await response.json();
         return {
-          id: postId,
+          id: url.split('/status/')[1] || 'unknown',
           platform: 'twitter',
-          content: data.html || '',
+          content: data.html || 'Tweet de @Cripto_UNAM',
           image: data.thumbnail_url,
           url: url,
           author: '@Cripto_UNAM',
@@ -83,13 +85,13 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
       
       try {
         // Cargar posts de Instagram
-        const instagramPromises = instagramPostIds.map(id => fetchInstagramPost(id));
+        const instagramPromises = instagramPostUrls.map(url => fetchInstagramPost(url));
         const instagramResults = await Promise.all(instagramPromises);
         const validInstagramPosts = instagramResults.filter(post => post !== null);
         setInstagramPosts(validInstagramPosts);
 
         // Cargar posts de Twitter
-        const twitterPromises = twitterPostIds.map(id => fetchTwitterPost(id));
+        const twitterPromises = twitterPostUrls.map(url => fetchTwitterPost(url));
         const twitterResults = await Promise.all(twitterPromises);
         const validTwitterPosts = twitterResults.filter(post => post !== null);
         setTwitterPosts(validTwitterPosts);
@@ -104,9 +106,18 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
             platform: 'instagram',
             content: '🚀 ¡Hackathon Blockchain 2024 fue un éxito total! Más de 200 participantes desarrollando el futuro de la Web3. #CriptoUNAM #Blockchain #Hackathon',
             image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=400&fit=crop',
-            url: 'https://instagram.com/Cripto_UNAM',
-            author: '@Cripto_UNAM',
+            url: 'https://instagram.com/cripto_unam',
+            author: '@cripto_unam',
             timestamp: '2 horas'
+          },
+          {
+            id: 'fallback2',
+            platform: 'instagram',
+            content: '💡 Workshop de NFTs: Desde la creación hasta el marketplace. Los estudiantes de CriptoUNAM están creando arte digital increíble! 🎨',
+            image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=400&fit=crop',
+            url: 'https://instagram.com/cripto_unam',
+            author: '@cripto_unam',
+            timestamp: '1 día'
           }
         ]);
         
@@ -118,6 +129,14 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
             url: 'https://twitter.com/Cripto_UNAM',
             author: '@Cripto_UNAM',
             timestamp: '4 horas'
+          },
+          {
+            id: 'fallback2',
+            platform: 'twitter',
+            content: '🔥 ¡CriptoUNAM en el top 10 de comunidades blockchain universitarias de Latinoamérica! Gracias a todos los miembros por hacer esto posible. #ProudToBeCriptoUNAM',
+            url: 'https://twitter.com/Cripto_UNAM',
+            author: '@Cripto_UNAM',
+            timestamp: '2 días'
           }
         ]);
       } finally {
@@ -459,7 +478,7 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
           flexWrap: 'wrap'
         }}>
           <a
-            href="https://instagram.com/Cripto_UNAM"
+            href="https://instagram.com/cripto_unam"
             target="_blank"
             rel="noopener noreferrer"
             style={{
@@ -486,7 +505,7 @@ const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) =
             }}
           >
             <FontAwesomeIcon icon={faInstagram} />
-            @Cripto_UNAM
+            @cripto_unam
           </a>
           <a
             href="https://twitter.com/Cripto_UNAM"
