@@ -3,6 +3,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { faExternalLinkAlt, faRefresh } from '@fortawesome/free-solid-svg-icons';
 
+// Declaraciones de tipo para scripts externos
+declare global {
+  interface Window {
+    instgrm?: {
+      Embeds: {
+        process: () => void;
+      };
+    };
+    twttr?: {
+      widgets: {
+        load: () => void;
+      };
+    };
+  }
+}
+
 interface EmbeddedSocialFeedProps {
   title: string;
   description?: string;
