@@ -48,6 +48,10 @@ import {
   Tooltip as RechartsTooltip
 } from 'recharts'
 import axios from 'axios'
+import TeamCard from '../components/TeamCard'
+import ProjectCard from '../components/ProjectCard'
+import ImageGallery from '../components/ImageGallery'
+import StatsSection from '../components/StatsSection'
 
 interface RegistrationForm {
   nombre: string
@@ -589,6 +593,174 @@ const Home = () => {
     },
   ];
 
+  // Datos del equipo
+  const teamMembers = [
+    {
+      name: 'Dr. Ana Martínez',
+      role: 'Directora Académica',
+      description: 'Especialista en criptoeconomía y blockchain. PhD en Economía Digital.',
+      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face',
+      linkedin: 'https://linkedin.com/in/ana-martinez',
+      twitter: 'https://twitter.com/ana_martinez'
+    },
+    {
+      name: 'Carlos Rodríguez',
+      role: 'Coordinador Técnico',
+      description: 'Desarrollador blockchain con 5+ años de experiencia en DeFi.',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
+      linkedin: 'https://linkedin.com/in/carlos-rodriguez',
+      github: 'https://github.com/carlos-rodriguez'
+    },
+    {
+      name: 'María González',
+      role: 'Coordinadora de Comunidad',
+      description: 'Experta en marketing digital y gestión de comunidades blockchain.',
+      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
+      linkedin: 'https://linkedin.com/in/maria-gonzalez',
+      twitter: 'https://twitter.com/maria_gonzalez'
+    },
+    {
+      name: 'Luis Hernández',
+      role: 'Investigador Senior',
+      description: 'Especialista en criptografía y protocolos de consenso.',
+      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
+      linkedin: 'https://linkedin.com/in/luis-hernandez',
+      github: 'https://github.com/luis-hernandez'
+    }
+  ];
+
+  // Proyectos destacados
+  const projects = [
+    {
+      title: 'DeFi Protocol UNAM',
+      description: 'Protocolo DeFi desarrollado por estudiantes para facilitar préstamos descentralizados en la comunidad universitaria.',
+      image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=250&fit=crop',
+      category: 'hackathon' as const,
+      prize: '1er Lugar - Hackathon Blockchain 2024',
+      team: ['Ana García', 'Carlos López', 'María Torres'],
+      technologies: ['Solidity', 'React', 'Web3.js', 'IPFS'],
+      link: 'https://defi-protocol-unam.vercel.app',
+      github: 'https://github.com/criptounam/defi-protocol'
+    },
+    {
+      title: 'NFT Marketplace UNAM',
+      description: 'Marketplace de NFTs para la comunidad universitaria, permitiendo la creación y venta de arte digital.',
+      image: 'https://images.unsplash.com/photo-1642790105077-0a0a4b0a0a0a?w=400&h=250&fit=crop',
+      category: 'community' as const,
+      team: ['Luis Martínez', 'Sofia Ramírez'],
+      technologies: ['Next.js', 'Ethereum', 'OpenSea API', 'MetaMask'],
+      link: 'https://nft-marketplace-unam.vercel.app',
+      github: 'https://github.com/criptounam/nft-marketplace'
+    },
+    {
+      title: 'Blockchain Voting System',
+      description: 'Sistema de votación descentralizado para elecciones estudiantiles usando blockchain.',
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop',
+      category: 'research' as const,
+      team: ['Diego Herrera', 'Valentina Cruz', 'Roberto Silva'],
+      technologies: ['Hyperledger Fabric', 'Node.js', 'React', 'Docker'],
+      github: 'https://github.com/criptounam/voting-system'
+    }
+  ];
+
+  // Galería de imágenes
+  const galleryImages = [
+    {
+      id: '1',
+      src: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=300&fit=crop',
+      alt: 'Hackathon Blockchain 2024',
+      title: 'Hackathon Blockchain 2024',
+      description: 'Estudiantes desarrollando proyectos innovadores',
+      category: 'eventos'
+    },
+    {
+      id: '2',
+      src: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
+      alt: 'Conferencia CriptoUNAM',
+      title: 'Conferencia Anual 2024',
+      description: 'Expertos compartiendo conocimiento sobre blockchain',
+      category: 'eventos'
+    },
+    {
+      id: '3',
+      src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
+      alt: 'Workshop de Smart Contracts',
+      title: 'Workshop Smart Contracts',
+      description: 'Aprendiendo desarrollo de contratos inteligentes',
+      category: 'talleres'
+    },
+    {
+      id: '4',
+      src: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
+      alt: 'Networking Event',
+      title: 'Networking Event',
+      description: 'Conectando con la comunidad blockchain',
+      category: 'networking'
+    },
+    {
+      id: '5',
+      src: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
+      alt: 'Laboratorio de Blockchain',
+      title: 'Laboratorio de Blockchain',
+      description: 'Espacio de trabajo colaborativo',
+      category: 'infraestructura'
+    },
+    {
+      id: '6',
+      src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      alt: 'Equipo CriptoUNAM',
+      title: 'Equipo CriptoUNAM',
+      description: 'Nuestro equipo trabajando en proyectos innovadores',
+      category: 'equipo'
+    }
+  ];
+
+  // Estadísticas
+  const stats = [
+    {
+      icon: faUsers,
+      value: '500+',
+      label: 'Miembros Activos',
+      description: 'Estudiantes y profesionales en blockchain',
+      color: '#34D399'
+    },
+    {
+      icon: faGraduationCap,
+      value: '50+',
+      label: 'Cursos Completados',
+      description: 'Programas de formación especializada',
+      color: '#3B82F6'
+    },
+    {
+      icon: faTrophy,
+      value: '15+',
+      label: 'Premios Ganados',
+      description: 'Hackathons y competencias blockchain',
+      color: '#F59E0B'
+    },
+    {
+      icon: faCode,
+      value: '30+',
+      label: 'Proyectos Desarrollados',
+      description: 'Aplicaciones y protocolos blockchain',
+      color: '#8B5CF6'
+    },
+    {
+      icon: faCalendarAlt,
+      value: '100+',
+      label: 'Eventos Realizados',
+      description: 'Conferencias, talleres y meetups',
+      color: '#EF4444'
+    },
+    {
+      icon: faGlobe,
+      value: '10+',
+      label: 'Países Representados',
+      description: 'Comunidad internacional de blockchain',
+      color: '#10B981'
+    }
+  ];
+
   useEffect(() => {
     const fetchCursosYEventos = async () => {
       try {
@@ -616,11 +788,23 @@ const Home = () => {
 
 
       {/* Hero principal */}
-      <section className="section" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'60vh', textAlign:'center', paddingTop:60}}>
+      <section className="section" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'70vh', textAlign:'center', paddingTop:60}}>
         <img src={IMAGES?.LOGO} alt="CriptoUNAM" className="logo-hero" style={{marginBottom:24}} />
-        <h1 style={{fontFamily:'Orbitron', fontSize:'2.5rem', color:'#D4AF37', marginBottom:12}}>Bienvenido a CriptoUNAM</h1>
-        <p style={{color:'#E0E0E0', fontSize:'1.2rem', marginBottom:24}}>La comunidad universitaria líder en blockchain, criptomonedas y Web3 en México.</p>
-        <Link to="/cursos" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem'}}>Explora los cursos</Link>
+        <h1 style={{fontFamily:'Orbitron', fontSize:'3rem', color:'#D4AF37', marginBottom:16, lineHeight:'1.2'}}>
+          Bienvenido a CriptoUNAM
+        </h1>
+        <p style={{color:'#E0E0E0', fontSize:'1.3rem', marginBottom:32, maxWidth:'800px', lineHeight:'1.6'}}>
+          La comunidad universitaria líder en blockchain, criptomonedas y Web3 en México. 
+          Formamos la próxima generación de desarrolladores e innovadores en tecnología descentralizada.
+        </p>
+        <div style={{display:'flex', gap:'16px', flexWrap:'wrap', justifyContent:'center'}}>
+          <Link to="/cursos" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem'}}>
+            Explora los cursos
+          </Link>
+          <Link to="/comunidad" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem', background:'rgba(37, 99, 235, 0.8)', border:'1px solid #2563EB'}}>
+            Únete a la comunidad
+          </Link>
+        </div>
       </section>
 
       {/* ¿Por qué CriptoUNAM? */}
@@ -633,6 +817,92 @@ const Home = () => {
           <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en eventos, hackathons y talleres exclusivos." />
         </div>
       </section>
+
+      {/* Estadísticas */}
+      <StatsSection
+        title="Nuestros Logros"
+        description="Cifras que demuestran el impacto y crecimiento de nuestra comunidad"
+        stats={stats}
+      />
+
+      {/* Equipo */}
+      <section style={{
+        maxWidth: '1200px',
+        margin: '0 auto 3rem auto',
+        padding: '0 20px'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: '2.5rem',
+            marginBottom: '1rem'
+          }}>
+            Nuestro Equipo
+          </h2>
+          <p style={{
+            color: '#E0E0E0',
+            fontSize: '1.2rem',
+            maxWidth: '700px',
+            margin: '0 auto'
+          }}>
+            Conoce a los expertos y líderes que hacen posible CriptoUNAM
+          </p>
+        </div>
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '24px'
+        }}>
+          {teamMembers.map((member, index) => (
+            <TeamCard key={index} member={member} />
+          ))}
+        </div>
+      </section>
+
+      {/* Proyectos Destacados */}
+      <section style={{
+        maxWidth: '1200px',
+        margin: '0 auto 3rem auto',
+        padding: '0 20px'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: '2.5rem',
+            marginBottom: '1rem'
+          }}>
+            Proyectos Destacados
+          </h2>
+          <p style={{
+            color: '#E0E0E0',
+            fontSize: '1.2rem',
+            maxWidth: '700px',
+            margin: '0 auto'
+          }}>
+            Innovación y desarrollo blockchain creado por nuestra comunidad
+          </p>
+        </div>
+        
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gap: '24px'
+        }}>
+          {projects.map((project, index) => (
+            <ProjectCard key={index} project={project} />
+          ))}
+        </div>
+      </section>
+
+      {/* Galería de Imágenes */}
+      <ImageGallery
+        images={galleryImages}
+        title="Nuestra Comunidad en Acción"
+        description="Momentos especiales, eventos y actividades que definen nuestra comunidad"
+      />
 
       {/* Cursos destacados reales */}
       {cursosHome.length > 0 && (
