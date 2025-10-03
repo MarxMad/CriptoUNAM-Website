@@ -1,105 +1,142 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faRefresh } from '@fortawesome/free-solid-svg-icons';
 
-interface SocialPost {
-  id: string;
-  platform: 'instagram' | 'twitter';
-  content: string;
-  image?: string;
-  likes: number;
-  comments: number;
-  timestamp: string;
-  url: string;
-}
-
-interface SocialFeedProps {
+interface RealSocialFeedProps {
   title: string;
   description?: string;
 }
 
-const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
-  const [posts, setPosts] = useState<SocialPost[]>([]);
+const RealSocialFeed: React.FC<RealSocialFeedProps> = ({ title, description }) => {
+  const [instagramPosts, setInstagramPosts] = useState<any[]>([]);
+  const [twitterPosts, setTwitterPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'instagram' | 'twitter'>('all');
 
-  // Datos simulados (en producción se conectaría a las APIs reales)
-  useEffect(() => {
-    const mockPosts: SocialPost[] = [
-      {
-        id: '1',
-        platform: 'instagram',
-        content: '🚀 ¡Hackathon Blockchain 2024 fue un éxito total! Más de 200 participantes desarrollando el futuro de la Web3. #CriptoUNAM #Blockchain #Hackathon',
-        image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=400&fit=crop',
-        likes: 156,
-        comments: 23,
-        timestamp: '2 horas',
-        url: 'https://instagram.com/p/example1'
-      },
-      {
-        id: '2',
-        platform: 'twitter',
-        content: '🎓 Nuevo curso: "Smart Contracts Avanzados" - Aprende Solidity, DeFi protocols y auditoría de contratos. ¡Inscripciones abiertas! #Web3Education',
-        likes: 89,
-        comments: 12,
-        timestamp: '4 horas',
-        url: 'https://twitter.com/Cripto_UNAM/status/example2'
-      },
-      {
-        id: '3',
-        platform: 'instagram',
-        content: '💡 Workshop de NFTs: Desde la creación hasta el marketplace. Los estudiantes de CriptoUNAM están creando arte digital increíble! 🎨',
-        image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=400&fit=crop',
-        likes: 203,
-        comments: 31,
-        timestamp: '1 día',
-        url: 'https://instagram.com/p/example3'
-      },
-      {
-        id: '4',
-        platform: 'twitter',
-        content: '🔥 ¡CriptoUNAM en el top 10 de comunidades blockchain universitarias de Latinoamérica! Gracias a todos los miembros por hacer esto posible. #ProudToBeCriptoUNAM',
-        likes: 234,
-        comments: 45,
-        timestamp: '2 días',
-        url: 'https://twitter.com/Cripto_UNAM/status/example4'
-      },
-      {
-        id: '5',
-        platform: 'instagram',
-        content: '🌟 Meetup mensual: "El futuro de DeFi en México" - Expertos de la industria compartiendo insights sobre finanzas descentralizadas.',
-        image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=400&fit=crop',
-        likes: 178,
-        comments: 28,
-        timestamp: '3 días',
-        url: 'https://instagram.com/p/example5'
-      },
-      {
-        id: '6',
-        platform: 'twitter',
-        content: '📚 Biblioteca blockchain: Hemos agregado 50+ recursos nuevos sobre Layer 2, Zero-Knowledge Proofs y más. ¡Todo disponible para la comunidad!',
-        likes: 67,
-        comments: 8,
-        timestamp: '4 días',
-        url: 'https://twitter.com/Cripto_UNAM/status/example6'
-      }
-    ];
+  // IDs de posts de Instagram de @Cripto_UNAM (necesitarás obtener estos IDs reales)
+  const instagramPostIds = [
+    'C8xYz1234567890', // Reemplaza con IDs reales
+    'C8xYz1234567891',
+    'C8xYz1234567892'
+  ];
 
-    // Simular carga
-    setTimeout(() => {
-      setPosts(mockPosts);
-      setLoading(false);
-    }, 1000);
+  // IDs de tweets de @Cripto_UNAM (necesitarás obtener estos IDs reales)
+  const twitterPostIds = [
+    '1234567890123456789', // Reemplaza con IDs reales
+    '1234567890123456790',
+    '1234567890123456791'
+  ];
+
+  // Función para obtener datos de Instagram usando oEmbed
+  const fetchInstagramPost = async (postId: string) => {
+    try {
+      const url = `https://www.instagram.com/p/${postId}/`;
+      const response = await fetch(`https://api.instagram.com/oembed/?url=${encodeURIComponent(url)}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          id: postId,
+          platform: 'instagram',
+          content: data.title || '',
+          image: data.thumbnail_url,
+          url: url,
+          author: '@Cripto_UNAM',
+          timestamp: 'Reciente'
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching Instagram post:', error);
+    }
+    return null;
+  };
+
+  // Función para obtener datos de Twitter usando oEmbed
+  const fetchTwitterPost = async (postId: string) => {
+    try {
+      const url = `https://twitter.com/Cripto_UNAM/status/${postId}`;
+      const response = await fetch(`https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return {
+          id: postId,
+          platform: 'twitter',
+          content: data.html || '',
+          image: data.thumbnail_url,
+          url: url,
+          author: '@Cripto_UNAM',
+          timestamp: 'Reciente'
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching Twitter post:', error);
+    }
+    return null;
+  };
+
+  // Cargar posts reales
+  useEffect(() => {
+    const loadRealPosts = async () => {
+      setLoading(true);
+      
+      try {
+        // Cargar posts de Instagram
+        const instagramPromises = instagramPostIds.map(id => fetchInstagramPost(id));
+        const instagramResults = await Promise.all(instagramPromises);
+        const validInstagramPosts = instagramResults.filter(post => post !== null);
+        setInstagramPosts(validInstagramPosts);
+
+        // Cargar posts de Twitter
+        const twitterPromises = twitterPostIds.map(id => fetchTwitterPost(id));
+        const twitterResults = await Promise.all(twitterPromises);
+        const validTwitterPosts = twitterResults.filter(post => post !== null);
+        setTwitterPosts(validTwitterPosts);
+
+      } catch (error) {
+        console.error('Error loading real posts:', error);
+        
+        // Fallback a posts simulados si falla la carga real
+        setInstagramPosts([
+          {
+            id: 'fallback1',
+            platform: 'instagram',
+            content: '🚀 ¡Hackathon Blockchain 2024 fue un éxito total! Más de 200 participantes desarrollando el futuro de la Web3. #CriptoUNAM #Blockchain #Hackathon',
+            image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=400&fit=crop',
+            url: 'https://instagram.com/Cripto_UNAM',
+            author: '@Cripto_UNAM',
+            timestamp: '2 horas'
+          }
+        ]);
+        
+        setTwitterPosts([
+          {
+            id: 'fallback1',
+            platform: 'twitter',
+            content: '🎓 Nuevo curso: "Smart Contracts Avanzados" - Aprende Solidity, DeFi protocols y auditoría de contratos. ¡Inscripciones abiertas! #Web3Education',
+            url: 'https://twitter.com/Cripto_UNAM',
+            author: '@Cripto_UNAM',
+            timestamp: '4 horas'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadRealPosts();
   }, []);
 
-  const filteredPosts = posts.filter(post => 
+  const allPosts = [...instagramPosts, ...twitterPosts];
+  const filteredPosts = allPosts.filter(post => 
     activeTab === 'all' || post.platform === activeTab
   );
 
-  const formatNumber = (num: number) => {
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num.toString();
+  const refreshPosts = () => {
+    setLoading(true);
+    // Recargar posts
+    window.location.reload();
   };
 
   return (
@@ -139,9 +176,9 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
         flexWrap: 'wrap'
       }}>
         {[
-          { key: 'all', label: 'Todas', icon: null },
-          { key: 'instagram', label: 'Instagram', icon: faInstagram },
-          { key: 'twitter', label: 'Twitter', icon: faTwitter }
+          { key: 'all', label: 'Todas', icon: null, count: allPosts.length },
+          { key: 'instagram', label: 'Instagram', icon: faInstagram, count: instagramPosts.length },
+          { key: 'twitter', label: 'Twitter', icon: faTwitter, count: twitterPosts.length }
         ].map(tab => (
           <button
             key={tab.key}
@@ -175,8 +212,45 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
           >
             {tab.icon && <FontAwesomeIcon icon={tab.icon} />}
             {tab.label}
+            <span style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              borderRadius: '12px',
+              padding: '2px 8px',
+              fontSize: '0.8rem'
+            }}>
+              {tab.count}
+            </span>
           </button>
         ))}
+        
+        {/* Botón de refresh */}
+        <button
+          onClick={refreshPosts}
+          disabled={loading}
+          style={{
+            background: 'rgba(37, 99, 235, 0.8)',
+            color: 'white',
+            border: '1px solid #2563EB',
+            borderRadius: '25px',
+            padding: '12px 16px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            fontSize: '1rem',
+            fontWeight: '600',
+            transition: 'all 0.3s ease',
+            opacity: loading ? 0.7 : 1
+          }}
+        >
+          <FontAwesomeIcon 
+            icon={faRefresh} 
+            style={{
+              animation: loading ? 'spin 1s linear infinite' : 'none'
+            }}
+          />
+          Actualizar
+        </button>
       </div>
 
       {/* Grid de posts */}
@@ -195,12 +269,33 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }} />
-          <style>{`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
+          <span style={{
+            color: '#E0E0E0',
+            marginLeft: '16px',
+            fontSize: '1.1rem'
+          }}>
+            Cargando posts reales de @Cripto_UNAM...
+          </span>
+        </div>
+      ) : filteredPosts.length === 0 ? (
+        <div style={{
+          textAlign: 'center',
+          padding: '3rem',
+          color: '#E0E0E0'
+        }}>
+          <FontAwesomeIcon 
+            icon={activeTab === 'instagram' ? faInstagram : faTwitter} 
+            style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}
+          />
+          <h3 style={{ marginBottom: '1rem' }}>
+            No hay posts disponibles
+          </h3>
+          <p>
+            {activeTab === 'instagram' 
+              ? 'No se pudieron cargar los posts de Instagram. Verifica que @Cripto_UNAM tenga posts públicos.'
+              : 'No se pudieron cargar los tweets. Verifica que @Cripto_UNAM tenga tweets públicos.'
             }
-          `}</style>
+          </p>
         </div>
       ) : (
         <div style={{
@@ -256,7 +351,7 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
                     fontWeight: '600',
                     fontSize: '0.9rem'
                   }}>
-                    @Cripto_UNAM
+                    {post.author}
                   </span>
                 </div>
                 <span style={{
@@ -296,44 +391,21 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
               )}
 
               {/* Contenido */}
-              <p style={{
-                color: '#E0E0E0',
-                fontSize: '0.95rem',
-                lineHeight: '1.5',
-                margin: '0 0 16px 0'
-              }}>
-                {post.content}
-              </p>
+              <div 
+                style={{
+                  color: '#E0E0E0',
+                  fontSize: '0.95rem',
+                  lineHeight: '1.5',
+                  margin: '0 0 16px 0'
+                }}
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
 
-              {/* Stats y enlace */}
+              {/* Enlace */}
               <div style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                justifyContent: 'flex-end'
               }}>
-                <div style={{
-                  display: 'flex',
-                  gap: '16px'
-                }}>
-                  <span style={{
-                    color: '#999',
-                    fontSize: '0.8rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    ❤️ {formatNumber(post.likes)}
-                  </span>
-                  <span style={{
-                    color: '#999',
-                    fontSize: '0.8rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
-                    💬 {formatNumber(post.comments)}
-                  </span>
-                </div>
                 <a
                   href={post.url}
                   target="_blank"
@@ -354,7 +426,7 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
                     e.currentTarget.style.color = '#D4AF37';
                   }}
                 >
-                  Ver post
+                  Ver post original
                   <FontAwesomeIcon icon={faExternalLinkAlt} />
                 </a>
               </div>
@@ -448,8 +520,16 @@ const SocialFeed: React.FC<SocialFeedProps> = ({ title, description }) => {
           </a>
         </div>
       </div>
+
+      {/* CSS para animaciones */}
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </section>
   );
 };
 
-export default SocialFeed;
+export default RealSocialFeed;
