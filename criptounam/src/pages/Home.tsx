@@ -17,7 +17,9 @@ import {
   faDatabase,
   faGlobe,
   faCheckCircle,
-  faStar
+  faStar,
+  faTrophy,
+  faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { faEthereum, faBitcoin } from '@fortawesome/free-brands-svg-icons'
 import { 
