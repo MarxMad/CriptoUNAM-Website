@@ -54,6 +54,8 @@ import TeamCard from '../components/TeamCard'
 import ProjectCard from '../components/ProjectCard'
 import ImageGallery from '../components/ImageGallery'
 import StatsSection from '../components/StatsSection'
+import SocialFeed from '../components/SocialFeed'
+import InteractiveCTA from '../components/InteractiveCTA'
 
 interface RegistrationForm {
   nombre: string
@@ -1053,6 +1055,18 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Feed de Redes Sociales */}
+      <SocialFeed
+        title="Síguenos en Redes Sociales"
+        description="Mantente al día con las últimas noticias, eventos y logros de CriptoUNAM"
+      />
+
+      {/* Sección Interactiva Final */}
+      <InteractiveCTA
+        title="¡Únete a la Revolución Blockchain!"
+        description="Forma parte de la comunidad universitaria más innovadora de México. Aprende, desarrolla y crea el futuro de la Web3 junto a nosotros."
+      />
 
     <style>{`
       html {
