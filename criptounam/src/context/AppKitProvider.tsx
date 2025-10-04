@@ -21,30 +21,19 @@ const metadata = {
 // 3. Redes soportadas (más redes para mejor compatibilidad)
 const networks = [mainnet, arbitrum, polygon, base, optimism]
 
-// 4. Adapter de wagmi con configuración completa
+// 4. Adapter de wagmi con configuración mínima
 const wagmiAdapter = new WagmiAdapter({
-  networks: [mainnet, arbitrum, polygon, base, optimism],
+  networks: [mainnet, arbitrum],
   projectId,
   ssr: true
 })
 
-// 5. Inicializa AppKit con configuración completa según ejemplos oficiales
+// 5. Inicializa AppKit con configuración mínima para evitar errores
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [mainnet, arbitrum, polygon, base, optimism],
+  networks: [mainnet, arbitrum],
   projectId,
-  metadata,
-  features: {
-    analytics: true,
-    email: true,
-    socials: ['google', 'github', 'discord'],
-    emailShowWallets: true
-  },
-  themeMode: 'light',
-  themeVariables: {
-    '--w3m-color-mix': '#D4AF37',
-    '--w3m-color-mix-strength': 40
-  }
+  metadata
 })
 
 export function AppKitProvider({ children }: { children: React.ReactNode }) {
