@@ -13,13 +13,13 @@ const CryptoActions: React.FC<CryptoActionsProps> = ({
   showLabels = true,
   className = ''
 }) => {
-  const containerStyle = {
+  const containerStyle: React.CSSProperties = {
     display: 'flex',
-    flexDirection: layout === 'horizontal' ? 'row' : 'column' as const,
+    flexDirection: layout === 'horizontal' ? 'row' : 'column',
     gap: '16px',
     alignItems: 'center',
     justifyContent: 'center',
-    flexWrap: 'wrap' as const
+    flexWrap: 'wrap'
   };
 
   return (
