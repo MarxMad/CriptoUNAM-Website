@@ -19,11 +19,11 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
   const [preview, setPreview] = useState<string | null>(currentImage || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const sizeClasses = {
-    sm: 'w-16 h-16',
-    md: 'w-24 h-24',
-    lg: 'w-32 h-32',
-    xl: 'w-40 h-40'
+  const sizeStyles = {
+    sm: { width: '64px', height: '64px' },
+    md: { width: '96px', height: '96px' },
+    lg: { width: '128px', height: '128px' },
+    xl: { width: '160px', height: '160px' }
   };
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,42 +71,74 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
   return (
     <div className={`relative ${className}`}>
       <div
-        className={`
-          ${sizeClasses[size]}
-          rounded-full border-4 border-dashed border-gray-300
-          flex items-center justify-center
-          cursor-pointer transition-all duration-300
-          hover:border-yellow-400 hover:scale-105
-          ${preview ? 'border-solid border-yellow-400' : ''}
-          ${isUploading ? 'opacity-50' : ''}
-        `}
+        style={{
+          ...sizeStyles[size],
+          borderRadius: '50%',
+          border: preview ? '4px solid #D4AF37' : '4px dashed #9CA3AF',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          opacity: isUploading ? 0.5 : 1
+        }}
         onClick={handleClick}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = '#D4AF37';
+          e.currentTarget.style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = preview ? '#D4AF37' : '#9CA3AF';
+          e.currentTarget.style.transform = 'scale(1)';
+        }}
       >
         {isUploading ? (
           <FontAwesomeIcon 
             icon={faSpinner} 
-            className="text-2xl text-yellow-400 animate-spin" 
+            style={{ fontSize: '24px', color: '#D4AF37' }}
+            className="animate-spin"
           />
         ) : preview ? (
           <img
             src={preview}
             alt="Foto de perfil"
-            className="w-full h-full rounded-full object-cover"
+            style={{
+              width: '100%',
+              height: '100%',
+              borderRadius: '50%',
+              objectFit: 'cover'
+            }}
           />
         ) : (
           <FontAwesomeIcon 
             icon={faUser} 
-            className="text-4xl text-gray-400" 
+            style={{ fontSize: '32px', color: '#9CA3AF' }}
           />
         )}
       </div>
 
       {/* Botón de cámara */}
       <div
-        className="absolute -bottom-2 -right-2 bg-yellow-400 text-black rounded-full p-2 cursor-pointer hover:bg-yellow-300 transition-colors"
+        style={{
+          position: 'absolute',
+          bottom: '-8px',
+          right: '-8px',
+          backgroundColor: '#D4AF37',
+          color: '#000',
+          borderRadius: '50%',
+          padding: '8px',
+          cursor: 'pointer',
+          transition: 'all 0.3s ease'
+        }}
         onClick={handleClick}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#B8941F';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#D4AF37';
+        }}
       >
-        <FontAwesomeIcon icon={faCamera} className="text-sm" />
+        <FontAwesomeIcon icon={faCamera} style={{ fontSize: '12px' }} />
       </div>
 
       {/* Input oculto */}
@@ -120,10 +152,22 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({
 
       {/* Overlay de carga */}
       {isUploading && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center">
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
           <FontAwesomeIcon 
             icon={faSpinner} 
-            className="text-white text-xl animate-spin" 
+            style={{ color: '#fff', fontSize: '20px' }}
+            className="animate-spin"
           />
         </div>
       )}

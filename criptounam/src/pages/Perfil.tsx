@@ -165,11 +165,29 @@ const Perfil = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      <div className="container mx-auto px-4 py-8">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #111827 0%, #1F2937 50%, #111827 100%)',
+      padding: '32px 16px'
+    }}>
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
         {/* Header del Perfil */}
-        <div className="bg-gray-800 rounded-2xl p-8 mb-8 border border-gray-700">
-          <div className="flex flex-col md:flex-row items-center gap-6">
+        <div style={{
+          backgroundColor: '#1F2937',
+          borderRadius: '16px',
+          padding: '32px',
+          marginBottom: '32px',
+          border: '1px solid #374151'
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '24px'
+          }}>
             {/* Foto de Perfil */}
             <ProfilePicture
               currentImage={userData.avatar}
@@ -178,24 +196,65 @@ const Perfil = () => {
             />
             
             {/* Información del Usuario */}
-            <div className="flex-1 text-center md:text-left">
-              <h1 className="text-3xl font-bold text-white mb-2">{userData.nombre}</h1>
-              <p className="text-gray-400 mb-4">{userData.email}</p>
-              <p className="text-gray-300 mb-6 max-w-md">{userData.bio}</p>
+            <div style={{
+              textAlign: 'center',
+              maxWidth: '600px'
+            }}>
+              <h1 style={{
+                fontSize: '32px',
+                fontWeight: 'bold',
+                color: '#fff',
+                margin: '0 0 8px 0'
+              }}>{userData.nombre}</h1>
+              <p style={{
+                color: '#9CA3AF',
+                margin: '0 0 16px 0'
+              }}>{userData.email}</p>
+              <p style={{
+                color: '#D1D5DB',
+                margin: '0 0 24px 0',
+                lineHeight: '1.5'
+              }}>{userData.bio}</p>
               
               {/* Información de Wallet */}
-              <div className="flex flex-col sm:flex-row items-center gap-4">
-                <div className="flex items-center gap-2 bg-gray-700 px-4 py-2 rounded-lg">
-                  <FontAwesomeIcon icon={faWallet} className="text-yellow-400" />
-                  <span className="text-white text-sm font-mono">
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '16px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: '#374151',
+                  padding: '8px 16px',
+                  borderRadius: '8px'
+                }}>
+                  <FontAwesomeIcon icon={faWallet} style={{ color: '#D4AF37' }} />
+                  <span style={{
+                    color: '#fff',
+                    fontSize: '14px',
+                    fontFamily: 'monospace'
+                  }}>
                     {address?.slice(0, 6)}...{address?.slice(-4)}
                   </span>
           </div>
           
                 {balance && (
-                  <div className="flex items-center gap-2 bg-gray-700 px-4 py-2 rounded-lg">
-                    <FontAwesomeIcon icon={faCoins} className="text-yellow-400" />
-                    <span className="text-white text-sm">
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    backgroundColor: '#374151',
+                    padding: '8px 16px',
+                    borderRadius: '8px'
+                  }}>
+                    <FontAwesomeIcon icon={faCoins} style={{ color: '#D4AF37' }} />
+                    <span style={{
+                      color: '#fff',
+                      fontSize: '14px'
+                    }}>
                       {parseFloat(formatEther(balance.value)).toFixed(4)} {balance.symbol}
                     </span>
             </div>
@@ -206,9 +265,13 @@ const Perfil = () => {
         </div>
 
         {/* Navegación y Contenido */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '32px'
+        }}>
           {/* Navegación Lateral */}
-          <div className="lg:col-span-1">
+          <div>
             <ProfileNavigation 
               activeTab={activeTab}
               onTabChange={setActiveTab}
@@ -216,7 +279,9 @@ const Perfil = () => {
       </div>
 
           {/* Contenido Principal */}
-          <div className="lg:col-span-3">
+          <div style={{
+            gridColumn: 'span 2'
+          }}>
             {renderActiveTab()}
           </div>
       </div>
