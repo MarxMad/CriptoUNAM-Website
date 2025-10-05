@@ -55,6 +55,7 @@ import ProjectCard from '../components/ProjectCard'
 import ImageGallery from '../components/ImageGallery'
 import StatsSection from '../components/StatsSection'
 import InteractiveCTA from '../components/InteractiveCTA'
+import OnRampButton from '../components/OnRampButton'
 
 interface RegistrationForm {
   nombre: string
@@ -1055,6 +1056,50 @@ const Home = () => {
         </div>
       </section>
 
+
+      {/* Sección de On-Ramp */}
+      <section style={{
+        maxWidth: '1200px',
+        margin: '0 auto 3rem auto',
+        padding: '0 20px'
+      }}>
+        <div style={{
+          background: 'rgba(26, 26, 26, 0.8)',
+          borderRadius: '20px',
+          padding: '3rem',
+          border: '1px solid rgba(212, 175, 55, 0.2)',
+          backdropFilter: 'blur(10px)',
+          textAlign: 'center'
+        }}>
+          <h2 style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: '2.5rem',
+            marginBottom: '1rem'
+          }}>
+            💰 Compra Criptomonedas
+          </h2>
+          <p style={{
+            color: '#E0E0E0',
+            fontSize: '1.2rem',
+            marginBottom: '2rem',
+            maxWidth: '600px',
+            margin: '0 auto 2rem auto'
+          }}>
+            Compra Ethereum, Bitcoin y otras criptomonedas directamente desde CriptoUNAM usando Coinbase Pay. 
+            Métodos de pago seguros y confiables.
+          </p>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '16px',
+            flexWrap: 'wrap'
+          }}>
+            <OnRampButton variant="primary" size="lg" />
+            <OnRampButton variant="outline" size="lg" />
+          </div>
+        </div>
+      </section>
 
       {/* Sección Interactiva Final */}
       <InteractiveCTA

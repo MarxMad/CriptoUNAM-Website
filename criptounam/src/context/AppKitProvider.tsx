@@ -28,12 +28,24 @@ const wagmiAdapter = new WagmiAdapter({
   ssr: true
 })
 
-// 5. Inicializa AppKit con configuración mínima para evitar errores
+// 5. Inicializa AppKit con configuración completa incluyendo On-Ramp
 createAppKit({
   adapters: [wagmiAdapter],
   networks: [mainnet, arbitrum],
   projectId,
-  metadata
+  metadata,
+  features: {
+    onramp: true, // Habilitar On-Ramp para comprar criptomonedas
+    analytics: true,
+    email: true,
+    socials: ['google', 'github', 'discord'],
+    emailShowWallets: true
+  },
+  themeMode: 'light',
+  themeVariables: {
+    '--w3m-color-mix': '#D4AF37',
+    '--w3m-color-mix-strength': 40
+  }
 })
 
 export function AppKitProvider({ children }: { children: React.ReactNode }) {
