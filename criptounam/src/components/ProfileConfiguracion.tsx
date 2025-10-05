@@ -54,16 +54,58 @@ const ProfileConfiguracion: React.FC<ProfileConfiguracionProps> = ({ userData, o
   };
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
         <div>
-          <h2 className="text-2xl font-bold text-white">Configuración</h2>
-          <p className="text-gray-400">Gestiona tu cuenta y preferencias</p>
+          <h2 style={{
+            fontSize: '32px',
+            fontWeight: 'bold',
+            color: '#fff',
+            margin: '0 0 8px 0',
+            background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>Configuración</h2>
+          <p style={{
+            color: '#9CA3AF',
+            margin: 0,
+            fontSize: '18px',
+            fontWeight: '500'
+          }}>Gestiona tu cuenta y preferencias</p>
         </div>
         <button
           onClick={() => setIsEditing(!isEditing)}
-          className="bg-yellow-400 text-black py-2 px-4 rounded-lg font-medium hover:bg-yellow-300 transition-colors flex items-center gap-2"
+          style={{
+            background: isEditing 
+              ? 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' 
+              : 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+            color: '#000',
+            padding: '12px 24px',
+            borderRadius: '12px',
+            fontWeight: '600',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(212, 175, 55, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
+          }}
         >
           <FontAwesomeIcon icon={isEditing ? faTimes : faEdit} />
           {isEditing ? 'Cancelar' : 'Editar'}

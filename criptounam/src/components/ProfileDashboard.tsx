@@ -47,52 +47,185 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ stats, logros, acti
   const logrosPendientes = logros.filter(logro => !logro.obtenido);
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-white">Dashboard</h2>
-        <p className="text-gray-400">Tu progreso y estadísticas de aprendizaje</p>
+        <h2 style={{
+          fontSize: '32px',
+          fontWeight: 'bold',
+          color: '#fff',
+          margin: '0 0 8px 0',
+          background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>Dashboard</h2>
+        <p style={{
+          color: '#9CA3AF',
+          margin: 0,
+          fontSize: '18px',
+          fontWeight: '500'
+        }}>Tu progreso y estadísticas de aprendizaje</p>
       </div>
 
       {/* Estadísticas Principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-xl p-6 text-black">
-          <div className="flex items-center justify-between">
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        gap: '20px'
+      }}>
+        <div style={{
+          background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+          borderRadius: '20px',
+          padding: '28px',
+          color: '#000',
+          boxShadow: '0 8px 32px rgba(212, 175, 55, 0.3)',
+          transition: 'all 0.3s ease',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 12px 40px rgba(212, 175, 55, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(212, 175, 55, 0.3)';
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
             <div>
-              <h3 className="text-2xl font-bold">{stats.cursosCompletados}</h3>
-              <p className="text-sm opacity-80">Cursos Completados</p>
+              <h3 style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                margin: '0 0 8px 0'
+              }}>{stats.cursosCompletados}</h3>
+              <p style={{
+                fontSize: '16px',
+                opacity: 0.8,
+                margin: 0,
+                fontWeight: '600'
+              }}>Cursos Completados</p>
             </div>
-            <FontAwesomeIcon icon={faBookOpen} className="text-2xl opacity-80" />
+            <FontAwesomeIcon icon={faBookOpen} style={{ fontSize: '32px', opacity: 0.8 }} />
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-400 to-green-500 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
+        <div style={{
+          background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
+          borderRadius: '20px',
+          padding: '28px',
+          color: '#fff',
+          boxShadow: '0 8px 32px rgba(16, 185, 129, 0.3)',
+          transition: 'all 0.3s ease',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 12px 40px rgba(16, 185, 129, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(16, 185, 129, 0.3)';
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
             <div>
-              <h3 className="text-2xl font-bold">{stats.certificacionesObtenidas}</h3>
-              <p className="text-sm opacity-80">Certificaciones</p>
+              <h3 style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                margin: '0 0 8px 0'
+              }}>{stats.certificacionesObtenidas}</h3>
+              <p style={{
+                fontSize: '16px',
+                opacity: 0.9,
+                margin: 0,
+                fontWeight: '600'
+              }}>Certificaciones</p>
             </div>
-            <FontAwesomeIcon icon={faCertificate} className="text-2xl opacity-80" />
+            <FontAwesomeIcon icon={faCertificate} style={{ fontSize: '32px', opacity: 0.8 }} />
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-400 to-blue-500 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
+        <div style={{
+          background: 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)',
+          borderRadius: '20px',
+          padding: '28px',
+          color: '#fff',
+          boxShadow: '0 8px 32px rgba(59, 130, 246, 0.3)',
+          transition: 'all 0.3s ease',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 12px 40px rgba(59, 130, 246, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(59, 130, 246, 0.3)';
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
             <div>
-              <h3 className="text-2xl font-bold">{stats.horasEstudiadas}</h3>
-              <p className="text-sm opacity-80">Horas Estudiadas</p>
+              <h3 style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                margin: '0 0 8px 0'
+              }}>{stats.horasEstudiadas}</h3>
+              <p style={{
+                fontSize: '16px',
+                opacity: 0.9,
+                margin: 0,
+                fontWeight: '600'
+              }}>Horas Estudiadas</p>
             </div>
-            <FontAwesomeIcon icon={faClock} className="text-2xl opacity-80" />
+            <FontAwesomeIcon icon={faClock} style={{ fontSize: '32px', opacity: 0.8 }} />
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-400 to-purple-500 rounded-xl p-6 text-white">
-          <div className="flex items-center justify-between">
+        <div style={{
+          background: 'linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)',
+          borderRadius: '20px',
+          padding: '28px',
+          color: '#fff',
+          boxShadow: '0 8px 32px rgba(139, 92, 246, 0.3)',
+          transition: 'all 0.3s ease',
+          cursor: 'pointer'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+          e.currentTarget.style.boxShadow = '0 12px 40px rgba(139, 92, 246, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0) scale(1)';
+          e.currentTarget.style.boxShadow = '0 8px 32px rgba(139, 92, 246, 0.3)';
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
             <div>
-              <h3 className="text-2xl font-bold">{stats.rachaActual}</h3>
-              <p className="text-sm opacity-80">Días de Racha</p>
+              <h3 style={{
+                fontSize: '36px',
+                fontWeight: 'bold',
+                margin: '0 0 8px 0'
+              }}>{stats.rachaActual}</h3>
+              <p style={{
+                fontSize: '16px',
+                opacity: 0.9,
+                margin: 0,
+                fontWeight: '600'
+              }}>Días de Racha</p>
             </div>
-            <FontAwesomeIcon icon={faFire} className="text-2xl opacity-80" />
+            <FontAwesomeIcon icon={faFire} style={{ fontSize: '32px', opacity: 0.8 }} />
           </div>
         </div>
       </div>
