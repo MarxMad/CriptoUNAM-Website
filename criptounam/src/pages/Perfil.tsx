@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAccount, useBalance, useContractRead } from 'wagmi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import OnRampButton from '../components/OnRampButton'
+import SwapButton from '../components/SwapButton'
 import { 
   faWallet, 
   faNetworkWired,
@@ -846,9 +847,16 @@ const Perfil = () => {
                 </div>
               )}
               
-              {/* Botón de On-Ramp para comprar criptomonedas */}
-              <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
+              {/* Botones de On-Ramp y Swap para gestionar criptomonedas */}
+              <div style={{ 
+                marginTop: '16px', 
+                display: 'flex', 
+                justifyContent: 'center',
+                gap: '12px',
+                flexWrap: 'wrap'
+              }}>
                 <OnRampButton variant="primary" size="md" />
+                <SwapButton variant="secondary" size="md" />
               </div>
             </div>
           </div>
