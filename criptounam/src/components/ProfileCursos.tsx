@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlay, faClock, faTrophy, faBookOpen } from '@fortawesome/free-solid-svg-icons';
+import { faPlay, faClock, faTrophy, faBookOpen, faCertificate } from '@fortawesome/free-solid-svg-icons';
 
 interface Curso {
   id: string;
@@ -559,9 +559,8 @@ const ProfileCursos: React.FC<ProfileCursosProps> = ({ cursos }) => {
           <p style={{
             color: '#9CA3AF',
             fontSize: '16px',
-            margin: '0 0 32px 0',
-            maxWidth: '400px',
             margin: '0 auto 32px auto',
+            maxWidth: '400px',
             lineHeight: '1.5'
           }}>Explora nuestros cursos de blockchain y comienza tu aprendizaje en el mundo de las criptomonedas</p>
           <button style={{
