@@ -24,14 +24,34 @@ const ProfileCursos: React.FC<ProfileCursosProps> = ({ cursos }) => {
   const cursosCompletados = cursos.filter(curso => curso.completado);
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px'
+      }}>
         <div>
-          <h2 className="text-2xl font-bold text-white">Mis Cursos</h2>
-          <p className="text-gray-400">Gestiona tu aprendizaje en blockchain</p>
+          <h2 style={{
+            fontSize: '24px',
+            fontWeight: 'bold',
+            color: '#fff',
+            margin: '0 0 4px 0'
+          }}>Mis Cursos</h2>
+          <p style={{
+            color: '#9CA3AF',
+            margin: 0
+          }}>Gestiona tu aprendizaje en blockchain</p>
         </div>
-        <div className="flex items-center gap-4 text-sm text-gray-400">
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          fontSize: '14px',
+          color: '#9CA3AF'
+        }}>
           <span>{cursosCompletados.length} completados</span>
           <span>•</span>
           <span>{cursosEnProgreso.length} en progreso</span>
