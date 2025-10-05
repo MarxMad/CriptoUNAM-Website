@@ -61,46 +61,229 @@ const ProfileCursos: React.FC<ProfileCursosProps> = ({ cursos }) => {
       {/* Cursos en Progreso */}
       {cursosEnProgreso.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <FontAwesomeIcon icon={faBookOpen} className="text-yellow-400" />
+          <h3 style={{
+            fontSize: '24px',
+            fontWeight: '600',
+            color: '#fff',
+            margin: '0 0 20px 0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
+            }}>
+              <FontAwesomeIcon icon={faBookOpen} style={{ color: '#000', fontSize: '18px' }} />
+            </div>
             En Progreso
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '24px'
+          }}>
             {cursosEnProgreso.map((curso) => (
-              <div key={curso.id} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-yellow-400 transition-colors">
-                <div className="flex items-start gap-4">
-                  <img 
-                    src={curso.imagen} 
-                    alt={curso.titulo}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-white mb-2">{curso.titulo}</h4>
-                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">{curso.descripcion}</p>
+              <div key={curso.id} style={{
+                background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)',
+                borderRadius: '20px',
+                padding: '24px',
+                border: '1px solid #374151',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.borderColor = '#D4AF37';
+                e.currentTarget.style.boxShadow = '0 16px 48px rgba(212, 175, 55, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = '#374151';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+              }}>
+                {/* Badge de progreso */}
+                <div style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+                  color: '#000',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+                }}>
+                  {curso.progreso}% Completado
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px'
+                }}>
+                  {/* Imagen del curso */}
+                  <div style={{
+                    position: 'relative',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    height: '200px',
+                    background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)'
+                  }}>
+                    <img 
+                      src={curso.imagen} 
+                      alt={curso.titulo}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    />
+                    {/* Overlay gradiente */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '60px',
+                      background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.8))'
+                    }} />
+                  </div>
+
+                  {/* Contenido del curso */}
+                  <div>
+                    <h4 style={{
+                      fontSize: '20px',
+                      fontWeight: '600',
+                      color: '#fff',
+                      margin: '0 0 8px 0',
+                      lineHeight: '1.3'
+                    }}>{curso.titulo}</h4>
+                    <p style={{
+                      color: '#9CA3AF',
+                      fontSize: '14px',
+                      margin: '0 0 16px 0',
+                      lineHeight: '1.5',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>{curso.descripcion}</p>
                     
-                    <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
-                      <span className="flex items-center gap-1">
+                    {/* Información del curso */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: '20px',
+                      flexWrap: 'wrap'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#9CA3AF',
+                        fontSize: '12px',
+                        backgroundColor: '#374151',
+                        padding: '6px 12px',
+                        borderRadius: '20px'
+                      }}>
                         <FontAwesomeIcon icon={faClock} />
                         {curso.duracion}
-                      </span>
-                      <span className="bg-gray-700 px-2 py-1 rounded">{curso.nivel}</span>
+                      </div>
+                      <div style={{
+                        backgroundColor: '#D4AF37',
+                        color: '#000',
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        {curso.nivel}
+                      </div>
                     </div>
 
-                    {/* Barra de progreso */}
-                    <div className="mb-3">
-                      <div className="flex justify-between text-sm text-gray-400 mb-1">
-                        <span>Progreso</span>
-                        <span>{curso.progreso}%</span>
+                    {/* Barra de progreso mejorada */}
+                    <div style={{ marginBottom: '20px' }}>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '8px'
+                      }}>
+                        <span style={{
+                          color: '#9CA3AF',
+                          fontSize: '14px',
+                          fontWeight: '500'
+                        }}>Progreso del curso</span>
+                        <span style={{
+                          color: '#D4AF37',
+                          fontSize: '14px',
+                          fontWeight: '600'
+                        }}>{curso.progreso}%</span>
                       </div>
-                      <div className="w-full bg-gray-700 rounded-full h-2">
+                      <div style={{
+                        width: '100%',
+                        height: '8px',
+                        backgroundColor: '#374151',
+                        borderRadius: '4px',
+                        overflow: 'hidden'
+                      }}>
                         <div 
-                          className="bg-yellow-400 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${curso.progreso}%` }}
+                          style={{
+                            height: '100%',
+                            background: 'linear-gradient(90deg, #D4AF37 0%, #F4D03F 100%)',
+                            borderRadius: '4px',
+                            transition: 'width 0.8s ease',
+                            width: `${curso.progreso}%`,
+                            boxShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
+                          }}
                         />
                       </div>
                     </div>
 
-                    <button className="w-full bg-yellow-400 text-black py-2 px-4 rounded-lg font-medium hover:bg-yellow-300 transition-colors flex items-center justify-center gap-2">
+                    {/* Botón de acción */}
+                    <button style={{
+                      width: '100%',
+                      background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+                      color: '#000',
+                      padding: '14px 24px',
+                      borderRadius: '12px',
+                      fontWeight: '600',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(212, 175, 55, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
+                    }}>
                       <FontAwesomeIcon icon={faPlay} />
                       Continuar Curso
                     </button>
@@ -115,41 +298,225 @@ const ProfileCursos: React.FC<ProfileCursosProps> = ({ cursos }) => {
       {/* Cursos Completados */}
       {cursosCompletados.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <FontAwesomeIcon icon={faTrophy} className="text-yellow-400" />
+          <h3 style={{
+            fontSize: '24px',
+            fontWeight: '600',
+            color: '#fff',
+            margin: '0 0 20px 0',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+            }}>
+              <FontAwesomeIcon icon={faTrophy} style={{ color: '#fff', fontSize: '18px' }} />
+            </div>
             Completados
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '24px'
+          }}>
             {cursosCompletados.map((curso) => (
-              <div key={curso.id} className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:border-green-400 transition-colors">
-                <div className="flex items-start gap-4">
-                  <img 
-                    src={curso.imagen} 
-                    alt={curso.titulo}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h4 className="font-semibold text-white">{curso.titulo}</h4>
-                      <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
-                        Completado
-                      </span>
-                    </div>
-                    <p className="text-gray-400 text-sm mb-3 line-clamp-2">{curso.descripcion}</p>
+              <div key={curso.id} style={{
+                background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)',
+                borderRadius: '20px',
+                padding: '24px',
+                border: '1px solid #374151',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-8px)';
+                e.currentTarget.style.borderColor = '#10B981';
+                e.currentTarget.style.boxShadow = '0 16px 48px rgba(16, 185, 129, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = '#374151';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+              }}>
+                {/* Badge de completado */}
+                <div style={{
+                  position: 'absolute',
+                  top: '16px',
+                  right: '16px',
+                  background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
+                  color: '#fff',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <FontAwesomeIcon icon={faTrophy} style={{ fontSize: '10px' }} />
+                  Completado
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px'
+                }}>
+                  {/* Imagen del curso */}
+                  <div style={{
+                    position: 'relative',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    height: '200px',
+                    background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)'
+                  }}>
+                    <img 
+                      src={curso.imagen} 
+                      alt={curso.titulo}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    />
+                    {/* Overlay gradiente */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: '60px',
+                      background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.8))'
+                    }} />
+                  </div>
+
+                  {/* Contenido del curso */}
+                  <div>
+                    <h4 style={{
+                      fontSize: '20px',
+                      fontWeight: '600',
+                      color: '#fff',
+                      margin: '0 0 8px 0',
+                      lineHeight: '1.3'
+                    }}>{curso.titulo}</h4>
+                    <p style={{
+                      color: '#9CA3AF',
+                      fontSize: '14px',
+                      margin: '0 0 16px 0',
+                      lineHeight: '1.5',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}>{curso.descripcion}</p>
                     
-                    <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
-                      <span className="flex items-center gap-1">
+                    {/* Información del curso */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginBottom: '20px',
+                      flexWrap: 'wrap'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#9CA3AF',
+                        fontSize: '12px',
+                        backgroundColor: '#374151',
+                        padding: '6px 12px',
+                        borderRadius: '20px'
+                      }}>
                         <FontAwesomeIcon icon={faClock} />
                         {curso.duracion}
-                      </span>
-                      <span className="bg-gray-700 px-2 py-1 rounded">{curso.nivel}</span>
+                      </div>
+                      <div style={{
+                        backgroundColor: '#10B981',
+                        color: '#fff',
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        {curso.nivel}
+                      </div>
                     </div>
 
-                    <div className="flex gap-2">
-                      <button className="flex-1 bg-green-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-400 transition-colors">
+                    {/* Botones de acción */}
+                    <div style={{
+                      display: 'flex',
+                      gap: '12px'
+                    }}>
+                      <button style={{
+                        flex: 1,
+                        background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
+                        color: '#fff',
+                        padding: '14px 20px',
+                        borderRadius: '12px',
+                        fontWeight: '600',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+                      }}>
+                        <FontAwesomeIcon icon={faCertificate} />
                         Ver Certificado
                       </button>
-                      <button className="bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors">
+                      <button style={{
+                        background: 'linear-gradient(135deg, #374151 0%, #4B5563 100%)',
+                        color: '#fff',
+                        padding: '14px 20px',
+                        borderRadius: '12px',
+                        fontWeight: '600',
+                        border: 'none',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '8px',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+                      }}>
+                        <FontAwesomeIcon icon={faPlay} />
                         Repetir
                       </button>
                     </div>
@@ -163,11 +530,60 @@ const ProfileCursos: React.FC<ProfileCursosProps> = ({ cursos }) => {
 
       {/* Estado vacío */}
       {cursos.length === 0 && (
-        <div className="text-center py-12">
-          <FontAwesomeIcon icon={faBookOpen} className="text-6xl text-gray-600 mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">No tienes cursos aún</h3>
-          <p className="text-gray-400 mb-6">Explora nuestros cursos de blockchain y comienza tu aprendizaje</p>
-          <button className="bg-yellow-400 text-black py-3 px-6 rounded-lg font-medium hover:bg-yellow-300 transition-colors">
+        <div style={{
+          textAlign: 'center',
+          padding: '60px 20px',
+          background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)',
+          borderRadius: '20px',
+          border: '1px solid #374151'
+        }}>
+          <div style={{
+            width: '120px',
+            height: '120px',
+            background: 'linear-gradient(135deg, #374151 0%, #4B5563 100%)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 24px auto',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+          }}>
+            <FontAwesomeIcon icon={faBookOpen} style={{ fontSize: '48px', color: '#9CA3AF' }} />
+          </div>
+          <h3 style={{
+            fontSize: '24px',
+            fontWeight: '600',
+            color: '#fff',
+            margin: '0 0 12px 0'
+          }}>No tienes cursos aún</h3>
+          <p style={{
+            color: '#9CA3AF',
+            fontSize: '16px',
+            margin: '0 0 32px 0',
+            maxWidth: '400px',
+            margin: '0 auto 32px auto',
+            lineHeight: '1.5'
+          }}>Explora nuestros cursos de blockchain y comienza tu aprendizaje en el mundo de las criptomonedas</p>
+          <button style={{
+            background: 'linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%)',
+            color: '#000',
+            padding: '16px 32px',
+            borderRadius: '12px',
+            fontWeight: '600',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            boxShadow: '0 4px 12px rgba(212, 175, 55, 0.3)',
+            fontSize: '16px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(212, 175, 55, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(212, 175, 55, 0.3)';
+          }}>
             Explorar Cursos
           </button>
         </div>
