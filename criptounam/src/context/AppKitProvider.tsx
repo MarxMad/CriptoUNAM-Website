@@ -28,7 +28,7 @@ const wagmiAdapter = new WagmiAdapter({
   ssr: true
 })
 
-// 5. Inicializa AppKit con configuración completa incluyendo On-Ramp
+// 5. Inicializa AppKit con configuración completa incluyendo On-Ramp y Swaps
 createAppKit({
   adapters: [wagmiAdapter],
   networks: [mainnet, arbitrum],
@@ -36,6 +36,7 @@ createAppKit({
   metadata,
   features: {
     onramp: true, // Habilitar On-Ramp para comprar criptomonedas
+    swaps: true, // Habilitar Swaps para intercambiar tokens
     analytics: true,
     email: true,
     socials: ['google', 'github', 'discord'],

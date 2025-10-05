@@ -55,7 +55,7 @@ import ProjectCard from '../components/ProjectCard'
 import ImageGallery from '../components/ImageGallery'
 import StatsSection from '../components/StatsSection'
 import InteractiveCTA from '../components/InteractiveCTA'
-import OnRampButton from '../components/OnRampButton'
+import CryptoActions from '../components/CryptoActions'
 
 interface RegistrationForm {
   nombre: string
@@ -1071,33 +1071,10 @@ const Home = () => {
           backdropFilter: 'blur(10px)',
           textAlign: 'center'
         }}>
-          <h2 style={{
-            fontFamily: 'Orbitron',
-            color: '#D4AF37',
-            fontSize: '2.5rem',
-            marginBottom: '1rem'
-          }}>
-            💰 Compra Criptomonedas
-          </h2>
-          <p style={{
-            color: '#E0E0E0',
-            fontSize: '1.2rem',
-            marginBottom: '2rem',
-            maxWidth: '600px',
-            margin: '0 auto 2rem auto'
-          }}>
-            Compra Ethereum, Bitcoin y otras criptomonedas directamente desde CriptoUNAM usando Coinbase Pay. 
-            Métodos de pago seguros y confiables.
-          </p>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            gap: '16px',
-            flexWrap: 'wrap'
-          }}>
-            <OnRampButton variant="primary" size="lg" />
-            <OnRampButton variant="outline" size="lg" />
-          </div>
+          <CryptoActions 
+            layout="horizontal" 
+            showLabels={true}
+          />
         </div>
       </section>
 
