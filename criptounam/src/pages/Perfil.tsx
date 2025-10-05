@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAccount, useBalance, useContractRead } from 'wagmi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import OnRampButton from '../components/OnRampButton'
 import { 
   faWallet, 
   faNetworkWired,
@@ -844,6 +845,11 @@ const Perfil = () => {
                   <span>{parseFloat(formatEther(balance.value)).toFixed(4)} {balance.symbol}</span>
                 </div>
               )}
+              
+              {/* Botón de On-Ramp para comprar criptomonedas */}
+              <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
+                <OnRampButton variant="primary" size="md" />
+              </div>
             </div>
           </div>
         </div>
