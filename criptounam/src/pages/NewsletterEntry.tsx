@@ -4,18 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { API_ENDPOINTS } from '../config/api'
+import { newsletterApi } from '../config/supabaseApi'
 import BlogContent from '../components/BlogContent'
 
 interface NewsletterEntry {
-  id: number
-  title: string
-  date: string
-  content: string
-  fullContent: string
-  imageUrl?: string
-  author?: string
+  id: string
+  titulo: string
+  fecha: string
+  contenido: string
+  imagen?: string
+  autor?: string
   tags?: string[]
 }
 
@@ -29,10 +27,20 @@ const NewsletterEntry = () => {
   useEffect(() => {
     const fetchEntry = async () => {
       try {
-        const res = await axios.get<NewsletterEntry>(API_ENDPOINTS.NEWSLETTER_ENTRY(id));
-        setEntry(res.data);
-        setNotFound(false);
+        if (!id) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+        const entryData = await newsletterApi.getById(id);
+        if (entryData) {
+          setEntry(entryData);
+          setNotFound(false);
+        } else {
+          setNotFound(true);
+        }
       } catch (error) {
+        console.error('Error fetching entry:', error);
         setNotFound(true);
       } finally {
         setLoading(false);
@@ -68,23 +76,23 @@ const NewsletterEntry = () => {
   return (
     <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', paddingTop:'2rem'}}>
       <article className="card full-entry" style={{maxWidth:700, width:'100%', padding:'2.5rem 2rem', margin:'0 auto', background:'rgba(26,26,26,0.85)', backdropFilter:'blur(12px)', border:'1.5px solid #D4AF37', boxShadow:'0 8px 32px rgba(30,58,138,0.18)'}}>
-        {entry.imageUrl && (
+        {entry.imagen && (
           <div className="entry-header-image" style={{width:'100%', height:220, marginBottom:18}}>
-            <img src={entry.imageUrl} alt={entry.title} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33'}} />
+            <img src={entry.imagen} alt={entry.titulo} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33'}} />
           </div>
         )}
         <div className="entry-content" style={{display:'flex', flexDirection:'column', gap:'0.7rem'}}>
           <div className="entry-meta" style={{display:'flex', gap:'1.5rem', alignItems:'center', marginBottom:4}}>
             <span className="entry-date" style={{color:'#2563EB', fontWeight:600}}>
-              <FontAwesomeIcon icon={faCalendarAlt} /> {entry.date}
+              <FontAwesomeIcon icon={faCalendarAlt} /> {entry.fecha}
             </span>
-            {entry.author && (
+            {entry.autor && (
               <span className="entry-author" style={{color:'#D4AF37', fontWeight:600}}>
-                Por {entry.author}
+                Por {entry.autor}
               </span>
             )}
           </div>
-          <h1 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', margin:'0 0 0.5rem 0', lineHeight:'1.2'}}>{entry.title}</h1>
+          <h1 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', margin:'0 0 0.5rem 0', lineHeight:'1.2'}}>{entry.titulo}</h1>
           {entry.tags && entry.tags.length > 0 && (
             <div className="entry-tags" style={{display:'flex', gap:'0.5rem', flexWrap:'wrap', marginBottom:'0.5rem'}}>
               {entry.tags.map((tag, index) => (
@@ -106,7 +114,7 @@ const NewsletterEntry = () => {
               lineHeight: '1.8',
               textAlign: 'justify'
             }}>
-              {entry.fullContent.split('\n\n').map((paragraph, index) => (
+              {entry.contenido.split('\n\n').map((paragraph, index) => (
                 <p key={index} style={{
                   margin: '0 0 1.5rem 0',
                   padding: '0',

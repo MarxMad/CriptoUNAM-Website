@@ -217,22 +217,155 @@ const Newsletter = () => {
           <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.3rem', marginBottom:'1.2rem'}}>Últimas Entradas</h2>
           <div className="newsletter-entries" style={{display:'flex', flexDirection:'column', gap:'2.2rem'}}>
             {entradas.map((entry) => (
-              <article key={entry.id} className="card newsletter-entry" style={{padding:'1.2rem', display:'flex', flexDirection:'column', gap:'0.7rem', minHeight:320, maxWidth:'100%', margin:'0 auto'}}>
+              <article key={entry.id} className="card newsletter-entry" style={{
+                padding: '2rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem',
+                minHeight: '400px',
+                maxWidth: '100%',
+                margin: '0 auto',
+                backgroundColor: 'rgba(26, 26, 26, 0.8)',
+                borderRadius: '20px',
+                border: '1px solid rgba(212, 175, 55, 0.3)',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+                backdropFilter: 'blur(10px)'
+              }}>
                 {entry.imagen && (
-                  <div className="entry-image" style={{width:'100%', height:140, marginBottom:8}}>
-                    <img src={entry.imagen} alt={entry.titulo} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:16, boxShadow:'0 4px 18px 0 #1E3A8A22'}} />
+                  <div className="entry-image" style={{
+                    width: '100%',
+                    height: '200px',
+                    marginBottom: '1.5rem',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)'
+                  }}>
+                    <img src={entry.imagen} alt={entry.titulo} style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transition: 'transform 0.3s ease'
+                    }} />
                   </div>
                 )}
-                <div className="entry-content" style={{display:'flex', flexDirection:'column', gap:'0.3rem'}}>
-                  <h2 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.2rem 0'}}>{entry.titulo}</h2>
-                  <span className="entry-date" style={{color:'#2563EB', fontSize:'0.98rem', marginBottom:2}}>
-                    <i className="fas fa-calendar"></i> {formatDateToSpanish(entry.fecha)}
-                  </span>
-                  <p style={{color:'#E0E0E0', fontSize:'0.98rem'}}>{entry.contenido}</p>
-                  <Link to={`/newsletter/${entry.id}`} className="primary-button" style={{marginTop:'0.5rem', fontSize:'0.98rem', borderRadius:16, fontWeight:700, letterSpacing:'1px', padding:'0.4rem 1.2rem', width:'fit-content'}}>Leer más <i className="fas fa-arrow-right"></i></Link>
-                  {isAdmin && (
-                    <button onClick={() => handleEliminarEntrada((entry as any)._id || entry.id.toString())} style={{background:'red', color:'white', border:'none', borderRadius:5, padding:'4px 10px', fontWeight:600, marginTop:8}}>Eliminar</button>
-                  )}
+                <div className="entry-content" style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                  <h2 style={{
+                    fontFamily: 'Orbitron',
+                    color: '#D4AF37',
+                    fontSize: '1.5rem',
+                    margin: '0 0 0.5rem 0',
+                    fontWeight: 'bold',
+                    lineHeight: '1.3'
+                  }}>{entry.titulo}</h2>
+                  
+                  <div style={{display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem'}}>
+                    <span className="entry-date" style={{
+                      color: '#4ecdc4',
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <i className="fas fa-calendar"></i> {formatDateToSpanish(entry.fecha)}
+                    </span>
+                    {entry.autor && (
+                      <span style={{
+                        color: '#D4AF37',
+                        fontSize: '0.9rem',
+                        fontWeight: '600'
+                      }}>
+                        Por {entry.autor}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div style={{
+                    color: '#E0E0E0',
+                    fontSize: '1.1rem',
+                    lineHeight: '1.7',
+                    textAlign: 'justify',
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    padding: '1.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                  }}>
+                    {(() => {
+                      const paragraphs = entry.contenido.split('\n\n');
+                      const firstParagraph = paragraphs[0];
+                      const previewLength = 200; // Caracteres para el preview
+                      
+                      if (firstParagraph.length > previewLength) {
+                        return (
+                          <p style={{
+                            margin: '0 0 1rem 0',
+                            color: '#E0E0E0',
+                            lineHeight: '1.7',
+                            fontSize: '1.1rem'
+                          }}>
+                            {firstParagraph.substring(0, previewLength)}...
+                          </p>
+                        );
+                      } else {
+                        return (
+                          <p style={{
+                            margin: '0 0 1rem 0',
+                            color: '#E0E0E0',
+                            lineHeight: '1.7',
+                            fontSize: '1.1rem'
+                          }}>
+                            {firstParagraph}
+                          </p>
+                        );
+                      }
+                    })()}
+                  </div>
+                  
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem'}}>
+                    <Link to={`/newsletter/${entry.id}`} className="primary-button" style={{
+                      fontSize: '1rem',
+                      borderRadius: '12px',
+                      fontWeight: '700',
+                      letterSpacing: '1px',
+                      padding: '0.8rem 2rem',
+                      background: 'linear-gradient(135deg, #D4AF37, #F4D03F)',
+                      color: '#000',
+                      textDecoration: 'none',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 4px 16px rgba(212, 175, 55, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(212, 175, 55, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(212, 175, 55, 0.3)';
+                    }}>
+                      Leer más <i className="fas fa-arrow-right" style={{marginLeft: '0.5rem'}}></i>
+                    </Link>
+                    
+                    {isAdmin && (
+                      <button onClick={() => handleEliminarEntrada((entry as any)._id || entry.id.toString())} style={{
+                        background: 'linear-gradient(135deg, #ff4444, #cc0000)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '0.6rem 1.2rem',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}>
+                        Eliminar
+                      </button>
+                    )}
+                  </div>
                 </div>
               </article>
             ))}
