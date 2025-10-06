@@ -57,6 +57,7 @@ import ImageGallery from '../components/ImageGallery'
 import StatsSection from '../components/StatsSection'
 import InteractiveCTA from '../components/InteractiveCTA'
 import CryptoActions from '../components/CryptoActions'
+import EventsCarousel from '../components/EventsCarousel'
 
 interface RegistrationForm {
   nombre: string
@@ -322,6 +323,59 @@ const Home = () => {
   const [cursosHome, setCursosHome] = useState<any[]>([])
   const [eventosHome, setEventosHome] = useState<any[]>([])
   const [newslettersHome, setNewslettersHome] = useState<any[]>([])
+  const [eventosCarousel, setEventosCarousel] = useState<any[]>([])
+
+  // Datos de eventos para el carrusel
+  const eventosEjemplo = [
+    {
+      id: '1',
+      title: 'Hackathon Blockchain UNAM 2024',
+      date: '15 de Marzo, 2024',
+      time: '9:00 AM - 6:00 PM',
+      location: 'Facultad de Ingeniería, UNAM',
+      image: '/images/Eventos/hackathon-2024.jpg',
+      description: 'Únete al hackathon más grande de blockchain en México. 48 horas de desarrollo, premios increíbles y networking con los mejores desarrolladores.',
+      capacity: 200,
+      registered: 156,
+      isUpcoming: true
+    },
+    {
+      id: '2',
+      title: 'Workshop: DeFi Fundamentals',
+      date: '22 de Marzo, 2024',
+      time: '2:00 PM - 5:00 PM',
+      location: 'Auditorio Principal, FI-UNAM',
+      image: '/images/Eventos/defi-workshop.jpg',
+      description: 'Aprende los fundamentos de las finanzas descentralizadas. Desde conceptos básicos hasta implementación práctica de protocolos DeFi.',
+      capacity: 80,
+      registered: 67,
+      isUpcoming: true
+    },
+    {
+      id: '3',
+      title: 'Conferencia: El Futuro de Web3',
+      date: '29 de Marzo, 2024',
+      time: '10:00 AM - 2:00 PM',
+      location: 'Centro Cultural Universitario',
+      image: '/images/Eventos/web3-conference.jpg',
+      description: 'Explora las últimas tendencias en Web3 con expertos de la industria. Networking, demos en vivo y oportunidades de colaboración.',
+      capacity: 150,
+      registered: 134,
+      isUpcoming: true
+    },
+    {
+      id: '4',
+      title: 'Meetup: NFT y Arte Digital',
+      date: '5 de Abril, 2024',
+      time: '6:00 PM - 9:00 PM',
+      location: 'Espacio de Innovación, UNAM',
+      image: '/images/Eventos/nft-meetup.jpg',
+      description: 'Descubre el mundo de los NFTs y su impacto en el arte digital. Presentaciones de artistas, galería virtual y subasta en vivo.',
+      capacity: 60,
+      registered: 45,
+      isUpcoming: true
+    }
+  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -928,8 +982,18 @@ const Home = () => {
       }
     };
     
+    const fetchEventosCarousel = async () => {
+      try {
+        // Por ahora usamos datos de ejemplo, pero aquí se conectaría con la API
+        setEventosCarousel(eventosEjemplo);
+      } catch (e) {
+        setEventosCarousel([]);
+      }
+    };
+    
     fetchCursosYEventos();
     fetchNewsletters();
+    fetchEventosCarousel();
   }, []);
 
   return (
@@ -973,6 +1037,23 @@ const Home = () => {
           <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en eventos, hackathons y talleres exclusivos." />
         </div>
       </section>
+
+      {/* Carrusel de Eventos */}
+      {eventosCarousel.length > 0 && (
+        <section style={{
+          maxWidth: '1200px',
+          margin: '0 auto 3rem auto',
+          padding: '0 20px'
+        }}>
+          <EventsCarousel 
+            events={eventosCarousel}
+            autoPlay={true}
+            autoPlayInterval={6000}
+            showIndicators={true}
+            showNavigation={true}
+          />
+        </section>
+      )}
 
       {/* Estadísticas */}
       <StatsSection
