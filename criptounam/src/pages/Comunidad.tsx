@@ -1274,7 +1274,7 @@ const Comunidad = () => {
       <section className="join-community" style={{
         margin: '4rem auto',
         maxWidth: '1200px',
-        padding: '3rem 2rem',
+        padding: '2rem 1rem',
         background: 'linear-gradient(135deg, rgba(26,26,26,0.8), rgba(30,58,138,0.1))',
         borderRadius: '24px',
         border: '2px solid rgba(212, 175, 55, 0.3)',
@@ -1310,7 +1310,7 @@ const Comunidad = () => {
             <h2 style={{
               fontFamily: 'Orbitron',
               color: '#D4AF37',
-              fontSize: '2.5rem',
+              fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
               margin: '0 0 1rem 0',
               fontWeight: 'bold',
               textShadow: '0 2px 8px rgba(212, 175, 55, 0.3)'
@@ -1319,12 +1319,13 @@ const Comunidad = () => {
             </h2>
             <p style={{
               color: '#E0E0E0',
-              fontSize: '1.2rem',
+              fontSize: 'clamp(1rem, 3vw, 1.2rem)',
               margin: '0',
               maxWidth: '600px',
               marginLeft: 'auto',
               marginRight: 'auto',
-              lineHeight: '1.6'
+              lineHeight: '1.6',
+              padding: '0 1rem'
             }}>
               Únete a nuestros canales y participa en nuestros eventos. Conecta con otros entusiastas de blockchain y criptomonedas.
             </p>
@@ -1332,10 +1333,11 @@ const Comunidad = () => {
 
           <div className="social-buttons" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '1.5rem',
-            maxWidth: '900px',
-            margin: '0 auto'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '1rem',
+            maxWidth: '100%',
+            margin: '0 auto',
+            padding: '0 0.5rem'
           }}>
             {/* Discord */}
             <a href="https://discord.gg/Pmu4JQeNR6" 
@@ -1346,17 +1348,18 @@ const Comunidad = () => {
                  display: 'flex',
                  alignItems: 'center',
                  justifyContent: 'center',
-                 gap: '12px',
-                 padding: '1.2rem 2rem',
+                 gap: '8px',
+                 padding: '1rem 1.5rem',
                  background: 'linear-gradient(135deg, #5865F2, #4752C4)',
                  color: 'white',
                  textDecoration: 'none',
-                 borderRadius: '16px',
+                 borderRadius: '12px',
                  fontWeight: 'bold',
-                 fontSize: '1.1rem',
+                 fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
                  transition: 'all 0.3s ease',
                  boxShadow: '0 4px 16px rgba(88, 101, 242, 0.4)',
-                 border: '2px solid rgba(255, 255, 255, 0.1)'
+                 border: '2px solid rgba(255, 255, 255, 0.1)',
+                 minHeight: '60px'
                }}
                onMouseEnter={(e) => {
                  e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
@@ -1888,3 +1891,60 @@ const GaleriaFotosInterna = ({ fotos, titulo }: { fotos: string[], titulo: strin
 };
 
 export default Comunidad 
+
+// Estilos CSS para hacer los botones responsive
+const styles = `
+  @media (max-width: 768px) {
+    .social-buttons {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+      gap: 0.8rem !important;
+      padding: 0 0.25rem !important;
+    }
+    
+    .social-buttons a {
+      padding: 0.8rem 1rem !important;
+      font-size: 0.9rem !important;
+      min-height: 50px !important;
+      gap: 6px !important;
+    }
+    
+    .join-community {
+      padding: 1.5rem 0.5rem !important;
+      margin: 2rem auto !important;
+    }
+    
+    .join-content h2 {
+      font-size: 1.5rem !important;
+      margin-bottom: 0.5rem !important;
+    }
+    
+    .join-content p {
+      font-size: 0.9rem !important;
+      padding: 0 0.5rem !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .social-buttons {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0.6rem !important;
+    }
+    
+    .social-buttons a {
+      padding: 0.7rem 0.8rem !important;
+      font-size: 0.8rem !important;
+      min-height: 45px !important;
+    }
+    
+    .join-community {
+      padding: 1rem 0.25rem !important;
+    }
+  }
+`;
+
+// Inyectar estilos
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = styles;
+  document.head.appendChild(styleSheet);
+} 
