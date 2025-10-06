@@ -165,10 +165,13 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
               transition: 'transform 0.3s ease',
               backgroundColor: 'rgba(26,26,26,0.8)'
             }}
-            onError={(e) => {
+            onError={() => {
               console.log('Error loading image:', currentEvent.image);
               // Fallback a una imagen por defecto si falla
-              e.currentTarget.src = '/images/LogosCriptounam.svg';
+              const img = carouselRef.current?.querySelector('img');
+              if (img) {
+                img.src = '/images/LogosCriptounam.svg';
+              }
             }}
             onLoad={() => {
               // Efecto de zoom sutil al cargar
