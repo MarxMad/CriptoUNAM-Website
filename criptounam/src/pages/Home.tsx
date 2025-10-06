@@ -617,18 +617,18 @@ const Home = () => {
       twitter: '#'
     },
     {
-      name: 'Daniel Kubs',
+      name: 'Adrian Armenta',
       role: 'Founder & CTO',
       description: 'Co-fundador y director técnico. Desarrollador blockchain y experto en DeFi.',
-      image: '/images/Equipo/DanielKubs.jpg',
+      image: '/images/Equipo/AArmenta.png',
       linkedin: '#',
       github: '#'
     },
     {
-      name: 'Adrian Armenta',
+      name: 'Daniel Cruz',
       role: 'Founder & CMO',
       description: 'Co-fundador y director de marketing. Experto en crecimiento de comunidades blockchain.',
-      image: '/images/Equipo/AArmenta.png',
+      image: '/images/Equipo/Kubs.png',
       linkedin: '#',
       twitter: '#'
     },
@@ -694,34 +694,129 @@ const Home = () => {
   // Proyectos destacados
   const projects = [
     {
-      title: 'DeFi Protocol UNAM',
-      description: 'Protocolo DeFi desarrollado por estudiantes para facilitar préstamos descentralizados en la comunidad universitaria.',
-      image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=250&fit=crop',
+      title: 'Utonoma',
+      description: 'Plataforma de videos descentralizada construida con Solidity para la distribución de contenido educativo.',
+      image: '/images/Proyectos/Utonoma.png',
       category: 'hackathon' as const,
-      prize: '1er Lugar - Hackathon Blockchain 2024',
-      team: ['Ana García', 'Carlos López', 'María Torres'],
+      prize: 'Proyecto Destacado - Hackathon Blockchain 2024',
+      team: ['Equipo CriptoUNAM'],
       technologies: ['Solidity', 'React', 'Web3.js', 'IPFS'],
-      link: 'https://defi-protocol-unam.vercel.app',
-      github: 'https://github.com/criptounam/defi-protocol'
+      link: '#',
+      github: '#'
     },
     {
-      title: 'NFT Marketplace UNAM',
-      description: 'Marketplace de NFTs para la comunidad universitaria, permitiendo la creación y venta de arte digital.',
-      image: 'https://images.unsplash.com/photo-1642790105077-0a0a4b0a0a0a?w=400&h=250&fit=crop',
+      title: 'CU-Shop',
+      description: 'Marketplace sobre blockchain para estudiantes universitarios construido en Base con Solidity.',
+      image: '/images/Proyectos/CU-Shop.png',
       category: 'community' as const,
-      team: ['Luis Martínez', 'Sofia Ramírez'],
-      technologies: ['Next.js', 'Ethereum', 'OpenSea API', 'MetaMask'],
-      link: 'https://nft-marketplace-unam.vercel.app',
-      github: 'https://github.com/criptounam/nft-marketplace'
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Base', 'Solidity', 'React', 'Web3.js'],
+      link: '#',
+      github: '#'
     },
     {
-      title: 'Blockchain Voting System',
-      description: 'Sistema de votación descentralizado para elecciones estudiantiles usando blockchain.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop',
+      title: 'La Kiniela',
+      description: 'Mercado de predicciones mexicano construido en Arbitrum con Solidity para apuestas deportivas.',
+      image: '/images/Proyectos/LaKiniela.png',
+      category: 'hackathon' as const,
+      prize: 'Proyecto Innovador - Hackathon DeFi 2024',
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Arbitrum', 'Solidity', 'React', 'Chainlink'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'PumaPay',
+      description: 'Wallet universitaria para pagos diarios en cafeterías usando MXNB, Bitso y Juno.',
+      image: '/images/Proyectos/PumaPay.png',
+      category: 'community' as const,
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['MXNB', 'Bitso', 'Juno', 'React Native'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'My DentalVault',
+      description: 'Sistema de registro dental de tratamientos e historia médica construido en Polkadot.',
+      image: '/images/Proyectos/MyDentalVault.png',
       category: 'research' as const,
-      team: ['Diego Herrera', 'Valentina Cruz', 'Roberto Silva'],
-      technologies: ['Hyperledger Fabric', 'Node.js', 'React', 'Docker'],
-      github: 'https://github.com/criptounam/voting-system'
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Polkadot', 'Substrate', 'React', 'IPFS'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'UniFood',
+      description: 'Sistema de distribución de becas para alimentación construido en ZKsync.',
+      image: '/images/Proyectos/UniFood.png',
+      category: 'community' as const,
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['ZKsync', 'Solidity', 'React', 'Zero-Knowledge'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'LatamCoins',
+      description: 'Indizador de monedas latinoamericanas construido en Solana para el mercado regional.',
+      image: '/images/Proyectos/LatamCoins.png',
+      category: 'hackathon' as const,
+      prize: 'Mejor Proyecto Regional - Hackathon Latam 2024',
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Solana', 'Rust', 'React', 'Anchor'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'SkillHubID',
+      description: 'Sistema de certificación a través de la comunidad construido en Stellar.',
+      image: '/images/Proyectos/SkillHubID.png',
+      category: 'community' as const,
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Stellar', 'JavaScript', 'React', 'Soroswap'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'ZenTrade',
+      description: 'Plataforma de trading descentralizada construida en Stellar para el mercado latinoamericano.',
+      image: '/images/Proyectos/ZenTrade.png',
+      category: 'hackathon' as const,
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Stellar', 'JavaScript', 'React', 'Soroswap'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'PumaAgentAI',
+      description: 'Agente de inteligencia artificial para asistencia estudiantil y gestión universitaria.',
+      image: '/images/Proyectos/PumaAgentAI.png',
+      category: 'research' as const,
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['AI', 'Machine Learning', 'Python', 'OpenAI'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'CoreWeavesAgent',
+      description: 'TokenLauncher sobre CoreDAO para la creación y gestión de tokens comunitarios.',
+      image: '/images/Proyectos/CoreWeavesAgent.png',
+      category: 'hackathon' as const,
+      prize: 'Proyecto Destacado - CoreDAO Hackathon 2024',
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['CoreDAO', 'Solidity', 'React', 'Web3.js'],
+      link: '#',
+      github: '#'
+    },
+    {
+      title: 'Mundial-Buzz',
+      description: 'Sistema de apuestas para el mundial 2026 desarrollado en EthGlobal NYC.',
+      image: '/images/Proyectos/MundialBuzz.png',
+      category: 'hackathon' as const,
+      prize: 'EthGlobal NYC 2024',
+      team: ['Equipo CriptoUNAM'],
+      technologies: ['Ethereum', 'Solidity', 'React', 'The Graph'],
+      link: '#',
+      github: '#'
     }
   ];
 
