@@ -11,7 +11,6 @@ import {
   faGraduationCap, 
   faUsers, 
   faEnvelope, 
-  faGamepad,
   faTimes,
   faWallet,
   faPlus,
@@ -141,7 +140,6 @@ const Navbar = () => {
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
     { path: '/comunidad', icon: faUsers, label: 'Comunidad' },
     { path: '/newsletter', icon: faEnvelope, label: 'Newsletter' },
-    { path: '/juegos', icon: faGamepad, label: 'Juegos' },
   ]
 
   const isActiveRoute = (path: string) => {

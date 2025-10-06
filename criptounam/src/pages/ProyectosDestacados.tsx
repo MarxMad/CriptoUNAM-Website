@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faGithub, faExternalLinkAlt, faCode, faUsers, faTrophy } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faExternalLinkAlt, faCode, faUsers, faTrophy } from '@fortawesome/free-solid-svg-icons'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import SEOHead from '../components/SEOHead'
 import '../styles/global.css'
 
