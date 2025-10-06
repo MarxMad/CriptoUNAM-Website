@@ -4,23 +4,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 import { useState, useEffect } from 'react'
-import { newsletterApi } from '../config/supabaseApi'
+import { newsletterApi, type NewsletterEntry } from '../config/supabaseApi'
 import BlogContent from '../components/BlogContent'
 
-interface NewsletterEntry {
-  id: string
-  titulo: string
-  fecha: string
-  contenido: string
-  imagen?: string
-  autor?: string
-  tags?: string[]
-}
+// Tipo para entradas que vienen de la base de datos (con id garantizado)
+type NewsletterEntryWithId = NewsletterEntry & { id: string }
 
 const NewsletterEntry = () => {
   const { id } = useParams()
   
-  const [entry, setEntry] = useState<NewsletterEntry | null>(null);
+  const [entry, setEntry] = useState<NewsletterEntryWithId | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
