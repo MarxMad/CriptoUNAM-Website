@@ -599,37 +599,95 @@ const Home = () => {
 
   // Datos del equipo
   const teamMembers = [
+    // Founders
     {
-      name: 'Dr. Ana Martínez',
-      role: 'Directora Académica',
-      description: 'Especialista en criptoeconomía y blockchain. PhD en Economía Digital.',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face',
-      linkedin: 'https://linkedin.com/in/ana-martinez',
-      twitter: 'https://twitter.com/ana_martinez'
+      name: 'Gerardo Vela',
+      role: 'Founder & CEO',
+      description: 'Fundador y líder de CriptoUNAM. Experto en blockchain y criptomonedas.',
+      image: '/images/Equipo/GerardoVela.jpg',
+      linkedin: '#',
+      twitter: '#'
     },
     {
-      name: 'Carlos Rodríguez',
-      role: 'Coordinador Técnico',
-      description: 'Desarrollador blockchain con 5+ años de experiencia en DeFi.',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face',
-      linkedin: 'https://linkedin.com/in/carlos-rodriguez',
-      github: 'https://github.com/carlos-rodriguez'
+      name: 'Fernanda Tello',
+      role: 'Founder & COO',
+      description: 'Co-fundadora y directora de operaciones. Especialista en estrategia y desarrollo.',
+      image: '/images/Equipo/FernandaTello.jpg',
+      linkedin: '#',
+      twitter: '#'
     },
     {
-      name: 'María González',
-      role: 'Coordinadora de Comunidad',
-      description: 'Experta en marketing digital y gestión de comunidades blockchain.',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face',
-      linkedin: 'https://linkedin.com/in/maria-gonzalez',
-      twitter: 'https://twitter.com/maria_gonzalez'
+      name: 'Daniel Kubs',
+      role: 'Founder & CTO',
+      description: 'Co-fundador y director técnico. Desarrollador blockchain y experto en DeFi.',
+      image: '/images/Equipo/DanielKubs.jpg',
+      linkedin: '#',
+      github: '#'
     },
     {
-      name: 'Luis Hernández',
-      role: 'Investigador Senior',
-      description: 'Especialista en criptografía y protocolos de consenso.',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face',
-      linkedin: 'https://linkedin.com/in/luis-hernandez',
-      github: 'https://github.com/luis-hernandez'
+      name: 'Adrian Armenta',
+      role: 'Founder & CMO',
+      description: 'Co-fundador y director de marketing. Experto en crecimiento de comunidades blockchain.',
+      image: '/images/Equipo/AArmenta.png',
+      linkedin: '#',
+      twitter: '#'
+    },
+    // Embajadores
+    {
+      name: 'Tadeo Sepúlveda',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Especialista en educación blockchain.',
+      image: '/images/Equipo/TadeoSepulveda.png',
+      linkedin: '#',
+      twitter: '#'
+    },
+    {
+      name: 'Benjamín Romero',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Experto en desarrollo de aplicaciones descentralizadas.',
+      image: '/images/Equipo/BenjaminRomero.png',
+      linkedin: '#',
+      github: '#'
+    },
+    {
+      name: 'Andrés Rodríguez',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Especialista en investigación blockchain.',
+      image: '/images/Equipo/AndresRodriguez.jpg',
+      linkedin: '#',
+      twitter: '#'
+    },
+    {
+      name: 'Adrián Martínez',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Experto en protocolos de consenso.',
+      image: '/images/Equipo/AdrianMartinez.png',
+      linkedin: '#',
+      github: '#'
+    },
+    {
+      name: 'Linda',
+      role: 'Embajadora CriptoUNAM',
+      description: 'Embajadora de la comunidad. Especialista en UX/UI para aplicaciones blockchain.',
+      image: '/images/Equipo/Linda.jpeg',
+      linkedin: '#',
+      twitter: '#'
+    },
+    {
+      name: 'David Ricardo',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Experto en seguridad blockchain.',
+      image: '/images/Equipo/DavidRicardo.jpeg',
+      linkedin: '#',
+      github: '#'
+    },
+    {
+      name: 'Ian Hernández',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Especialista en smart contracts.',
+      image: '/images/Equipo/IanHernandes.jpg',
+      linkedin: '#',
+      twitter: '#'
     }
   ];
 
