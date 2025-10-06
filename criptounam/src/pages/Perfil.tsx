@@ -187,7 +187,7 @@ const Perfil = () => {
           }}>
             {/* Foto de Perfil */}
             <ProfilePicture
-              currentImage={userData.avatar}
+              currentImage={userData.fotoPerfil}
               onImageChange={handleImageChange}
               size="xl"
             />
@@ -211,7 +211,7 @@ const Perfil = () => {
                 color: '#D1D5DB',
                 margin: '0 0 24px 0',
                 lineHeight: '1.5'
-              }}>{userData.bio}</p>
+              }}>Estudiante apasionado por la tecnología blockchain y las criptomonedas.</p>
               
               {/* Información de Wallet */}
               <div style={{
