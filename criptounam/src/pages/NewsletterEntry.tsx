@@ -26,8 +26,8 @@ const NewsletterEntry = () => {
           return;
         }
         const entryData = await newsletterApi.getById(id);
-        if (entryData) {
-          setEntry(entryData);
+        if (entryData && entryData.id) {
+          setEntry(entryData as NewsletterEntryWithId);
           setNotFound(false);
         } else {
           setNotFound(true);
