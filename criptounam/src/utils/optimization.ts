@@ -177,32 +177,34 @@ export const getOptimizedImageSrc = (src: string, format: 'webp' | 'jpeg' = 'web
   return src;
 };
 
-// Lazy loading para componentes
-export const LazyComponent = ({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) => {
-  const [isVisible, setIsVisible] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
-  
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1 }
-    );
+// Lazy loading para componentes - función helper
+export const createLazyComponent = () => {
+  return {
+    isVisible: false,
+    ref: null as HTMLDivElement | null,
+    observer: null as IntersectionObserver | null,
     
-    if (ref.current) {
-      observer.observe(ref.current);
+    init: function(element: HTMLDivElement) {
+      this.ref = element;
+      this.observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            this.isVisible = true;
+            this.observer?.disconnect();
+          }
+        },
+        { threshold: 0.1 }
+      );
+      
+      if (this.ref) {
+        this.observer.observe(this.ref);
+      }
+    },
+    
+    cleanup: function() {
+      if (this.observer) {
+        this.observer.disconnect();
+      }
     }
-    
-    return () => observer.disconnect();
-  }, []);
-  
-  return (
-    <div ref={ref}>
-      {isVisible ? children : (fallback || <div>Cargando...</div>)}
-    </div>
-  );
+  };
 };
