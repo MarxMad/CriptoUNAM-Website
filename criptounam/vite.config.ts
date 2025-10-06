@@ -12,56 +12,9 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 1000,
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn']
-      },
-      mangle: {
-        safari10: true
-      }
-    },
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ethers-vendor': ['ethers'],
-          'ui-vendor': [ '@emotion/react', '@emotion/styled', 'framer-motion'],
-          'web3-vendor': ['@reown/appkit', '@reown/appkit-adapter-wagmi', 'wagmi', 'viem'],
-          'charts-vendor': ['recharts'],
-          'utils-vendor': ['axios', 'react-helmet-async']
-        },
-        // Optimización de chunks
-        chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId
-          if (facadeModuleId) {
-            const fileName = facadeModuleId.split('/').pop()?.split('.')[0]
-            return `js/${fileName}-[hash].js`
-          }
-          return 'js/[name]-[hash].js'
-        },
-        assetFileNames: (assetInfo) => {
-          const extType = assetInfo.name?.split('.').pop()
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType || '')) {
-            return 'images/[name]-[hash][extname]'
-          }
-          if (/woff2?|eot|ttf|otf/i.test(extType || '')) {
-            return 'fonts/[name]-[hash][extname]'
-          }
-          return 'assets/[name]-[hash][extname]'
-        }
-      },
-    },
-    // Optimizaciones adicionales
-    cssCodeSplit: true,
+    minify: 'esbuild',
     sourcemap: false,
-    reportCompressedSize: true,
-    target: 'esnext',
-    modulePreload: {
-      polyfill: false
-    }
+    target: 'esnext'
   },
   assetsInclude: ['**/*.jpg', '**/*.png', '**/*.svg', '**/*.gif', '**/*.webp'],
   publicDir: 'public',

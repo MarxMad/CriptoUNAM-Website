@@ -24,14 +24,14 @@ const App = () => {
     // Precargar recursos críticos - temporalmente deshabilitado
     // preloadCriticalResources()
     
-    // Prefetch de rutas importantes
-    const prefetchRoutes = ['/cursos', '/comunidad', '/newsletter', '/proyectos']
-    prefetchRoutes.forEach(route => {
-      const link = document.createElement('link')
-      link.rel = 'prefetch'
-      link.href = route
-      document.head.appendChild(link)
-    })
+    // Prefetch de rutas importantes - temporalmente deshabilitado
+    // const prefetchRoutes = ['/cursos', '/comunidad', '/newsletter', '/proyectos']
+    // prefetchRoutes.forEach(route => {
+    //   const link = document.createElement('link')
+    //   link.rel = 'prefetch'
+    //   link.href = route
+    //   document.head.appendChild(link)
+    // })
   }, [])
 
   return (
