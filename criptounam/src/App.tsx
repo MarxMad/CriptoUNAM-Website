@@ -11,6 +11,7 @@ import Perfil from './pages/Perfil'
 import RegistroCurso from './pages/RegistroCurso'
 import Newsletter from './pages/Newsletter'
 import NewsletterEntry from './pages/NewsletterEntry'
+import ProyectosDestacados from './pages/ProyectosDestacados'
 import Juegos from './pages/Juegos'
 import JuegoIndividual from './pages/JuegoIndividual'
 import { WalletProvider } from './context/WalletContext'
@@ -30,6 +31,7 @@ const App = () => {
                 <Route path="/comunidad" element={<Comunidad />} />
                 <Route path="/newsletter" element={<Newsletter />} />
                 <Route path="/newsletter/:id" element={<NewsletterEntry />} />
+                <Route path="/proyectos" element={<ProyectosDestacados />} />
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/registro-curso/:id" element={<RegistroCurso />} />
                 <Route path="/juegos" element={<Juegos />} />

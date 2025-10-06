@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
 import { handleRegistration, handleNewsletterSubscription } from '../api/telegram'
 import { API_ENDPOINTS } from '../config/api'
+import { newsletterApi } from '../config/supabaseApi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faGraduationCap, 
@@ -320,6 +321,7 @@ const Home = () => {
   const [networkLogo, setNetworkLogo] = useState<string>('')
   const [cursosHome, setCursosHome] = useState<any[]>([])
   const [eventosHome, setEventosHome] = useState<any[]>([])
+  const [newslettersHome, setNewslettersHome] = useState<any[]>([])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -916,7 +918,18 @@ const Home = () => {
         setEventosHome([]);
       }
     };
+    
+    const fetchNewsletters = async () => {
+      try {
+        const newsletters = await newsletterApi.getAll();
+        setNewslettersHome(newsletters.slice(0, 3)); // Solo las últimas 3
+      } catch (e) {
+        setNewslettersHome([]);
+      }
+    };
+    
     fetchCursosYEventos();
+    fetchNewsletters();
   }, []);
 
   return (
@@ -1032,11 +1045,40 @@ const Home = () => {
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-          gap: '24px'
+          gap: '24px',
+          marginBottom: '2rem'
         }}>
-          {projects.map((project, index) => (
+          {projects.slice(0, 3).map((project, index) => (
             <ProjectCard key={index} project={project} />
           ))}
+        </div>
+        
+        <div style={{ textAlign: 'center' }}>
+          <Link 
+            to="/proyectos" 
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'linear-gradient(45deg, #D4AF37, #2563EB)',
+              color: '#0A0A0A',
+              padding: '1rem 2rem',
+              borderRadius: '12px',
+              textDecoration: 'none',
+              fontWeight: 600,
+              fontSize: '1.1rem',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.05)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)'
+            }}
+          >
+            Ver Todos los Proyectos
+            <FontAwesomeIcon icon={faRocket} />
+          </Link>
         </div>
       </section>
 
@@ -1046,6 +1088,173 @@ const Home = () => {
         title="Nuestra Comunidad en Acción"
         description="Momentos especiales, eventos y actividades que definen nuestra comunidad"
       />
+
+      {/* Últimas Newsletters */}
+      {newslettersHome.length > 0 && (
+        <section style={{
+          maxWidth: '1200px',
+          margin: '0 auto 3rem auto',
+          padding: '0 20px'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{
+              fontFamily: 'Orbitron',
+              color: '#D4AF37',
+              fontSize: '2.5rem',
+              marginBottom: '1rem'
+            }}>
+              Últimas Noticias
+            </h2>
+            <p style={{
+              color: '#E0E0E0',
+              fontSize: '1.2rem',
+              maxWidth: '700px',
+              margin: '0 auto'
+            }}>
+              Mantente actualizado con las últimas novedades de CriptoUNAM
+            </p>
+          </div>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '24px',
+            marginBottom: '2rem'
+          }}>
+            {newslettersHome.map((newsletter, index) => (
+              <div key={newsletter.id || index} style={{
+                background: 'rgba(26,26,26,0.9)',
+                borderRadius: '20px',
+                padding: '2rem',
+                border: '1px solid rgba(212,175,55,0.3)',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)'
+                e.currentTarget.style.borderColor = '#D4AF37'
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(212,175,55,0.2)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)'
+              }}>
+                {newsletter.imagen && (
+                  <div style={{
+                    width: '100%',
+                    height: '200px',
+                    marginBottom: '1.5rem',
+                    borderRadius: '12px',
+                    overflow: 'hidden'
+                  }}>
+                    <img 
+                      src={newsletter.imagen} 
+                      alt={newsletter.titulo}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                  </div>
+                )}
+                
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <h3 style={{
+                    fontFamily: 'Orbitron',
+                    color: '#D4AF37',
+                    fontSize: '1.3rem',
+                    margin: '0 0 0.5rem 0'
+                  }}>
+                    {newsletter.titulo}
+                  </h3>
+                  <p style={{
+                    color: '#E0E0E0',
+                    fontSize: '0.9rem',
+                    margin: '0 0 1rem 0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#2563EB' }} />
+                    {new Date(newsletter.fecha).toLocaleDateString('es-MX', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </p>
+                  <p style={{
+                    color: '#E0E0E0',
+                    lineHeight: '1.6',
+                    margin: '0 0 1rem 0'
+                  }}>
+                    {newsletter.contenido.substring(0, 150)}...
+                  </p>
+                </div>
+                
+                <Link 
+                  to={`/newsletter/${newsletter.id}`}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    background: 'linear-gradient(45deg, #D4AF37, #2563EB)',
+                    color: '#0A0A0A',
+                    padding: '0.8rem 1.5rem',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }}
+                >
+                  Leer Más
+                  <FontAwesomeIcon icon={faRocket} />
+                </Link>
+              </div>
+            ))}
+          </div>
+          
+          <div style={{ textAlign: 'center' }}>
+            <Link 
+              to="/newsletter" 
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: 'rgba(26,26,26,0.8)',
+                color: '#D4AF37',
+                padding: '1rem 2rem',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: '1.1rem',
+                border: '1px solid rgba(212,175,55,0.3)',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#D4AF37'
+                e.currentTarget.style.color = '#0A0A0A'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(26,26,26,0.8)'
+                e.currentTarget.style.color = '#D4AF37'
+              }}
+            >
+              Ver Todas las Noticias
+              <FontAwesomeIcon icon={faRocket} />
+            </Link>
+          </div>
+        </section>
+      )}
 
       {/* Cursos destacados reales */}
       {cursosHome.length > 0 && (
