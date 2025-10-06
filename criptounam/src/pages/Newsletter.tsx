@@ -65,6 +65,28 @@ const Newsletter = () => {
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [entradas, setEntradas] = useState<NewsletterEntry[]>([]);
+  const [filtroTag, setFiltroTag] = useState<string>('');
+  const [tagsDisponibles] = useState([
+    'Blockchain',
+    'DeFi',
+    'NFTs',
+    'Web3',
+    'Ethereum',
+    'Bitcoin',
+    'Trading',
+    'Educación',
+    'Eventos',
+    'Tecnología'
+  ]);
+
+  // Filtrar entradas por tag
+  const entradasFiltradas = filtroTag 
+    ? entradas.filter(entrada => 
+        entrada.tags && entrada.tags.some(tag => 
+          tag.toLowerCase().includes(filtroTag.toLowerCase())
+        )
+      )
+    : entradas;
 
   // Cargar entradas desde Supabase
   useEffect(() => {
@@ -177,13 +199,13 @@ const Newsletter = () => {
         autor: nuevaEntrada.author,
         fecha: nuevaEntrada.date,
         imagen: imagenUrl,
-        tags: nuevaEntrada.tags.split(',').map(t => t.trim()).filter(Boolean)
+        tags: nuevaEntrada.tags
       };
       
       const entradaCreada = await newsletterApi.create(entradaData);
       setEntradas([entradaCreada, ...entradas]);
       setShowModal(false);
-      setNuevaEntrada({ title: '', date: '', content: '', imageFile: null, author: '', tags: '' });
+      setNuevaEntrada({ title: '', date: '', content: '', imageFile: null, author: '', tags: [] });
       setPreviewImage(null);
     } catch (error: any) {
       console.error('Error al crear entrada:', error);
@@ -221,11 +243,86 @@ const Newsletter = () => {
         <p className="hero-subtitle" style={{color:'#E0E0E0', fontSize:'1.2rem'}}>Mantente actualizado con las últimas noticias y eventos sobre blockchain y criptomonedas</p>
       </header>
 
+      {/* Filtros por Tags */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto 2rem auto',
+        padding: '0 20px'
+      }}>
+        <div style={{
+          background: 'rgba(26,26,26,0.8)',
+          borderRadius: '16px',
+          padding: '1.5rem',
+          border: '1px solid rgba(212,175,55,0.3)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <h3 style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: '1.2rem',
+            marginBottom: '1rem',
+            textAlign: 'center'
+          }}>
+            Filtrar por Categoría
+          </h3>
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '0.5rem',
+            justifyContent: 'center',
+            marginBottom: '1rem'
+          }}>
+            <button
+              onClick={() => setFiltroTag('')}
+              style={{
+                padding: '0.5rem 1rem',
+                borderRadius: '20px',
+                border: filtroTag === '' ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.3)',
+                background: filtroTag === '' ? '#D4AF37' : 'rgba(26,26,26,0.5)',
+                color: filtroTag === '' ? '#0A0A0A' : '#E0E0E0',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                fontWeight: filtroTag === '' ? '600' : '400'
+              }}
+            >
+              Todos
+            </button>
+            {tagsDisponibles.map(tag => (
+              <button
+                key={tag}
+                onClick={() => setFiltroTag(tag)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  borderRadius: '20px',
+                  border: filtroTag === tag ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.3)',
+                  background: filtroTag === tag ? '#D4AF37' : 'rgba(26,26,26,0.5)',
+                  color: filtroTag === tag ? '#0A0A0A' : '#E0E0E0',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  fontWeight: filtroTag === tag ? '600' : '400'
+                }}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          {filtroTag && (
+            <div style={{
+              textAlign: 'center',
+              color: '#E0E0E0',
+              fontSize: '0.9rem'
+            }}>
+              Mostrando entradas con tag: <strong style={{color: '#D4AF37'}}>{filtroTag}</strong>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="sections-container" style={{display:'flex', flexWrap:'wrap', gap:'2.5rem', justifyContent:'center', alignItems:'flex-start', margin:'0 auto', maxWidth:1200}}>
         <section className="entries-section" style={{flex:'2 1 480px', minWidth:320, maxWidth:700}}>
           <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.3rem', marginBottom:'1.2rem'}}>Últimas Entradas</h2>
           <div className="newsletter-entries" style={{display:'flex', flexDirection:'column', gap:'2.2rem'}}>
-            {entradas.map((entry) => (
+            {entradasFiltradas.map((entry) => (
               <article key={entry.id} className="card newsletter-entry" style={{
                 padding: '2rem',
                 display: 'flex',
@@ -288,6 +385,29 @@ const Newsletter = () => {
                       </span>
                     )}
                   </div>
+                  
+                  {/* Tags */}
+                  {entry.tags && entry.tags.length > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '0.5rem',
+                      marginTop: '0.5rem'
+                    }}>
+                      {entry.tags.map((tag, index) => (
+                        <span key={index} style={{
+                          background: 'rgba(212,175,55,0.2)',
+                          color: '#D4AF37',
+                          padding: '0.3rem 0.8rem',
+                          borderRadius: '12px',
+                          fontSize: '0.8rem',
+                          fontWeight: '500'
+                        }}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   
                   <div style={{
                     color: '#E0E0E0',
@@ -590,21 +710,52 @@ const Newsletter = () => {
                 <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
                   Tags
                 </label>
-                <input 
-                  name="tags" 
-                  value={nuevaEntrada.tags} 
-                  onChange={handleInputChange} 
-                  placeholder="Tags (separados por coma)" 
-                  style={{
-                    padding: '12px',
-                    borderRadius: '8px',
-                    border: '2px solid #e0e0e0',
-                    fontSize: '1rem',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
-                />
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
+                  gap: '0.5rem',
+                  marginBottom: '1rem'
+                }}>
+                  {tagsDisponibles.map(tag => (
+                    <label key={tag} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.5rem',
+                      background: nuevaEntrada.tags.includes(tag) ? '#D4AF37' : 'rgba(212,175,55,0.1)',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      border: `1px solid ${nuevaEntrada.tags.includes(tag) ? '#D4AF37' : 'rgba(212,175,55,0.3)'}`
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={nuevaEntrada.tags.includes(tag)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setNuevaEntrada(prev => ({
+                              ...prev,
+                              tags: [...prev.tags, tag]
+                            }));
+                          } else {
+                            setNuevaEntrada(prev => ({
+                              ...prev,
+                              tags: prev.tags.filter(t => t !== tag)
+                            }));
+                          }
+                        }}
+                        style={{ margin: 0 }}
+                      />
+                      <span style={{ 
+                        fontSize: '0.9rem', 
+                        color: nuevaEntrada.tags.includes(tag) ? '#0A0A0A' : '#333',
+                        fontWeight: nuevaEntrada.tags.includes(tag) ? '600' : '400'
+                      }}>
+                        {tag}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
