@@ -215,7 +215,10 @@ export const useWebVitals = () => {
     const measureFID = () => {
       new PerformanceObserver((entryList) => {
         for (const entry of entryList.getEntries()) {
-          setVitals(prev => ({ ...prev, FID: entry.processingStart - entry.startTime }))
+          const fidEntry = entry as any
+          if (fidEntry.processingStart && fidEntry.startTime) {
+            setVitals(prev => ({ ...prev, FID: fidEntry.processingStart - fidEntry.startTime }))
+          }
         }
       }).observe({ entryTypes: ['first-input'] })
     }

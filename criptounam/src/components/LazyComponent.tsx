@@ -21,12 +21,12 @@ const LazyComponent: React.FC<LazyComponentProps> = ({
     animation: 'shimmer 1.5s infinite',
     borderRadius: '8px'
   }}>
-    <style jsx>{`
-      @keyframes shimmer {
-        0% { background-position: -200% 0; }
-        100% { background-position: 200% 0; }
-      }
-    `}</style>
+      <style>{`
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+      `}</style>
     Cargando...
   </div>,
   threshold = 0.1,

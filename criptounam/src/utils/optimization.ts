@@ -116,7 +116,8 @@ export const setCachedData = (key: string, data: any) => {
 
 // Optimización de bundle
 export const loadComponentLazy = (importFunc: () => Promise<any>) => {
-  return React.lazy(importFunc);
+  // Esta función se implementaría en el componente que la use
+  return importFunc;
 };
 
 // Service Worker para cache
