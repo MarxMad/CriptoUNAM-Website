@@ -7,9 +7,42 @@ import '../styles/global.css'
 import { useWallet } from '../context/WalletContext'
 import { useAdmin } from '../hooks/useAdmin'
 import { newsletterApi, NewsletterEntry as SupabaseNewsletterEntry } from '../config/supabaseApi'
+import DateInput from '../components/DateInput'
+import BlogContent from '../components/BlogContent'
 
 // Usamos la interfaz de Supabase
 type NewsletterEntry = SupabaseNewsletterEntry
+
+// Función para formatear fechas en español
+const formatDateToSpanish = (dateStr: string): string => {
+  try {
+    // Si está en formato YYYY-MM-DD, convertir
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [year, month, day] = dateStr.split('-');
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      return date.toLocaleDateString('es-MX', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
+    
+    // Si está en formato DD/MM/YYYY, convertir
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      const [day, month, year] = dateStr.split('/');
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      return date.toLocaleDateString('es-MX', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+    }
+    
+    return dateStr;
+  } catch (error) {
+    return dateStr;
+  }
+};
 
 const Newsletter = () => {
   const [email, setEmail] = useState('')
@@ -193,7 +226,7 @@ const Newsletter = () => {
                 <div className="entry-content" style={{display:'flex', flexDirection:'column', gap:'0.3rem'}}>
                   <h2 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.1rem', margin:'0 0 0.2rem 0'}}>{entry.titulo}</h2>
                   <span className="entry-date" style={{color:'#2563EB', fontSize:'0.98rem', marginBottom:2}}>
-                    <i className="fas fa-calendar"></i> {entry.fecha}
+                    <i className="fas fa-calendar"></i> {formatDateToSpanish(entry.fecha)}
                   </span>
                   <p style={{color:'#E0E0E0', fontSize:'0.98rem'}}>{entry.contenido}</p>
                   <Link to={`/newsletter/${entry.id}`} className="primary-button" style={{marginTop:'0.5rem', fontSize:'0.98rem', borderRadius:16, fontWeight:700, letterSpacing:'1px', padding:'0.4rem 1.2rem', width:'fit-content'}}>Leer más <i className="fas fa-arrow-right"></i></Link>
@@ -375,21 +408,17 @@ const Newsletter = () => {
                 <label style={{ color: '#333', fontWeight: 'bold', fontSize: '0.9rem' }}>
                   Fecha *
                 </label>
-                <input 
-                  name="date" 
-                  value={nuevaEntrada.date} 
-                  onChange={handleInputChange} 
-                  placeholder="Fecha (ej. 15 de Abril, 2024)" 
-                  required 
+                <DateInput
+                  value={nuevaEntrada.date}
+                  onChange={(value) => setNuevaEntrada({ ...nuevaEntrada, date: value })}
+                  placeholder="DD/MM/YYYY (ej: 06/10/2025)"
+                  required
                   style={{
                     padding: '12px',
                     borderRadius: '8px',
-                    border: '2px solid #e0e0e0',
                     fontSize: '1rem',
                     transition: 'all 0.3s ease'
                   }}
-                  onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
-                  onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                 />
               </div>
 

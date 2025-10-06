@@ -6,6 +6,7 @@ import '../styles/global.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
+import BlogContent from '../components/BlogContent'
 
 interface NewsletterEntry {
   id: number
@@ -91,10 +92,8 @@ const NewsletterEntry = () => {
               ))}
             </div>
           )}
-          <div className="entry-body" style={{color:'#E0E0E0', fontSize:'1.08rem', lineHeight:'1.7', marginBottom:'1.2rem'}}>
-            {entry.fullContent.split('\n\n').map((paragraph, index) => (
-              <p key={index} style={{margin:'0 0 1rem 0'}}>{paragraph}</p>
-            ))}
+          <div className="entry-body" style={{marginBottom:'1.2rem'}}>
+            <BlogContent content={entry.fullContent} />
           </div>
           <Link to="/newsletter" className="primary-button" style={{marginTop:'1rem', borderRadius:16, width:'fit-content'}}>
             <FontAwesomeIcon icon={faArrowLeft} /> Volver al Newsletter
