@@ -840,7 +840,7 @@ const Home = () => {
     },
     {
       id: '3',
-      src: '/images/Comunidad/_DSC0155 (1).jpg',
+      src: '/images/Comunidad/_DSC0051.jpg',
       alt: 'Workshop de Smart Contracts',
       title: 'Workshop Smart Contracts',
       description: 'Aprendiendo desarrollo de contratos inteligentes',
@@ -848,7 +848,7 @@ const Home = () => {
     },
     {
       id: '4',
-      src: '/images/Comunidad/_DSC0129.jpg',
+      src: '/images/Comunidad/_DSC0278 (2).jpg',
       alt: 'Networking Event',
       title: 'Networking Event',
       description: 'Conectando con la comunidad blockchain',
