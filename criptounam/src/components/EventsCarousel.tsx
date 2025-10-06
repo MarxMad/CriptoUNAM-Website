@@ -111,7 +111,8 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
       ref={carouselRef}
       style={{
         position: 'relative',
-        maxWidth: '1200px',
+        maxWidth: '1400px',
+        width: '95%',
         margin: '0 auto',
         padding: '0 20px'
       }}
@@ -150,7 +151,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         {/* Imagen del evento */}
         <div style={{
           position: 'relative',
-          height: '400px',
+          height: '500px',
           overflow: 'hidden'
         }}>
           <OptimizedImage
@@ -159,8 +160,10 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.3s ease'
+              objectFit: 'contain',
+              objectPosition: 'center',
+              transition: 'transform 0.3s ease',
+              backgroundColor: 'rgba(26,26,26,0.1)'
             }}
             onLoad={() => {
               // Efecto de zoom sutil al cargar
