@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
@@ -17,27 +18,29 @@ import './styles/global.css'
 
 const App = () => {
   return (
-    <WalletProvider>
-    <Router>
-        <div className="app">
-          <Navbar />
-        <main>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/cursos" element={<Cursos />} />
-            <Route path="/comunidad" element={<Comunidad />} />
-            <Route path="/newsletter" element={<Newsletter />} />
-            <Route path="/newsletter/:id" element={<NewsletterEntry />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="/registro-curso/:id" element={<RegistroCurso />} />
-            <Route path="/juegos" element={<Juegos />} />
-            <Route path="/juegos/:id" element={<JuegoIndividual />} />
-          </Routes>
-        </main>
-          <Footer />
-      </div>
-    </Router>
+    <HelmetProvider>
+      <WalletProvider>
+        <Router>
+          <div className="app">
+            <Navbar />
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/cursos" element={<Cursos />} />
+                <Route path="/comunidad" element={<Comunidad />} />
+                <Route path="/newsletter" element={<Newsletter />} />
+                <Route path="/newsletter/:id" element={<NewsletterEntry />} />
+                <Route path="/perfil" element={<Perfil />} />
+                <Route path="/registro-curso/:id" element={<RegistroCurso />} />
+                <Route path="/juegos" element={<Juegos />} />
+                <Route path="/juegos/:id" element={<JuegoIndividual />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
       </WalletProvider>
+    </HelmetProvider>
   )
 }
 
