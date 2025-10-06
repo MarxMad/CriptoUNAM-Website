@@ -116,12 +116,19 @@ const Navbar = () => {
   }, [])
 
   useEffect(() => {
-    fetch(API_ENDPOINTS.NOTIFICACIONES)
-      .then(res => res.json())
-      .then(data => {
-        setNotificaciones(data.map((n: any) => ({ ...n, leida: false })));
-      })
-      .catch(err => console.error('Error al cargar notificaciones:', err));
+    // Temporalmente deshabilitado para evitar errores de CORS
+    // fetch(API_ENDPOINTS.NOTIFICACIONES)
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     setNotificaciones(data.map((n: any) => ({ ...n, leida: false })));
+    //   })
+    //   .catch(err => console.error('Error al cargar notificaciones:', err));
+    
+    // Datos de ejemplo para notificaciones
+    setNotificaciones([
+      { id: 1, titulo: 'Bienvenido a CriptoUNAM', mensaje: '¡Gracias por unirte a nuestra comunidad!', leida: false, fecha: new Date().toISOString() },
+      { id: 2, titulo: 'Nuevo curso disponible', mensaje: 'Curso de DeFi Fundamentals ahora disponible', leida: false, fecha: new Date().toISOString() }
+    ]);
   }, []);
 
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
