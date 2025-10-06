@@ -832,7 +832,7 @@ const Home = () => {
     },
     {
       id: '2',
-      src: '/images/Comunidad/_DSC0158 (1).jpg',
+      src: '/images/Comunidad/_DSC0151.jpg',
       alt: 'Conferencia CriptoUNAM',
       title: 'Conferencia Anual 2024',
       description: 'Expertos compartiendo conocimiento sobre blockchain',
@@ -864,7 +864,7 @@ const Home = () => {
     },
     {
       id: '6',
-      src: '/images/Comunidad/CriptoUNAM (5).jpg',
+      src: '/images/Comunidad/_DSC0158 (1).jpg,',
       alt: 'Equipo CriptoUNAM',
       title: 'Equipo CriptoUNAM',
       description: 'Nuestro equipo trabajando en proyectos innovadores',
