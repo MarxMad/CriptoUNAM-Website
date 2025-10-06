@@ -92,16 +92,31 @@ const NewsletterEntry = () => {
               ))}
             </div>
           )}
-          <div className="entry-body" style={{marginBottom:'1.2rem'}}>
+          <div className="entry-body" style={{
+            marginBottom: '1.2rem',
+            backgroundColor: 'rgba(26, 26, 26, 0.6)',
+            borderRadius: '16px',
+            padding: '2rem',
+            border: '1px solid rgba(212, 175, 55, 0.2)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+          }}>
             <div style={{
-              maxWidth: '800px',
-              margin: '0 auto',
-              padding: '2rem',
-              lineHeight: '1.6',
               color: '#E0E0E0',
-              fontSize: '1.08rem'
+              fontSize: '1.1rem',
+              lineHeight: '1.8',
+              textAlign: 'justify'
             }}>
-              <BlogContent content={entry.fullContent} />
+              {entry.fullContent.split('\n\n').map((paragraph, index) => (
+                <p key={index} style={{
+                  margin: '0 0 1.5rem 0',
+                  padding: '0',
+                  color: '#E0E0E0',
+                  lineHeight: '1.8',
+                  fontSize: '1.1rem'
+                }}>
+                  {paragraph}
+                </p>
+              ))}
             </div>
           </div>
           <Link to="/newsletter" className="primary-button" style={{marginTop:'1rem', borderRadius:16, width:'fit-content'}}>
