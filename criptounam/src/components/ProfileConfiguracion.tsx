@@ -244,7 +244,14 @@ const ProfileConfiguracion: React.FC<ProfileConfiguracionProps> = ({
           }}>
             <ProfilePicture
               currentImage={editedProfile.fotoPerfil}
-              onImageChange={handleImageChange}
+              onImageChange={(file) => {
+                // Simular upload y obtener URL
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  handleImageChange(e.target?.result as string);
+                };
+                reader.readAsDataURL(file);
+              }}
               size="xl"
             />
             <div>

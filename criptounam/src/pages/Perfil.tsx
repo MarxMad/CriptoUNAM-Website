@@ -52,19 +52,15 @@ const mockCertificaciones = [
   }
 ]
 
-const mockDashboardStats = {
+const mockStats = {
   cursosCompletados: 1,
   certificacionesObtenidas: 1,
   horasEstudiadas: 20,
-  diasActivos: 15,
+  streakActual: 5,
   nivelActual: 'Principiante',
-  proximoNivel: 'Intermedio',
-  progresoNivel: 65,
-  rachaActual: 5,
-  mejorRacha: 10,
   puntosTotales: 1250,
-  ranking: 42,
-  totalUsuarios: 1000
+  proximoLogro: 'Completa 5 cursos más para alcanzar el nivel Intermedio',
+  ranking: 42
 }
 
 const mockLogros = [
@@ -135,16 +131,14 @@ const Perfil = () => {
       case 'dashboard':
         return (
           <ProfileDashboard 
-            stats={mockDashboardStats}
-            logros={mockLogros}
-            actividadReciente={mockActividadReciente}
+            stats={mockStats}
           />
         )
       case 'configuracion':
     return (
           <ProfileConfiguracion 
-            userData={userData}
-            onUpdateUser={handleUpdateUser}
+            userProfile={userProfile}
+            onProfileUpdate={setUserProfile}
           />
         )
       default:

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCertificate, faDownload, faShare, faEye, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCertificate, faDownload, faShare, faEye, faCalendarAlt, faBookOpen, faExclamationTriangle, faRedo } from '@fortawesome/free-solid-svg-icons';
 
 interface Certificacion {
   id: string;
@@ -764,9 +764,8 @@ const ProfileCertificaciones: React.FC<ProfileCertificacionesProps> = ({ certifi
           <p style={{
             color: '#9CA3AF',
             fontSize: '16px',
-            margin: '0 0 32px 0',
-            maxWidth: '400px',
             margin: '0 auto 32px auto',
+            maxWidth: '400px',
             lineHeight: '1.5'
           }}>Completa cursos para obtener certificados y validar tus conocimientos en blockchain</p>
           <button style={{
