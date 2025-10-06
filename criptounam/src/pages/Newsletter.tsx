@@ -9,6 +9,7 @@ import { useAdmin } from '../hooks/useAdmin'
 import { newsletterApi, NewsletterEntry as SupabaseNewsletterEntry } from '../config/supabaseApi'
 import DateInput from '../components/DateInput'
 import BlogContent from '../components/BlogContent'
+import SEOHead from '../components/SEOHead'
 
 // Usamos la interfaz de Supabase
 type NewsletterEntry = SupabaseNewsletterEntry
@@ -206,7 +207,15 @@ const Newsletter = () => {
   };
 
   return (
-    <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', paddingTop:'2rem'}}>
+    <>
+      <SEOHead 
+        title="Newsletter CriptoUNAM - Noticias y Eventos Blockchain"
+        description="Mantente actualizado con las últimas noticias, eventos y artículos sobre blockchain, criptomonedas y Web3 en la UNAM."
+        image="https://criptounam.xyz/images/LogosCriptounam.svg"
+        url="https://criptounam.xyz/newsletter"
+        type="website"
+      />
+      <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', paddingTop:'2rem'}}>
       <header className="newsletter-header" style={{textAlign:'center', marginBottom:'2.5rem'}}>
         <h1 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', marginBottom:8}}>Newsletter CriptoUNAM</h1>
         <p className="hero-subtitle" style={{color:'#E0E0E0', fontSize:'1.2rem'}}>Mantente actualizado con las últimas noticias y eventos sobre blockchain y criptomonedas</p>
@@ -713,6 +722,7 @@ const Newsletter = () => {
         </div>
       )}
     </div>
+    </>
   )
 }
 

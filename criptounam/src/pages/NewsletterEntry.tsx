@@ -6,6 +6,7 @@ import '../styles/global.css'
 import { useState, useEffect } from 'react'
 import { newsletterApi, type NewsletterEntry } from '../config/supabaseApi'
 import BlogContent from '../components/BlogContent'
+import SEOHead from '../components/SEOHead'
 
 // Tipo para entradas que vienen de la base de datos (con id garantizado)
 type NewsletterEntryWithId = NewsletterEntry & { id: string }
@@ -67,8 +68,16 @@ const NewsletterEntry = () => {
   }
 
   return (
-    <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', paddingTop:'2rem'}}>
-      <article className="card full-entry" style={{maxWidth:700, width:'100%', padding:'2.5rem 2rem', margin:'0 auto', background:'rgba(26,26,26,0.85)', backdropFilter:'blur(12px)', border:'1.5px solid #D4AF37', boxShadow:'0 8px 32px rgba(30,58,138,0.18)'}}>
+    <>
+      <SEOHead 
+        title={`${entry.titulo} - CriptoUNAM Newsletter`}
+        description={entry.contenido.substring(0, 160) + '...'}
+        image={entry.imagen}
+        url={`https://criptounam.xyz/newsletter/${entry.id}`}
+        type="article"
+      />
+      <div className="section" style={{minHeight:'100vh', display:'flex', flexDirection:'column', alignItems:'center', paddingTop:'2rem'}}>
+        <article className="card full-entry" style={{maxWidth:700, width:'100%', padding:'2.5rem 2rem', margin:'0 auto', background:'rgba(26,26,26,0.85)', backdropFilter:'blur(12px)', border:'1.5px solid #D4AF37', boxShadow:'0 8px 32px rgba(30,58,138,0.18)'}}>
         {entry.imagen && (
           <div className="entry-header-image" style={{width:'100%', height:220, marginBottom:18}}>
             <img src={entry.imagen} alt={entry.titulo} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:18, boxShadow:'0 4px 24px 0 #1E3A8A33'}} />
@@ -126,6 +135,7 @@ const NewsletterEntry = () => {
         </div>
       </article>
     </div>
+    </>
   )
 }
 
