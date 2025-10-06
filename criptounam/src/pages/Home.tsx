@@ -333,7 +333,7 @@ const Home = () => {
       date: '15 de Marzo, 2024',
       time: '9:00 AM - 6:00 PM',
       location: 'Facultad de Ingeniería, UNAM',
-      image: '/images/Eventos/hackathon-2024.jpg',
+      image: '/images/Comunidad/_DSC0151.jpg',
       description: 'Únete al hackathon más grande de blockchain en México. 48 horas de desarrollo, premios increíbles y networking con los mejores desarrolladores.',
       capacity: 200,
       registered: 156,
@@ -345,7 +345,7 @@ const Home = () => {
       date: '22 de Marzo, 2024',
       time: '2:00 PM - 5:00 PM',
       location: 'Auditorio Principal, FI-UNAM',
-      image: '/images/Eventos/defi-workshop.jpg',
+      image: '/images/Comunidad/_DSC0129.jpg',
       description: 'Aprende los fundamentos de las finanzas descentralizadas. Desde conceptos básicos hasta implementación práctica de protocolos DeFi.',
       capacity: 80,
       registered: 67,
@@ -357,7 +357,7 @@ const Home = () => {
       date: '29 de Marzo, 2024',
       time: '10:00 AM - 2:00 PM',
       location: 'Centro Cultural Universitario',
-      image: '/images/Eventos/web3-conference.jpg',
+      image: '/images/Comunidad/_DSC0118 (1).jpg',
       description: 'Explora las últimas tendencias en Web3 con expertos de la industria. Networking, demos en vivo y oportunidades de colaboración.',
       capacity: 150,
       registered: 134,
@@ -369,7 +369,7 @@ const Home = () => {
       date: '5 de Abril, 2024',
       time: '6:00 PM - 9:00 PM',
       location: 'Espacio de Innovación, UNAM',
-      image: '/images/Eventos/nft-meetup.jpg',
+      image: '/images/Comunidad/_DSC0083 (1).jpg',
       description: 'Descubre el mundo de los NFTs y su impacto en el arte digital. Presentaciones de artistas, galería virtual y subasta en vivo.',
       capacity: 60,
       registered: 45,
@@ -1038,13 +1038,14 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Carrusel de Eventos */}
-      {eventosCarousel.length > 0 && (
-        <section style={{
-          maxWidth: '1200px',
-          margin: '0 auto 3rem auto',
-          padding: '0 20px'
-        }}>
+        {/* Carrusel de Eventos */}
+        {eventosCarousel.length > 0 && (
+          <section style={{
+            maxWidth: '1400px',
+            width: '95%',
+            margin: '0 auto 3rem auto',
+            padding: '0 20px'
+          }}>
           <EventsCarousel 
             events={eventosCarousel}
             autoPlay={true}
