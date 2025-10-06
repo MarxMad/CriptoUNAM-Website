@@ -864,7 +864,7 @@ const Home = () => {
     },
     {
       id: '6',
-      src: '/images/Comunidad/_DSC0158 (1).jpg,',
+      src: '/images/Comunidad/_DSC0158 (1).jpg',
       alt: 'Equipo CriptoUNAM',
       title: 'Equipo CriptoUNAM',
       description: 'Nuestro equipo trabajando en proyectos innovadores',
