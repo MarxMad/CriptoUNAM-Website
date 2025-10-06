@@ -730,38 +730,24 @@ const Home = () => {
     },
     {
       icon: faGraduationCap,
-      value: '50+',
-      label: 'Cursos Completados',
-      description: 'Programas de formación especializada',
+      value: '25+',
+      label: 'Workshops Realizados',
+      description: 'Talleres especializados en blockchain',
       color: '#3B82F6'
     },
     {
       icon: faTrophy,
-      value: '15+',
-      label: 'Premios Ganados',
-      description: 'Hackathons y competencias blockchain',
+      value: '10+',
+      label: 'Hackathones Ganados',
+      description: 'Competencias y premios obtenidos',
       color: '#F59E0B'
     },
     {
       icon: faCode,
       value: '30+',
-      label: 'Proyectos Desarrollados',
+      label: 'Proyectos Realizados',
       description: 'Aplicaciones y protocolos blockchain',
       color: '#8B5CF6'
-    },
-    {
-      icon: faCalendarAlt,
-      value: '100+',
-      label: 'Eventos Realizados',
-      description: 'Conferencias, talleres y meetups',
-      color: '#EF4444'
-    },
-    {
-      icon: faGlobe,
-      value: '10+',
-      label: 'Países Representados',
-      description: 'Comunidad internacional de blockchain',
-      color: '#10B981'
     }
   ];
 
