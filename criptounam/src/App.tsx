@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import { registerServiceWorker, preloadCriticalResources } from './utils/optimization'
 
 import Home from './pages/Home'
 import Cursos from './pages/Cursos'
@@ -16,6 +17,23 @@ import { WalletProvider } from './context/WalletContext'
 import './styles/global.css'
 
 const App = () => {
+  useEffect(() => {
+    // Registrar Service Worker para cache
+    registerServiceWorker()
+    
+    // Precargar recursos críticos
+    preloadCriticalResources()
+    
+    // Prefetch de rutas importantes
+    const prefetchRoutes = ['/cursos', '/comunidad', '/newsletter', '/proyectos']
+    prefetchRoutes.forEach(route => {
+      const link = document.createElement('link')
+      link.rel = 'prefetch'
+      link.href = route
+      document.head.appendChild(link)
+    })
+  }, [])
+
   return (
     <HelmetProvider>
       <WalletProvider>
