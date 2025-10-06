@@ -104,11 +104,14 @@ const Perfil = () => {
   
   const [activeTab, setActiveTab] = useState('cursos')
   const [userData, setUserData] = useState({
-    nombre: 'Usuario CriptoUNAM',
+    nombre: 'Usuario',
+    apellidos: 'CriptoUNAM',
     email: 'usuario@criptounam.xyz',
     telefono: '+52 55 1234 5678',
-    bio: 'Estudiante apasionado por la tecnología blockchain y las criptomonedas.',
-    avatar: ''
+    ubicacion: 'Ciudad de México, México',
+    carrera: 'Ingeniería en Computación',
+    universidad: 'UNAM',
+    fotoPerfil: ''
   })
 
   const handleImageChange = (file: File) => {
@@ -137,8 +140,8 @@ const Perfil = () => {
       case 'configuracion':
     return (
           <ProfileConfiguracion 
-            userProfile={userProfile}
-            onProfileUpdate={setUserProfile}
+            userProfile={userData}
+            onProfileUpdate={setUserData}
           />
         )
       default:
