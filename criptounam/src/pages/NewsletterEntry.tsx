@@ -93,7 +93,16 @@ const NewsletterEntry = () => {
             </div>
           )}
           <div className="entry-body" style={{marginBottom:'1.2rem'}}>
-            <BlogContent content={entry.fullContent} />
+            <div style={{
+              maxWidth: '800px',
+              margin: '0 auto',
+              padding: '2rem',
+              lineHeight: '1.6',
+              color: '#E0E0E0',
+              fontSize: '1.08rem'
+            }}>
+              <BlogContent content={entry.fullContent} />
+            </div>
           </div>
           <Link to="/newsletter" className="primary-button" style={{marginTop:'1rem', borderRadius:16, width:'fit-content'}}>
             <FontAwesomeIcon icon={faArrowLeft} /> Volver al Newsletter

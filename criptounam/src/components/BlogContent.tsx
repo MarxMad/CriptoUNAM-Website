@@ -14,6 +14,32 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
     let inCodeBlock = false;
     let codeBlockIndex = 0;
 
+    // Si el texto no tiene formato markdown, aplicar formato básico
+    const hasMarkdownFormatting = lines.some(line => 
+      line.startsWith('#') || 
+      line.startsWith('```') || 
+      line.startsWith('- ') || 
+      line.startsWith('* ') || 
+      line.startsWith('> ') ||
+      /^\d+\.\s/.test(line)
+    );
+
+    if (!hasMarkdownFormatting) {
+      // Formatear texto plano con párrafos
+      const paragraphs = text.split('\n\n').filter(p => p.trim());
+      return paragraphs.map((paragraph, index) => (
+        <p key={`p-${index}`} style={{
+          color: '#E0E0E0',
+          lineHeight: '1.6',
+          margin: '1rem 0',
+          fontSize: '1rem',
+          textAlign: 'justify'
+        }}>
+          {formatInlineText(paragraph)}
+        </p>
+      ));
+    }
+
     lines.forEach((line, index) => {
       // Detectar inicio de bloque de código
       if (line.trim().startsWith('```')) {
@@ -198,10 +224,11 @@ const BlogContent: React.FC<BlogContentProps> = ({ content }) => {
 
   return (
     <div style={{
-      maxWidth: '800px',
-      margin: '0 auto',
-      padding: '2rem',
-      lineHeight: '1.6'
+      maxWidth: '100%',
+      margin: '0',
+      padding: '0',
+      lineHeight: '1.6',
+      backgroundColor: 'transparent'
     }}>
       {formatContent(content)}
     </div>
