@@ -105,7 +105,6 @@ const DateInput: React.FC<DateInputProps> = ({
         type="text"
         value={displayValue}
         onChange={handleInputChange}
-        onBlur={handleBlur}
         placeholder={placeholder}
         required={required}
         style={{
@@ -123,6 +122,7 @@ const DateInput: React.FC<DateInputProps> = ({
           e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1)';
         }}
         onBlur={(e) => {
+          handleBlur();
           e.target.style.borderColor = isValid ? '#e0e0e0' : '#ff4444';
           e.target.style.boxShadow = 'none';
         }}
