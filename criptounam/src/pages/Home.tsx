@@ -824,7 +824,7 @@ const Home = () => {
   const galleryImages = [
     {
       id: '1',
-      src: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=400&h=300&fit=crop',
+      src: '/images/Comunidad/_DSC0027 (1).jpg',
       alt: 'Hackathon Blockchain 2024',
       title: 'Hackathon Blockchain 2024',
       description: 'Estudiantes desarrollando proyectos innovadores',
@@ -832,7 +832,7 @@ const Home = () => {
     },
     {
       id: '2',
-      src: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
+      src: '/images/Comunidad/_DSC0158 (1).jpg',
       alt: 'Conferencia CriptoUNAM',
       title: 'Conferencia Anual 2024',
       description: 'Expertos compartiendo conocimiento sobre blockchain',
@@ -840,7 +840,7 @@ const Home = () => {
     },
     {
       id: '3',
-      src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop',
+      src: '/images/Comunidad/_DSC0155 (1).jpg',
       alt: 'Workshop de Smart Contracts',
       title: 'Workshop Smart Contracts',
       description: 'Aprendiendo desarrollo de contratos inteligentes',
@@ -848,7 +848,7 @@ const Home = () => {
     },
     {
       id: '4',
-      src: 'https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop',
+      src: '/images/Comunidad/_DSC0129.jpg',
       alt: 'Networking Event',
       title: 'Networking Event',
       description: 'Conectando con la comunidad blockchain',
@@ -856,7 +856,7 @@ const Home = () => {
     },
     {
       id: '5',
-      src: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=300&fit=crop',
+      src: '/images/Comunidad/_DSC0118 (1).jpg',
       alt: 'Laboratorio de Blockchain',
       title: 'Laboratorio de Blockchain',
       description: 'Espacio de trabajo colaborativo',
@@ -864,7 +864,7 @@ const Home = () => {
     },
     {
       id: '6',
-      src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+      src: '/images/Comunidad/CriptoUNAM (5).jpg',
       alt: 'Equipo CriptoUNAM',
       title: 'Equipo CriptoUNAM',
       description: 'Nuestro equipo trabajando en proyectos innovadores',
