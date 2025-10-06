@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CriptoUNAM</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+        h1 {
+            color: #D4AF37;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .status {
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #D4AF37;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #f44336;
+        }
+        button {
+            background: linear-gradient(45deg, #D4AF37, #2563EB);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 CriptoUNAM</h1>
+        <p>Página de prueba para diagnosticar problemas de carga</p>
+        
+        <div class="status">
+            <h2>Estado del Sistema</h2>
+            <p id="js-status" class="error">❌ JavaScript no cargado</p>
+            <p id="css-status" class="success">✅ CSS funcionando</p>
+            <p id="html-status" class="success">✅ HTML funcionando</p>
+        </div>
+        
+        <button onclick="testFunction()">Probar JavaScript</button>
+        <button onclick="window.location.href='/'">Ir a la página principal</button>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        // Test básico de JavaScript
+        function testFunction() {
+            document.getElementById('js-status').innerHTML = '✅ JavaScript funcionando';
+            document.getElementById('js-status').className = 'success';
+            document.getElementById('test-results').innerHTML = '<p>✅ JavaScript está funcionando correctamente</p>';
+        }
+        
+        // Test de carga de recursos
+        window.addEventListener('load', function() {
+            console.log('Página de prueba cargada correctamente');
+            
+            // Test de fetch
+            fetch('/')
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ Fetch funcionando');
+                    } else {
+                        console.log('❌ Error en fetch:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Error de red:', error);
+                });
+        });
+        
+        // Test de Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                if (registrations.length > 0) {
+                    console.log('⚠️ Service Workers activos:', registrations.length);
+                } else {
+                    console.log('✅ No hay Service Workers activos');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
