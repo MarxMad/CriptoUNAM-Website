@@ -1090,10 +1090,11 @@ const Home = () => {
             <iframe
           width="100%"
           height="500"
-          src="https://www.youtube.com/embed/your-video-id"
-          title="Blockchain Explained"
+          src="https://www.youtube.com/embed/y4SqAcri3HE?si=ZiJ4EjfC2m458n2Q"
+          title="YouTube video player"
           frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
           style={{
             borderRadius: '20px',
