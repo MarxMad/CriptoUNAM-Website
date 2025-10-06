@@ -18,11 +18,11 @@ import './styles/global.css'
 
 const App = () => {
   useEffect(() => {
-    // Registrar Service Worker para cache
-    registerServiceWorker()
+    // Temporalmente deshabilitado para resolver problemas de carga
+    // registerServiceWorker()
     
-    // Precargar recursos críticos
-    preloadCriticalResources()
+    // Precargar recursos críticos - temporalmente deshabilitado
+    // preloadCriticalResources()
     
     // Prefetch de rutas importantes
     const prefetchRoutes = ['/cursos', '/comunidad', '/newsletter', '/proyectos']
