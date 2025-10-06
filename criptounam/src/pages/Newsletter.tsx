@@ -61,7 +61,7 @@ const Newsletter = () => {
     content: '',
     imageFile: null as File | null,
     author: '',
-    tags: '' // string separada por comas
+    tags: [] as string[]
   });
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [entradas, setEntradas] = useState<NewsletterEntry[]>([]);
