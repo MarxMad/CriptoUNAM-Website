@@ -548,18 +548,6 @@ const Comunidad = () => {
         </div>
       </header>
 
-      {/* Estadísticas */}
-      <div className="comunidad-stats" style={{margin:'0 auto 2.5rem auto', maxWidth:900}}>
-        <div className="grid-4">
-          {[{icon:'fas fa-users', num:'500+', text:'Miembros Activos'},{icon:'fas fa-calendar-check',num:'30+',text:'Eventos Realizados'},{icon:'fas fa-university',num:'10+',text:'Facultades Participantes'},{icon:'fas fa-laptop-code',num:'15+',text:'Proyectos Desarrollados'}].map((stat,i)=>(
-            <div key={i} className="card" style={{textAlign:'center', padding:'2rem 1rem', minWidth:180}}>
-              <i className={stat.icon+" stat-icon"} style={{fontSize:'2.2rem', color:'#D4AF37', marginBottom:10}}></i>
-              <h3 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'2rem', margin:0}}>{stat.num}</h3>
-              <p style={{color:'#E0E0E0', margin:0}}>{stat.text}</p>
-          </div>
-          ))}
-        </div>
-      </div>
 
       {/* Selector de vista */}
       <div style={{margin:'0 auto 2rem auto', maxWidth:1200, textAlign:'center'}}>
