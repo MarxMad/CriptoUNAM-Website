@@ -11,8 +11,8 @@ import {
   faCalendarAlt,
   faGraduationCap,
   faMedal,
-  faTarget,
-  faTrendingUp
+  faBullseye,
+  faArrowUp
 } from '@fortawesome/free-solid-svg-icons';
 
 interface ProfileDashboardProps {
@@ -110,7 +110,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ stats }) => {
       accion: 'Subiste al nivel',
       curso: 'Intermedio',
       fecha: '2024-01-08',
-      icono: faTrendingUp,
+      icono: faArrowUp,
       color: '#3B82F6'
     }
   ];
@@ -627,7 +627,7 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ stats }) => {
           margin: '0 auto 24px auto',
           boxShadow: '0 8px 32px rgba(212, 175, 55, 0.3)'
         }}>
-          <FontAwesomeIcon icon={faTarget} style={{ color: '#000', fontSize: '32px' }} />
+          <FontAwesomeIcon icon={faBullseye} style={{ color: '#000', fontSize: '32px' }} />
         </div>
         <h3 style={{
           fontSize: '24px',
@@ -644,9 +644,8 @@ const ProfileDashboard: React.FC<ProfileDashboardProps> = ({ stats }) => {
         <p style={{
           color: '#9CA3AF',
           fontSize: '16px',
-          margin: 0,
-          maxWidth: '400px',
-          margin: '0 auto'
+          margin: '0 auto',
+          maxWidth: '400px'
         }}>¡Sigue así! Estás muy cerca de alcanzar tu próximo objetivo.</p>
       </div>
     </div>
