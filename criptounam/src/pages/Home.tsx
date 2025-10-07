@@ -963,10 +963,15 @@ const Home = () => {
   useEffect(() => {
     const fetchCursosYEventos = async () => {
       try {
-        const cursosRes = await axios.get<any[]>(API_ENDPOINTS.CURSOS);
-        setCursosHome(Array.isArray(cursosRes.data) ? cursosRes.data.slice(0, 4) : []);
-        const eventosRes = await axios.get<any[]>(API_ENDPOINTS.EVENTOS);
-        setEventosHome(Array.isArray(eventosRes.data) ? eventosRes.data.filter((e:any)=>e.tipo==='proximo').slice(0, 4) : []);
+        // Temporalmente deshabilitado para evitar errores de CORS
+        // const cursosRes = await axios.get<any[]>(API_ENDPOINTS.CURSOS);
+        // setCursosHome(Array.isArray(cursosRes.data) ? cursosRes.data.slice(0, 4) : []);
+        // const eventosRes = await axios.get<any[]>(API_ENDPOINTS.EVENTOS);
+        // setEventosHome(Array.isArray(eventosRes.data) ? eventosRes.data.filter((e:any)=>e.tipo==='proximo').slice(0, 4) : []);
+        
+        // Datos de ejemplo para evitar errores
+        setCursosHome([]);
+        setEventosHome([]);
       } catch (e) {
         setCursosHome([]);
         setEventosHome([]);
