@@ -5,6 +5,7 @@ import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import '../styles/global.css'
 import { useAdmin } from '../hooks/useAdmin'
 import { API_ENDPOINTS } from '../config/api'
+import { cursosApi, eventosApi, newsletterApi } from '../config/supabaseApi'
 import { 
   faBell, 
   faHome, 
@@ -124,12 +125,109 @@ const Navbar = () => {
     //   })
     //   .catch(err => console.error('Error al cargar notificaciones:', err));
     
-    // Datos de ejemplo para notificaciones
-    setNotificaciones([
-      { id: '1', titulo: 'Bienvenido a CriptoUNAM', mensaje: '¡Gracias por unirte a nuestra comunidad!', leida: false, fecha: new Date().toISOString() },
-      { id: '2', titulo: 'Nuevo curso disponible', mensaje: 'Curso de DeFi Fundamentals ahora disponible', leida: false, fecha: new Date().toISOString() }
-    ]);
+    // Cargar notificaciones reales
+    cargarNotificacionesReales();
   }, []);
+
+  const cargarNotificacionesReales = async () => {
+    try {
+      const notificaciones = [];
+      
+      // Notificación de bienvenida (solo si es la primera vez)
+      const hasVisited = localStorage.getItem('criptounam_visited');
+      if (!hasVisited) {
+        notificaciones.push({
+          id: 'welcome',
+          titulo: 'Bienvenido a CriptoUNAM',
+          mensaje: '¡Gracias por unirte a nuestra comunidad!',
+          leida: false,
+          fecha: new Date().toISOString()
+        });
+        localStorage.setItem('criptounam_visited', 'true');
+      }
+      
+      // Verificar nuevos cursos
+      try {
+        const cursos = await cursosApi.getAll();
+        const cursosRecientes = cursos.filter(curso => {
+          const fechaCreacion = new Date(curso.creadoEn);
+          const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
+          return fechaCreacion > hace24Horas;
+        });
+        
+        cursosRecientes.forEach(curso => {
+          notificaciones.push({
+            id: `curso-${curso.id}`,
+            titulo: 'Nuevo curso disponible',
+            mensaje: `${curso.titulo} - ${curso.descripcion.substring(0, 50)}...`,
+            leida: false,
+            fecha: curso.creadoEn
+          });
+        });
+      } catch (error) {
+        console.log('No se pudieron cargar cursos:', error);
+      }
+      
+      // Verificar nuevos eventos
+      try {
+        const eventos = await eventosApi.getAll();
+        const eventosRecientes = eventos.filter(evento => {
+          const fechaCreacion = new Date(evento.creadoEn);
+          const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
+          return fechaCreacion > hace24Horas;
+        });
+        
+        eventosRecientes.forEach(evento => {
+          notificaciones.push({
+            id: `evento-${evento.id}`,
+            titulo: 'Nuevo evento',
+            mensaje: `${evento.titulo} - ${evento.fecha}`,
+            leida: false,
+            fecha: evento.creadoEn
+          });
+        });
+      } catch (error) {
+        console.log('No se pudieron cargar eventos:', error);
+      }
+      
+      // Verificar nuevas entradas de newsletter
+      try {
+        const newsletters = await newsletterApi.getAll();
+        const newslettersRecientes = newsletters.filter(newsletter => {
+          const fechaCreacion = new Date(newsletter.creadoEn);
+          const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
+          return fechaCreacion > hace24Horas;
+        });
+        
+        newslettersRecientes.forEach(newsletter => {
+          notificaciones.push({
+            id: `newsletter-${newsletter.id}`,
+            titulo: 'Nueva entrada en el blog',
+            mensaje: `${newsletter.titulo}`,
+            leida: false,
+            fecha: newsletter.creadoEn
+          });
+        });
+      } catch (error) {
+        console.log('No se pudieron cargar newsletters:', error);
+      }
+      
+      // Ordenar por fecha (más recientes primero)
+      notificaciones.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+      
+      setNotificaciones(notificaciones);
+    } catch (error) {
+      console.error('Error al cargar notificaciones reales:', error);
+      // Fallback a notificación de bienvenida
+      setNotificaciones([{
+        id: 'welcome',
+        titulo: 'Bienvenido a CriptoUNAM',
+        mensaje: '¡Gracias por unirte a nuestra comunidad!',
+        leida: false,
+        fecha: new Date().toISOString()
+      }]);
+    }
+  };
 
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
