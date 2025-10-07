@@ -126,8 +126,8 @@ const Navbar = () => {
     
     // Datos de ejemplo para notificaciones
     setNotificaciones([
-      { id: 1, titulo: 'Bienvenido a CriptoUNAM', mensaje: '¡Gracias por unirte a nuestra comunidad!', leida: false, fecha: new Date().toISOString() },
-      { id: 2, titulo: 'Nuevo curso disponible', mensaje: 'Curso de DeFi Fundamentals ahora disponible', leida: false, fecha: new Date().toISOString() }
+      { id: '1', titulo: 'Bienvenido a CriptoUNAM', mensaje: '¡Gracias por unirte a nuestra comunidad!', leida: false, fecha: new Date().toISOString() },
+      { id: '2', titulo: 'Nuevo curso disponible', mensaje: 'Curso de DeFi Fundamentals ahora disponible', leida: false, fecha: new Date().toISOString() }
     ]);
   }, []);
 
