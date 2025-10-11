@@ -2,11 +2,22 @@
 import { createClient } from '@supabase/supabase-js'
 import { ENV_CONFIG } from './env'
 
-// Cliente de Supabase
-export const supabase = createClient(
-  ENV_CONFIG.SUPABASE_URL,
-  ENV_CONFIG.SUPABASE_ANON_KEY
-)
+// Validar configuración de Supabase
+const supabaseUrl = ENV_CONFIG.SUPABASE_URL || process.env.VITE_SUPABASE_URL || ''
+const supabaseAnonKey = ENV_CONFIG.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || ''
+
+if (!supabaseUrl) {
+  console.warn('⚠️ SUPABASE_URL no está configurada. La aplicación funcionará en modo offline.')
+}
+
+if (!supabaseAnonKey) {
+  console.warn('⚠️ SUPABASE_ANON_KEY no está configurada. La aplicación funcionará en modo offline.')
+}
+
+// Cliente de Supabase (solo si las credenciales están disponibles)
+export const supabase = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null
 
 // Configuración de tablas
 export const TABLES = {
@@ -174,6 +185,11 @@ export const DATABASE_SCHEMAS = {
 export class SupabaseUtils {
   // Inicializar base de datos
   static async initializeDatabase(): Promise<boolean> {
+    if (!supabase) {
+      console.warn('⚠️ Supabase no está configurado. Saltando inicialización de base de datos.')
+      return false
+    }
+
     try {
       console.log('Inicializando base de datos Supabase...')
       
@@ -204,6 +220,11 @@ export class SupabaseUtils {
 
   // Crear índices para optimizar consultas
   static async createIndexes(): Promise<void> {
+    if (!supabase) {
+      console.warn('⚠️ Supabase no está configurado. Saltando creación de índices.')
+      return
+    }
+
     const indexes = [
       'CREATE INDEX IF NOT EXISTS idx_email_subscriptions_email ON email_subscriptions(email);',
       'CREATE INDEX IF NOT EXISTS idx_email_subscriptions_active ON email_subscriptions(is_active);',
@@ -231,13 +252,18 @@ export class SupabaseUtils {
 
   // Verificar conexión
   static async testConnection(): Promise<boolean> {
+    if (!supabase) {
+      console.warn('⚠️ Supabase no está configurado. No se puede probar la conexión.')
+      return false
+    }
+
     try {
       const { data, error } = await supabase
         .from('email_subscriptions')
         .select('count')
         .limit(1)
 
-      if (error) {
+  if (error) {
         console.error('Error probando conexión:', error)
         return false
       }
@@ -252,6 +278,11 @@ export class SupabaseUtils {
 
   // Obtener estadísticas de la base de datos
   static async getDatabaseStats(): Promise<any> {
+    if (!supabase) {
+      console.warn('⚠️ Supabase no está configurado. No se pueden obtener estadísticas.')
+      return {}
+    }
+
     try {
       const stats = {}
       
