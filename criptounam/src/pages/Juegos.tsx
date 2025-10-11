@@ -10,7 +10,8 @@ import {
   faDice,
   faBrain,
   faRocket,
-  faCoins
+  faCoins,
+  faSnake
 } from '@fortawesome/free-solid-svg-icons'
 
 // Componente del juego de memoria
@@ -456,6 +457,267 @@ const ReactionGame = () => {
   )
 }
 
+// Componente del juego de Serpiente (Snake)
+const SnakeGame = () => {
+  const [gameState, setGameState] = useState<'waiting' | 'playing' | 'gameOver'>('waiting')
+  const [snake, setSnake] = useState<{x: number, y: number}[]>([{x: 10, y: 10}])
+  const [direction, setDirection] = useState<{x: number, y: number}>({x: 0, y: 0})
+  const [food, setFood] = useState<{x: number, y: number}>({x: 15, y: 15})
+  const [score, setScore] = useState(0)
+  const [highScore, setHighScore] = useState(0)
+  const [gameSpeed, setGameSpeed] = useState(150)
+
+  const BOARD_SIZE = 20
+
+  const generateFood = () => {
+    const newFood = {
+      x: Math.floor(Math.random() * BOARD_SIZE),
+      y: Math.floor(Math.random() * BOARD_SIZE)
+    }
+    setFood(newFood)
+  }
+
+  const startGame = () => {
+    setSnake([{x: 10, y: 10}])
+    setDirection({x: 0, y: 0})
+    setScore(0)
+    setGameState('playing')
+    generateFood()
+  }
+
+  const endGame = () => {
+    setGameState('gameOver')
+    if (score > highScore) {
+      setHighScore(score)
+    }
+  }
+
+  const moveSnake = () => {
+    if (gameState !== 'playing') return
+
+    setSnake(prevSnake => {
+      const newSnake = [...prevSnake]
+      const head = { ...newSnake[0] }
+      
+      head.x += direction.x
+      head.y += direction.y
+
+      // Verificar colisiones con bordes
+      if (head.x < 0 || head.x >= BOARD_SIZE || head.y < 0 || head.y >= BOARD_SIZE) {
+        endGame()
+        return prevSnake
+      }
+
+      // Verificar colisión consigo misma
+      if (newSnake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        endGame()
+        return prevSnake
+      }
+
+      newSnake.unshift(head)
+
+      // Verificar si comió la comida
+      if (head.x === food.x && head.y === food.y) {
+        setScore(prev => prev + 10)
+        generateFood()
+        // Aumentar velocidad gradualmente
+        if (score > 0 && score % 50 === 0) {
+          setGameSpeed(prev => Math.max(80, prev - 10))
+        }
+      } else {
+        newSnake.pop()
+      }
+
+      return newSnake
+    })
+  }
+
+  useEffect(() => {
+    if (gameState === 'playing') {
+      const interval = setInterval(moveSnake, gameSpeed)
+      return () => clearInterval(interval)
+    }
+  }, [gameState, direction, food, score, gameSpeed])
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (gameState !== 'playing') return
+
+      switch (e.key) {
+        case 'ArrowUp':
+          if (direction.y === 0) setDirection({x: 0, y: -1})
+          break
+        case 'ArrowDown':
+          if (direction.y === 0) setDirection({x: 0, y: 1})
+          break
+        case 'ArrowLeft':
+          if (direction.x === 0) setDirection({x: -1, y: 0})
+          break
+        case 'ArrowRight':
+          if (direction.x === 0) setDirection({x: 1, y: 0})
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [gameState, direction])
+
+  const getDirectionButtons = () => {
+    const buttonStyle = {
+      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+      border: 'none',
+      borderRadius: '8px',
+      padding: '8px 12px',
+      color: '#000',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      fontSize: '1rem',
+      margin: '2px'
+    }
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+        <button
+          onClick={() => direction.y === 0 && setDirection({x: 0, y: -1})}
+          style={buttonStyle}
+        >
+          ↑
+        </button>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          <button
+            onClick={() => direction.x === 0 && setDirection({x: -1, y: 0})}
+            style={buttonStyle}
+          >
+            ←
+          </button>
+          <button
+            onClick={() => direction.x === 0 && setDirection({x: 1, y: 0})}
+            style={buttonStyle}
+          >
+            →
+          </button>
+        </div>
+        <button
+          onClick={() => direction.y === 0 && setDirection({x: 0, y: 1})}
+          style={buttonStyle}
+        >
+          ↓
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, #1a1a2e, #16213e)',
+      borderRadius: '16px',
+      padding: '2rem',
+      border: '2px solid #D4AF37',
+      boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+    }}>
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <FontAwesomeIcon icon={faSnake} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '1rem' }} />
+        <h3 style={{ color: '#D4AF37', margin: '0 0 1rem 0', fontSize: '1.5rem' }}>Juego de Serpiente</h3>
+        <p style={{ color: '#fff', margin: '0 0 1rem 0' }}>Usa las flechas para controlar la serpiente</p>
+        
+        <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', marginBottom: '1rem' }}>
+          <span style={{ color: '#D4AF37', fontWeight: 'bold' }}>Puntuación: {score}</span>
+          <span style={{ color: '#22c55e', fontWeight: 'bold' }}>Mejor: {highScore}</span>
+        </div>
+
+        {gameState === 'waiting' && (
+          <button
+            onClick={startGame}
+            style={{
+              background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 24px',
+              color: '#000',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: '1rem'
+            }}
+          >
+            Comenzar
+          </button>
+        )}
+
+        {gameState === 'gameOver' && (
+          <div style={{ marginBottom: '1rem' }}>
+            <p style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '1.2rem' }}>¡Game Over!</p>
+            <button
+              onClick={startGame}
+              style={{
+                background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '12px 24px',
+                color: '#000',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '1rem'
+              }}
+            >
+              Jugar de nuevo
+            </button>
+          </div>
+        )}
+      </div>
+
+      {gameState === 'playing' && (
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', alignItems: 'flex-start' }}>
+          {/* Tablero de juego */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: `repeat(${BOARD_SIZE}, 15px)`,
+            gridTemplateRows: `repeat(${BOARD_SIZE}, 15px)`,
+            gap: '1px',
+            background: '#2a2a3e',
+            padding: '10px',
+            borderRadius: '8px',
+            border: '2px solid #D4AF37'
+          }}>
+            {Array.from({ length: BOARD_SIZE * BOARD_SIZE }, (_, index) => {
+              const x = index % BOARD_SIZE
+              const y = Math.floor(index / BOARD_SIZE)
+              const isSnake = snake.some(segment => segment.x === x && segment.y === y)
+              const isFood = food.x === x && food.y === y
+              
+              return (
+                <div
+                  key={index}
+                  style={{
+                    width: '15px',
+                    height: '15px',
+                    background: isSnake 
+                      ? 'linear-gradient(135deg, #D4AF37, #FFD700)' 
+                      : isFood 
+                        ? '#22c55e' 
+                        : '#1a1a2e',
+                    borderRadius: isSnake ? '50%' : isFood ? '50%' : '2px',
+                    border: isSnake ? '1px solid #000' : 'none'
+                  }}
+                />
+              )
+            })}
+          </div>
+
+          {/* Controles */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <h4 style={{ color: '#D4AF37', margin: '0 0 1rem 0' }}>Controles</h4>
+            {getDirectionButtons()}
+            <p style={{ color: '#fff', fontSize: '0.8rem', marginTop: '1rem', textAlign: 'center' }}>
+              También puedes usar<br/>las flechas del teclado
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const Juegos = () => {
   const [activeGame, setActiveGame] = useState<string>('memory')
 
@@ -477,6 +739,12 @@ const Juegos = () => {
       name: 'Reacción',
       icon: faRocket,
       description: 'Pon a prueba tus reflejos'
+    },
+    {
+      id: 'snake',
+      name: 'Serpiente',
+      icon: faSnake,
+      description: 'Controla la serpiente y come comida'
     }
   ]
 
@@ -564,6 +832,7 @@ const Juegos = () => {
             {activeGame === 'memory' && <MemoryGame />}
             {activeGame === 'guessing' && <NumberGuessingGame />}
             {activeGame === 'reaction' && <ReactionGame />}
+            {activeGame === 'snake' && <SnakeGame />}
           </div>
 
           {/* Estadísticas */}
