@@ -116,7 +116,7 @@ export const PumaBalance: React.FC<PumaBalanceProps> = ({
         </div>
       )}
 
-      <style jsx>{`
+        <style>{`
         .puma-balance {
           background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(40, 40, 40, 0.9));
           border: 2px solid rgba(212, 175, 55, 0.3);

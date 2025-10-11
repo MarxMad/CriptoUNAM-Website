@@ -1,12 +1,12 @@
 // Rutas de API para sistema de tokens PUMA
 import { Router } from 'express'
 import { ValidationUtils } from '../utils/validation.utils'
-import { authenticateToken, validatePumaTransaction } from '../middleware/auth.middleware'
+import { authenticateToken, validatePumaTransaction, AuthenticatedRequest } from '../middleware/auth.middleware'
 
 const router = Router()
 
 // Obtener balance del usuario
-router.get('/user/:userId', authenticateToken, async (req, res) => {
+router.get('/user/:userId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { userId } = req.params
     const currentUserId = req.user?.id
@@ -34,7 +34,7 @@ router.get('/user/:userId', authenticateToken, async (req, res) => {
 })
 
 // Agregar recompensa
-router.post('/rewards', authenticateToken, async (req, res) => {
+router.post('/rewards', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { amount, reason, category } = req.body
     const userId = req.user?.id
@@ -81,7 +81,7 @@ router.post('/rewards', authenticateToken, async (req, res) => {
 })
 
 // Gastar tokens
-router.post('/spend', authenticateToken, async (req, res) => {
+router.post('/spend', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { amount, description } = req.body
     const userId = req.user?.id
@@ -133,7 +133,7 @@ router.post('/spend', authenticateToken, async (req, res) => {
 })
 
 // Obtener historial de transacciones
-router.get('/transactions/:userId', authenticateToken, async (req, res) => {
+router.get('/transactions/:userId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { userId } = req.params
     const currentUserId = req.user?.id
@@ -183,7 +183,7 @@ router.get('/leaderboard', async (req, res) => {
 })
 
 // Completar misión
-router.post('/missions/complete', authenticateToken, async (req, res) => {
+router.post('/missions/complete', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { missionId } = req.body
     const userId = req.user?.id

@@ -10,8 +10,7 @@ import {
   faDice,
   faBrain,
   faRocket,
-  faCoins,
-  faGamepad
+  faCoins
 } from '@fortawesome/free-solid-svg-icons'
 
 // Componente del juego de memoria
