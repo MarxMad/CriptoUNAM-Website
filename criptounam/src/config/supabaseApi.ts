@@ -32,6 +32,7 @@ export interface Curso {
   instructor?: string
   precio?: number
   fechaInicio?: string
+  fechaFin?: string
 }
 
 export interface NewsletterEntry {
