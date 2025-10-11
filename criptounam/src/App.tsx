@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import { registerServiceWorker, preloadCriticalResources } from './utils/optimization'
+import { runDiagnostics } from './utils/diagnostics'
 
 import Home from './pages/Home'
 import Cursos from './pages/Cursos'
@@ -19,6 +20,13 @@ import './styles/global.css'
 
 const App = () => {
   useEffect(() => {
+    // Ejecutar diagnósticos en desarrollo
+    if (import.meta.env.DEV) {
+      runDiagnostics().then(results => {
+        console.log('📊 Resultados del diagnóstico:', results)
+      })
+    }
+    
     // Temporalmente deshabilitado para resolver problemas de carga
     // registerServiceWorker()
     
