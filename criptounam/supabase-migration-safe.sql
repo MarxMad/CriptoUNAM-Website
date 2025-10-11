@@ -140,6 +140,24 @@ BEGIN
         ALTER TABLE public.email_subscriptions ADD COLUMN preferences JSONB DEFAULT '{}'::jsonb;
         RAISE NOTICE 'Columna preferences agregada a email_subscriptions';
     END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'email_subscriptions' AND column_name = 'is_active') THEN
+        ALTER TABLE public.email_subscriptions ADD COLUMN is_active BOOLEAN DEFAULT true;
+        RAISE NOTICE 'Columna is_active agregada a email_subscriptions';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'email_subscriptions' AND column_name = 'subscribed_at') THEN
+        ALTER TABLE public.email_subscriptions ADD COLUMN subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+        RAISE NOTICE 'Columna subscribed_at agregada a email_subscriptions';
+    END IF;
+    
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                   WHERE table_name = 'email_subscriptions' AND column_name = 'updated_at') THEN
+        ALTER TABLE public.email_subscriptions ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+        RAISE NOTICE 'Columna updated_at agregada a email_subscriptions';
+    END IF;
 END $$;
 
 CREATE INDEX IF NOT EXISTS idx_email_subscriptions_email ON public.email_subscriptions(email);
