@@ -15,6 +15,7 @@ export interface AuthenticatedRequest extends Request {
     role: string
     permissions: string[]
   }
+  headers: any
 }
 
 export const authenticateToken = async (
