@@ -45,6 +45,7 @@
     "react-spring": "^10.0.1",
     "react-tsparticles": "^2.12.2",
     "recharts": "^2.15.4",
+    "resend": "^6.1.2",
     "tsparticles-engine": "^2.12.0",
     "tsparticles-slim": "^2.12.0",
     "valtio": "^1.11.2",
@@ -52,7 +53,7 @@
     "wagmi": "^2.15.4"
   },
   "devDependencies": {
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.18.10",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
