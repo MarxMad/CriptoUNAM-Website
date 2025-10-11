@@ -5,12 +5,19 @@ export const ENV_CONFIG = {
   RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'noreply@criptounam.com',
   
   // Database Configuration
-  SUPABASE_URL: process.env.SUPABASE_URL || '',
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
+  SUPABASE_URL: process.env.VITE_SUPABASE_URL || 'https://shccrrwnmogswspvlakf.supabase.co',
+  SUPABASE_ANON_KEY: process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY2NycndubW9nc3dzcHZsYWtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyODYwNzcsImV4cCI6MjA3NDg2MjA3N30.heVBb4qhASOv6UZlfrTkZpoiQbva3JXFynn2AhO6_oM',
   
   // App Configuration
-  APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  APP_URL: process.env.VITE_API_BASE_URL || 'https://api.criptounam.xyz',
   APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'CriptoUNAM',
+  
+  // Telegram Configuration
+  TELEGRAM_BOT_TOKEN: process.env.VITE_TELEGRAM_BOT_TOKEN || '7988985791:AAGEvzxwgDa0ERXoKS1G6J5s8XIhxcywYYM',
+  TELEGRAM_CHAT_ID: process.env.VITE_TELEGRAM_CHAT_ID || '1608242541',
+  
+  // WalletConnect Configuration
+  WALLET_CONNECT_PROJECT_ID: process.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76b812745208d28235dd59c',
   
   // Email Templates
   EMAIL_TEMPLATE_WELCOME: 'welcome_template',
