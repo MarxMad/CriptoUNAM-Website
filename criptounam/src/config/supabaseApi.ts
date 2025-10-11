@@ -17,6 +17,7 @@ export interface Evento {
   imagenPrincipal?: string
   fotos?: string[]
   videos?: string[]
+  presentaciones?: string[]
 }
 
 export interface Curso {
@@ -30,6 +31,7 @@ export interface Curso {
   creadoEn: string
   instructor?: string
   precio?: number
+  fechaInicio?: string
 }
 
 export interface NewsletterEntry {
@@ -363,5 +365,4 @@ export const walletsApi = {
   }
 }
 
-// Re-exportar tipos para uso externo
-export type { Evento, Curso, NewsletterEntry };
+// Los tipos ya están exportados arriba, no necesitamos re-exportarlos
