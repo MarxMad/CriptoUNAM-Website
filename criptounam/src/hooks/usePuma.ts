@@ -7,6 +7,7 @@ export interface UsePumaReturn {
   totalSpent: number
   level: number
   badges: string[]
+  experiencePoints: number
   isLoading: boolean
   error: string | null
   addReward: (amount: number, reason: string, category: string) => Promise<boolean>
@@ -23,6 +24,7 @@ export const usePuma = (userId?: string): UsePumaReturn => {
   const [totalSpent, setTotalSpent] = useState(0)
   const [level, setLevel] = useState(1)
   const [badges, setBadges] = useState<string[]>([])
+  const [experiencePoints, setExperiencePoints] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -41,6 +43,7 @@ export const usePuma = (userId?: string): UsePumaReturn => {
           setTotalSpent(data.totalSpent)
           setLevel(data.level)
           setBadges(data.badges || [])
+          setExperiencePoints(data.experiencePoints || 0)
         }
       } catch (err) {
         console.error('Error cargando datos PUMA:', err)
@@ -239,6 +242,7 @@ export const usePuma = (userId?: string): UsePumaReturn => {
     totalSpent,
     level,
     badges,
+    experiencePoints,
     isLoading,
     error,
     addReward,
