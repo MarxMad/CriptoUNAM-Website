@@ -1,7 +1,7 @@
 // Configuración de variables de entorno
 export const ENV_CONFIG = {
   // Resend Configuration
-  RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+  RESEND_API_KEY: process.env.RESEND_API_KEY || 're_62kZTkv6_FUSP3ajUPGoZwrt5EzMett5X',
   RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL || 'noreply@criptounam.com',
   
   // Database Configuration
