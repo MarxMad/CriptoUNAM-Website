@@ -5,7 +5,8 @@ import {
   faCertificate, 
   faChartLine, 
   faCog,
-  faUser
+  faUser,
+  faCoins
 } from '@fortawesome/free-solid-svg-icons';
 
 interface ProfileNavigationProps {
@@ -32,6 +33,12 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({ activeTab, onTabC
       label: 'Dashboard',
       icon: faChartLine,
       description: 'Estadísticas y logros'
+    },
+    {
+      id: 'bonus',
+      label: 'Bonus $PUMA',
+      icon: faCoins,
+      description: 'Recompensas y tokens'
     },
     {
       id: 'configuracion',

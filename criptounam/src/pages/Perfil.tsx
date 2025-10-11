@@ -9,6 +9,7 @@ import ProfileCursos from '../components/ProfileCursos'
 import ProfileCertificaciones from '../components/ProfileCertificaciones'
 import ProfileDashboard from '../components/ProfileDashboard'
 import ProfileConfiguracion from '../components/ProfileConfiguracion'
+import ProfileBonus from '../components/Profile/ProfileBonus'
 import '../styles/global.css'
 
 // Datos de ejemplo para el perfil
@@ -137,6 +138,8 @@ const Perfil = () => {
             stats={mockStats}
           />
         )
+      case 'bonus':
+        return <ProfileBonus userId={address || 'default-user'} />
       case 'configuracion':
     return (
           <ProfileConfiguracion 
