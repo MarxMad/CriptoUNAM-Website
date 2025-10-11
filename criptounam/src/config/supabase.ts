@@ -1,79 +1,276 @@
-import { createClient } from '@supabase/supabase-js'
-
 // Configuración de Supabase
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://shccrrwnmogswspvlakf.supabase.co'
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY2NycndubW9nc3dzcHZsYWtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyODYwNzcsImV4cCI6MjA3NDg2MjA3N30.heVBb4qhASOv6UZlfrTkZpoiQbva3JXFynn2AhO6_oM'
+import { createClient } from '@supabase/supabase-js'
+import { ENV_CONFIG } from './env'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+// Cliente de Supabase
+export const supabase = createClient(
+  ENV_CONFIG.SUPABASE_URL,
+  ENV_CONFIG.SUPABASE_ANON_KEY
+)
 
-// Tipos para TypeScript
-export interface Evento {
-  id?: string
-  tipo: 'proximo' | 'anterior'
-  titulo: string
-  fecha: string
-  hora?: string
-  lugar: string
-  cupo: number
-  descripcion?: string
-  imagen?: string
-  imagenPrincipal?: string
-  fotos?: string[]
-  videos?: string[]
-  presentaciones?: string[]
-  registrolink?: string
-  creadoEn?: string
-  esFuturo?: boolean
-}
+// Configuración de tablas
+export const TABLES = {
+  EMAIL_SUBSCRIPTIONS: 'email_subscriptions',
+  EMAIL_QUEUE: 'email_queue',
+  EMAIL_ANALYTICS: 'email_analytics',
+  LIKES: 'likes',
+  NEWSLETTERS: 'newsletters',
+  PUMA_USERS: 'puma_users',
+  PUMA_TRANSACTIONS: 'puma_transactions',
+  PUMA_MISSIONS: 'puma_missions',
+  PUMA_MISSION_COMPLETIONS: 'puma_mission_completions',
+  USERS: 'users'
+} as const
 
-export interface Curso {
-  id?: string
-  titulo: string
-  descripcion: string
-  duracion: string
-  nivel: string
-  instructor: string
-  imagen: string
-  precio: number
-  fechaInicio: string
-  fechaFin: string
-  cupo: number
-  creadoEn?: string
-}
+// Esquemas de base de datos
+export const DATABASE_SCHEMAS = {
+  // Tabla de suscripciones de email
+  EMAIL_SUBSCRIPTIONS: `
+    CREATE TABLE IF NOT EXISTS email_subscriptions (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      preferences JSONB DEFAULT '{}',
+      is_active BOOLEAN DEFAULT true,
+      subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      unsubscribed_at TIMESTAMP WITH TIME ZONE,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `,
 
-export interface NewsletterEntry {
-  id?: string
-  titulo: string
-  contenido: string
-  autor: string
-  fecha: string
-  imagen?: string
-  tags?: string[]
-  creadoEn?: string
-}
+  // Tabla de cola de emails
+  EMAIL_QUEUE: `
+    CREATE TABLE IF NOT EXISTS email_queue (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      to_email VARCHAR(255) NOT NULL,
+      template_id VARCHAR(255),
+      subject VARCHAR(500),
+      html_content TEXT,
+      text_content TEXT,
+      variables JSONB DEFAULT '{}',
+      status VARCHAR(50) DEFAULT 'pending',
+      attempts INTEGER DEFAULT 0,
+      max_attempts INTEGER DEFAULT 3,
+      scheduled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      sent_at TIMESTAMP WITH TIME ZONE,
+      error_message TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `,
+
+  // Tabla de analytics de emails
+  EMAIL_ANALYTICS: `
+    CREATE TABLE IF NOT EXISTS email_analytics (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      email_id UUID NOT NULL,
+      event_type VARCHAR(50) NOT NULL,
+      metadata JSONB DEFAULT '{}',
+      timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      user_agent TEXT,
+      ip_address INET
+    );
+  `,
+
+  // Tabla de likes
+  LIKES: `
+    CREATE TABLE IF NOT EXISTS likes (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id VARCHAR(255) NOT NULL,
+      newsletter_id VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      UNIQUE(user_id, newsletter_id)
+    );
+  `,
+
+  // Tabla de newsletters
+  NEWSLETTERS: `
+    CREATE TABLE IF NOT EXISTS newsletters (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      title VARCHAR(500) NOT NULL,
+      content TEXT NOT NULL,
+      excerpt TEXT,
+      author VARCHAR(255) NOT NULL,
+      category VARCHAR(100),
+      tags TEXT[],
+      featured_image VARCHAR(500),
+      like_count INTEGER DEFAULT 0,
+      view_count INTEGER DEFAULT 0,
+      published_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `,
+
+  // Tabla de usuarios PUMA
+  PUMA_USERS: `
+    CREATE TABLE IF NOT EXISTS puma_users (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id VARCHAR(255) UNIQUE NOT NULL,
+      balance BIGINT DEFAULT 0,
+      total_earned BIGINT DEFAULT 0,
+      total_spent BIGINT DEFAULT 0,
+      level INTEGER DEFAULT 1,
+      badges TEXT[] DEFAULT '{}',
+      experience_points BIGINT DEFAULT 0,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `,
+
+  // Tabla de transacciones PUMA
+  PUMA_TRANSACTIONS: `
+    CREATE TABLE IF NOT EXISTS puma_transactions (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id VARCHAR(255) NOT NULL,
+      type VARCHAR(50) NOT NULL,
+      amount BIGINT NOT NULL,
+      description TEXT,
+      category VARCHAR(100),
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `,
+
+  // Tabla de misiones PUMA
+  PUMA_MISSIONS: `
+    CREATE TABLE IF NOT EXISTS puma_missions (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      title VARCHAR(255) NOT NULL,
+      description TEXT NOT NULL,
+      reward BIGINT NOT NULL,
+      requirements JSONB DEFAULT '{}',
+      is_active BOOLEAN DEFAULT true,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `,
+
+  // Tabla de completado de misiones
+  PUMA_MISSION_COMPLETIONS: `
+    CREATE TABLE IF NOT EXISTS puma_mission_completions (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id VARCHAR(255) NOT NULL,
+      mission_id UUID NOT NULL REFERENCES puma_missions(id),
+      completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      UNIQUE(user_id, mission_id)
+    );
+  `,
+
+  // Tabla de usuarios
+  USERS: `
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      wallet_address VARCHAR(255) UNIQUE,
+      username VARCHAR(255),
+      email VARCHAR(255),
+      avatar VARCHAR(500),
+      bio TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+  `
+} as const
 
 // Funciones de utilidad para Supabase
-export const uploadImageToSupabase = async (file: File, bucket: string = 'images'): Promise<string> => {
-  const fileExt = file.name.split('.').pop()
-  const fileName = `${Date.now()}.${fileExt}`
-  const filePath = `${fileName}`
+export class SupabaseUtils {
+  // Inicializar base de datos
+  static async initializeDatabase(): Promise<boolean> {
+    try {
+      console.log('Inicializando base de datos Supabase...')
+      
+      // Ejecutar esquemas
+      for (const [tableName, schema] of Object.entries(DATABASE_SCHEMAS)) {
+        try {
+          const { error } = await supabase.rpc('exec_sql', { sql: schema })
+          if (error) {
+            console.error(`Error creando tabla ${tableName}:`, error)
+          } else {
+            console.log(`✅ Tabla ${tableName} creada/verificada`)
+          }
+        } catch (err) {
+          console.error(`Error ejecutando esquema para ${tableName}:`, err)
+        }
+      }
 
-  const { data, error } = await supabase.storage
-    .from(bucket)
-    .upload(filePath, file)
-
-  if (error) {
-    throw new Error(`Error uploading image: ${error.message}`)
+      // Crear índices
+      await this.createIndexes()
+      
+      console.log('✅ Base de datos inicializada correctamente')
+      return true
+    } catch (error) {
+      console.error('❌ Error inicializando base de datos:', error)
+      return false
+    }
   }
 
-  const { data: { publicUrl } } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(filePath)
+  // Crear índices para optimizar consultas
+  static async createIndexes(): Promise<void> {
+    const indexes = [
+      'CREATE INDEX IF NOT EXISTS idx_email_subscriptions_email ON email_subscriptions(email);',
+      'CREATE INDEX IF NOT EXISTS idx_email_subscriptions_active ON email_subscriptions(is_active);',
+      'CREATE INDEX IF NOT EXISTS idx_email_queue_status ON email_queue(status);',
+      'CREATE INDEX IF NOT EXISTS idx_likes_user_id ON likes(user_id);',
+      'CREATE INDEX IF NOT EXISTS idx_likes_newsletter_id ON likes(newsletter_id);',
+      'CREATE INDEX IF NOT EXISTS idx_puma_users_user_id ON puma_users(user_id);',
+      'CREATE INDEX IF NOT EXISTS idx_puma_transactions_user_id ON puma_transactions(user_id);',
+      'CREATE INDEX IF NOT EXISTS idx_puma_transactions_created_at ON puma_transactions(created_at);',
+      'CREATE INDEX IF NOT EXISTS idx_newsletters_published_at ON newsletters(published_at);',
+      'CREATE INDEX IF NOT EXISTS idx_newsletters_like_count ON newsletters(like_count);'
+    ]
 
-  return publicUrl
+    for (const indexQuery of indexes) {
+      try {
+        const { error } = await supabase.rpc('exec_sql', { sql: indexQuery })
+        if (error) {
+          console.error('Error creando índice:', error)
+        }
+      } catch (err) {
+        console.error('Error ejecutando índice:', err)
+      }
+    }
+  }
+
+  // Verificar conexión
+  static async testConnection(): Promise<boolean> {
+    try {
+      const { data, error } = await supabase
+        .from('email_subscriptions')
+        .select('count')
+        .limit(1)
+
+      if (error) {
+        console.error('Error probando conexión:', error)
+        return false
+      }
+
+      console.log('✅ Conexión a Supabase exitosa')
+      return true
+    } catch (error) {
+      console.error('❌ Error de conexión a Supabase:', error)
+      return false
+    }
+  }
+
+  // Obtener estadísticas de la base de datos
+  static async getDatabaseStats(): Promise<any> {
+    try {
+      const stats = {}
+      
+      for (const tableName of Object.values(TABLES)) {
+        const { count, error } = await supabase
+          .from(tableName)
+          .select('*', { count: 'exact', head: true })
+        
+        if (!error) {
+          stats[tableName] = count || 0
+        }
+      }
+
+      return stats
+    } catch (error) {
+      console.error('Error obteniendo estadísticas:', error)
+      return {}
+    }
+  }
 }
 
-export const uploadMultipleImagesToSupabase = async (files: File[], bucket: string = 'images'): Promise<string[]> => {
-  const uploadPromises = files.map(file => uploadImageToSupabase(file, bucket))
-  return Promise.all(uploadPromises)
-}
+export default supabase
