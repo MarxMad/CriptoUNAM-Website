@@ -128,7 +128,7 @@ export class BlockchainService {
     to: string, 
     amount: string, 
     reason: string
-  ): Promise<ethers.providers.TransactionResponse> {
+  ): Promise<any> {
     try {
       if (!this.signer) {
         throw new Error('No hay signer configurado')
@@ -137,7 +137,7 @@ export class BlockchainService {
       const contractWithSigner = this.contract.connect(this.signer)
       const amountWei = parseEther(amount)
       
-      const tx = await contractWithSigner.mintReward(to, amountWei, reason)
+      const tx = await (contractWithSigner as any).mintReward(to, amountWei, reason)
       return tx
     } catch (error) {
       console.error('Error minteando recompensa:', error)
@@ -150,7 +150,7 @@ export class BlockchainService {
     from: string, 
     amount: string, 
     reason: string
-  ): Promise<ethers.providers.TransactionResponse> {
+  ): Promise<any> {
     try {
       if (!this.signer) {
         throw new Error('No hay signer configurado')
@@ -159,7 +159,7 @@ export class BlockchainService {
       const contractWithSigner = this.contract.connect(this.signer)
       const amountWei = parseEther(amount)
       
-      const tx = await contractWithSigner.burnReward(from, amountWei, reason)
+      const tx = await (contractWithSigner as any).burnReward(from, amountWei, reason)
       return tx
     } catch (error) {
       console.error('Error quemando tokens:', error)
@@ -171,13 +171,13 @@ export class BlockchainService {
   async transferReward(
     to: string, 
     amount: string
-  ): Promise<ethers.providers.TransactionResponse> {
+  ): Promise<any> {
     try {
       const signer = await this.getUserSigner()
       const contractWithSigner = this.contract.connect(signer)
       const amountWei = parseEther(amount)
       
-      const tx = await contractWithSigner.transferReward(to, amountWei)
+      const tx = await (contractWithSigner as any).transferReward(to, amountWei)
       return tx
     } catch (error) {
       console.error('Error transfiriendo tokens:', error)
@@ -186,12 +186,12 @@ export class BlockchainService {
   }
 
   // Completar misión
-  async completeMission(missionId: string): Promise<ethers.providers.TransactionResponse> {
+  async completeMission(missionId: string): Promise<any> {
     try {
       const signer = await this.getUserSigner()
       const contractWithSigner = this.contract.connect(signer)
       
-      const tx = await contractWithSigner.completeMission(missionId)
+      const tx = await (contractWithSigner as any).completeMission(missionId)
       return tx
     } catch (error) {
       console.error('Error completando misión:', error)
@@ -205,7 +205,7 @@ export class BlockchainService {
     title: string,
     reward: string,
     deadline: number
-  ): Promise<ethers.providers.TransactionResponse> {
+  ): Promise<any> {
     try {
       if (!this.signer) {
         throw new Error('No hay signer configurado')
@@ -214,7 +214,7 @@ export class BlockchainService {
       const contractWithSigner = this.contract.connect(this.signer)
       const rewardWei = parseEther(reward)
       
-      const tx = await contractWithSigner.createMission(missionId, title, rewardWei, deadline)
+      const tx = await (contractWithSigner as any).createMission(missionId, title, rewardWei, deadline)
       return tx
     } catch (error) {
       console.error('Error creando misión:', error)
@@ -223,14 +223,14 @@ export class BlockchainService {
   }
 
   // Actualizar nivel del usuario (solo admin)
-  async updateUserLevel(user: string, newLevel: number): Promise<ethers.providers.TransactionResponse> {
+  async updateUserLevel(user: string, newLevel: number): Promise<any> {
     try {
       if (!this.signer) {
         throw new Error('No hay signer configurado')
       }
 
       const contractWithSigner = this.contract.connect(this.signer)
-      const tx = await contractWithSigner.updateUserLevel(user, newLevel)
+      const tx = await (contractWithSigner as any).updateUserLevel(user, newLevel)
       return tx
     } catch (error) {
       console.error('Error actualizando nivel:', error)
@@ -239,14 +239,14 @@ export class BlockchainService {
   }
 
   // Agregar insignia (solo admin)
-  async addBadge(user: string, badge: string): Promise<ethers.providers.TransactionResponse> {
+  async addBadge(user: string, badge: string): Promise<any> {
     try {
       if (!this.signer) {
         throw new Error('No hay signer configurado')
       }
 
       const contractWithSigner = this.contract.connect(this.signer)
-      const tx = await contractWithSigner.addBadge(user, badge)
+      const tx = await (contractWithSigner as any).addBadge(user, badge)
       return tx
     } catch (error) {
       console.error('Error agregando insignia:', error)
