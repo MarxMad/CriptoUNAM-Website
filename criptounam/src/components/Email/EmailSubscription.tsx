@@ -152,7 +152,7 @@ export const EmailSubscription: React.FC<EmailSubscriptionProps> = ({
         </button>
       </form>
 
-      <style jsx>{`
+        <style>{`
         .email-subscription {
           max-width: 500px;
           margin: 0 auto;

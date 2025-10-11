@@ -1,12 +1,12 @@
 // Rutas de API para sistema de likes
 import { Router } from 'express'
 import { ValidationUtils } from '../utils/validation.utils'
-import { authenticateToken, validateLike } from '../middleware/auth.middleware'
+import { authenticateToken, validateLike, AuthenticatedRequest } from '../middleware/auth.middleware'
 
 const router = Router()
 
 // Dar like
-router.post('/', authenticateToken, validateLike, async (req, res) => {
+router.post('/', authenticateToken, validateLike, async (req: AuthenticatedRequest, res) => {
   try {
     const { newsletterId } = req.body
     const userId = req.user?.id
@@ -48,7 +48,7 @@ router.post('/', authenticateToken, validateLike, async (req, res) => {
 })
 
 // Quitar like
-router.delete('/', authenticateToken, validateLike, async (req, res) => {
+router.delete('/', authenticateToken, validateLike, async (req: AuthenticatedRequest, res) => {
   try {
     const { newsletterId } = req.body
     const userId = req.user?.id
@@ -94,7 +94,7 @@ router.get('/:newsletterId', async (req, res) => {
 })
 
 // Obtener likes del usuario
-router.get('/user/:userId', authenticateToken, async (req, res) => {
+router.get('/user/:userId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { userId } = req.params
     const currentUserId = req.user?.id
@@ -151,7 +151,7 @@ router.get('/trending', async (req, res) => {
 })
 
 // Obtener historial de likes del usuario
-router.get('/history/:userId', authenticateToken, async (req, res) => {
+router.get('/history/:userId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { userId } = req.params
     const currentUserId = req.user?.id
@@ -178,7 +178,7 @@ router.get('/history/:userId', authenticateToken, async (req, res) => {
 })
 
 // Verificar si el usuario dio like
-router.get('/check/:newsletterId', authenticateToken, async (req, res) => {
+router.get('/check/:newsletterId', authenticateToken, async (req: AuthenticatedRequest, res) => {
   try {
     const { newsletterId } = req.params
     const userId = req.user?.id

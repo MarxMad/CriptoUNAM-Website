@@ -8,6 +8,7 @@ interface EmailState {
   analytics: any[]
   isLoading: boolean
   error: string | null
+  success: boolean
 }
 
 interface EmailAction {
@@ -21,7 +22,8 @@ const initialState: EmailState = {
   queue: [],
   analytics: [],
   isLoading: false,
-  error: null
+  error: null,
+  success: false
 }
 
 const emailReducer = (state: EmailState, action: EmailAction): EmailState => {

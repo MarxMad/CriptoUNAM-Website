@@ -96,7 +96,7 @@ export const LikeButton: React.FC<LikeButtonProps> = ({
         </div>
       )}
 
-      <style jsx>{`
+        <style>{`
         .like-button-container {
           display: inline-flex;
           flex-direction: column;
