@@ -9,6 +9,13 @@ export interface Evento {
   lugar: string
   imagen: string
   enlace: string
+  creadoEn: string
+  tipo?: string
+  cupo?: number
+  hora?: string
+  registrolink?: string
+  imagenPrincipal?: string
+  fotos?: string[]
 }
 
 export interface Curso {
@@ -19,6 +26,8 @@ export interface Curso {
   duracion: string
   imagen: string
   enlace: string
+  creadoEn: string
+  instructor?: string
 }
 
 export interface NewsletterEntry {
@@ -28,6 +37,8 @@ export interface NewsletterEntry {
   autor: string
   fecha: string
   imagen: string
+  creadoEn: string
+  tags?: string[]
 }
 
 // Funciones de utilidad

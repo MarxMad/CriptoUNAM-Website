@@ -77,7 +77,7 @@ export class EmailDomainManager {
         dkim: [
           {
             name: `resend._domainkey.${domain}`,
-            value: records.records?.dkim?.publicKey || '',
+            value: records.records?.find((r: any) => r.type === 'TXT' && r.name.includes('dkim'))?.value || '',
             type: 'TXT'
           }
         ],
