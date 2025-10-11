@@ -17,29 +17,6 @@ interface InteractiveCTAProps {
 }
 
 const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) => {
-  const [currentStat, setCurrentStat] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  const stats = [
-    { icon: faUsers, value: '500+', label: 'Miembros Activos', color: '#34D399' },
-    { icon: faGraduationCap, value: '50+', label: 'Cursos Completados', color: '#3B82F6' },
-    { icon: faTrophy, value: '15+', label: 'Premios Ganados', color: '#F59E0B' },
-    { icon: faCode, value: '30+', label: 'Proyectos Desarrollados', color: '#8B5CF6' }
-  ];
-
-  // Rotar estadísticas cada 3 segundos
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsAnimating(true);
-      setTimeout(() => {
-        setCurrentStat((prev) => (prev + 1) % stats.length);
-        setIsAnimating(false);
-      }, 300);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [stats.length]);
-
   const handleJoinClick = () => {
     // Scroll suave a la sección de registro
     const footer = document.querySelector('footer');
@@ -50,61 +27,25 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
 
   return (
     <section style={{
-      maxWidth: '1200px',
+      maxWidth: '1000px',
       margin: '0 auto 3rem auto',
       padding: '0 20px',
-      position: 'relative'
+      textAlign: 'center'
     }}>
-      {/* Fondo animado */}
       <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(37, 99, 235, 0.1))',
-        borderRadius: '24px',
-        overflow: 'hidden'
-      }}>
-        {/* Partículas animadas */}
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              width: '4px',
-              height: '4px',
-              background: '#D4AF37',
-              borderRadius: '50%',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${3 + Math.random() * 4}s infinite ease-in-out`,
-              animationDelay: `${Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
-
-      <div style={{
-        position: 'relative',
-        zIndex: 2,
         background: 'rgba(26, 26, 26, 0.9)',
-        borderRadius: '24px',
-        padding: '4rem 2rem',
-        textAlign: 'center',
+        borderRadius: '16px',
+        padding: '3rem 2rem',
         border: '1px solid rgba(212, 175, 55, 0.3)',
-        backdropFilter: 'blur(20px)'
+        backdropFilter: 'blur(10px)'
       }}>
         {/* Título principal */}
         <h2 style={{
           fontFamily: 'Orbitron',
           color: '#D4AF37',
-          fontSize: '3rem',
-          marginBottom: '1.5rem',
-          background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text'
+          fontSize: '2.5rem',
+          marginBottom: '1rem',
+          fontWeight: 'bold'
         }}>
           {title}
         </h2>
@@ -112,62 +53,59 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
         {/* Descripción */}
         <p style={{
           color: '#E0E0E0',
-          fontSize: '1.3rem',
-          maxWidth: '800px',
-          margin: '0 auto 3rem auto',
-          lineHeight: '1.6'
+          fontSize: '1.1rem',
+          maxWidth: '600px',
+          margin: '0 auto 2rem auto',
+          lineHeight: '1.5'
         }}>
           {description}
         </p>
 
-        {/* Estadística destacada animada */}
+        {/* Estadística simple */}
         <div style={{
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          marginBottom: '3rem'
+          marginBottom: '2rem'
         }}>
           <div style={{
             background: 'rgba(26, 26, 26, 0.8)',
-            borderRadius: '20px',
-            padding: '2rem 3rem',
+            borderRadius: '12px',
+            padding: '1.5rem 2rem',
             border: '2px solid rgba(212, 175, 55, 0.3)',
             display: 'flex',
             alignItems: 'center',
-            gap: '1.5rem',
-            transition: 'all 0.5s ease',
-            transform: isAnimating ? 'scale(0.95)' : 'scale(1)'
+            gap: '1rem'
           }}>
             <div style={{
-              width: '80px',
-              height: '80px',
+              width: '60px',
+              height: '60px',
               borderRadius: '50%',
-              background: `linear-gradient(135deg, ${stats[currentStat].color}, ${stats[currentStat].color}40)`,
+              background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '2rem',
+              fontSize: '1.5rem',
               color: 'white'
             }}>
-              <FontAwesomeIcon icon={stats[currentStat].icon} />
+              <FontAwesomeIcon icon={faGraduationCap} />
             </div>
             <div>
               <div style={{
-                fontSize: '3rem',
+                fontSize: '2rem',
                 fontWeight: 'bold',
-                color: stats[currentStat].color,
+                color: '#3B82F6',
                 fontFamily: 'Orbitron',
-                marginBottom: '0.5rem',
-                transition: 'all 0.5s ease'
+                marginBottom: '0.25rem'
               }}>
-                {stats[currentStat].value}
+                50+
               </div>
               <div style={{
-                fontSize: '1.2rem',
+                fontSize: '1rem',
                 color: '#D4AF37',
                 fontWeight: '600'
               }}>
-                {stats[currentStat].label}
+                Cursos Completados
               </div>
             </div>
           </div>
@@ -176,10 +114,10 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
         {/* Botones de acción */}
         <div style={{
           display: 'flex',
-          gap: '24px',
+          gap: '1rem',
           justifyContent: 'center',
           flexWrap: 'wrap',
-          marginBottom: '2rem'
+          marginBottom: '1.5rem'
         }}>
           <button
             onClick={handleJoinClick}
@@ -187,29 +125,25 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
               background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
               color: '#000',
               border: 'none',
-              borderRadius: '25px',
-              padding: '16px 32px',
-              fontSize: '1.2rem',
+              borderRadius: '8px',
+              padding: '12px 24px',
+              fontSize: '1rem',
               fontWeight: 'bold',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 8px 24px rgba(212, 175, 55, 0.3)'
+              gap: '8px',
+              transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-4px)';
-              e.currentTarget.style.boxShadow = '0 12px 32px rgba(212, 175, 55, 0.4)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(212, 175, 55, 0.3)';
             }}
           >
             <FontAwesomeIcon icon={faRocket} />
             Únete Ahora
-            <FontAwesomeIcon icon={faArrowRight} />
           </button>
 
           <button
@@ -218,19 +152,19 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
               background: 'rgba(37, 99, 235, 0.8)',
               color: 'white',
               border: '1px solid #2563EB',
-              borderRadius: '25px',
-              padding: '16px 32px',
-              fontSize: '1.2rem',
+              borderRadius: '8px',
+              padding: '12px 24px',
+              fontSize: '1rem',
               fontWeight: 'bold',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
+              gap: '8px',
               transition: 'all 0.3s ease'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = 'rgba(37, 99, 235, 1)';
-              e.currentTarget.style.transform = 'translateY(-4px)';
+              e.currentTarget.style.transform = 'translateY(-2px)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'rgba(37, 99, 235, 0.8)';
@@ -242,41 +176,18 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
           </button>
         </div>
 
-        {/* Indicadores de progreso */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '8px',
-          marginBottom: '2rem'
-        }}>
-          {stats.map((_, index) => (
-            <div
-              key={index}
-              style={{
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background: index === currentStat ? '#D4AF37' : 'rgba(212, 175, 55, 0.3)',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer'
-              }}
-              onClick={() => setCurrentStat(index)}
-            />
-          ))}
-        </div>
-
         {/* Texto motivacional */}
         <div style={{
           background: 'rgba(212, 175, 55, 0.1)',
-          borderRadius: '16px',
-          padding: '1.5rem',
+          borderRadius: '12px',
+          padding: '1rem',
           border: '1px solid rgba(212, 175, 55, 0.2)',
-          maxWidth: '600px',
+          maxWidth: '500px',
           margin: '0 auto'
         }}>
           <p style={{
             color: '#E0E0E0',
-            fontSize: '1.1rem',
+            fontSize: '1rem',
             margin: '0',
             fontStyle: 'italic'
           }}>
@@ -285,14 +196,6 @@ const InteractiveCTA: React.FC<InteractiveCTAProps> = ({ title, description }) =
           </p>
         </div>
       </div>
-
-      {/* CSS para animaciones */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-20px) rotate(180deg); }
-        }
-      `}</style>
     </section>
   );
 };
