@@ -2,6 +2,7 @@
 import { Router } from 'express'
 import { ValidationUtils } from '../utils/validation.utils'
 import { authenticateToken, validatePumaTransaction, AuthenticatedRequest } from '../middleware/auth.middleware'
+import { PumaService } from '../services/puma.service'
 
 const router = Router()
 
@@ -15,15 +16,11 @@ router.get('/user/:userId', authenticateToken, async (req: AuthenticatedRequest,
       return res.status(403).json({ error: 'No autorizado' })
     }
 
-    // Simular datos del usuario
-    const userData = {
-      userId,
-      balance: Math.floor(Math.random() * 10000),
-      totalEarned: Math.floor(Math.random() * 50000),
-      totalSpent: Math.floor(Math.random() * 10000),
-      level: Math.floor(Math.random() * 10) + 1,
-      badges: ['Primer Like', 'Newsletter Reader', 'Active User'],
-      experiencePoints: Math.floor(Math.random() * 1000)
+    // Obtener datos del usuario usando PumaService
+    const userData = await PumaService.getUserBalance(userId)
+    
+    if (!userData) {
+      return res.status(404).json({ error: 'Usuario no encontrado' })
     }
 
     res.json(userData)
