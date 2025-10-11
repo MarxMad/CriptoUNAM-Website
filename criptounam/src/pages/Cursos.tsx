@@ -45,6 +45,7 @@ const Cursos = () => {
     duracion: '',
     descripcion: '',
     instructor: '',
+    enlace: '',
     precio: 0,
     categorias: [] as string[],
     requisitos: '',
@@ -161,6 +162,7 @@ const Cursos = () => {
         nivel: nuevoCurso.nivel,
         instructor: nuevoCurso.instructor,
         imagen: imagenUrl,
+        enlace: nuevoCurso.enlace || '',
         precio: nuevoCurso.precio,
         fechaInicio: nuevoCurso.fechaInicio,
         fechaFin: nuevoCurso.fechaFin,
@@ -504,6 +506,28 @@ const Cursos = () => {
                       onChange={handleInputChangeCurso}
                       placeholder="Nombre del instructor"
                       required
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        border: '2px solid #e0e0e0',
+                        fontSize: '1rem',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = '#D4AF37'}
+                      onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#333' }}>
+                      Enlace del curso
+                    </label>
+                    <input
+                      type="url"
+                      name="enlace"
+                      value={nuevoCurso.enlace}
+                      onChange={handleInputChangeCurso}
+                      placeholder="https://ejemplo.com/curso"
                       style={{
                         padding: '12px',
                         borderRadius: '8px',
