@@ -1,4 +1,45 @@
-import { supabase, Evento, Curso, NewsletterEntry, uploadImageToSupabase, uploadMultipleImagesToSupabase } from './supabase'
+import { supabase } from './supabase'
+
+// Tipos locales
+export interface Evento {
+  id: string
+  titulo: string
+  descripcion: string
+  fecha: string
+  lugar: string
+  imagen: string
+  enlace: string
+}
+
+export interface Curso {
+  id: string
+  titulo: string
+  descripcion: string
+  nivel: string
+  duracion: string
+  imagen: string
+  enlace: string
+}
+
+export interface NewsletterEntry {
+  id: string
+  titulo: string
+  contenido: string
+  autor: string
+  fecha: string
+  imagen: string
+}
+
+// Funciones de utilidad
+export const uploadImageToSupabase = async (file: File): Promise<string> => {
+  // Implementación simplificada
+  return 'placeholder-image-url'
+}
+
+export const uploadMultipleImagesToSupabase = async (files: File[]): Promise<string[]> => {
+  // Implementación simplificada
+  return files.map(() => 'placeholder-image-url')
+}
 
 // API para Eventos
 export const eventosApi = {
