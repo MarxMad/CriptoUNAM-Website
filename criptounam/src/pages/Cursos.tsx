@@ -189,6 +189,7 @@ const Cursos = () => {
         duracion: '',
         descripcion: '',
         instructor: '',
+        enlace: '',
         precio: 0,
         categorias: [],
         requisitos: '',
