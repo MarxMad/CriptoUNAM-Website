@@ -295,10 +295,7 @@ export const testConfig = {
   timeout: 10000,
   retries: 3,
   setupFiles: ['<rootDir>/src/setupTests.ts'],
-  testEnvironment: 'jsdom',
-  moduleNameMapping: {
-    '^@/(.*)$': '<rootDir>/src/$1'
-  }
+  testEnvironment: 'jsdom'
 }
 
 // Re-exportar render personalizado
