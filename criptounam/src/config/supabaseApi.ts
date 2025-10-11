@@ -135,7 +135,7 @@ export const cursosApi = {
     const { data, error } = await supabase
       .from('cursos')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('creadoen', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -195,7 +195,7 @@ export const newsletterApi = {
     const { data, error } = await supabase
       .from('newsletters')
       .select('*')
-      .order('created_at', { ascending: false })
+      .order('creadoen', { ascending: false })
 
     if (error) throw error
     return data || []
