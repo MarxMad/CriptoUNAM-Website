@@ -11,7 +11,7 @@ import {
   faBrain,
   faRocket,
   faCoins,
-  faGamepad2
+  faGamepad
 } from '@fortawesome/free-solid-svg-icons'
 
 // Componente del juego de memoria
@@ -617,7 +617,7 @@ const SnakeGame = () => {
       boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
     }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <FontAwesomeIcon icon={faGamepad2} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '1rem' }} />
+        <FontAwesomeIcon icon={faGamepad} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '1rem' }} />
         <h3 style={{ color: '#D4AF37', margin: '0 0 1rem 0', fontSize: '1.5rem' }}>Juego de Serpiente</h3>
         <p style={{ color: '#fff', margin: '0 0 1rem 0' }}>Usa las flechas para controlar la serpiente</p>
         
@@ -740,7 +740,7 @@ const Juegos = () => {
     {
       id: 'snake',
       name: 'Serpiente',
-      icon: faGamepad2
+      icon: faGamepad
     }
   ]
 
