@@ -26,6 +26,13 @@ export const ENV_CONFIG = {
   LIKE_COOLDOWN: parseInt(process.env.LIKE_COOLDOWN || '5000'),
   MAX_LIKES_PER_USER: parseInt(process.env.MAX_LIKES_PER_USER || '100'),
   LIKE_REWARD_AMOUNT: parseInt(process.env.LIKE_REWARD_AMOUNT || '10'),
+
+  // Blockchain Configuration
+  CHAIN_ID: parseInt(process.env.CHAIN_ID || '1'),
+  RPC_URL: process.env.RPC_URL || '',
+  INFURA_ID: process.env.INFURA_ID || '',
+  EXPLORER_URL: process.env.EXPLORER_URL || 'https://etherscan.io',
+  ADMIN_PRIVATE_KEY: process.env.ADMIN_PRIVATE_KEY || ''
 }
 
 export default ENV_CONFIG

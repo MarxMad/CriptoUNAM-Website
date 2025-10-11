@@ -1,5 +1,5 @@
 // Servicio para integración con blockchain
-import { ethers } from 'ethers'
+import { ethers, BrowserProvider, JsonRpcProvider, Contract, formatEther, parseEther } from 'ethers'
 import { ENV_CONFIG } from '../config/env'
 
 // ABI del contrato PUMAToken
@@ -54,14 +54,14 @@ export interface TokenStats {
 }
 
 export class BlockchainService {
-  private provider: ethers.providers.JsonRpcProvider
-  private contract: ethers.Contract
+  private provider: JsonRpcProvider
+  private contract: Contract
   private wallet?: ethers.Wallet
   private signer?: ethers.Signer
 
   constructor(config: BlockchainConfig) {
-    this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl)
-    this.contract = new ethers.Contract(config.contractAddress, PUMATOKEN_ABI, this.provider)
+    this.provider = new JsonRpcProvider(config.rpcUrl)
+    this.contract = new Contract(config.contractAddress, PUMATOKEN_ABI, this.provider)
     
     if (config.privateKey) {
       this.wallet = new ethers.Wallet(config.privateKey, this.provider)
@@ -70,9 +70,9 @@ export class BlockchainService {
   }
 
   // Conectar wallet del usuario
-  async connectWallet(): Promise<ethers.providers.Web3Provider> {
+  async connectWallet(): Promise<BrowserProvider> {
     if (typeof window.ethereum !== 'undefined') {
-      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const provider = new BrowserProvider(window.ethereum)
       await provider.send('eth_requestAccounts', [])
       return provider
     } else {
@@ -90,7 +90,7 @@ export class BlockchainService {
   async getUserBalance(userAddress: string): Promise<string> {
     try {
       const balance = await this.contract.balanceOf(userAddress)
-      return ethers.utils.formatEther(balance)
+      return formatEther(balance)
     } catch (error) {
       console.error('Error obteniendo balance:', error)
       return '0'
@@ -105,12 +105,12 @@ export class BlockchainService {
       const badges = await this.contract.getUserBadges(userAddress)
 
       return {
-        balance: ethers.utils.formatEther(balance),
+        balance: formatEther(balance),
         level: level.toNumber(),
         experience: experience.toNumber(),
         badgeCount: badgeCount.toNumber(),
         rewards: rewards.map((reward: any) => ({
-          amount: ethers.utils.formatEther(reward.amount),
+          amount: formatEther(reward.amount),
           reason: reward.reason,
           timestamp: reward.timestamp.toNumber(),
           claimed: reward.claimed
@@ -135,7 +135,7 @@ export class BlockchainService {
       }
 
       const contractWithSigner = this.contract.connect(this.signer)
-      const amountWei = ethers.utils.parseEther(amount)
+      const amountWei = parseEther(amount)
       
       const tx = await contractWithSigner.mintReward(to, amountWei, reason)
       return tx
@@ -157,7 +157,7 @@ export class BlockchainService {
       }
 
       const contractWithSigner = this.contract.connect(this.signer)
-      const amountWei = ethers.utils.parseEther(amount)
+      const amountWei = parseEther(amount)
       
       const tx = await contractWithSigner.burnReward(from, amountWei, reason)
       return tx
@@ -175,7 +175,7 @@ export class BlockchainService {
     try {
       const signer = await this.getUserSigner()
       const contractWithSigner = this.contract.connect(signer)
-      const amountWei = ethers.utils.parseEther(amount)
+      const amountWei = parseEther(amount)
       
       const tx = await contractWithSigner.transferReward(to, amountWei)
       return tx
@@ -212,7 +212,7 @@ export class BlockchainService {
       }
 
       const contractWithSigner = this.contract.connect(this.signer)
-      const rewardWei = ethers.utils.parseEther(reward)
+      const rewardWei = parseEther(reward)
       
       const tx = await contractWithSigner.createMission(missionId, title, rewardWei, deadline)
       return tx
@@ -260,9 +260,9 @@ export class BlockchainService {
       const [totalSupply, totalRewards, totalBurned, missionCount] = await this.contract.getTokenStats()
       
       return {
-        totalSupply: ethers.utils.formatEther(totalSupply),
-        totalRewards: ethers.utils.formatEther(totalRewards),
-        totalBurned: ethers.utils.formatEther(totalBurned),
+        totalSupply: formatEther(totalSupply),
+        totalRewards: formatEther(totalRewards),
+        totalBurned: formatEther(totalBurned),
         missionCount: missionCount.toNumber()
       }
     } catch (error) {
@@ -279,7 +279,7 @@ export class BlockchainService {
         callback({
           type: 'RewardMinted',
           to,
-          amount: ethers.utils.formatEther(amount),
+          amount: formatEther(amount),
           reason,
           transactionHash: event.transactionHash
         })
@@ -290,7 +290,7 @@ export class BlockchainService {
         callback({
           type: 'RewardBurned',
           from,
-          amount: ethers.utils.formatEther(amount),
+          amount: formatEther(amount),
           reason,
           transactionHash: event.transactionHash
         })
@@ -302,7 +302,7 @@ export class BlockchainService {
           type: 'RewardTransferred',
           from,
           to,
-          amount: ethers.utils.formatEther(amount),
+          amount: formatEther(amount),
           transactionHash: event.transactionHash
         })
       })
@@ -312,7 +312,7 @@ export class BlockchainService {
         callback({
           type: 'RewardClaimed',
           user,
-          amount: ethers.utils.formatEther(amount),
+          amount: formatEther(amount),
           mission,
           transactionHash: event.transactionHash
         })

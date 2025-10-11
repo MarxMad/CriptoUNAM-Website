@@ -77,7 +77,7 @@ export class EmailDomainManager {
         dkim: [
           {
             name: `resend._domainkey.${domain}`,
-            value: records.dkim?.publicKey || '',
+            value: records.records?.dkim?.publicKey || '',
             type: 'TXT'
           }
         ],
@@ -136,7 +136,7 @@ export class EmailDomainManager {
       return {
         domain: data.name,
         status: data.status,
-        createdAt: data.createdAt,
+        createdAt: data.created_at,
         region: data.region,
         records: data.records
       }

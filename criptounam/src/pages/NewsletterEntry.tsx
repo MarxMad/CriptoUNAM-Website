@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 import { useState, useEffect } from 'react'
-import { newsletterApi, type NewsletterEntry } from '../config/supabaseApi'
+import { newsletterApi, type NewsletterEntry as NewsletterEntryType } from '../config/supabaseApi'
 import BlogContent from '../components/BlogContent'
 import SEOHead from '../components/SEOHead'
 
 // Tipo para entradas que vienen de la base de datos (con id garantizado)
-type NewsletterEntryWithId = NewsletterEntry & { id: string }
+type NewsletterEntryWithId = NewsletterEntryType & { id: string }
 
 const NewsletterEntry = () => {
   const { id } = useParams()

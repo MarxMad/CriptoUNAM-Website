@@ -113,9 +113,9 @@ const Cursos = () => {
   }, []);
 
   const cursosFiltrados = cursos.filter(curso => {
-    const cumpleFiltroNivel = filtroNivel === 'todos' || curso.nivel.toLowerCase() === filtroNivel
-    const cumpleBusqueda = curso.titulo.toLowerCase().includes(busqueda.toLowerCase()) ||
-                          curso.descripcion.toLowerCase().includes(busqueda.toLowerCase())
+    const cumpleFiltroNivel = filtroNivel === 'todos' || curso.nivel?.toLowerCase() === filtroNivel
+    const cumpleBusqueda = curso.titulo?.toLowerCase().includes(busqueda.toLowerCase()) ||
+                          curso.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
     const cumpleCategoria = categoriaSeleccionada === 'todas' || 
                            (curso.categorias && curso.categorias.includes(categoriaSeleccionada))
     return cumpleFiltroNivel && cumpleBusqueda && cumpleCategoria
@@ -234,7 +234,7 @@ const Cursos = () => {
     }
     try {
       await cursosApi.delete(id);
-      setCursos(cursos.filter((c: CursoCompleto) => c.id !== id));
+      setCursos(cursos.filter((c: any) => c.id !== id));
     } catch (error) {
       console.error('Error al eliminar el curso:', error);
       alert('Error al eliminar el curso');
