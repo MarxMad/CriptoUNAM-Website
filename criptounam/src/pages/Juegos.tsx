@@ -725,26 +725,22 @@ const Juegos = () => {
     {
       id: 'memory',
       name: 'Memoria',
-      icon: faBrain,
-      description: 'Encuentra las parejas de símbolos'
+      icon: faBrain
     },
     {
       id: 'guessing',
       name: 'Adivinanza',
-      icon: faDice,
-      description: 'Adivina el número correcto'
+      icon: faDice
     },
     {
       id: 'reaction',
       name: 'Reacción',
-      icon: faRocket,
-      description: 'Pon a prueba tus reflejos'
+      icon: faRocket
     },
     {
       id: 'snake',
       name: 'Serpiente',
-      icon: faSnake,
-      description: 'Controla la serpiente y come comida'
+      icon: faSnake
     }
   ]
 
@@ -761,42 +757,42 @@ const Juegos = () => {
         padding: '2rem 1rem',
         paddingTop: '6rem'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-          {/* Header */}
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+          {/* Header simplificado */}
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <FontAwesomeIcon 
               icon={faGamepad} 
               style={{ 
-                fontSize: '4rem', 
+                fontSize: '3rem', 
                 color: '#D4AF37', 
                 marginBottom: '1rem' 
               }} 
             />
             <h1 style={{ 
               color: '#D4AF37', 
-              fontSize: '3rem', 
-              margin: '0 0 1rem 0',
+              fontSize: '2.5rem', 
+              margin: '0 0 0.5rem 0',
               fontFamily: 'Orbitron',
               fontWeight: 'bold'
             }}>
-              Zona de Juegos
+              Juegos
             </h1>
             <p style={{ 
               color: '#fff', 
-              fontSize: '1.2rem', 
+              fontSize: '1rem', 
               margin: '0',
-              opacity: 0.9
+              opacity: 0.8
             }}>
-              Diviértete con nuestros minijuegos interactivos
+              Diviértete con nuestros minijuegos
             </p>
           </div>
 
-          {/* Selector de juegos */}
+          {/* Selector de juegos simplificado */}
           <div style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '1rem',
-            marginBottom: '3rem',
+            gap: '0.5rem',
+            marginBottom: '2rem',
             flexWrap: 'wrap'
           }}>
             {games.map((game) => (
@@ -808,21 +804,20 @@ const Juegos = () => {
                     ? 'linear-gradient(135deg, #D4AF37, #FFD700)' 
                     : 'rgba(212, 175, 55, 0.1)',
                   border: `2px solid ${activeGame === game.id ? '#D4AF37' : 'rgba(212, 175, 55, 0.3)'}`,
-                  borderRadius: '12px',
-                  padding: '1rem 2rem',
+                  borderRadius: '8px',
+                  padding: '0.8rem 1.5rem',
                   color: activeGame === game.id ? '#000' : '#D4AF37',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  minWidth: '150px'
+                  fontSize: '1rem',
+                  fontWeight: 'bold'
                 }}
               >
-                <FontAwesomeIcon icon={game.icon} style={{ fontSize: '1.5rem' }} />
-                <span style={{ fontWeight: 'bold' }}>{game.name}</span>
-                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>{game.description}</span>
+                <FontAwesomeIcon icon={game.icon} style={{ fontSize: '1.2rem' }} />
+                {game.name}
               </button>
             ))}
           </div>
@@ -833,22 +828,6 @@ const Juegos = () => {
             {activeGame === 'guessing' && <NumberGuessingGame />}
             {activeGame === 'reaction' && <ReactionGame />}
             {activeGame === 'snake' && <SnakeGame />}
-          </div>
-
-          {/* Estadísticas */}
-          <div style={{
-            marginTop: '3rem',
-            background: 'rgba(212, 175, 55, 0.1)',
-            borderRadius: '16px',
-            padding: '2rem',
-            border: '1px solid rgba(212, 175, 55, 0.3)',
-            textAlign: 'center'
-          }}>
-            <FontAwesomeIcon icon={faTrophy} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: '1rem' }} />
-            <h3 style={{ color: '#D4AF37', margin: '0 0 1rem 0' }}>¡Sigue jugando!</h3>
-            <p style={{ color: '#fff', margin: '0' }}>
-              Completa todos los juegos y mejora tus habilidades. ¡La diversión no tiene límites!
-            </p>
           </div>
         </div>
       </div>
