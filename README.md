@@ -30,18 +30,28 @@ CriptoUNAM es una plataforma educativa descentralizada diseñada para la comunid
 - 📅 **Eventos y workshops** regulares
 - 🌙 **Modo oscuro/claro** para mejor experiencia
 - 📱 **Diseño responsive** optimizado para todos los dispositivos
-- 🎮 **Juegos educativos** interactivos
+- 🎮 **Juegos educativos** interactivos (Memoria, Adivinanza, Reacción, Serpiente)
 - 📧 **Newsletter** con las últimas noticias del ecosistema cripto
+- 💰 **Sistema de recompensas $PUMA** con tokens y gamificación
+- ❤️ **Sistema de likes** para newsletters y contenido
+- 📬 **Emails automáticos** con Resend para notificaciones
+- 🏅 **Sistema de insignias y logros** para usuarios
+- 📊 **Dashboard de perfil** con estadísticas y progreso
+- 🔔 **Notificaciones toast** para feedback en tiempo real
 
 ## 🛠️ Stack tecnológico
 
 - **Frontend**: React + TypeScript + Vite
 - **Blockchain**: Ethers.js + Web3
 - **Routing**: React Router
-- **Estilos**: CSS Modules
-- **Backend**: Node.js + Express (en `/pinata-backend`)
-- **Base de datos**: MongoDB
+- **Estilos**: CSS Modules + Styled Components
+- **Backend**: Node.js + Express
+- **Base de datos**: Supabase + MongoDB
+- **Email**: Resend API
+- **Autenticación**: JWT + Web3
 - **Deployment**: Vercel
+- **Iconos**: FontAwesome
+- **Notificaciones**: Sistema toast personalizado
 
 ## 🖼️ Vista previa
 
@@ -80,10 +90,30 @@ CriptoUNAM es una plataforma educativa descentralizada diseñada para la comunid
    
    Edita el archivo `.env` con tus configuraciones:
    ```env
+   # Web3 Configuration
    VITE_APP_INFURA_ID=tu_infura_id
    VITE_APP_CHAIN_ID=1
    VITE_APP_NETWORK=mainnet
+   
+   # Telegram Bot
    VITE_TELEGRAM_BOT_TOKEN=tu_token_de_telegram
+   
+   # Email Service (Resend)
+   RESEND_API_KEY=tu_resend_api_key
+   RESEND_FROM_EMAIL=noreply@criptounam.com
+   
+   # Database (Supabase)
+   SUPABASE_URL=tu_supabase_url
+   SUPABASE_ANON_KEY=tu_supabase_anon_key
+   
+   # App Configuration
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   NEXT_PUBLIC_APP_NAME=CriptoUNAM
+   
+   # PUMA Token Configuration
+   PUMA_TOKEN_ADDRESS=0x1234567890abcdef
+   PUMA_TOKEN_DECIMALS=18
+   PUMA_REWARD_RATE=100
    ```
 
 4. **Iniciar el servidor de desarrollo:**
@@ -121,35 +151,70 @@ Para funcionalidades completas como notificaciones:
 
 ```
 CriptoUNAM-Website/
-├── CriptoUNAM-Website/
-│   ├── criptounam/                    # Frontend principal
-│   │   ├── src/
-│   │   │   ├── components/           # Componentes reutilizables
-│   │   │   │   ├── Navbar.tsx       # Barra de navegación
-│   │   │   │   ├── Footer.tsx       # Pie de página
-│   │   │   │   └── ConnectedWallets.tsx # Gestión de wallets
-│   │   │   ├── pages/               # Páginas principales
-│   │   │   │   ├── Home.tsx         # Página de inicio
-│   │   │   │   ├── Cursos.tsx       # Catálogo de cursos
-│   │   │   │   ├── Juegos.tsx       # Juegos educativos
-│   │   │   │   ├── Comunidad.tsx    # Página de comunidad
-│   │   │   │   └── Newsletter.tsx   # Suscripción al newsletter
-│   │   │   ├── context/             # Contextos de React
-│   │   │   │   ├── WalletContext.tsx # Gestión de wallets Web3
-│   │   │   │   └── AppKitProvider.tsx # Provider de WalletConnect
-│   │   │   ├── api/                 # Servicios API
-│   │   │   │   └── telegram.ts      # Integración con Telegram
-│   │   │   ├── constants/           # Datos estáticos
-│   │   │   ├── styles/              # Estilos CSS
-│   │   │   └── utils/               # Utilidades
-│   │   ├── public/                  # Archivos estáticos
-│   │   └── pinata-backend/          # Backend Node.js
-│   │       ├── models/              # Modelos de base de datos
-│   │       │   ├── Curso.js         # Modelo de cursos
-│   │       │   ├── Eventos.js       # Modelo de eventos
-│   │       │   └── newsletter.js    # Modelo de newsletter
-│   │       └── routes/              # Rutas API
-└── README.md                        # Este archivo
+├── criptounam/                       # Frontend principal
+│   ├── src/
+│   │   ├── components/              # Componentes reutilizables
+│   │   │   ├── Navbar.tsx          # Barra de navegación
+│   │   │   ├── Footer.tsx          # Pie de página
+│   │   │   ├── ConnectedWallets.tsx # Gestión de wallets
+│   │   │   ├── Email/              # Componentes de email
+│   │   │   │   └── EmailSubscription.tsx
+│   │   │   ├── Likes/              # Sistema de likes
+│   │   │   │   └── LikeButton.tsx
+│   │   │   ├── Puma/               # Sistema PUMA
+│   │   │   │   └── PumaBalance.tsx
+│   │   │   ├── Profile/            # Perfil de usuario
+│   │   │   │   └── ProfileBonus.tsx
+│   │   │   └── Notifications/       # Sistema de notificaciones
+│   │   │       └── NotificationToast.tsx
+│   │   ├── pages/                  # Páginas principales
+│   │   │   ├── Home.tsx            # Página de inicio
+│   │   │   ├── Cursos.tsx          # Catálogo de cursos
+│   │   │   ├── Juegos.tsx          # Juegos educativos
+│   │   │   ├── Comunidad.tsx       # Página de comunidad
+│   │   │   ├── Newsletter.tsx      # Suscripción al newsletter
+│   │   │   └── Perfil.tsx          # Perfil de usuario
+│   │   ├── context/                # Contextos de React
+│   │   │   ├── WalletContext.tsx  # Gestión de wallets Web3
+│   │   │   ├── EmailContext.tsx    # Contexto de emails
+│   │   │   ├── LikesContext.tsx    # Contexto de likes
+│   │   │   └── PumaContext.tsx     # Contexto de PUMA
+│   │   ├── hooks/                  # Hooks personalizados
+│   │   │   ├── useEmail.ts         # Hook para emails
+│   │   │   ├── useLikes.ts         # Hook para likes
+│   │   │   └── usePuma.ts          # Hook para PUMA
+│   │   ├── services/               # Servicios de backend
+│   │   │   ├── email.service.ts    # Servicio de emails
+│   │   │   ├── resend.service.ts   # Servicio Resend
+│   │   │   ├── likes.service.ts    # Servicio de likes
+│   │   │   └── puma.service.ts     # Servicio PUMA
+│   │   ├── api/                    # Rutas de API
+│   │   │   ├── email.routes.ts     # Rutas de email
+│   │   │   ├── likes.routes.ts     # Rutas de likes
+│   │   │   └── puma.routes.ts      # Rutas de PUMA
+│   │   ├── middleware/             # Middleware
+│   │   │   └── auth.middleware.ts  # Autenticación
+│   │   ├── utils/                 # Utilidades
+│   │   │   ├── email.utils.ts     # Utilidades de email
+│   │   │   └── validation.utils.ts # Validaciones
+│   │   ├── types/                 # Tipos TypeScript
+│   │   │   ├── email.ts           # Tipos de email
+│   │   │   ├── likes.ts           # Tipos de likes
+│   │   │   └── puma.ts            # Tipos de PUMA
+│   │   ├── interfaces/            # Interfaces
+│   │   │   ├── email.interface.ts
+│   │   │   ├── likes.interface.ts
+│   │   │   └── puma.interface.ts
+│   │   ├── config/                # Configuración
+│   │   │   ├── env.ts             # Variables de entorno
+│   │   │   └── database/          # Esquemas de BD
+│   │   │       ├── likes.sql
+│   │   │       └── puma.sql
+│   │   ├── constants/             # Datos estáticos
+│   │   ├── styles/               # Estilos CSS
+│   │   └── utils/                # Utilidades generales
+│   └── public/                   # Archivos estáticos
+└── README.md                     # Este archivo
 ```
 
 ## 🎯 Funcionalidades principales
@@ -158,26 +223,40 @@ CriptoUNAM-Website/
 - Cursos estructurados sobre blockchain y DeFi
 - Material didáctico interactivo
 - Certificaciones verificables en blockchain
+- Sistema de progreso y seguimiento
 
 ### 🎮 **Gamificación**
-- Juegos educativos interactivos
+- **4 Juegos educativos**: Memoria, Adivinanza, Reacción, Serpiente
 - Sistema de puntuación y logros
 - Competencias entre estudiantes
+- **Sistema $PUMA**: Tokens de recompensa por participación
 
 ### 🔗 **Integración Web3**
 - Conexión con múltiples wallets (MetaMask, WalletConnect, etc.)
 - Interacción con contratos inteligentes
 - Gestión de tokens y NFTs educativos
+- Autenticación descentralizada
 
 ### 👥 **Comunidad**
 - Foros de discusión
 - Eventos y workshops en vivo
 - Newsletter con actualizaciones del ecosistema
+- **Sistema de likes** para contenido
+- **Notificaciones automáticas** por email
+
+### 💰 **Sistema de Recompensas $PUMA**
+- **Tokens PUMA** por participación activa
+- **Misiones y desafíos** para ganar recompensas
+- **Sistema de niveles** y experiencia
+- **Insignias y logros** desbloqueables
+- **Leaderboard** semanal de usuarios activos
 
 ### 📱 **Experiencia de usuario**
 - Diseño responsive para móviles y desktop
 - Modo oscuro/claro
 - Interfaz intuitiva y accesible
+- **Notificaciones toast** en tiempo real
+- **Dashboard de perfil** completo
 
 ## 🔍 Scripts disponibles
 
@@ -268,9 +347,50 @@ Este proyecto está bajo la Licencia MIT - ver el archivo LICENSE.md para detall
 - **📱 Telegram**: [Canal oficial](https://t.me/criptounam)
 - **💻 GitHub**: [Repositorio del proyecto](https://github.com/MarxMad/CriptoUNAM-Website)
 
+## 🆕 Nuevas funcionalidades implementadas
+
+### 🎮 **Sistema de Juegos Educativos**
+- **Juego de Memoria**: Entrena tu memoria con conceptos blockchain
+- **Juego de Adivinanza**: Adivina números relacionados con cripto
+- **Juego de Reacción**: Mide tu tiempo de respuesta
+- **Juego de Serpiente**: Versión educativa del clásico juego
+
+### 💰 **Sistema de Recompensas $PUMA**
+- **Tokens PUMA**: Sistema de recompensas por participación
+- **Misiones**: Completa tareas para ganar tokens
+- **Niveles**: Sistema de progresión con XP
+- **Insignias**: Logros desbloqueables
+- **Leaderboard**: Ranking semanal de usuarios
+
+### ❤️ **Sistema de Likes**
+- **Like a newsletters**: Sistema de likes para contenido
+- **Estadísticas**: Contador de likes por artículo
+- **Trending**: Contenido más popular
+- **Historial**: Seguimiento de likes del usuario
+
+### 📬 **Sistema de Emails Automáticos**
+- **Resend Integration**: Envío automático de emails
+- **Notificaciones**: Alertas de nuevo contenido
+- **Newsletter**: Suscripción automática
+- **Templates**: Plantillas personalizadas
+
+### 🔔 **Sistema de Notificaciones**
+- **Toast Notifications**: Notificaciones en tiempo real
+- **Tipos**: Success, Error, Warning, Info, Reward
+- **Animaciones**: Transiciones suaves
+- **Responsive**: Adaptable a móviles
+
+### 👤 **Dashboard de Perfil Mejorado**
+- **Sección Bonus**: Gestión de tokens PUMA
+- **Estadísticas**: Progreso y logros
+- **Misiones**: Lista de tareas disponibles
+- **Transacciones**: Historial de actividad
+
 ## 🚀 Estado del proyecto
 
 Este proyecto está en **desarrollo activo**. Nuevas funcionalidades se agregan regularmente. 
+
+**Última actualización**: 30 commits implementados con nuevas funcionalidades de gamificación, sistema de recompensas, emails automáticos y notificaciones.
 
 [![Website Status](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A//criptounam.xyz/)](https://criptounam.xyz/)
 
