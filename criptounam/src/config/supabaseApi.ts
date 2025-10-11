@@ -33,6 +33,7 @@ export interface Curso {
   precio?: number
   fechaInicio?: string
   fechaFin?: string
+  cupo?: number
 }
 
 export interface NewsletterEntry {
