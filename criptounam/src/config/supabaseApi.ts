@@ -16,6 +16,7 @@ export interface Evento {
   registrolink?: string
   imagenPrincipal?: string
   fotos?: string[]
+  videos?: string[]
 }
 
 export interface Curso {
@@ -28,6 +29,7 @@ export interface Curso {
   enlace: string
   creadoEn: string
   instructor?: string
+  precio?: number
 }
 
 export interface NewsletterEntry {
@@ -114,12 +116,12 @@ export const eventosApi = {
 
   // Subir imagen de evento
   async uploadEventImage(file: File): Promise<string> {
-    return uploadImageToSupabase(file, 'eventos')
+    return uploadImageToSupabase(file)
   },
 
   // Subir múltiples imágenes
   async uploadMultipleImages(files: File[]): Promise<string[]> {
-    return uploadMultipleImagesToSupabase(files, 'eventos')
+    return uploadMultipleImagesToSupabase(files)
   }
 }
 
@@ -179,7 +181,7 @@ export const cursosApi = {
   },
 
   async uploadCourseImage(file: File): Promise<string> {
-    return uploadImageToSupabase(file, 'cursos')
+    return uploadImageToSupabase(file)
   }
 }
 
@@ -239,7 +241,7 @@ export const newsletterApi = {
   },
 
   async uploadNewsletterImage(file: File): Promise<string> {
-    return uploadImageToSupabase(file, 'newsletter')
+    return uploadImageToSupabase(file)
   }
 }
 
@@ -362,4 +364,4 @@ export const walletsApi = {
 }
 
 // Re-exportar tipos para uso externo
-export type { Evento, Curso, NewsletterEntry } from './supabase';
+export type { Evento, Curso, NewsletterEntry };
