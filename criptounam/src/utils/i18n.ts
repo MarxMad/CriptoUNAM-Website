@@ -476,31 +476,13 @@ export const useI18n = () => {
   }
 }
 
-// Componente de selector de idioma
-export const LanguageSelector = () => {
-  const { getCurrentLanguage, getSupportedLanguages, setLanguage } = useI18n()
-  const currentLang = getCurrentLanguage()
-  const languages = getSupportedLanguages()
-
-  return (
-    <select
-      value={currentLang}
-      onChange={(e) => setLanguage(e.target.value)}
-      style={{
-        padding: '8px 12px',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-        backgroundColor: 'white',
-        fontSize: '14px'
-      }}
-    >
-      {languages.map(lang => (
-        <option key={lang.code} value={lang.code}>
-          {lang.flag} {lang.nativeName}
-        </option>
-      ))}
-    </select>
-  )
+// Componente de selector de idioma (mover a un archivo .tsx para usar JSX)
+export const createLanguageSelector = () => {
+  return {
+    getCurrentLanguage: i18n.getCurrentLanguage.bind(i18n),
+    getSupportedLanguages: i18n.getSupportedLanguages.bind(i18n),
+    setLanguage: i18n.setLanguage.bind(i18n)
+  }
 }
 
 export default I18nManager
