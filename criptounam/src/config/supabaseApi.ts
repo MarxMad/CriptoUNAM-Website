@@ -135,7 +135,7 @@ export const cursosApi = {
     const { data, error } = await supabase
       .from('cursos')
       .select('*')
-      .order('fechaInicio', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -193,9 +193,9 @@ export const cursosApi = {
 export const newsletterApi = {
   async getAll(): Promise<NewsletterEntry[]> {
     const { data, error } = await supabase
-      .from('newsletter')
+      .from('newsletters')
       .select('*')
-      .order('fecha', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -203,7 +203,7 @@ export const newsletterApi = {
 
   async getById(id: string): Promise<NewsletterEntry | null> {
     const { data, error } = await supabase
-      .from('newsletter')
+      .from('newsletters')
       .select('*')
       .eq('id', id)
       .single()
@@ -214,7 +214,7 @@ export const newsletterApi = {
 
   async create(entry: Omit<NewsletterEntry, 'id' | 'creadoEn'>): Promise<NewsletterEntry> {
     const { data, error } = await supabase
-      .from('newsletter')
+      .from('newsletters')
       .insert([entry])
       .select()
       .single()
@@ -225,7 +225,7 @@ export const newsletterApi = {
 
   async update(id: string, entry: Partial<NewsletterEntry>): Promise<NewsletterEntry> {
     const { data, error } = await supabase
-      .from('newsletter')
+      .from('newsletters')
       .update(entry)
       .eq('id', id)
       .select()
@@ -237,7 +237,7 @@ export const newsletterApi = {
 
   async delete(id: string): Promise<void> {
     const { error } = await supabase
-      .from('newsletter')
+      .from('newsletters')
       .delete()
       .eq('id', id)
 
