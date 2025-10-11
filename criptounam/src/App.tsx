@@ -13,6 +13,7 @@ import RegistroCurso from './pages/RegistroCurso'
 import Newsletter from './pages/Newsletter'
 import NewsletterEntry from './pages/NewsletterEntry'
 import ProyectosDestacados from './pages/ProyectosDestacados'
+import Juegos from './pages/Juegos'
 import { WalletProvider } from './context/WalletContext'
 import './styles/global.css'
 
@@ -50,6 +51,7 @@ const App = () => {
                 <Route path="/proyectos" element={<ProyectosDestacados />} />
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/registro-curso/:id" element={<RegistroCurso />} />
+                <Route path="/juegos" element={<Juegos />} />
               </Routes>
             </main>
             <Footer />

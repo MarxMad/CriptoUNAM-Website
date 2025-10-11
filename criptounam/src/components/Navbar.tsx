@@ -16,7 +16,8 @@ import {
   faWallet,
   faPlus,
   faNewspaper,
-  faCalendarPlus
+  faCalendarPlus,
+  faGamepad
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -245,6 +246,7 @@ const Navbar = () => {
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
     { path: '/comunidad', icon: faUsers, label: 'Comunidad' },
     { path: '/newsletter', icon: faEnvelope, label: 'Newsletter' },
+    { path: '/juegos', icon: faGamepad, label: 'Juegos' },
   ]
 
   const isActiveRoute = (path: string) => {
