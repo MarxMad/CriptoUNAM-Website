@@ -1,22 +1,29 @@
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faCalendarAlt, faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons'
+import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 import '../styles/global.css'
 import { useState, useEffect } from 'react'
 import { newsletterApi, type NewsletterEntry as NewsletterEntryType } from '../config/supabaseApi'
 import BlogContent from '../components/BlogContent'
 import SEOHead from '../components/SEOHead'
+import { useWallet } from '../context/WalletContext'
+import { supabase } from '../config/supabase'
 
 // Tipo para entradas que vienen de la base de datos (con id garantizado)
 type NewsletterEntryWithId = NewsletterEntryType & { id: string }
 
 const NewsletterEntry = () => {
   const { id } = useParams()
+  const { walletAddress, isConnected } = useWallet()
   
   const [entry, setEntry] = useState<NewsletterEntryWithId | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLiking, setIsLiking] = useState(false);
 
   useEffect(() => {
     const fetchEntry = async () => {
@@ -30,6 +37,14 @@ const NewsletterEntry = () => {
         if (entryData && entryData.id) {
           setEntry(entryData as NewsletterEntryWithId);
           setNotFound(false);
+          // Cargar conteo de likes
+          if (supabase) {
+            const { count } = await supabase
+              .from('likes')
+              .select('*', { count: 'exact', head: true })
+              .eq('newsletter_id', entryData.id);
+            setLikeCount(count || 0);
+          }
         } else {
           setNotFound(true);
         }
@@ -42,6 +57,74 @@ const NewsletterEntry = () => {
     };
     fetchEntry();
   }, [id]);
+
+  // Verificar si el usuario ya dio like
+  useEffect(() => {
+    const checkIfLiked = async () => {
+      if (!walletAddress || !id || !supabase) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('likes')
+          .select('*')
+          .eq('user_id', walletAddress)
+          .eq('newsletter_id', id)
+          .single();
+        
+        if (data && !error) {
+          setIsLiked(true);
+        }
+      } catch (error) {
+        console.log('No like encontrado');
+      }
+    };
+    
+    checkIfLiked();
+  }, [walletAddress, id]);
+
+  const handleLike = async () => {
+    if (!walletAddress || !isConnected) {
+      alert('Por favor conecta tu wallet para dar like');
+      return;
+    }
+    
+    if (!id || !supabase) return;
+    
+    setIsLiking(true);
+    
+    try {
+      if (isLiked) {
+        // Quitar like
+        await supabase
+          .from('likes')
+          .delete()
+          .eq('user_id', walletAddress)
+          .eq('newsletter_id', id);
+        
+        setIsLiked(false);
+        setLikeCount(prev => Math.max(0, prev - 1));
+      } else {
+        // Agregar like
+        await supabase
+          .from('likes')
+          .insert([{
+            user_id: walletAddress,
+            newsletter_id: id
+          }]);
+        
+        setIsLiked(true);
+        setLikeCount(prev => prev + 1);
+        
+        // TODO: Otorgar 10 PUMA tokens al usuario
+        console.log('¡Usuario ganó 10 PUMA por dar like!');
+      }
+    } catch (error) {
+      console.error('Error al dar like:', error);
+      alert('Error al procesar el like. Intenta de nuevo.');
+    } finally {
+      setIsLiking(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -95,6 +178,59 @@ const NewsletterEntry = () => {
             )}
           </div>
           <h1 style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', margin:'0 0 0.5rem 0', lineHeight:'1.2'}}>{entry.titulo}</h1>
+          
+          {/* Botón de Like */}
+          <div style={{display:'flex', gap:'1rem', alignItems:'center', marginBottom:'1rem'}}>
+            <button
+              onClick={handleLike}
+              disabled={isLiking || !isConnected}
+              style={{
+                background: isLiked ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'rgba(239, 68, 68, 0.1)',
+                border: isLiked ? '2px solid #ef4444' : '2px solid rgba(239, 68, 68, 0.3)',
+                color: isLiked ? '#fff' : '#ef4444',
+                padding: '0.75rem 1.5rem',
+                borderRadius: '12px',
+                cursor: isLiking || !isConnected ? 'not-allowed' : 'pointer',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                transition: 'all 0.3s ease',
+                opacity: isLiking || !isConnected ? 0.5 : 1,
+                boxShadow: isLiked ? '0 4px 12px rgba(239, 68, 68, 0.3)' : 'none'
+              }}
+              onMouseEnter={(e) => {
+                if (!isLiking && isConnected) {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <FontAwesomeIcon 
+                icon={isLiked ? faHeartSolid : faHeartRegular} 
+                style={{fontSize: '1.3rem'}} 
+              />
+              <span>{isLiked ? 'Te gusta' : 'Me gusta'}</span>
+              <span style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                padding: '0.2rem 0.6rem',
+                borderRadius: '8px',
+                fontSize: '0.9rem'
+              }}>
+                {likeCount}
+              </span>
+            </button>
+            
+            {!isConnected && (
+              <span style={{color: '#9CA3AF', fontSize: '0.9rem', fontStyle: 'italic'}}>
+                Conecta tu wallet para dar like
+              </span>
+            )}
+          </div>
+
           {entry.tags && entry.tags.length > 0 && (
             <div className="entry-tags" style={{display:'flex', gap:'0.5rem', flexWrap:'wrap', marginBottom:'0.5rem'}}>
               {entry.tags.map((tag, index) => (
