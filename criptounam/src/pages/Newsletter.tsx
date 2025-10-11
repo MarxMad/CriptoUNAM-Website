@@ -48,6 +48,7 @@ const formatDateToSpanish = (dateStr: string): string => {
 const Newsletter = () => {
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const { walletAddress, isConnected } = useWallet();
@@ -162,6 +163,7 @@ const Newsletter = () => {
       }
 
       setIsSubscribed(true)
+      setShowConfirmation(true)
       setEmail('')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al procesar la suscripción')
@@ -502,46 +504,74 @@ const Newsletter = () => {
         </section>
 
         <aside className="subscription-section card" style={{flex:'1 1 340px', minWidth:320, maxWidth:400, padding:'2rem', background:'rgba(26,26,26,0.7)', backdropFilter:'blur(12px)', border:'1.5px solid #D4AF37', boxShadow:'0 4px 24px rgba(30,58,138,0.08)', position:'sticky', top:'6rem', alignSelf:'flex-start', height:'fit-content'}}>
-          <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.2rem', marginBottom:'1rem'}}>Suscríbete a Nuestra Newsletter</h2>
-          <p className="subscription-description" style={{color:'#E0E0E0', fontSize:'1rem', marginBottom:'1.2rem'}}>
-            Únete a nuestra comunidad y recibe contenido exclusivo sobre blockchain, criptomonedas y tecnología Web3
-          </p>
-          <div className="newsletter-form-container">
-            <form onSubmit={handleSubmit} className="newsletter-form" style={{display:'flex', flexDirection:'column', gap:'1rem'}}>
-              <div className="form-group" style={{display:'flex', flexDirection:'column', gap:'0.3rem'}}>
-                <label htmlFor="email" style={{color:'#D4AF37', fontWeight:600, marginBottom:2}}>
-                  <FontAwesomeIcon icon={faEnvelope} /> Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="tu@email.com"
-                  required
-                  style={{borderRadius:12, border:'2px solid #D4AF37', background:'rgba(26,26,26,0.7)', color:'#fff', fontSize:'1rem', padding:'0.8rem 1rem'}}
-                />
+          {!showConfirmation ? (
+            <>
+              <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.2rem', marginBottom:'1rem'}}>Suscríbete a Nuestra Newsletter</h2>
+              <p className="subscription-description" style={{color:'#E0E0E0', fontSize:'1rem', marginBottom:'1.2rem'}}>
+                Únete a nuestra comunidad y recibe contenido exclusivo sobre blockchain, criptomonedas y tecnología Web3
+              </p>
+              <div className="newsletter-form-container">
+                <form onSubmit={handleSubmit} className="newsletter-form" style={{display:'flex', flexDirection:'column', gap:'1rem'}}>
+                  <div className="form-group" style={{display:'flex', flexDirection:'column', gap:'0.3rem'}}>
+                    <label htmlFor="email" style={{color:'#D4AF37', fontWeight:600, marginBottom:2}}>
+                      <FontAwesomeIcon icon={faEnvelope} /> Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="tu@email.com"
+                      required
+                      style={{borderRadius:12, border:'2px solid #D4AF37', background:'rgba(26,26,26,0.7)', color:'#fff', fontSize:'1rem', padding:'0.8rem 1rem'}}
+                    />
+                  </div>
+
+                  {error && <div className="error-message" style={{color:'#ff4444', fontWeight:600}}>{error}</div>}
+
+                  <button type="submit" className="primary-button" style={{fontSize:'1rem', borderRadius:18, fontWeight:700, letterSpacing:'1px', padding:'0.7rem 1.2rem', marginTop:'0.5rem'}} disabled={loading}>
+                    {loading ? (
+                      <>
+                        <span className="loading-spinner"></span>
+                        Procesando...
+                      </>
+                    ) : (
+                      'Suscribirse Ahora'
+                    )}
+                  </button>
+                </form>
               </div>
-
-              {error && <div className="error-message" style={{color:'#ff4444', fontWeight:600}}>{error}</div>}
-              {isSubscribed && (
-                <div className="success-message" style={{color:'#D4AF37', fontWeight:600}}>
-                  ¡Gracias por suscribirte! Te mantendremos informado.
-                </div>
-              )}
-
-              <button type="submit" className="primary-button" style={{fontSize:'1rem', borderRadius:18, fontWeight:700, letterSpacing:'1px', padding:'0.7rem 1.2rem', marginTop:'0.5rem'}} disabled={loading}>
-                {loading ? (
-                  <>
-                    <span className="loading-spinner"></span>
-                    Procesando...
-                  </>
-                ) : (
-                  'Suscribirse Ahora'
-                )}
+            </>
+          ) : (
+            <div className="confirmation-screen" style={{textAlign:'center', padding:'1rem 0'}}>
+              <div className="confirmation-icon" style={{fontSize:'4rem', marginBottom:'1rem', color:'#D4AF37'}}>
+                ✅
+              </div>
+              <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.3rem', marginBottom:'1rem'}}>
+                ¡Suscripción Exitosa!
+              </h2>
+              <p className="confirmation-message" style={{color:'#E0E0E0', fontSize:'1rem', marginBottom:'1.5rem', lineHeight:'1.5'}}>
+                ¡Bienvenido a la comunidad CriptoUNAM! 🚀<br/>
+                Recibirás contenido exclusivo sobre blockchain, criptomonedas y tecnología Web3.
+              </p>
+              <div className="confirmation-benefits" style={{textAlign:'left', marginBottom:'1.5rem'}}>
+                <p style={{color:'#D4AF37', fontWeight:600, marginBottom:'0.5rem'}}>Lo que recibirás:</p>
+                <ul style={{color:'#E0E0E0', fontSize:'0.9rem', paddingLeft:'1rem', margin:0}}>
+                  <li>📧 Notificaciones de nuevos artículos</li>
+                  <li>🎓 Actualizaciones de cursos</li>
+                  <li>🚀 Eventos y webinars exclusivos</li>
+                  <li>💰 Recompensas $PUMA</li>
+                </ul>
+              </div>
+              <button 
+                onClick={() => setShowConfirmation(false)}
+                className="primary-button" 
+                style={{fontSize:'0.9rem', borderRadius:18, fontWeight:700, letterSpacing:'1px', padding:'0.6rem 1rem', background:'rgba(212, 175, 55, 0.1)', border:'1px solid #D4AF37', color:'#D4AF37'}}
+              >
+                Suscribir Otro Email
               </button>
-            </form>
-          </div>
+            </div>
+          )}
         </aside>
       </div>
 
