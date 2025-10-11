@@ -65,11 +65,7 @@ export const mockData = {
 
 // Wrapper personalizado para testing
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <BrowserRouter>
-      {children}
-    </BrowserRouter>
-  )
+  return <BrowserRouter>{children}</BrowserRouter>
 }
 
 // Función de render personalizada
