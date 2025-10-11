@@ -2,7 +2,9 @@
 import { Router } from 'express'
 import { EmailUtils } from '../utils/email.utils'
 import { ValidationUtils } from '../utils/validation.utils'
-import { authenticateToken, validateEmail } from '../middleware/auth.middleware'
+import { authenticateToken, validateEmail, AuthenticatedRequest } from '../middleware/auth.middleware'
+import { EmailService } from '../services/email.service'
+import { ResendService } from '../services/resend.service'
 
 const router = Router()
 
@@ -21,8 +23,8 @@ router.post('/subscribe', validateEmail, async (req, res) => {
       return res.status(400).json({ error: subscriptionValidation.error })
     }
 
-    // Enviar email de bienvenida
-    const welcomeSent = await EmailUtils.sendWelcomeEmail(email, 'Usuario')
+    // Enviar email de bienvenida usando ResendService
+    const welcomeSent = await ResendService.sendWelcomeEmail(email, 'Usuario')
     
     if (!welcomeSent) {
       console.error('Error enviando email de bienvenida')

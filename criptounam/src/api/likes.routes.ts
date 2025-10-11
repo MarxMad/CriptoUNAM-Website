@@ -2,6 +2,7 @@
 import { Router } from 'express'
 import { ValidationUtils } from '../utils/validation.utils'
 import { authenticateToken, validateLike, AuthenticatedRequest } from '../middleware/auth.middleware'
+import { LikesService } from '../services/likes.service'
 
 const router = Router()
 
@@ -25,8 +26,12 @@ router.post('/', authenticateToken, validateLike, async (req: AuthenticatedReque
       return res.status(400).json({ error: likeValidation.error })
     }
 
-    // Aquí se guardaría en la base de datos
-    // const like = await likesService.addLike(userId, newsletterId)
+    // Agregar like usando LikesService
+    const likeAdded = await LikesService.addLike(userId, newsletterId)
+    
+    if (!likeAdded) {
+      return res.status(400).json({ error: 'Error agregando like' })
+    }
 
     // Simular respuesta
     const like = {
