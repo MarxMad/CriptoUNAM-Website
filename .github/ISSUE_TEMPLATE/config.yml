@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentación
+    url: https://github.com/MarxMad/CriptoUNAM-Website/blob/main/README.md
+    about: Consulta la documentación del proyecto
+  - name: 💬 Telegram
+    url: https://t.me/criptounam
+    about: Únete a nuestra comunidad en Telegram
+
