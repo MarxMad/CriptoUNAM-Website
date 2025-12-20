@@ -505,11 +505,11 @@ const YearInReview: React.FC = () => {
 
           .slide-title {
             font-family: 'Urbanist', 'Orbitron', sans-serif;
-            font-size: 56px;
+            font-size: 42px;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
+            letter-spacing: -1px;
+            margin-bottom: 15px;
             text-align: center;
             line-height: 1;
           }
@@ -525,19 +525,31 @@ const YearInReview: React.FC = () => {
 
           .content-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
+            grid-template-columns: 1fr;
+            gap: 0;
             width: 100%;
-            max-width: 1100px;
+            max-width: 100%;
+            align-items: start;
+            height: 100%;
+          }
+          
+          .content-grid-month {
+            width: 100%;
+            height: calc(100vh - 200px);
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
           }
 
           .card {
             background: var(--card-bg);
             border: 1px solid rgba(255,255,255,0.1);
-            padding: 40px;
-            border-radius: 24px;
+            padding: 20px;
+            border-radius: 16px;
             backdrop-filter: blur(10px);
+            font-size: 14px;
+            line-height: 1.5;
           }
 
           .logo-main {
@@ -699,28 +711,31 @@ const YearInReview: React.FC = () => {
 
           .image-gallery {
             width: 100%;
-            max-height: 500px;
+            max-width: 100%;
+            max-height: calc(100vh - 200px);
+            height: calc(100vh - 200px);
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 10px;
+            padding: 20px;
             background: rgba(0,0,0,0.2);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0;
+            border: none;
           }
 
           .image-gallery-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
             padding: 10px;
+            width: 100%;
           }
 
           .gallery-image {
             width: 100%;
-            height: 150px;
+            height: 250px;
             object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            border: 2px solid rgba(212, 175, 55, 0.4);
             transition: all 0.3s ease;
             cursor: pointer;
             display: block !important;
@@ -750,9 +765,9 @@ const YearInReview: React.FC = () => {
           .gallery-image-wrapper {
             position: relative;
             width: 100%;
-            min-height: 150px;
+            min-height: 250px;
             background: rgba(0,0,0,0.2);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -825,17 +840,23 @@ const YearInReview: React.FC = () => {
               width: 150px;
             }
 
+            .content-grid {
+              grid-template-columns: 1fr;
+              gap: 20px;
+            }
+
             .image-gallery {
-              max-height: 400px;
+              max-height: 60vh;
+              height: 60vh;
             }
 
             .image-gallery-grid {
-              grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-              gap: 8px;
+              grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+              gap: 10px;
             }
 
             .gallery-image {
-              height: 100px;
+              height: 120px;
             }
           }
         `}</style>
@@ -877,9 +898,6 @@ const YearInReview: React.FC = () => {
               Hackathon <span style={{ color: 'var(--unam-gold)' }}>De VARA en ITAM</span>
             </h2>
             <div className="content-grid">
-              <div className="card">
-                <p>Lanzamiento de PumaAgent AI, </p>
-              </div>
               <ImageGallery month="ENERO" />
             </div>
           </div>
@@ -891,9 +909,6 @@ const YearInReview: React.FC = () => {
             </h2>
             <div className="content-grid">
               <ImageGallery month="FEBRERO" />
-              <div className="card">
-                <p>Eventos CriptoUNAM y colaboración con protocolos destacados.</p>
-              </div>
             </div>
           </div>
 
@@ -903,9 +918,6 @@ const YearInReview: React.FC = () => {
               Bitcoin Day <span style={{ color: 'var(--unam-gold)' }}>UNAM</span>
             </h2>
             <div className="content-grid">
-              <div className="card">
-                <p>Evento masivo en la Facultad de Ingeniería. Onboarding de más de 300 estudiantes a la red Ethereum.</p>
-              </div>
               <ImageGallery month="MARZO" />
             </div>
           </div>
@@ -917,9 +929,6 @@ const YearInReview: React.FC = () => {
             </h2>
             <div className="content-grid">
               <ImageGallery month="ABRIL" />
-              <div className="card">
-                <p>Alianzas con ITAM e IPN. Participación como Community Partners en BlockchainCoin, liderando el diálogo académico.</p>
-              </div>
             </div>
           </div>
 
@@ -929,9 +938,6 @@ const YearInReview: React.FC = () => {
               Base Batch <span style={{ color: 'var(--unam-gold)' }}>LatAm</span>
             </h2>
             <div className="content-grid">
-              <div className="card">
-                <p><strong>CampusCoin</strong> seleccionado como finalista. Además, celebramos el Bitcoin Pizza Day con una gran convocatoria en Ingeniería.</p>
-              </div>
               <ImageGallery month="MAYO" />
             </div>
           </div>
@@ -943,9 +949,6 @@ const YearInReview: React.FC = () => {
             </h2>
             <div className="content-grid">
               <ImageGallery month="JUNIO" />
-              <div className="card">
-                <p>Participación destacada en ETH Mérida. Networking con protocolos globales para traer recursos a la comunidad local.</p>
-              </div>
             </div>
           </div>
 
@@ -955,9 +958,6 @@ const YearInReview: React.FC = () => {
               Summer <span style={{ color: 'var(--unam-gold)' }}>Builders</span>
             </h2>
             <div className="content-grid">
-              <div className="card">
-                <p>Mes de inmersión técnica intensiva en Rust y Solidity. Preparación de los equipos para la temporada de hackathons.</p>
-              </div>
               <ImageGallery month="JULIO" />
             </div>
           </div>
@@ -969,9 +969,6 @@ const YearInReview: React.FC = () => {
             </h2>
             <div className="content-grid">
               <ImageGallery month="AGOSTO" />
-              <div className="card">
-                <p>Ganadores del Bitso Hackathon con <strong>La Kiniela</strong>. Apoyo organizacional en Unlock Summit Zacatlán.</p>
-              </div>
             </div>
           </div>
 
@@ -981,9 +978,6 @@ const YearInReview: React.FC = () => {
               Meridian <span style={{ color: 'var(--unam-gold)' }}>Rio</span>
             </h2>
             <div className="content-grid">
-              <div className="card">
-                <p>CriptoUNAM en Río de Janeiro para Stellar Meridian. Desarrollo de Soroswap en Telegram y semifinalistas en CoreDAO.</p>
-              </div>
               <ImageGallery month="SEPTIEMBRE" />
             </div>
           </div>
@@ -995,9 +989,6 @@ const YearInReview: React.FC = () => {
             </h2>
             <div className="content-grid">
               <ImageGallery month="OCTUBRE" />
-              <div className="card">
-                <p>Ganadores Starknet re&#123;solve&#125; (NearMint). Impacto masivo en la Feria de Comunidades de la UNAM en Las Islas.</p>
-              </div>
             </div>
           </div>
 
@@ -1007,9 +998,6 @@ const YearInReview: React.FC = () => {
               Hazaña en <span style={{ color: 'var(--unam-gold)' }}>Monterrey</span>
             </h2>
             <div className="content-grid">
-              <div className="card">
-                <p><strong>Verifica.xyz</strong> gana 3 Tracks en ETH México Monterrey. Gerry imparte taller de VibeCoding Sold-Out.</p>
-              </div>
               <ImageGallery month="NOVIEMBRE" />
             </div>
           </div>
@@ -1021,9 +1009,6 @@ const YearInReview: React.FC = () => {
             </h2>
             <div className="content-grid">
               <ImageGallery month="DICIEMBRE" />
-              <div className="card">
-                <p>Recap anual y selección oficial para el Localism Fund. Preparación de la agenda de Mini-Hackathons 2026.</p>
-              </div>
             </div>
           </div>
 
