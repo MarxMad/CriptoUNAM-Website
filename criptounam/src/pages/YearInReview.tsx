@@ -331,6 +331,11 @@ const YearInReview: React.FC = () => {
       )
     }
 
+    // Log para debugging
+    if (import.meta.env.DEV) {
+      console.log(`📸 ${month}: ${compatibleImages.length} imágenes compatibles`, compatibleImages)
+    }
+
     return (
       <div className="image-gallery">
         <div className="image-gallery-grid">
@@ -343,6 +348,10 @@ const YearInReview: React.FC = () => {
               basePath + filename.replace(/\s+/g, '%20'), // Espacios como %20
             ]
             
+            if (import.meta.env.DEV && index === 0) {
+              console.log(`🖼️ Intentando cargar: ${filename}`, paths[0])
+            }
+            
             return (
               <div 
                 key={`${month}-${index}-${filename}`} 
@@ -350,7 +359,7 @@ const YearInReview: React.FC = () => {
               >
                 <img
                   src={paths[0]}
-                  alt={`${month} ${index + 1}`}
+                  alt={`${month} - ${filename}`}
                   className="gallery-image"
                   loading="lazy"
                   onError={(e) => {
@@ -361,14 +370,10 @@ const YearInReview: React.FC = () => {
                       // Intentar siguiente variación
                       target.dataset.attempt = String(attempt + 1)
                       target.src = paths[attempt + 1]
-                      if (import.meta.env.DEV) {
-                        console.log(`🔄 Reintentando (${attempt + 2}/${paths.length}): ${paths[attempt + 1]}`)
-                      }
+                      console.warn(`🔄 Reintentando (${attempt + 2}/${paths.length}): ${paths[attempt + 1]}`)
                     } else {
                       // Todas las variaciones fallaron
-                      if (import.meta.env.DEV) {
-                        console.warn(`❌ No se pudo cargar: ${filename}`, paths)
-                      }
+                      console.error(`❌ No se pudo cargar: ${filename}`, paths)
                       target.style.display = 'none'
                     }
                   }}
@@ -376,9 +381,7 @@ const YearInReview: React.FC = () => {
                     const target = e.currentTarget as HTMLImageElement
                     target.style.opacity = '1'
                     target.style.filter = 'none'
-                    if (import.meta.env.DEV) {
-                      console.log(`✅ Cargada: ${filename}`)
-                    }
+                    console.log(`✅ Cargada: ${filename}`)
                   }}
                 />
               </div>
@@ -704,10 +707,18 @@ const YearInReview: React.FC = () => {
             background: rgba(255,255,255,0.02);
             opacity: 0;
             visibility: visible !important;
+            position: relative;
+            z-index: 2;
           }
           
           .gallery-image[src]:not([src=""]) {
             opacity: 1 !important;
+          }
+          
+          .gallery-image:not([src]), 
+          .gallery-image[src=""],
+          .gallery-image[style*="display: none"] {
+            display: none !important;
           }
 
           .gallery-image:hover {
@@ -727,6 +738,27 @@ const YearInReview: React.FC = () => {
             background: rgba(0,0,0,0.2);
             border-radius: 8px;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .gallery-image-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s;
+          }
+          
+          .gallery-image-wrapper:has(img[src=""])::before,
+          .gallery-image-wrapper:not(:has(img[src]))::before {
+            opacity: 1;
           }
 
           .image-gallery::-webkit-scrollbar {
