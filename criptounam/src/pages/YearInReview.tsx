@@ -295,6 +295,8 @@ const YearInReview: React.FC = () => {
 
   // Función helper para obtener la ruta de la imagen
   const getImagePath = (month: string, filename: string) => {
+    // En Vite, las rutas desde /public se sirven desde la raíz
+    // No codificar aquí, dejar que el navegador maneje la codificación
     return `/images/${month}_CRIPTOUNAM/${filename}`
   }
 
@@ -335,20 +337,49 @@ const YearInReview: React.FC = () => {
     return (
       <div className="image-gallery">
         <div className="image-gallery-grid">
-          {compatibleImages.map((filename, index) => (
-            <img
-              key={index}
-              src={getImagePath(month, filename)}
-              alt={`${month} ${index + 1}`}
-              className="gallery-image"
-              loading="lazy"
-              onError={(e) => {
-                // Si la imagen falla, ocultarla
-                const target = e.target as HTMLImageElement
-                target.style.display = 'none'
-              }}
-            />
-          ))}
+          {compatibleImages.map((filename, index) => {
+            // Usar la ruta sin codificar (Vite maneja las rutas automáticamente)
+            const imagePath = `/images/${month}_CRIPTOUNAM/${filename}`
+            
+            return (
+              <div 
+                key={`${month}-${index}-${filename}`} 
+                className="gallery-image-wrapper"
+              >
+                <img
+                  src={imagePath}
+                  alt={`${month} ${index + 1}`}
+                  className="gallery-image"
+                  loading="lazy"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement
+                    console.warn(`⚠️ Error cargando: ${imagePath}`, filename)
+                    
+                    // Intentar con ruta codificada como fallback
+                    if (!target.dataset.retried) {
+                      target.dataset.retried = 'true'
+                      const encodedPath = `/images/${month}_CRIPTOUNAM/${encodeURIComponent(filename)}`
+                      console.log(`🔄 Reintentando con: ${encodedPath}`)
+                      target.src = encodedPath
+                      return
+                    }
+                    
+                    // Si falló ambas veces, mostrar placeholder pero NO ocultar el contenedor
+                    console.error(`❌ No se pudo cargar: ${filename}`)
+                    target.style.opacity = '0.1'
+                    target.style.filter = 'grayscale(100%) blur(2px)'
+                  }}
+                  onLoad={(e) => {
+                    // Cuando carga correctamente
+                    const target = e.currentTarget as HTMLImageElement
+                    target.style.opacity = '1'
+                    target.style.filter = 'none'
+                    console.log(`✅ Imagen cargada: ${filename}`)
+                  }}
+                />
+              </div>
+            )
+          })}
         </div>
       </div>
     )
@@ -400,12 +431,14 @@ const YearInReview: React.FC = () => {
             color: #fff;
             overflow: hidden;
             height: 100vh;
+            width: 100vw;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            z-index: 9999;
+            z-index: 1;
+            isolation: isolate;
           }
 
           .year-review-container * {
@@ -663,12 +696,29 @@ const YearInReview: React.FC = () => {
             border: 2px solid rgba(212, 175, 55, 0.3);
             transition: all 0.3s ease;
             cursor: pointer;
+            display: block !important;
+            background: rgba(255,255,255,0.02);
+            opacity: 1 !important;
+            visibility: visible !important;
           }
 
           .gallery-image:hover {
             transform: scale(1.05);
             border-color: var(--unam-gold);
             box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+          }
+
+          .gallery-image[src=""] {
+            display: none;
+          }
+
+          .gallery-image-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 150px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            overflow: hidden;
           }
 
           .image-gallery::-webkit-scrollbar {

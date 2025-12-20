@@ -26,7 +26,7 @@ const AppContent = () => {
   return (
     <div className="app">
       {!isYearInReview && <Navbar />}
-      <main>
+      <main style={isYearInReview ? { position: 'relative', height: '100vh', overflow: 'hidden' } : {}}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cursos" element={<Cursos />} />
