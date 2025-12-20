@@ -145,8 +145,10 @@ const monthImages: Record<string, string[]> = {
     'a1a2c0db-d26b-42ed-aa03-7a95aceb3b18.JPG',
     'IMG_4187.PNG',
     'IMG_4260.HEIC',
+    'IMG_4260.jpg',
     'IMG_4272.HEIC',
     'IMG_4437.HEIC',
+    'IMG_4437.jpg',
     'IMG_4458.PNG',
     'IMG_4493.JPG'
   ],
@@ -291,7 +293,7 @@ const monthImages: Record<string, string[]> = {
 
 const YearInReview: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const totalSlides = 18
+  const totalSlides = 17
 
   // Función helper para obtener la ruta de la imagen
   const getImagePath = (month: string, filename: string) => {
@@ -915,7 +917,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 3 ? 'active' : ''}`}>
             <div className="month-badge">MARZO</div>
             <h2 className="slide-title">
-              Bitcoin Day <span style={{ color: 'var(--unam-gold)' }}>UNAM</span>
+              Argentina, Bootcamps y <span style={{ color: 'var(--unam-gold)' }}>Workshops</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="MARZO" />
@@ -935,7 +937,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 5 ? 'active' : ''}`}>
             <div className="month-badge">MAYO</div>
             <h2 className="slide-title">
-              Base Batch <span style={{ color: 'var(--unam-gold)' }}>LatAm</span>
+              Hackathones <span style={{ color: 'var(--unam-gold)' }}>LatAm</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="MAYO" />
@@ -945,7 +947,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 6 ? 'active' : ''}`}>
             <div className="month-badge">JUNIO</div>
             <h2 className="slide-title">
-              ETH <span style={{ color: 'var(--unam-gold)' }}>Mérida</span>
+              Nouns amigos, Diputados y  <span style={{ color: 'var(--unam-gold)' }}>Demo Day en BaseBatch</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="JUNIO" />
@@ -975,7 +977,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 9 ? 'active' : ''}`}>
             <div className="month-badge">SEPTIEMBRE</div>
             <h2 className="slide-title">
-              Meridian <span style={{ color: 'var(--unam-gold)' }}>Rio</span>
+              Meridian <span style={{ color: 'var(--unam-gold)' }}>Rio & CU Islas</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="SEPTIEMBRE" />
@@ -985,7 +987,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 10 ? 'active' : ''}`}>
             <div className="month-badge">OCTUBRE</div>
             <h2 className="slide-title">
-              Starknet re&#123;solve&#125; & <span style={{ color: 'var(--unam-gold)' }}>Islas</span>
+              BASE, Starknet, Solana & <span style={{ color: 'var(--unam-gold)' }}>ETH México Monterrey</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="OCTUBRE" />
@@ -995,7 +997,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 11 ? 'active' : ''}`}>
             <div className="month-badge">NOVIEMBRE</div>
             <h2 className="slide-title">
-              Hazaña en <span style={{ color: 'var(--unam-gold)' }}>Monterrey</span>
+              Devconnect, Foro Blockchain <span style={{ color: 'var(--unam-gold)' }}>ETH Global Argentina</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="NOVIEMBRE" />
@@ -1005,7 +1007,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 12 ? 'active' : ''}`}>
             <div className="month-badge">DICIEMBRE</div>
             <h2 className="slide-title">
-              Cierre & <span style={{ color: 'var(--unam-gold)' }}>Localism</span>
+              Cierre  <span style={{ color: 'var(--unam-gold)' }}></span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="DICIEMBRE" />
@@ -1015,18 +1017,95 @@ const YearInReview: React.FC = () => {
           {/* SLIDE: IMPACTO EN CIFRAS (después de Diciembre) */}
           <div className={`slide ${currentSlide === 13 ? 'active' : ''}`}>
             <h2 className="slide-title">
-              IMPACTO EN <span style={{ color: 'var(--unam-gold)' }}>CIFRAS</span>
+              SON LOS <span style={{ color: 'var(--unam-gold)' }}>HACKATHONES GANADOS</span>
             </h2>
-            <div className="content-grid">
-              <div style={{ textAlign: 'center' }}>
-                <div className="stats-huge">$65K+</div>
-                <p className="slide-subtitle">USD Generados en Premios</p>
-              </div>
-              <div className="card">
-                <p style={{ marginBottom: '20px' }}><strong>7 Hackathons</strong> Atendidos</p>
-                <p style={{ marginBottom: '20px' }}><strong>12 Tracks</strong> Ganados</p>
-                <p style={{ marginBottom: '20px' }}><strong>+500 Miembros</strong> en la comunidad</p>
-                <p><strong>100%</strong> de compromiso con la educación</p>
+            <div style={{ 
+              width: '100%', 
+              maxWidth: '1200px', 
+              maxHeight: '70vh', 
+              overflowY: 'auto',
+              padding: '20px',
+              background: 'rgba(0,0,0,0.2)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: '1fr 1fr', 
+                gap: '20px',
+                marginBottom: '30px'
+              }}>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '15px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '15px', fontSize: '18px' }}>Hackathones Ganados</h3>
+                  <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
+                    <p><strong>UNIFOOD</strong> - ETHCDM - <span style={{ color: 'var(--unam-gold)' }}>500 USD</span></p>
+                    <p><strong>CampusCoin</strong> - BaseBatch Latam 001 - <span style={{ color: 'var(--unam-gold)' }}>1,250 USD</span></p>
+                    <p><strong>MY DENTAL VAULT</strong> - POLKADOT - <span style={{ color: 'var(--unam-gold)' }}>200 USD</span></p>
+                    <p><strong>UNAM DAO</strong> - SHERRY (AVAX) - <span style={{ color: 'var(--unam-gold)' }}>300 USD</span></p>
+                    <p><strong>LA KINIELA</strong> - BITSO HACKATHON - <span style={{ color: 'var(--unam-gold)' }}>1,500 USD</span></p>
+                    <p><strong>ENERPAY</strong> - BITSO HACKATHON - <span style={{ color: 'var(--unam-gold)' }}>1,000 USD</span></p>
+                    <p><strong>NEARMINT</strong> - STARKNET RESOLVE - <span style={{ color: 'var(--unam-gold)' }}>600 USD</span></p>
+                    <p><strong>UNBOX</strong> - SOLANA SHIPYARD - <span style={{ color: 'var(--unam-gold)' }}>150 USD</span></p>
+                    <p><strong>VERIFICA.XYZ</strong> - ETH MEXICO MONTERREY - <span style={{ color: 'var(--unam-gold)' }}>1,500 USD</span></p>
+                    <p><strong>EVVM SCANNER</strong> - ETH GLOBAL ARGENTINA - <span style={{ color: 'var(--unam-gold)' }}>1,375 USD</span></p>
+                    <p><strong>PREMIO.XYZ</strong> - CELO PROOF OF SHIP - <span style={{ color: 'var(--unam-gold)' }}>40 USD</span></p>
+                    <p><strong>SKILLHUB ID</strong> - STELLAR MEXICO - <span style={{ color: 'var(--unam-gold)' }}>100 USD</span></p>
+                  </div>
+                  <div style={{ 
+                    marginTop: '20px', 
+                    paddingTop: '20px', 
+                    borderTop: '2px solid var(--unam-gold)',
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    color: 'var(--unam-gold)'
+                  }}>
+                    TOTAL: <span style={{ fontSize: '28px' }}>8,515 USD</span>
+                  </div>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '15px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '15px', fontSize: '18px' }}>Hackathones Participados</h3>
+                  <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
+                    <p><strong>UNIFOOD</strong> - ETHCDM <span style={{ color: 'var(--unam-gold)' }}>🏆 500 USD</span></p>
+                    <p><strong>CampusCoin</strong> - BaseBatch Latam 001 <span style={{ color: 'var(--unam-gold)' }}>🏆 1,250 USD</span></p>
+                    <p><strong>MY DENTAL VAULT</strong> - POLKADOT <span style={{ color: 'var(--unam-gold)' }}>🏆 200 USD</span></p>
+                    <p><strong>UNAM DAO</strong> - SHERRY (AVAX) <span style={{ color: 'var(--unam-gold)' }}>🏆 300 USD</span></p>
+                    <p><strong>LA KINIELA</strong> - BITSO HACKATHON <span style={{ color: 'var(--unam-gold)' }}>🏆 1,500 USD</span></p>
+                    <p><strong>ENERPAY</strong> - BITSO HACKATHON <span style={{ color: 'var(--unam-gold)' }}>🏆 1,000 USD</span></p>
+                    <p><strong>NEARMINT</strong> - STARKNET RESOLVE <span style={{ color: 'var(--unam-gold)' }}>🏆 600 USD</span></p>
+                    <p><strong>UNBOX</strong> - SOLANA SHIPYARD <span style={{ color: 'var(--unam-gold)' }}>🏆 150 USD</span></p>
+                    <p><strong>VERIFICA.XYZ</strong> - ETH MEXICO MONTERREY <span style={{ color: 'var(--unam-gold)' }}>🏆 1,500 USD</span></p>
+                    <p><strong>EVVM SCANNER</strong> - ETH GLOBAL ARGENTINA <span style={{ color: 'var(--unam-gold)' }}>🏆 1,375 USD</span></p>
+                    <p><strong>PREMIO.XYZ</strong> - CELO PROOF OF SHIP <span style={{ color: 'var(--unam-gold)' }}>🏆 40 USD</span></p>
+                    <p><strong>SKILLHUB ID</strong> - STELLAR MEXICO <span style={{ color: 'var(--unam-gold)' }}>🏆 100 USD</span></p>
+                    <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}><strong>ALEPH ARGENTINA</strong> - UNIFOOD</p>
+                    <p><strong>PUMAPAY</strong> - BITSO Y STELLAR ARGENTINA</p>
+                    <p><strong>ZENTRADE</strong> - MERIDIAN RIO DE JANEIRO</p>
+                    <p><strong>WORLD CUP</strong> - ETH GLOBAL NUEVA YORK</p>
+                    <p><strong>CORE WAVE AGENTS</strong> - COREDAO BUILDATHON</p>
+                    <p><strong>MOBILE MONAD HACKATHON</strong> - KINIELA & INSURANCE</p>
+                  </div>
+                  <div style={{ 
+                    marginTop: '20px', 
+                    paddingTop: '20px', 
+                    borderTop: '2px solid var(--unam-gold)',
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    color: 'var(--unam-gold)',
+                    textAlign: 'center'
+                  }}>
+                    TOTAL: <span style={{ fontSize: '28px' }}>18 Hackathones</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1039,87 +1118,118 @@ const YearInReview: React.FC = () => {
             <p className="slide-subtitle">Soluciones On-Chain de Alto Nivel</p>
             <div className="project-grid">
               <div className="project-tile">
-                <h3>Verifica.xyz</h3>
+                <h3>UTONOMA</h3>
+                <p>Proyecto destacado de CriptoUNAM.</p>
+              </div>
+              <div className="project-tile">
+                <h3>VERIFICA.XYZ</h3>
                 <p>Transparencia institucional con ENS. Ganador de 3 tracks en ETH México Monterrey.</p>
               </div>
               <div className="project-tile">
-                <h3>La Kiniela</h3>
+                <h3>LA KINIELA</h3>
                 <p>Predicciones descentralizadas en Arbitrum. Ganadores del Bitso Hackathon 2025.</p>
               </div>
               <div className="project-tile">
-                <h3>NearMint</h3>
-                <p>Protección de coleccionables físicos en Starknet. Ganador de Starknet re&#123;solve&#125;.</p>
+                <h3>PUMAPAY</h3>
+                <p>Proyecto destacado de CriptoUNAM.</p>
               </div>
               <div className="project-tile">
-                <h3>CampusCoin</h3>
-                <p>Gestión de gastos académicos on-chain. Finalista en Base Batch LatAm.</p>
+                <h3>UNBOX</h3>
+                <p>Tokenización de streetwear y art toys en Solana. Ganador en Solana Shipyard.</p>
               </div>
               <div className="project-tile">
-                <h3>UnBoX</h3>
-                <p>Tokenización de streetwear y art toys en Solana. Pitched en Solana Founders House.</p>
+                <h3>EVVM SCANNER</h3>
+                <p>Ganador en ETH Global Argentina con 1,375 USD en premios.</p>
               </div>
               <div className="project-tile">
-                <h3>CoreWeave</h3>
-                <p>Agentes inteligentes para lanzamiento de tokens. Semifinalistas en CoreDAO.</p>
+                <h3>PREMIO.XYZ</h3>
+                <p>Ganador en Celo Proof of Ship con 40 USD en premios.</p>
               </div>
             </div>
           </div>
 
-          {/* SLIDE 17: EL DREAM TEAM */}
+          {/* SLIDE 17: LO QUE SE VIENE PARA 2026 */}
           <div className={`slide ${currentSlide === 15 ? 'active' : ''}`}>
             <h2 className="slide-title">
-              EL <span style={{ color: 'var(--unam-gold)' }}>DREAM TEAM</span>
+              LO QUE SE VIENE PARA <span style={{ color: 'var(--unam-gold)' }}>2026</span>
             </h2>
-            <div className="team-section">
-              <div className="team-member">
-                <h4>Fernanda Tello</h4>
-                <p>Project Manager</p>
+            <div style={{ 
+              width: '100%', 
+              maxWidth: '1200px', 
+              maxHeight: '70vh', 
+              overflowY: 'auto',
+              padding: '20px',
+              background: 'rgba(0,0,0,0.2)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+                gap: '20px'
+              }}>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>HACKATHON UNAM</h3>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>BOOTCAMPS</h3>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>INCUBACION DE PROYECTOS</h3>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>GO TO MARKETS</h3>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>ONBOARDING ESTUDIANTES</h3>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>DESARROLLO DE TALENTO</h3>
+                </div>
+                <div style={{ 
+                  background: 'rgba(255,255,255,0.05)', 
+                  padding: '20px', 
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212, 175, 55, 0.2)'
+                }}>
+                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>CRIPTOUNAM DAO</h3>
+                </div>
               </div>
-              <div className="team-member">
-                <h4>Adrián Armenta</h4>
-                <p>CTO & Workshop Lead</p>
-              </div>
-              <div className="team-member">
-                <h4>Andrés Rodríguez</h4>
-                <p>Technical Lead</p>
-              </div>
-              <div className="team-member">
-                <h4>Gerry</h4>
-                <p>UI/UX & VibeCoding</p>
-              </div>
-              <div className="team-member">
-                <h4>Ian & Elías</h4>
-                <p>Smart Contract Builders</p>
-              </div>
-              <div className="team-member">
-                <h4>Nayeli & Kubs</h4>
-                <p>Operations & Logistics</p>
-              </div>
-            </div>
-            <div className="card" style={{ marginTop: '40px', padding: '20px', fontSize: '16px', textAlign: 'center', borderColor: 'var(--unam-gold)' }}>
-              Agradecimiento especial a Daniel y a todos los voluntarios que sudaron la camiseta.
             </div>
           </div>
 
-          {/* SLIDE 18: VISIÓN 2026 */}
+          {/* SLIDE 18: GRACIAS */}
           <div className={`slide ${currentSlide === 16 ? 'active' : ''}`}>
-            <h2 className="slide-title">
-              MISIÓN <span style={{ color: 'var(--unam-gold)' }}>2026</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <h3 style={{ color: 'var(--unam-gold)', marginBottom: '15px' }}>Localism Fund</h3>
-                <p>Escalaremos los Mini-Hackathons dentro de Ciudad Universitaria para que el talento local tenga incentivos de construcción directa.</p>
-              </div>
-              <div className="card">
-                <h3 style={{ color: 'var(--unam-gold)', marginBottom: '15px' }}>Escalabilidad</h3>
-                <p>Establecer el primer laboratorio físico de desarrollo Web3 en la Facultad de Ingeniería para incubar proyectos nativos UNAM.</p>
-              </div>
-            </div>
-          </div>
-
-          {/* SLIDE 19: GRACIAS */}
-          <div className={`slide ${currentSlide === 17 ? 'active' : ''}`}>
             <h1 className="slide-title" style={{ fontSize: '100px' }}>GRACIAS</h1>
             <p className="slide-subtitle" style={{ color: 'white', fontSize: '24px' }}>
               ¡NOS VEMOS EN EL CÓDIGO!
