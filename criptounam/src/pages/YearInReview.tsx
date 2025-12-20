@@ -338,8 +338,38 @@ const YearInReview: React.FC = () => {
       <div className="image-gallery">
         <div className="image-gallery-grid">
           {compatibleImages.map((filename, index) => {
-            // Usar la ruta sin codificar (Vite maneja las rutas automáticamente)
-            const imagePath = `/images/${month}_CRIPTOUNAM/${filename}`
+            // Codificar el nombre del archivo para manejar espacios y caracteres especiales
+            const encodedFilename = encodeURIComponent(filename)
+            const imagePath = `/images/${month}_CRIPTOUNAM/${encodedFilename}`
+            
+            // Función para intentar diferentes variaciones del nombre
+            const tryAlternatives = (target: HTMLImageElement, attempts: number = 0) => {
+              const alternatives = [
+                encodedFilename, // Primera opción: codificado
+                filename, // Segunda opción: sin codificar
+                filename.replace(/\s+/g, '%20'), // Tercera opción: espacios como %20
+                filename.replace(/\s+/g, '+'), // Cuarta opción: espacios como +
+              ]
+              
+              // También intentar con extensiones en minúsculas/mayúsculas
+              const ext = filename.split('.').pop()?.toLowerCase()
+              const baseName = filename.substring(0, filename.lastIndexOf('.'))
+              if (ext) {
+                alternatives.push(`${encodeURIComponent(baseName)}.${ext}`)
+                alternatives.push(`${encodeURIComponent(baseName)}.${ext.toUpperCase()}`)
+              }
+              
+              if (attempts < alternatives.length) {
+                const altPath = `/images/${month}_CRIPTOUNAM/${alternatives[attempts]}`
+                console.log(`🔄 Intento ${attempts + 1}: ${altPath}`)
+                target.src = altPath
+                target.dataset.attempt = String(attempts + 1)
+              } else {
+                console.error(`❌ No se pudo cargar después de ${alternatives.length} intentos: ${filename}`)
+                target.style.opacity = '0.1'
+                target.style.filter = 'grayscale(100%) blur(2px)'
+              }
+            }
             
             return (
               <div 
@@ -353,28 +383,19 @@ const YearInReview: React.FC = () => {
                   loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    console.warn(`⚠️ Error cargando: ${imagePath}`, filename)
-                    
-                    // Intentar con ruta codificada como fallback
-                    if (!target.dataset.retried) {
-                      target.dataset.retried = 'true'
-                      const encodedPath = `/images/${month}_CRIPTOUNAM/${encodeURIComponent(filename)}`
-                      console.log(`🔄 Reintentando con: ${encodedPath}`)
-                      target.src = encodedPath
-                      return
-                    }
-                    
-                    // Si falló ambas veces, mostrar placeholder pero NO ocultar el contenedor
-                    console.error(`❌ No se pudo cargar: ${filename}`)
-                    target.style.opacity = '0.1'
-                    target.style.filter = 'grayscale(100%) blur(2px)'
+                    const currentAttempt = parseInt(target.dataset.attempt || '0')
+                    console.warn(`⚠️ Error cargando (intento ${currentAttempt}): ${imagePath}`, filename)
+                    tryAlternatives(target, currentAttempt)
                   }}
                   onLoad={(e) => {
                     // Cuando carga correctamente
                     const target = e.currentTarget as HTMLImageElement
                     target.style.opacity = '1'
                     target.style.filter = 'none'
-                    console.log(`✅ Imagen cargada: ${filename}`)
+                    // Solo log en desarrollo para no saturar la consola
+                    if (import.meta.env.DEV) {
+                      console.log(`✅ Imagen cargada: ${filename}`)
+                    }
                   }}
                 />
               </div>
