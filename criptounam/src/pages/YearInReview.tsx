@@ -4,9 +4,343 @@ import { faChevronLeft, faChevronRight, faCamera } from '@fortawesome/free-solid
 import SEOHead from '../components/SEOHead'
 import '../styles/global.css'
 
+// Mapeo de imágenes por mes
+const monthImages: Record<string, string[]> = {
+  ENERO: [
+    '65abfefe-90b1-4122-985a-0b02dd95833e.JPG',
+    'IMG_1021.HEIC',
+    'IMG_1054.HEIC',
+    'IMG_1061.HEIC',
+    'IMG_1064.HEIC',
+    'IMG_1065.HEIC'
+  ],
+  FEBRERO: [
+    '305D7F65-74C4-412C-B606-11154F7D2FE6 2.JPG',
+    '3ECEA6CC-BED8-4421-BBA2-BF6BC6669922.JPG',
+    '77bb370d-c32f-42f8-aa79-87d47929b239.JPG',
+    'B1F27CE8-9CBC-4D5D-9431-9EF3B19986DA.JPG',
+    'camphoto_1903590565.JPG',
+    'camphoto_959030623.JPG',
+    'IMG_1370.HEIC',
+    'IMG_1379.HEIC',
+    'IMG_1407.HEIC',
+    'IMG_1486.PNG',
+    'IMG_1509.HEIC',
+    'IMG_1516.HEIC',
+    'IMG_1526.HEIC',
+    'IMG_1650.HEIC',
+    'IMG_1652.HEIC',
+    'IMG_1655.HEIC',
+    'IMG_1666.HEIC',
+    'IMG_1670.HEIC',
+    'IMG_1673.HEIC',
+    'IMG_1674.HEIC',
+    'IMG_1676.HEIC',
+    'IMG_1678.HEIC',
+    'IMG_1740.jpg',
+    'IMG_4409.HEIF',
+    'IMG_4454.HEIF'
+  ],
+  MARZO: [
+    '16EF3BED-A9CC-4B2C-8A91-4003EBC49487.JPG',
+    '784BBF1F-045F-41FC-A49C-DE177B0C5003.JPG',
+    'A7CBB16B-FD9E-44A6-9DEE-AA596EE15697.JPG',
+    'IMG_1801.HEIC',
+    'IMG_1877.HEIC',
+    'IMG_1901.HEIC',
+    'IMG_1913.HEIC',
+    'IMG_1922.HEIC',
+    'IMG_1932.HEIC',
+    'IMG_1946.JPG',
+    'IMG_1947.JPG',
+    'IMG_2016.HEIC',
+    'IMG_2028.HEIC',
+    'IMG_2031.HEIC',
+    'IMG_2220.HEIC',
+    'IMG_2377.HEIC',
+    'IMG_2391.HEIC',
+    'IMG_2431 2.HEIC',
+    'IMG_2548.PNG',
+    'IMG_2613.HEIC',
+    'IMG_2696.HEIC',
+    'IMG_2804.HEIC',
+    'IMG_2862.HEIC',
+    'IMG_2870.HEIC',
+    'IMG_2896.HEIC',
+    'IMG_2897.HEIC',
+    'IMG_2901.HEIC',
+    'IMG_2903.HEIC'
+  ],
+  ABRIL: [
+    'c3eb8977-2bc8-457f-a87f-b7f17d6ed967.JPG',
+    'IMG_2955.HEIC',
+    'IMG_2958.HEIC',
+    'IMG_2964.HEIC',
+    'IMG_3002.HEIC',
+    'IMG_3011.HEIC',
+    'IMG_3036.JPG',
+    'IMG_3043.HEIC',
+    'IMG_3046.HEIC',
+    'IMG_3052.JPG',
+    'IMG_3090.HEIC',
+    'IMG_3091.HEIC',
+    'IMG_3260.HEIC',
+    'IMG_3283.HEIC',
+    'IMG_3329.PNG',
+    'IMG_3418.HEIC',
+    'IMG_3425.HEIC',
+    'IMG_3429.heic',
+    'IMG_3430.HEIC',
+    'IMG_3433.HEIC',
+    'IMG_3480.HEIC',
+    'IMG_3488.HEIC',
+    'IMG_3489.HEIC',
+    'IMG_3508.HEIC',
+    'IMG_3509.HEIC',
+    'IMG_3520.HEIC',
+    'IMG_3524.HEIC',
+    'IMG_3529.HEIC',
+    'IMG_3534.HEIC'
+  ],
+  MAYO: [
+    '0c04b7d6-0cf1-43b4-9506-c8318a4af1ea 2.JPG',
+    '4f3ba804-7c7d-4bb0-96de-6d912d5b6a4d 2.JPG',
+    '5c7e70e9-fd07-4f7d-99a0-e1bcc1eab3bf 2.JPG',
+    '6BDD7C54-BCDC-4682-930E-2D959357A8C4 2.JPG',
+    '804ae1cf-1914-44e6-bc74-b225c7b7231e 2.JPG',
+    'ABBCCA98-4998-4B87-A228-152B8ECF8587 2.JPG',
+    'DFA28DF5-0D1A-40BC-B2FD-E018B3FB87A1 2.JPG',
+    'e0126864-cbe4-4eb8-ab67-96e4d4270da2 2.JPG',
+    'e7696d32-51e5-4b71-8902-13f2b214b0a5 2.JPG',
+    'IMG_3547 2.HEIC',
+    'IMG_3553 2.HEIC',
+    'IMG_3557 2.HEIC',
+    'IMG_3560 2.JPG',
+    'IMG_3579 2.HEIC',
+    'IMG_3593 2.HEIC',
+    'IMG_3612 2.HEIC',
+    'IMG_3617 2.HEIC',
+    'IMG_3657 2.HEIC',
+    'IMG_3658 2.HEIC',
+    'IMG_3682 2.HEIC',
+    'IMG_3722 2.JPG',
+    'IMG_3725 2.JPG',
+    'IMG_3753 2.HEIC',
+    'IMG_3763 2.JPG',
+    'IMG_3889 2.HEIC',
+    'IMG_3890 2.HEIC',
+    'IMG_3949 2.HEIC',
+    'IMG_3950 2.HEIC',
+    'IMG_3973 2.HEIC',
+    'IMG_3997 2.HEIC',
+    'IMG_4008 2.HEIC',
+    'IMG_4104 2.HEIC',
+    'IMG_4105 2.HEIC',
+    'IMG_4157 2.HEIC',
+    'IMG_4160 2.HEIC'
+  ],
+  JUNIO: [
+    '55A059F5-EDEE-4124-A622-D429C35A23FE.JPG',
+    '7556f6fe-e87c-4a43-b8bf-879035a20da2.JPG',
+    'a1a2c0db-d26b-42ed-aa03-7a95aceb3b18.JPG',
+    'IMG_4187.PNG',
+    'IMG_4260.HEIC',
+    'IMG_4272.HEIC',
+    'IMG_4437.HEIC',
+    'IMG_4458.PNG',
+    'IMG_4493.JPG'
+  ],
+  JULIO: [
+    'IMG_4561.JPG',
+    'IMG_4606.HEIC',
+    'IMG_4610.HEIC',
+    'IMG_4623.HEIC',
+    'IMG_4641.HEIC',
+    'IMG_4662.HEIC',
+    'IMG_4677.HEIC',
+    'IMG_4688.PNG',
+    'IMG_4689.HEIC',
+    'IMG_4712.JPG',
+    'IMG_4764.HEIC',
+    'IMG_4796.HEIC',
+    'IMG_4807.HEIC',
+    'IMG_4829.HEIC',
+    'IMG_4855.HEIC',
+    'IMG_4864.HEIC',
+    'IMG_4905.HEIC',
+    'IMG_4935.HEIC',
+    'IMG_4940.HEIC'
+  ],
+  AGOSTO: [
+    'camphoto_1804928587 2.JPG',
+    'camphoto_1804928587.JPG',
+    'camphoto_33463914 2.JPG',
+    'camphoto_959030623 2.JPG',
+    'IMG_5117.HEIC',
+    'IMG_5195.HEIC',
+    'IMG_5210.HEIC',
+    'IMG_5214.HEIC',
+    'IMG_5220.HEIC',
+    'IMG_5269.HEIC',
+    'IMG_5273.HEIC',
+    'IMG_5279.HEIC',
+    'IMG_5289.HEIC',
+    'IMG_5322.HEIC',
+    'IMG_5324.HEIC',
+    'IMG_5329.HEIC',
+    'IMG_5358.HEIC',
+    'IMG_5363.HEIC',
+    'IMG_5371.HEIC',
+    'IMG_5376.HEIC',
+    'IMG_5426.HEIC',
+    'IMG_5429.JPG',
+    'IMG_5455 2.HEIC',
+    'IMG_5456 2.HEIC',
+    'IMG_5465.HEIC',
+    'IMG_5471.HEIC',
+    'IMG_5474.HEIC',
+    'IMG_5479.HEIC',
+    'IMG_5489.HEIC',
+    'IMG_5494.HEIC',
+    'IMG_5515.JPG',
+    'IMG_5516.JPG',
+    'IMG_5525.JPG'
+  ],
+  SEPTIEMBRE: [
+    'camphoto_33463914 3.JPG',
+    'camphoto_959030623 3.JPG',
+    'IMG_5753 3.jpg',
+    'IMG_5799 3.HEIC',
+    'IMG_5847 3.JPG',
+    'IMG_5922 3.HEIC',
+    'IMG_5977 3.HEIC',
+    'IMG_5979 3.HEIC',
+    'IMG_6014 3.HEIC',
+    'IMG_6025 3.HEIC',
+    'IMG_6042 3.HEIC',
+    'IMG_6046 3.HEIC',
+    'IMG_6063 3.HEIC',
+    'IMG_6102 3.HEIC',
+    'IMG_6116 3.HEIC',
+    'IMG_6217 3.HEIC',
+    'IMG_6417 3.HEIC',
+    'IMG_6462 3.HEIC',
+    'IMG_6493 3.HEIC'
+  ],
+  OCTUBRE: [
+    '57b46d46-8f91-44c5-b7f6-868620625819.JPG',
+    'IMG_6538.HEIC',
+    'IMG_6539.HEIC',
+    'IMG_6710.HEIC',
+    'IMG_6717.HEIC',
+    'IMG_6727.JPG',
+    'IMG_6784.HEIC',
+    'IMG_6787.HEIC',
+    'IMG_6799.PNG',
+    'IMG_6805.PNG',
+    'IMG_6914.PNG',
+    'IMG_6954.HEIC',
+    'IMG_6958.HEIC',
+    'IMG_6960.HEIC',
+    'IMG_6983 2.JPG',
+    'IMG_7006.HEIC',
+    'IMG_7009.HEIC'
+  ],
+  NOVIEMBRE: [
+    '007f7872bdaaf1719ef62595f2f2bd39 2.JPG',
+    'IMG_7079 2.JPG',
+    'IMG_7081 2.HEIC',
+    'IMG_7092 2.HEIC',
+    'IMG_7185 2.HEIC',
+    'IMG_7222 2.HEIC',
+    'IMG_7251 2.HEIC',
+    'IMG_7277 2.HEIC',
+    'IMG_7283 2.JPG',
+    'IMG_7306 2.HEIC',
+    'IMG_7326 2.HEIC',
+    'IMG_7346 2.HEIC',
+    'IMG_7382 2.HEIC',
+    'IMG_7418 2.HEIC',
+    'IMG_7432 2.HEIC',
+    'IMG_7477 2.HEIC',
+    'IMG_7509 2.PNG',
+    'IMG_7518 2.HEIC',
+    'IMG_7519 2.HEIC',
+    'IMG_7526 2.HEIC',
+    'IMG_7569 2.HEIC',
+    'IMG_7581 2.HEIC',
+    'IMG_7595 2.PNG',
+    'IMG_7596 2.PNG',
+    'IMG_7598 2.PNG',
+    'IMG_7647 2.HEIC',
+    'IMG_7658 2.HEIC',
+    'IMG_7795 2.HEIC',
+    'IMG_7929 2.HEIC',
+    'IMG_7934 2.HEIC'
+  ],
+  DICIEMBRE: [
+    'IMG_8034.JPG',
+    'IMG_8049.HEIC',
+    'IMG_8062.PNG',
+    'IMG_8088.PNG',
+    'IMG_8129.PNG',
+    'IMG_8156.HEIC',
+    'IMG_8164.JPG'
+  ]
+}
+
 const YearInReview: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const totalSlides = 18
+
+  // Función helper para obtener la ruta de la imagen
+  const getImagePath = (month: string, filename: string) => {
+    return `/images/${month}_CRIPTOUNAM/${filename}`
+  }
+
+  // Componente de galería de imágenes
+  const ImageGallery: React.FC<{ month: string }> = ({ month }) => {
+    const images = monthImages[month] || []
+    
+    if (images.length === 0) {
+      return (
+        <div className="image-placeholder">
+          <FontAwesomeIcon icon={faCamera} />
+          <p>No hay imágenes disponibles</p>
+        </div>
+      )
+    }
+
+    return (
+      <div className="image-gallery">
+        <div className="image-gallery-grid">
+          {images.map((filename, index) => (
+            <img
+              key={index}
+              src={getImagePath(month, filename)}
+              alt={`${month} ${index + 1}`}
+              className="gallery-image"
+              loading="lazy"
+              onError={(e) => {
+                // Si la imagen falla, intentar con diferentes extensiones
+                const target = e.target as HTMLImageElement
+                const originalSrc = target.src
+                const extensions = ['.JPG', '.jpg', '.HEIC', '.heic', '.PNG', '.png', '.HEIF', '.heif']
+                let currentExtIndex = extensions.findIndex(ext => originalSrc.includes(ext))
+                
+                if (currentExtIndex >= 0 && currentExtIndex < extensions.length - 1) {
+                  const newExt = extensions[currentExtIndex + 1]
+                  target.src = originalSrc.replace(/\.[^.]+$/, newExt)
+                } else {
+                  target.style.display = 'none'
+                }
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % totalSlides)
@@ -291,6 +625,58 @@ const YearInReview: React.FC = () => {
             margin-bottom: 10px;
           }
 
+          .image-gallery {
+            width: 100%;
+            max-height: 500px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+          }
+
+          .image-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            padding: 10px;
+          }
+
+          .gallery-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+          }
+
+          .gallery-image:hover {
+            transform: scale(1.05);
+            border-color: var(--unam-gold);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+          }
+
+          .image-gallery::-webkit-scrollbar {
+            width: 8px;
+          }
+
+          .image-gallery::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+          }
+
+          .image-gallery::-webkit-scrollbar-thumb {
+            background: var(--unam-gold);
+            border-radius: 4px;
+          }
+
+          .image-gallery::-webkit-scrollbar-thumb:hover {
+            background: #F4C842;
+          }
+
           @media (max-width: 768px) {
             .slide {
               padding: 30px 20px;
@@ -320,6 +706,19 @@ const YearInReview: React.FC = () => {
             .progress-bar {
               width: 150px;
             }
+
+            .image-gallery {
+              max-height: 400px;
+            }
+
+            .image-gallery-grid {
+              grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+              gap: 8px;
+            }
+
+            .gallery-image {
+              height: 100px;
+            }
           }
         `}</style>
 
@@ -345,10 +744,169 @@ const YearInReview: React.FC = () => {
               alt="CriptoUNAM" 
             />
             <h1 className="slide-title" style={{ fontSize: '90px' }}>
-              YEAR IN <span style={{ color: 'var(--unam-gold)' }}>REVIEW</span>
+              RECAP<span style={{ color: 'var(--unam-gold)' }}>CRIPTOUNAM 2025</span>
             </h1>
-            <p className="slide-subtitle">2024 — 2025 | Executive Summary</p>
-            <p style={{ opacity: 0.6 }}>Presiona las flechas o usa el teclado para navegar</p>
+            <p className="slide-subtitle">ESTO FUE LO QUE HICIMOS EN 2025 🎉</p>
+            <p style={{ opacity: 0.6 }}></p>
+          </div>
+
+          
+
+          {/* SLIDES MENSUALES (3-14) */}
+          <div className={`slide ${currentSlide === 2 ? 'active' : ''}`}>
+            <div className="month-badge">ENERO</div>
+            <h2 className="slide-title">
+              Planeación <span style={{ color: 'var(--unam-gold)' }}>Estratégica</span>
+            </h2>
+            <div className="content-grid">
+              <div className="card">
+                <p>Definición del Roadmap Anual. Establecimiento de gobernanza interna y diseño de identidad visual para redes sociales.</p>
+              </div>
+              <ImageGallery month="ENERO" />
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 3 ? 'active' : ''}`}>
+            <div className="month-badge">FEBRERO</div>
+            <h2 className="slide-title">
+              Lanzamiento <span style={{ color: 'var(--unam-gold)' }}>Educativo</span>
+            </h2>
+            <div className="content-grid">
+              <ImageGallery month="FEBRERO" />
+              <div className="card">
+                <p>Lanzamiento oficial del Newsletter CriptoUNAM. Alcanzamos los primeros 200 suscriptores interesados en tecnología L2.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 4 ? 'active' : ''}`}>
+            <div className="month-badge">MARZO</div>
+            <h2 className="slide-title">
+              Bitcoin Day <span style={{ color: 'var(--unam-gold)' }}>UNAM</span>
+            </h2>
+            <div className="content-grid">
+              <div className="card">
+                <p>Evento masivo en la Facultad de Ingeniería. Onboarding de más de 300 estudiantes a la red Ethereum.</p>
+              </div>
+              <ImageGallery month="MARZO" />
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 5 ? 'active' : ''}`}>
+            <div className="month-badge">ABRIL</div>
+            <h2 className="slide-title">
+              Expansión <span style={{ color: 'var(--unam-gold)' }}>Interuniversitaria</span>
+            </h2>
+            <div className="content-grid">
+              <ImageGallery month="ABRIL" />
+              <div className="card">
+                <p>Alianzas con ITAM e IPN. Participación como Community Partners en BlockchainCoin, liderando el diálogo académico.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 6 ? 'active' : ''}`}>
+            <div className="month-badge">MAYO</div>
+            <h2 className="slide-title">
+              Base Batch <span style={{ color: 'var(--unam-gold)' }}>LatAm</span>
+            </h2>
+            <div className="content-grid">
+              <div className="card">
+                <p><strong>CampusCoin</strong> seleccionado como finalista. Además, celebramos el Bitcoin Pizza Day con una gran convocatoria en Ingeniería.</p>
+              </div>
+              <ImageGallery month="MAYO" />
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 7 ? 'active' : ''}`}>
+            <div className="month-badge">JUNIO</div>
+            <h2 className="slide-title">
+              ETH <span style={{ color: 'var(--unam-gold)' }}>Mérida</span>
+            </h2>
+            <div className="content-grid">
+              <ImageGallery month="JUNIO" />
+              <div className="card">
+                <p>Participación destacada en ETH Mérida. Networking con protocolos globales para traer recursos a la comunidad local.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 8 ? 'active' : ''}`}>
+            <div className="month-badge">JULIO</div>
+            <h2 className="slide-title">
+              Summer <span style={{ color: 'var(--unam-gold)' }}>Builders</span>
+            </h2>
+            <div className="content-grid">
+              <div className="card">
+                <p>Mes de inmersión técnica intensiva en Rust y Solidity. Preparación de los equipos para la temporada de hackathons.</p>
+              </div>
+              <ImageGallery month="JULIO" />
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 9 ? 'active' : ''}`}>
+            <div className="month-badge">AGOSTO</div>
+            <h2 className="slide-title">
+              Bitso Win & <span style={{ color: 'var(--unam-gold)' }}>Unlock</span>
+            </h2>
+            <div className="content-grid">
+              <ImageGallery month="AGOSTO" />
+              <div className="card">
+                <p>Ganadores del Bitso Hackathon con <strong>La Kiniela</strong>. Apoyo organizacional en Unlock Summit Zacatlán.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 10 ? 'active' : ''}`}>
+            <div className="month-badge">SEPTIEMBRE</div>
+            <h2 className="slide-title">
+              Meridian <span style={{ color: 'var(--unam-gold)' }}>Rio</span>
+            </h2>
+            <div className="content-grid">
+              <div className="card">
+                <p>CriptoUNAM en Río de Janeiro para Stellar Meridian. Desarrollo de Soroswap en Telegram y semifinalistas en CoreDAO.</p>
+              </div>
+              <ImageGallery month="SEPTIEMBRE" />
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 11 ? 'active' : ''}`}>
+            <div className="month-badge">OCTUBRE</div>
+            <h2 className="slide-title">
+              Starknet re&#123;solve&#125; & <span style={{ color: 'var(--unam-gold)' }}>Islas</span>
+            </h2>
+            <div className="content-grid">
+              <ImageGallery month="OCTUBRE" />
+              <div className="card">
+                <p>Ganadores Starknet re&#123;solve&#125; (NearMint). Impacto masivo en la Feria de Comunidades de la UNAM en Las Islas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 12 ? 'active' : ''}`}>
+            <div className="month-badge">NOVIEMBRE</div>
+            <h2 className="slide-title">
+              Hazaña en <span style={{ color: 'var(--unam-gold)' }}>Monterrey</span>
+            </h2>
+            <div className="content-grid">
+              <div className="card">
+                <p><strong>Verifica.xyz</strong> gana 3 Tracks en ETH México Monterrey. Gerry imparte taller de VibeCoding Sold-Out.</p>
+              </div>
+              <ImageGallery month="NOVIEMBRE" />
+            </div>
+          </div>
+
+          <div className={`slide ${currentSlide === 13 ? 'active' : ''}`}>
+            <div className="month-badge">DICIEMBRE</div>
+            <h2 className="slide-title">
+              Cierre & <span style={{ color: 'var(--unam-gold)' }}>Localism</span>
+            </h2>
+            <div className="content-grid">
+              <ImageGallery month="DICIEMBRE" />
+              <div className="card">
+                <p>Recap anual y selección oficial para el Localism Fund. Preparación de la agenda de Mini-Hackathons 2026.</p>
+              </div>
+            </div>
           </div>
 
           {/* SLIDE 2: IMPACTO EN CIFRAS */}
@@ -366,199 +924,6 @@ const YearInReview: React.FC = () => {
                 <p style={{ marginBottom: '20px' }}><strong>12 Tracks</strong> Ganados</p>
                 <p style={{ marginBottom: '20px' }}><strong>+500 Miembros</strong> en la comunidad</p>
                 <p><strong>100%</strong> de compromiso con la educación</p>
-              </div>
-            </div>
-          </div>
-
-          {/* SLIDES MENSUALES (3-14) */}
-          <div className={`slide ${currentSlide === 2 ? 'active' : ''}`}>
-            <div className="month-badge">ENERO</div>
-            <h2 className="slide-title">
-              Planeación <span style={{ color: 'var(--unam-gold)' }}>Estratégica</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <p>Definición del Roadmap Anual. Establecimiento de gobernanza interna y diseño de identidad visual para redes sociales.</p>
-              </div>
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Planeación Q1]</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 3 ? 'active' : ''}`}>
-            <div className="month-badge">FEBRERO</div>
-            <h2 className="slide-title">
-              Lanzamiento <span style={{ color: 'var(--unam-gold)' }}>Educativo</span>
-            </h2>
-            <div className="content-grid">
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Lanzamiento Newsletter]</p>
-              </div>
-              <div className="card">
-                <p>Lanzamiento oficial del Newsletter CriptoUNAM. Alcanzamos los primeros 200 suscriptores interesados en tecnología L2.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 4 ? 'active' : ''}`}>
-            <div className="month-badge">MARZO</div>
-            <h2 className="slide-title">
-              Bitcoin Day <span style={{ color: 'var(--unam-gold)' }}>UNAM</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <p>Evento masivo en la Facultad de Ingeniería. Onboarding de más de 300 estudiantes a la red Ethereum.</p>
-              </div>
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Auditorio Ingeniería]</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 5 ? 'active' : ''}`}>
-            <div className="month-badge">ABRIL</div>
-            <h2 className="slide-title">
-              Expansión <span style={{ color: 'var(--unam-gold)' }}>Interuniversitaria</span>
-            </h2>
-            <div className="content-grid">
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Alianzas ITAM/IPN]</p>
-              </div>
-              <div className="card">
-                <p>Alianzas con ITAM e IPN. Participación como Community Partners en BlockchainCoin, liderando el diálogo académico.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 6 ? 'active' : ''}`}>
-            <div className="month-badge">MAYO</div>
-            <h2 className="slide-title">
-              Base Batch <span style={{ color: 'var(--unam-gold)' }}>LatAm</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <p><strong>CampusCoin</strong> seleccionado como finalista. Además, celebramos el Bitcoin Pizza Day con una gran convocatoria en Ingeniería.</p>
-              </div>
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Pizza Day / CampusCoin]</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 7 ? 'active' : ''}`}>
-            <div className="month-badge">JUNIO</div>
-            <h2 className="slide-title">
-              ETH <span style={{ color: 'var(--unam-gold)' }}>Mérida</span>
-            </h2>
-            <div className="content-grid">
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: CriptoUNAM en Mérida]</p>
-              </div>
-              <div className="card">
-                <p>Participación destacada en ETH Mérida. Networking con protocolos globales para traer recursos a la comunidad local.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 8 ? 'active' : ''}`}>
-            <div className="month-badge">JULIO</div>
-            <h2 className="slide-title">
-              Summer <span style={{ color: 'var(--unam-gold)' }}>Builders</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <p>Mes de inmersión técnica intensiva en Rust y Solidity. Preparación de los equipos para la temporada de hackathons.</p>
-              </div>
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Sesiones de Código]</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 9 ? 'active' : ''}`}>
-            <div className="month-badge">AGOSTO</div>
-            <h2 className="slide-title">
-              Bitso Win & <span style={{ color: 'var(--unam-gold)' }}>Unlock</span>
-            </h2>
-            <div className="content-grid">
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Ganadores Bitso / Unlock]</p>
-              </div>
-              <div className="card">
-                <p>Ganadores del Bitso Hackathon con <strong>La Kiniela</strong>. Apoyo organizacional en Unlock Summit Zacatlán.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 10 ? 'active' : ''}`}>
-            <div className="month-badge">SEPTIEMBRE</div>
-            <h2 className="slide-title">
-              Meridian <span style={{ color: 'var(--unam-gold)' }}>Rio</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <p>CriptoUNAM en Río de Janeiro para Stellar Meridian. Desarrollo de Soroswap en Telegram y semifinalistas en CoreDAO.</p>
-              </div>
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Rio Meridian]</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 11 ? 'active' : ''}`}>
-            <div className="month-badge">OCTUBRE</div>
-            <h2 className="slide-title">
-              Starknet re&#123;solve&#125; & <span style={{ color: 'var(--unam-gold)' }}>Islas</span>
-            </h2>
-            <div className="content-grid">
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Feria Comunidades UNAM]</p>
-              </div>
-              <div className="card">
-                <p>Ganadores Starknet re&#123;solve&#125; (NearMint). Impacto masivo en la Feria de Comunidades de la UNAM en Las Islas.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 12 ? 'active' : ''}`}>
-            <div className="month-badge">NOVIEMBRE</div>
-            <h2 className="slide-title">
-              Hazaña en <span style={{ color: 'var(--unam-gold)' }}>Monterrey</span>
-            </h2>
-            <div className="content-grid">
-              <div className="card">
-                <p><strong>Verifica.xyz</strong> gana 3 Tracks en ETH México Monterrey. Gerry imparte taller de VibeCoding Sold-Out.</p>
-              </div>
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Ganadores ETH MTY]</p>
-              </div>
-            </div>
-          </div>
-
-          <div className={`slide ${currentSlide === 13 ? 'active' : ''}`}>
-            <div className="month-badge">DICIEMBRE</div>
-            <h2 className="slide-title">
-              Cierre & <span style={{ color: 'var(--unam-gold)' }}>Localism</span>
-            </h2>
-            <div className="content-grid">
-              <div className="image-placeholder">
-                <FontAwesomeIcon icon={faCamera} />
-                <p>[Imagen: Recap Anual]</p>
-              </div>
-              <div className="card">
-                <p>Recap anual y selección oficial para el Localism Fund. Preparación de la agenda de Mini-Hackathons 2026.</p>
               </div>
             </div>
           </div>
