@@ -328,7 +328,7 @@ const YearInReview: React.FC = () => {
         <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
 
         <img 
-          src="/images/LogosCriptounamBlanco.svg" 
+          src="/images/LogosCriptounam3.svg" 
           className="floating-logo" 
           alt="CriptoUNAM" 
         />
@@ -340,7 +340,7 @@ const YearInReview: React.FC = () => {
           {/* SLIDE 1: PORTADA */}
           <div className={`slide ${currentSlide === 0 ? 'active' : ''}`}>
             <img 
-              src="/images/LogosCriptounamBlanco.svg" 
+              src="/images/LogosCriptounam3.svg" 
               className="logo-main" 
               alt="CriptoUNAM" 
             />
