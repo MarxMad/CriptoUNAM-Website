@@ -302,11 +302,32 @@ const YearInReview: React.FC = () => {
   const ImageGallery: React.FC<{ month: string }> = ({ month }) => {
     const images = monthImages[month] || []
     
-    if (images.length === 0) {
+    // Procesar imágenes: convertir HEIC/HEIF a JPG y filtrar solo compatibles
+    const compatibleImages = images
+      .map(filename => {
+        const ext = filename.toLowerCase()
+        // Si es HEIC/HEIF, buscar versión JPG equivalente (ya convertida)
+        if (ext.endsWith('.heic') || ext.endsWith('.heif')) {
+          const baseName = filename.replace(/\.(heic|HEIC|heif|HEIF)$/i, '')
+          return `${baseName}.jpg` // Usar versión JPG convertida
+        }
+        return filename
+      })
+      .filter(filename => {
+        const ext = filename.toLowerCase()
+        return ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.gif') || ext.endsWith('.webp')
+      })
+      // Eliminar duplicados (por si hay tanto HEIC como JPG en la lista)
+      .filter((value, index, self) => self.indexOf(value) === index)
+    
+    if (compatibleImages.length === 0) {
       return (
         <div className="image-placeholder">
           <FontAwesomeIcon icon={faCamera} />
-          <p>No hay imágenes disponibles</p>
+          <p>No hay imágenes compatibles disponibles</p>
+          <p style={{ fontSize: '12px', marginTop: '10px', opacity: 0.6 }}>
+            (Los archivos HEIC no se pueden mostrar en navegadores web)
+          </p>
         </div>
       )
     }
@@ -314,7 +335,7 @@ const YearInReview: React.FC = () => {
     return (
       <div className="image-gallery">
         <div className="image-gallery-grid">
-          {images.map((filename, index) => (
+          {compatibleImages.map((filename, index) => (
             <img
               key={index}
               src={getImagePath(month, filename)}
@@ -322,18 +343,9 @@ const YearInReview: React.FC = () => {
               className="gallery-image"
               loading="lazy"
               onError={(e) => {
-                // Si la imagen falla, intentar con diferentes extensiones
+                // Si la imagen falla, ocultarla
                 const target = e.target as HTMLImageElement
-                const originalSrc = target.src
-                const extensions = ['.JPG', '.jpg', '.HEIC', '.heic', '.PNG', '.png', '.HEIF', '.heif']
-                let currentExtIndex = extensions.findIndex(ext => originalSrc.includes(ext))
-                
-                if (currentExtIndex >= 0 && currentExtIndex < extensions.length - 1) {
-                  const newExt = extensions[currentExtIndex + 1]
-                  target.src = originalSrc.replace(/\.[^.]+$/, newExt)
-                } else {
-                  target.style.display = 'none'
-                }
+                target.style.display = 'none'
               }}
             />
           ))}
@@ -752,8 +764,8 @@ const YearInReview: React.FC = () => {
 
           
 
-          {/* SLIDES MENSUALES (3-14) */}
-          <div className={`slide ${currentSlide === 2 ? 'active' : ''}`}>
+          {/* SLIDES MENSUALES (1-12) */}
+          <div className={`slide ${currentSlide === 1 ? 'active' : ''}`}>
             <div className="month-badge">ENERO</div>
             <h2 className="slide-title">
               Planeación <span style={{ color: 'var(--unam-gold)' }}>Estratégica</span>
@@ -766,7 +778,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 3 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 2 ? 'active' : ''}`}>
             <div className="month-badge">FEBRERO</div>
             <h2 className="slide-title">
               Lanzamiento <span style={{ color: 'var(--unam-gold)' }}>Educativo</span>
@@ -779,7 +791,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 4 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 3 ? 'active' : ''}`}>
             <div className="month-badge">MARZO</div>
             <h2 className="slide-title">
               Bitcoin Day <span style={{ color: 'var(--unam-gold)' }}>UNAM</span>
@@ -792,7 +804,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 5 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 4 ? 'active' : ''}`}>
             <div className="month-badge">ABRIL</div>
             <h2 className="slide-title">
               Expansión <span style={{ color: 'var(--unam-gold)' }}>Interuniversitaria</span>
@@ -805,7 +817,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 6 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 5 ? 'active' : ''}`}>
             <div className="month-badge">MAYO</div>
             <h2 className="slide-title">
               Base Batch <span style={{ color: 'var(--unam-gold)' }}>LatAm</span>
@@ -818,7 +830,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 7 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 6 ? 'active' : ''}`}>
             <div className="month-badge">JUNIO</div>
             <h2 className="slide-title">
               ETH <span style={{ color: 'var(--unam-gold)' }}>Mérida</span>
@@ -831,7 +843,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 8 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 7 ? 'active' : ''}`}>
             <div className="month-badge">JULIO</div>
             <h2 className="slide-title">
               Summer <span style={{ color: 'var(--unam-gold)' }}>Builders</span>
@@ -844,7 +856,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 9 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 8 ? 'active' : ''}`}>
             <div className="month-badge">AGOSTO</div>
             <h2 className="slide-title">
               Bitso Win & <span style={{ color: 'var(--unam-gold)' }}>Unlock</span>
@@ -857,7 +869,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 10 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 9 ? 'active' : ''}`}>
             <div className="month-badge">SEPTIEMBRE</div>
             <h2 className="slide-title">
               Meridian <span style={{ color: 'var(--unam-gold)' }}>Rio</span>
@@ -870,7 +882,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 11 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 10 ? 'active' : ''}`}>
             <div className="month-badge">OCTUBRE</div>
             <h2 className="slide-title">
               Starknet re&#123;solve&#125; & <span style={{ color: 'var(--unam-gold)' }}>Islas</span>
@@ -883,7 +895,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 12 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 11 ? 'active' : ''}`}>
             <div className="month-badge">NOVIEMBRE</div>
             <h2 className="slide-title">
               Hazaña en <span style={{ color: 'var(--unam-gold)' }}>Monterrey</span>
@@ -896,7 +908,7 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          <div className={`slide ${currentSlide === 13 ? 'active' : ''}`}>
+          <div className={`slide ${currentSlide === 12 ? 'active' : ''}`}>
             <div className="month-badge">DICIEMBRE</div>
             <h2 className="slide-title">
               Cierre & <span style={{ color: 'var(--unam-gold)' }}>Localism</span>
@@ -909,8 +921,8 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          {/* SLIDE 2: IMPACTO EN CIFRAS */}
-          <div className={`slide ${currentSlide === 1 ? 'active' : ''}`}>
+          {/* SLIDE: IMPACTO EN CIFRAS (después de Diciembre) */}
+          <div className={`slide ${currentSlide === 13 ? 'active' : ''}`}>
             <h2 className="slide-title">
               IMPACTO EN <span style={{ color: 'var(--unam-gold)' }}>CIFRAS</span>
             </h2>
