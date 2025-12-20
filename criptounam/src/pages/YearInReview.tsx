@@ -843,7 +843,7 @@ const YearInReview: React.FC = () => {
               alt="CriptoUNAM" 
             />
             <h1 className="slide-title" style={{ fontSize: '90px' }}>
-              RECAP<span style={{ color: 'var(--unam-gold)' }}>CRIPTOUNAM 2025</span>
+              RECAP<span style={{ color: 'var(--unam-gold)' }}> CRIPTOUNAM 2025</span>
             </h1>
             <p className="slide-subtitle">ESTO FUE LO QUE HICIMOS EN 2025 🎉</p>
             <p style={{ opacity: 0.6 }}></p>
@@ -855,11 +855,11 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 1 ? 'active' : ''}`}>
             <div className="month-badge">ENERO</div>
             <h2 className="slide-title">
-              Planeación <span style={{ color: 'var(--unam-gold)' }}>Estratégica</span>
+              Hackathon <span style={{ color: 'var(--unam-gold)' }}>De VARA en ITAM</span>
             </h2>
             <div className="content-grid">
               <div className="card">
-                <p>Definición del Roadmap Anual. Establecimiento de gobernanza interna y diseño de identidad visual para redes sociales.</p>
+                <p>Lanzamiento de PumaAgent AI, </p>
               </div>
               <ImageGallery month="ENERO" />
             </div>
@@ -868,12 +868,12 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 2 ? 'active' : ''}`}>
             <div className="month-badge">FEBRERO</div>
             <h2 className="slide-title">
-              Lanzamiento <span style={{ color: 'var(--unam-gold)' }}>Educativo</span>
+              Eventos en Economía UNAM <span style={{ color: 'var(--unam-gold)' }}></span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="FEBRERO" />
               <div className="card">
-                <p>Lanzamiento oficial del Newsletter CriptoUNAM. Alcanzamos los primeros 200 suscriptores interesados en tecnología L2.</p>
+                <p>Eventos CriptoUNAM y colaboración con protocolos destacados.</p>
               </div>
             </div>
           </div>
