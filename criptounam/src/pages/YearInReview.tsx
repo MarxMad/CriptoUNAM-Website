@@ -335,8 +335,13 @@ const YearInReview: React.FC = () => {
       <div className="image-gallery">
         <div className="image-gallery-grid">
           {compatibleImages.map((filename, index) => {
-            // Construir la ruta: codificar el nombre del archivo para manejar espacios
-            const imagePath = `/images/${month}_CRIPTOUNAM/${encodeURIComponent(filename)}`
+            // Construir diferentes variaciones de la ruta
+            const basePath = `/images/${month}_CRIPTOUNAM/`
+            const paths = [
+              basePath + encodeURIComponent(filename), // Codificado (para espacios)
+              basePath + filename, // Sin codificar
+              basePath + filename.replace(/\s+/g, '%20'), // Espacios como %20
+            ]
             
             return (
               <div 
@@ -344,19 +349,26 @@ const YearInReview: React.FC = () => {
                 className="gallery-image-wrapper"
               >
                 <img
-                  src={imagePath}
+                  src={paths[0]}
                   alt={`${month} ${index + 1}`}
                   className="gallery-image"
                   loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    // Si falla con codificado, intentar sin codificar
-                    if (!target.dataset.retried) {
-                      target.dataset.retried = 'true'
-                      const unencodedPath = `/images/${month}_CRIPTOUNAM/${filename}`
-                      target.src = unencodedPath
+                    const attempt = parseInt(target.dataset.attempt || '0')
+                    
+                    if (attempt < paths.length - 1) {
+                      // Intentar siguiente variación
+                      target.dataset.attempt = String(attempt + 1)
+                      target.src = paths[attempt + 1]
+                      if (import.meta.env.DEV) {
+                        console.log(`🔄 Reintentando (${attempt + 2}/${paths.length}): ${paths[attempt + 1]}`)
+                      }
                     } else {
-                      // Si falló ambas veces, ocultar silenciosamente
+                      // Todas las variaciones fallaron
+                      if (import.meta.env.DEV) {
+                        console.warn(`❌ No se pudo cargar: ${filename}`, paths)
+                      }
                       target.style.display = 'none'
                     }
                   }}
@@ -364,6 +376,9 @@ const YearInReview: React.FC = () => {
                     const target = e.currentTarget as HTMLImageElement
                     target.style.opacity = '1'
                     target.style.filter = 'none'
+                    if (import.meta.env.DEV) {
+                      console.log(`✅ Cargada: ${filename}`)
+                    }
                   }}
                 />
               </div>
@@ -426,7 +441,7 @@ const YearInReview: React.FC = () => {
             left: 0;
             right: 0;
             bottom: 0;
-            z-index: 1;
+            z-index: 9999;
             isolation: isolate;
           }
 
@@ -687,8 +702,12 @@ const YearInReview: React.FC = () => {
             cursor: pointer;
             display: block !important;
             background: rgba(255,255,255,0.02);
-            opacity: 1 !important;
+            opacity: 0;
             visibility: visible !important;
+          }
+          
+          .gallery-image[src]:not([src=""]) {
+            opacity: 1 !important;
           }
 
           .gallery-image:hover {
