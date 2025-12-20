@@ -317,7 +317,7 @@ const YearInReview: React.FC = () => {
       })
       .filter(filename => {
         const ext = filename.toLowerCase()
-        return ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.gif') || ext.endsWith('.webp')
+        return ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.gif') || ext.endsWith('.webp') || ext.endsWith('.JPG') || ext.endsWith('.PNG')
       })
       // Eliminar duplicados (por si hay tanto HEIC como JPG en la lista)
       .filter((value, index, self) => self.indexOf(value) === index)
@@ -327,9 +327,6 @@ const YearInReview: React.FC = () => {
         <div className="image-placeholder">
           <FontAwesomeIcon icon={faCamera} />
           <p>No hay imágenes compatibles disponibles</p>
-          <p style={{ fontSize: '12px', marginTop: '10px', opacity: 0.6 }}>
-            (Los archivos HEIC no se pueden mostrar en navegadores web)
-          </p>
         </div>
       )
     }
@@ -338,38 +335,8 @@ const YearInReview: React.FC = () => {
       <div className="image-gallery">
         <div className="image-gallery-grid">
           {compatibleImages.map((filename, index) => {
-            // Codificar el nombre del archivo para manejar espacios y caracteres especiales
-            const encodedFilename = encodeURIComponent(filename)
-            const imagePath = `/images/${month}_CRIPTOUNAM/${encodedFilename}`
-            
-            // Función para intentar diferentes variaciones del nombre
-            const tryAlternatives = (target: HTMLImageElement, attempts: number = 0) => {
-              const alternatives = [
-                encodedFilename, // Primera opción: codificado
-                filename, // Segunda opción: sin codificar
-                filename.replace(/\s+/g, '%20'), // Tercera opción: espacios como %20
-                filename.replace(/\s+/g, '+'), // Cuarta opción: espacios como +
-              ]
-              
-              // También intentar con extensiones en minúsculas/mayúsculas
-              const ext = filename.split('.').pop()?.toLowerCase()
-              const baseName = filename.substring(0, filename.lastIndexOf('.'))
-              if (ext) {
-                alternatives.push(`${encodeURIComponent(baseName)}.${ext}`)
-                alternatives.push(`${encodeURIComponent(baseName)}.${ext.toUpperCase()}`)
-              }
-              
-              if (attempts < alternatives.length) {
-                const altPath = `/images/${month}_CRIPTOUNAM/${alternatives[attempts]}`
-                console.log(`🔄 Intento ${attempts + 1}: ${altPath}`)
-                target.src = altPath
-                target.dataset.attempt = String(attempts + 1)
-              } else {
-                console.error(`❌ No se pudo cargar después de ${alternatives.length} intentos: ${filename}`)
-                target.style.opacity = '0.1'
-                target.style.filter = 'grayscale(100%) blur(2px)'
-              }
-            }
+            // Construir la ruta: codificar el nombre del archivo para manejar espacios
+            const imagePath = `/images/${month}_CRIPTOUNAM/${encodeURIComponent(filename)}`
             
             return (
               <div 
@@ -383,19 +350,20 @@ const YearInReview: React.FC = () => {
                   loading="lazy"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
-                    const currentAttempt = parseInt(target.dataset.attempt || '0')
-                    console.warn(`⚠️ Error cargando (intento ${currentAttempt}): ${imagePath}`, filename)
-                    tryAlternatives(target, currentAttempt)
+                    // Si falla con codificado, intentar sin codificar
+                    if (!target.dataset.retried) {
+                      target.dataset.retried = 'true'
+                      const unencodedPath = `/images/${month}_CRIPTOUNAM/${filename}`
+                      target.src = unencodedPath
+                    } else {
+                      // Si falló ambas veces, ocultar silenciosamente
+                      target.style.display = 'none'
+                    }
                   }}
                   onLoad={(e) => {
-                    // Cuando carga correctamente
                     const target = e.currentTarget as HTMLImageElement
                     target.style.opacity = '1'
                     target.style.filter = 'none'
-                    // Solo log en desarrollo para no saturar la consola
-                    if (import.meta.env.DEV) {
-                      console.log(`✅ Imagen cargada: ${filename}`)
-                    }
                   }}
                 />
               </div>
