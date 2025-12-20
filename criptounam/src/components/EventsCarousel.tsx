@@ -98,8 +98,8 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         border: '1px solid rgba(212,175,55,0.3)',
         margin: '2rem 0'
       }}>
-        <h3 style={{ color: '#D4AF37', marginBottom: '1rem' }}>Próximos Eventos</h3>
-        <p style={{ color: '#E0E0E0' }}>No hay eventos próximos por el momento</p>
+        <h3 style={{ color: '#D4AF37', marginBottom: '1rem' }}>Eventos Anteriores</h3>
+        <p style={{ color: '#E0E0E0' }}>No hay eventos anteriores por el momento</p>
       </div>
     )
   }
@@ -127,7 +127,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           fontSize: '2.5rem',
           marginBottom: '1rem'
         }}>
-          Próximos Eventos
+          Eventos Anteriores
         </h2>
         <p style={{
           color: '#E0E0E0',

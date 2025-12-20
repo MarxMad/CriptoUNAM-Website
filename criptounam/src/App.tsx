@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -15,8 +15,35 @@ import Newsletter from './pages/Newsletter'
 import NewsletterEntry from './pages/NewsletterEntry'
 import ProyectosDestacados from './pages/ProyectosDestacados'
 import Juegos from './pages/Juegos'
+import YearInReview from './pages/YearInReview'
 import { WalletProvider } from './context/WalletContext'
 import './styles/global.css'
+
+const AppContent = () => {
+  const location = useLocation()
+  const isYearInReview = location.pathname === '/year-in-review'
+
+  return (
+    <div className="app">
+      {!isYearInReview && <Navbar />}
+      <main>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/cursos" element={<Cursos />} />
+          <Route path="/comunidad" element={<Comunidad />} />
+          <Route path="/newsletter" element={<Newsletter />} />
+          <Route path="/newsletter/:id" element={<NewsletterEntry />} />
+          <Route path="/proyectos" element={<ProyectosDestacados />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/registro-curso/:id" element={<RegistroCurso />} />
+          <Route path="/juegos" element={<Juegos />} />
+          <Route path="/year-in-review" element={<YearInReview />} />
+        </Routes>
+      </main>
+      {!isYearInReview && <Footer />}
+    </div>
+  )
+}
 
 const App = () => {
   useEffect(() => {
@@ -47,23 +74,7 @@ const App = () => {
     <HelmetProvider>
       <WalletProvider>
         <Router>
-          <div className="app">
-            <Navbar />
-            <main>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/cursos" element={<Cursos />} />
-                <Route path="/comunidad" element={<Comunidad />} />
-                <Route path="/newsletter" element={<Newsletter />} />
-                <Route path="/newsletter/:id" element={<NewsletterEntry />} />
-                <Route path="/proyectos" element={<ProyectosDestacados />} />
-                <Route path="/perfil" element={<Perfil />} />
-                <Route path="/registro-curso/:id" element={<RegistroCurso />} />
-                <Route path="/juegos" element={<Juegos />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
+          <AppContent />
         </Router>
       </WalletProvider>
     </HelmetProvider>
