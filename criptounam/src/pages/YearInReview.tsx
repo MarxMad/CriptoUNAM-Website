@@ -246,7 +246,11 @@ const monthImages: Record<string, string[]> = {
     'IMG_6960.HEIC',
     'IMG_6983 2.JPG',
     'IMG_7006.HEIC',
-    'IMG_7009.HEIC'
+    'IMG_7009.HEIC',
+    'photo_2025-12-20 13.30.49.jpeg',
+    'photo_2025-12-20 13.30.51.jpeg',
+    'photo_2025-12-20 13.30.53.jpeg',
+    'photo_2025-12-20 13.30.55.jpeg'
   ],
   NOVIEMBRE: [
     '007f7872bdaaf1719ef62595f2f2bd39 2.JPG',
@@ -278,7 +282,11 @@ const monthImages: Record<string, string[]> = {
     'IMG_7658 2.HEIC',
     'IMG_7795 2.HEIC',
     'IMG_7929 2.HEIC',
-    'IMG_7934 2.HEIC'
+    'IMG_7934 2.HEIC',
+    'photo_2025-12-20 13.33.26.jpeg',
+    'photo_2025-12-20 13.33.29.jpeg',
+    'photo_2025-12-20 13.33.31.jpeg',
+    'photo_2025-12-20 13.33.33.jpeg'
   ],
   DICIEMBRE: [
     'IMG_8034.JPG',
@@ -319,7 +327,7 @@ const YearInReview: React.FC = () => {
       })
       .filter(filename => {
         const ext = filename.toLowerCase()
-        return ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.gif') || ext.endsWith('.webp') || ext.endsWith('.JPG') || ext.endsWith('.PNG')
+        return ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.gif') || ext.endsWith('.webp') || ext.endsWith('.JPG') || ext.endsWith('.JPEG') || ext.endsWith('.PNG')
       })
       // Eliminar duplicados (por si hay tanto HEIC como JPG en la lista)
       .filter((value, index, self) => self.indexOf(value) === index)
@@ -596,24 +604,7 @@ const YearInReview: React.FC = () => {
             max-width: 1200px;
           }
 
-          .project-tile {
-            background: rgba(255,255,255,0.05);
-            padding: 25px;
-            border-radius: 16px;
-            border-top: 4px solid var(--unam-gold);
-          }
-
-          .project-tile h3 {
-            font-size: 22px;
-            margin-bottom: 10px;
-            color: var(--unam-gold);
-          }
-
-          .project-tile p {
-            font-size: 14px;
-            opacity: 0.8;
-            line-height: 1.4;
-          }
+          /* .project-tile definido más abajo con animaciones mejoradas */
 
           .team-section {
             display: grid;
@@ -812,6 +803,461 @@ const YearInReview: React.FC = () => {
             background: #F4C842;
           }
 
+          /* Estilos mejorados para slides especiales */
+          .hackathon-card {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            border-radius: 20px;
+            border: 3px solid var(--unam-gold);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: slideInUp 0.6s ease-out backwards;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
+                        inset 0 0 60px rgba(212, 175, 55, 0.1),
+                        0 0 40px rgba(212, 175, 55, 0.2);
+          }
+
+          .hackathon-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(212, 175, 55, 0.1);
+            animation: rotate 8s linear infinite;
+            opacity: 0;
+            transition: opacity 0.5s;
+          }
+
+          .hackathon-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(212, 175, 55, 0.2);
+            transition: left 0.6s;
+          }
+
+          .hackathon-card:hover::before {
+            opacity: 1;
+          }
+
+          .hackathon-card:hover::after {
+            left: 100%;
+          }
+
+          .hackathon-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--unam-gold);
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.5), 
+                        inset 0 0 80px rgba(212, 175, 55, 0.2),
+                        0 0 60px rgba(212, 175, 55, 0.4);
+            background: rgba(212, 175, 55, 0.15);
+          }
+
+          .hackathon-card:nth-child(1) {
+            animation-delay: 0.1s;
+          }
+
+          .hackathon-card:nth-child(2) {
+            animation-delay: 0.2s;
+          }
+
+          .hackathon-item {
+            padding: 10px 12px;
+            margin: 4px 0;
+            border-left: 3px solid transparent;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            animation: fadeInLeft 0.5s ease-out backwards;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+          }
+
+          .hackathon-item::before {
+            content: '▸';
+            position: absolute;
+            left: -10px;
+            color: var(--unam-gold);
+            opacity: 0;
+            transition: all 0.3s;
+            font-size: 18px;
+          }
+
+          .hackathon-item:nth-child(1) { animation-delay: 0.2s; }
+          .hackathon-item:nth-child(2) { animation-delay: 0.25s; }
+          .hackathon-item:nth-child(3) { animation-delay: 0.3s; }
+          .hackathon-item:nth-child(4) { animation-delay: 0.35s; }
+          .hackathon-item:nth-child(5) { animation-delay: 0.4s; }
+          .hackathon-item:nth-child(6) { animation-delay: 0.45s; }
+          .hackathon-item:nth-child(7) { animation-delay: 0.5s; }
+          .hackathon-item:nth-child(8) { animation-delay: 0.55s; }
+          .hackathon-item:nth-child(9) { animation-delay: 0.6s; }
+          .hackathon-item:nth-child(10) { animation-delay: 0.65s; }
+          .hackathon-item:nth-child(11) { animation-delay: 0.7s; }
+          .hackathon-item:nth-child(12) { animation-delay: 0.75s; }
+          .hackathon-item:nth-child(13) { animation-delay: 0.8s; }
+          .hackathon-item:nth-child(14) { animation-delay: 0.85s; }
+          .hackathon-item:nth-child(15) { animation-delay: 0.9s; }
+          .hackathon-item:nth-child(16) { animation-delay: 0.95s; }
+          .hackathon-item:nth-child(17) { animation-delay: 1s; }
+          .hackathon-item:nth-child(18) { animation-delay: 1.05s; }
+
+          .hackathon-item:hover {
+            padding-left: 20px;
+            background: rgba(212, 175, 55, 0.15);
+            border-left-color: var(--unam-gold);
+            transform: translateX(5px);
+            box-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
+          }
+
+          .hackathon-item:hover::before {
+            opacity: 1;
+            left: 0;
+          }
+
+          .hackathon-total {
+            color: var(--unam-gold);
+            animation: pulse 2s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.8);
+            position: relative;
+          }
+
+          .hackathon-total::before {
+            content: '💰';
+            margin-right: 10px;
+            font-size: 32px;
+            animation: bounce 2s ease-in-out infinite;
+            display: inline-block;
+          }
+
+          .project-tile {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 35px;
+            border-radius: 24px;
+            border: 3px solid var(--unam-gold);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: scaleIn 0.6s ease-out backwards;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4),
+                        inset 0 0 60px rgba(212, 175, 55, 0.1),
+                        0 0 50px rgba(212, 175, 55, 0.15);
+          }
+
+          .project-tile::before {
+            content: '⭐';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            opacity: 0.3;
+            animation: twinkle 2s ease-in-out infinite;
+            transition: all 0.3s;
+          }
+
+          .project-tile::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(212, 175, 55, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: rotate 10s linear infinite;
+          }
+
+          .project-tile:hover::before {
+            opacity: 1;
+            transform: scale(1.3) rotate(15deg);
+          }
+
+          .project-tile:hover::after {
+            opacity: 1;
+          }
+
+          .project-tile:hover {
+            transform: translateY(-12px) scale(1.03) rotate(1deg);
+            border-color: var(--unam-gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.5),
+                        inset 0 0 80px rgba(212, 175, 55, 0.2),
+                        0 0 80px rgba(212, 175, 55, 0.4);
+            background: rgba(212, 175, 55, 0.15);
+          }
+
+          .project-tile:nth-child(1) { animation-delay: 0.1s; }
+          .project-tile:nth-child(2) { animation-delay: 0.15s; }
+          .project-tile:nth-child(3) { animation-delay: 0.2s; }
+          .project-tile:nth-child(4) { animation-delay: 0.25s; }
+          .project-tile:nth-child(5) { animation-delay: 0.3s; }
+          .project-tile:nth-child(6) { animation-delay: 0.35s; }
+          .project-tile:nth-child(7) { animation-delay: 0.4s; }
+
+          .project-tile h3 {
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s;
+            color: var(--unam-gold);
+            font-size: 24px;
+          }
+
+          .project-tile:hover h3 {
+            transform: scale(1.08);
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+            filter: brightness(1.2);
+          }
+
+          .project-tile p {
+            font-size: 14px;
+            opacity: 0.8;
+            line-height: 1.4;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s;
+          }
+
+          .project-tile:hover p {
+            opacity: 1;
+          }
+
+          .future-card {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 35px;
+            border-radius: 20px;
+            border: 3px solid var(--unam-gold);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: rotateIn 0.7s ease-out backwards;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4),
+                        inset 0 0 60px rgba(212, 175, 55, 0.1),
+                        0 0 50px rgba(212, 175, 55, 0.15);
+          }
+
+          .future-card::before {
+            content: '🚀';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 28px;
+            opacity: 0.4;
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s;
+          }
+
+          .future-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(212, 175, 55, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: rotate 12s linear infinite;
+          }
+
+          .future-card:hover::before {
+            opacity: 1;
+            transform: scale(1.4) rotate(20deg);
+          }
+
+          .future-card:hover::after {
+            opacity: 1;
+          }
+
+          .future-card:hover {
+            transform: translateY(-12px) rotate(-2deg) scale(1.05);
+            border-color: var(--unam-gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.5),
+                        inset 0 0 80px rgba(212, 175, 55, 0.2),
+                        0 0 80px rgba(212, 175, 55, 0.4);
+            background: rgba(212, 175, 55, 0.15);
+          }
+
+          .future-card:nth-child(1) { animation-delay: 0.1s; }
+          .future-card:nth-child(2) { animation-delay: 0.15s; }
+          .future-card:nth-child(3) { animation-delay: 0.2s; }
+          .future-card:nth-child(4) { animation-delay: 0.25s; }
+          .future-card:nth-child(5) { animation-delay: 0.3s; }
+          .future-card:nth-child(6) { animation-delay: 0.35s; }
+          .future-card:nth-child(7) { animation-delay: 0.4s; }
+
+          .future-card h3 {
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s;
+            text-align: center;
+            color: var(--unam-gold);
+            font-size: 24px;
+            letter-spacing: 1px;
+          }
+
+          .future-card:hover h3 {
+            transform: scale(1.15);
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
+            filter: brightness(1.3);
+            letter-spacing: 2px;
+          }
+
+          /* Animaciones */
+          @keyframes slideInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          @keyframes fadeInLeft {
+            from {
+              opacity: 0;
+              transform: translateX(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+
+          @keyframes scaleIn {
+            from {
+              opacity: 0;
+              transform: scale(0.8);
+            }
+            to {
+              opacity: 1;
+              transform: scale(1);
+            }
+          }
+
+          @keyframes rotateIn {
+            from {
+              opacity: 0;
+              transform: rotate(-5deg) scale(0.9);
+            }
+            to {
+              opacity: 1;
+              transform: rotate(0) scale(1);
+            }
+          }
+
+          @keyframes pulse {
+            0%, 100% {
+              opacity: 1;
+              transform: scale(1);
+            }
+            50% {
+              opacity: 0.9;
+              transform: scale(1.05);
+            }
+          }
+
+          @keyframes shimmer {
+            0% {
+              background-position: -200% center;
+            }
+            100% {
+              background-position: 200% center;
+            }
+          }
+
+          @keyframes rotate {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+
+          @keyframes bounce {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+
+          @keyframes twinkle {
+            0%, 100% {
+              opacity: 0.3;
+              transform: scale(1);
+            }
+            50% {
+              opacity: 1;
+              transform: scale(1.2);
+            }
+          }
+
+          @keyframes float {
+            0%, 100% {
+              transform: translateY(0) rotate(0deg);
+            }
+            50% {
+              transform: translateY(-10px) rotate(10deg);
+            }
+          }
+
+          .hackathon-container {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border: 3px solid var(--unam-gold);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 80px rgba(212, 175, 55, 0.1),
+                        0 0 60px rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+          }
+
+          .hackathon-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(212, 175, 55, 0.05);
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+          }
+
+          .future-container {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border: 3px solid var(--unam-gold);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 80px rgba(212, 175, 55, 0.1),
+                        0 0 60px rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+          }
+
+          .future-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(212, 175, 55, 0.05);
+            animation: rotate 25s linear infinite reverse;
+            pointer-events: none;
+          }
+
           @media (max-width: 768px) {
             .slide {
               padding: 30px 20px;
@@ -967,7 +1413,7 @@ const YearInReview: React.FC = () => {
           <div className={`slide ${currentSlide === 8 ? 'active' : ''}`}>
             <div className="month-badge">AGOSTO</div>
             <h2 className="slide-title">
-              Bitso Win & <span style={{ color: 'var(--unam-gold)' }}>Unlock</span>
+              Bitso Win, <span style={{ color: 'var(--unam-gold)' }}> ETH Global NewYork & Monad Hackathon</span>
             </h2>
             <div className="content-grid">
               <ImageGallery month="AGOSTO" />
@@ -1017,93 +1463,103 @@ const YearInReview: React.FC = () => {
           {/* SLIDE: IMPACTO EN CIFRAS (después de Diciembre) */}
           <div className={`slide ${currentSlide === 13 ? 'active' : ''}`}>
             <h2 className="slide-title">
-              SON LOS <span style={{ color: 'var(--unam-gold)' }}>HACKATHONES GANADOS</span>
+              NUESTRA PARTICIPACIÓN EN <span style={{ color: 'var(--unam-gold)' }}>HACKATHONES 2025</span>
             </h2>
-            <div style={{ 
+            <div className="hackathon-container" style={{ 
               width: '100%', 
               maxWidth: '1200px', 
               maxHeight: '70vh', 
               overflowY: 'auto',
-              padding: '20px',
-              background: 'rgba(0,0,0,0.2)',
-              borderRadius: '20px',
-              border: '1px solid rgba(255,255,255,0.1)'
+              padding: '30px',
+              borderRadius: '20px'
             }}>
               <div style={{ 
                 display: 'grid', 
                 gridTemplateColumns: '1fr 1fr', 
-                gap: '20px',
+                gap: '25px',
                 marginBottom: '30px'
               }}>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '15px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '15px', fontSize: '18px' }}>Hackathones Ganados</h3>
-                  <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
-                    <p><strong>UNIFOOD</strong> - ETHCDM - <span style={{ color: 'var(--unam-gold)' }}>500 USD</span></p>
-                    <p><strong>CampusCoin</strong> - BaseBatch Latam 001 - <span style={{ color: 'var(--unam-gold)' }}>1,250 USD</span></p>
-                    <p><strong>MY DENTAL VAULT</strong> - POLKADOT - <span style={{ color: 'var(--unam-gold)' }}>200 USD</span></p>
-                    <p><strong>UNAM DAO</strong> - SHERRY (AVAX) - <span style={{ color: 'var(--unam-gold)' }}>300 USD</span></p>
-                    <p><strong>LA KINIELA</strong> - BITSO HACKATHON - <span style={{ color: 'var(--unam-gold)' }}>1,500 USD</span></p>
-                    <p><strong>ENERPAY</strong> - BITSO HACKATHON - <span style={{ color: 'var(--unam-gold)' }}>1,000 USD</span></p>
-                    <p><strong>NEARMINT</strong> - STARKNET RESOLVE - <span style={{ color: 'var(--unam-gold)' }}>600 USD</span></p>
-                    <p><strong>UNBOX</strong> - SOLANA SHIPYARD - <span style={{ color: 'var(--unam-gold)' }}>150 USD</span></p>
-                    <p><strong>VERIFICA.XYZ</strong> - ETH MEXICO MONTERREY - <span style={{ color: 'var(--unam-gold)' }}>1,500 USD</span></p>
-                    <p><strong>EVVM SCANNER</strong> - ETH GLOBAL ARGENTINA - <span style={{ color: 'var(--unam-gold)' }}>1,375 USD</span></p>
-                    <p><strong>PREMIO.XYZ</strong> - CELO PROOF OF SHIP - <span style={{ color: 'var(--unam-gold)' }}>40 USD</span></p>
-                    <p><strong>SKILLHUB ID</strong> - STELLAR MEXICO - <span style={{ color: 'var(--unam-gold)' }}>100 USD</span></p>
-                  </div>
-                  <div style={{ 
-                    marginTop: '20px', 
-                    paddingTop: '20px', 
-                    borderTop: '2px solid var(--unam-gold)',
-                    fontSize: '20px',
+                <div className="hackathon-card">
+                  <h3 style={{ 
+                    color: 'var(--unam-gold)', 
+                    marginBottom: '20px', 
+                    fontSize: '26px', 
                     fontWeight: 'bold',
-                    color: 'var(--unam-gold)'
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    textShadow: '0 0 20px rgba(212, 175, 55, 0.6)'
                   }}>
-                    TOTAL: <span style={{ fontSize: '28px' }}>8,515 USD</span>
+                    <span style={{ fontSize: '32px' }}>🏆</span>
+                    Hackathones Ganados
+                  </h3>
+                  <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
+                    <p className="hackathon-item"><strong>UNIFOOD</strong> - ETHCDM - <span style={{ color: 'var(--unam-gold)' }}>500 USD</span></p>
+                    <p className="hackathon-item"><strong>CampusCoin</strong> - BaseBatch Latam 001 - <span style={{ color: 'var(--unam-gold)' }}>1,250 USD</span></p>
+                    <p className="hackathon-item"><strong>MY DENTAL VAULT</strong> - POLKADOT - <span style={{ color: 'var(--unam-gold)' }}>200 USD</span></p>
+                    <p className="hackathon-item"><strong>UNAM DAO</strong> - SHERRY (AVAX) - <span style={{ color: 'var(--unam-gold)' }}>300 USD</span></p>
+                    <p className="hackathon-item"><strong>LA KINIELA</strong> - BITSO HACKATHON - <span style={{ color: 'var(--unam-gold)' }}>1,500 USD</span></p>
+                    <p className="hackathon-item"><strong>ENERPAY</strong> - BITSO HACKATHON - <span style={{ color: 'var(--unam-gold)' }}>1,000 USD</span></p>
+                    <p className="hackathon-item"><strong>NEARMINT</strong> - STARKNET RESOLVE - <span style={{ color: 'var(--unam-gold)' }}>600 USD</span></p>
+                    <p className="hackathon-item"><strong>UNBOX</strong> - SOLANA SHIPYARD - <span style={{ color: 'var(--unam-gold)' }}>150 USD</span></p>
+                    <p className="hackathon-item"><strong>VERIFICA.XYZ</strong> - ETH MEXICO MONTERREY - <span style={{ color: 'var(--unam-gold)' }}>1,500 USD</span></p>
+                    <p className="hackathon-item"><strong>EVVM SCANNER</strong> - ETH GLOBAL ARGENTINA - <span style={{ color: 'var(--unam-gold)' }}>1,375 USD</span></p>
+                    <p className="hackathon-item"><strong>PREMIO.XYZ</strong> - CELO PROOF OF SHIP - <span style={{ color: 'var(--unam-gold)' }}>40 USD</span></p>
+                    <p className="hackathon-item"><strong>SKILLHUB ID</strong> - STELLAR MEXICO - <span style={{ color: 'var(--unam-gold)' }}>100 USD</span></p>
+                  </div>
+                  <div className="hackathon-total" style={{ 
+                    marginTop: '25px', 
+                    paddingTop: '25px', 
+                    borderTop: '3px solid var(--unam-gold)',
+                    fontSize: '24px',
+                    fontWeight: 'bold'
+                  }}>
+                    TOTAL: <span style={{ fontSize: '36px' }}>8,515 USD</span>
                   </div>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '15px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '15px', fontSize: '18px' }}>Hackathones Participados</h3>
-                  <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
-                    <p><strong>UNIFOOD</strong> - ETHCDM <span style={{ color: 'var(--unam-gold)' }}>🏆 500 USD</span></p>
-                    <p><strong>CampusCoin</strong> - BaseBatch Latam 001 <span style={{ color: 'var(--unam-gold)' }}>🏆 1,250 USD</span></p>
-                    <p><strong>MY DENTAL VAULT</strong> - POLKADOT <span style={{ color: 'var(--unam-gold)' }}>🏆 200 USD</span></p>
-                    <p><strong>UNAM DAO</strong> - SHERRY (AVAX) <span style={{ color: 'var(--unam-gold)' }}>🏆 300 USD</span></p>
-                    <p><strong>LA KINIELA</strong> - BITSO HACKATHON <span style={{ color: 'var(--unam-gold)' }}>🏆 1,500 USD</span></p>
-                    <p><strong>ENERPAY</strong> - BITSO HACKATHON <span style={{ color: 'var(--unam-gold)' }}>🏆 1,000 USD</span></p>
-                    <p><strong>NEARMINT</strong> - STARKNET RESOLVE <span style={{ color: 'var(--unam-gold)' }}>🏆 600 USD</span></p>
-                    <p><strong>UNBOX</strong> - SOLANA SHIPYARD <span style={{ color: 'var(--unam-gold)' }}>🏆 150 USD</span></p>
-                    <p><strong>VERIFICA.XYZ</strong> - ETH MEXICO MONTERREY <span style={{ color: 'var(--unam-gold)' }}>🏆 1,500 USD</span></p>
-                    <p><strong>EVVM SCANNER</strong> - ETH GLOBAL ARGENTINA <span style={{ color: 'var(--unam-gold)' }}>🏆 1,375 USD</span></p>
-                    <p><strong>PREMIO.XYZ</strong> - CELO PROOF OF SHIP <span style={{ color: 'var(--unam-gold)' }}>🏆 40 USD</span></p>
-                    <p><strong>SKILLHUB ID</strong> - STELLAR MEXICO <span style={{ color: 'var(--unam-gold)' }}>🏆 100 USD</span></p>
-                    <p style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}><strong>ALEPH ARGENTINA</strong> - UNIFOOD</p>
-                    <p><strong>PUMAPAY</strong> - BITSO Y STELLAR ARGENTINA</p>
-                    <p><strong>ZENTRADE</strong> - MERIDIAN RIO DE JANEIRO</p>
-                    <p><strong>WORLD CUP</strong> - ETH GLOBAL NUEVA YORK</p>
-                    <p><strong>CORE WAVE AGENTS</strong> - COREDAO BUILDATHON</p>
-                    <p><strong>MOBILE MONAD HACKATHON</strong> - KINIELA & INSURANCE</p>
-                  </div>
-                  <div style={{ 
-                    marginTop: '20px', 
-                    paddingTop: '20px', 
-                    borderTop: '2px solid var(--unam-gold)',
-                    fontSize: '20px',
+                <div className="hackathon-card">
+                  <h3 style={{ 
+                    color: 'var(--unam-gold)', 
+                    marginBottom: '20px', 
+                    fontSize: '26px', 
                     fontWeight: 'bold',
-                    color: 'var(--unam-gold)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    textShadow: '0 0 20px rgba(212, 175, 55, 0.6)'
+                  }}>
+                    <span style={{ fontSize: '32px' }}>🚀</span>
+                    Hackathones Participados
+                  </h3>
+                  <div style={{ fontSize: '14px', lineHeight: '1.8' }}>
+                    <p className="hackathon-item"><strong>UNIFOOD</strong> - ETHCDM <span style={{ color: 'var(--unam-gold)' }}>🏆 500 USD</span></p>
+                    <p className="hackathon-item"><strong>CampusCoin</strong> - BaseBatch Latam 001 <span style={{ color: 'var(--unam-gold)' }}>🏆 1,250 USD</span></p>
+                    <p className="hackathon-item"><strong>MY DENTAL VAULT</strong> - POLKADOT <span style={{ color: 'var(--unam-gold)' }}>🏆 200 USD</span></p>
+                    <p className="hackathon-item"><strong>UNAM DAO</strong> - SHERRY (AVAX) <span style={{ color: 'var(--unam-gold)' }}>🏆 300 USD</span></p>
+                    <p className="hackathon-item"><strong>LA KINIELA</strong> - BITSO HACKATHON <span style={{ color: 'var(--unam-gold)' }}>🏆 1,500 USD</span></p>
+                    <p className="hackathon-item"><strong>ENERPAY</strong> - BITSO HACKATHON <span style={{ color: 'var(--unam-gold)' }}>🏆 1,000 USD</span></p>
+                    <p className="hackathon-item"><strong>NEARMINT</strong> - STARKNET RESOLVE <span style={{ color: 'var(--unam-gold)' }}>🏆 600 USD</span></p>
+                    <p className="hackathon-item"><strong>UNBOX</strong> - SOLANA SHIPYARD <span style={{ color: 'var(--unam-gold)' }}>🏆 150 USD</span></p>
+                    <p className="hackathon-item"><strong>VERIFICA.XYZ</strong> - ETH MEXICO MONTERREY <span style={{ color: 'var(--unam-gold)' }}>🏆 1,500 USD</span></p>
+                    <p className="hackathon-item"><strong>EVVM SCANNER</strong> - ETH GLOBAL ARGENTINA <span style={{ color: 'var(--unam-gold)' }}>🏆 1,375 USD</span></p>
+                    <p className="hackathon-item"><strong>PREMIO.XYZ</strong> - CELO PROOF OF SHIP <span style={{ color: 'var(--unam-gold)' }}>🏆 40 USD</span></p>
+                    <p className="hackathon-item"><strong>SKILLHUB ID</strong> - STELLAR MEXICO <span style={{ color: 'var(--unam-gold)' }}>🏆 100 USD</span></p>
+                    <p className="hackathon-item" style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.1)' }}><strong>ALEPH ARGENTINA</strong> - UNIFOOD</p>
+                    <p className="hackathon-item"><strong>PUMAPAY</strong> - BITSO Y STELLAR ARGENTINA</p>
+                    <p className="hackathon-item"><strong>ZENTRADE</strong> - MERIDIAN RIO DE JANEIRO</p>
+                    <p className="hackathon-item"><strong>WORLD CUP</strong> - ETH GLOBAL NUEVA YORK</p>
+                    <p className="hackathon-item"><strong>CORE WAVE AGENTS</strong> - COREDAO BUILDATHON</p>
+                    <p className="hackathon-item"><strong>MOBILE MONAD HACKATHON</strong> - KINIELA & INSURANCE</p>
+                  </div>
+                  <div className="hackathon-total" style={{ 
+                    marginTop: '25px', 
+                    paddingTop: '25px', 
+                    borderTop: '3px solid var(--unam-gold)',
+                    fontSize: '24px',
+                    fontWeight: 'bold',
                     textAlign: 'center'
                   }}>
-                    TOTAL: <span style={{ fontSize: '28px' }}>18 Hackathones</span>
+                    TOTAL: <span style={{ fontSize: '36px' }}>18 Hackathones</span>
                   </div>
                 </div>
               </div>
@@ -1153,76 +1609,39 @@ const YearInReview: React.FC = () => {
             <h2 className="slide-title">
               LO QUE SE VIENE PARA <span style={{ color: 'var(--unam-gold)' }}>2026</span>
             </h2>
-            <div style={{ 
+            <div className="future-container" style={{ 
               width: '100%', 
               maxWidth: '1200px', 
               maxHeight: '70vh', 
               overflowY: 'auto',
-              padding: '20px',
-              background: 'rgba(0,0,0,0.2)',
-              borderRadius: '20px',
-              border: '1px solid rgba(255,255,255,0.1)'
+              padding: '30px',
+              borderRadius: '20px'
             }}>
               <div style={{ 
                 display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
-                gap: '20px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+                gap: '25px'
               }}>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>HACKATHON UNAM</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>HACKATHON UNAM</h3>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>BOOTCAMPS</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>BOOTCAMPS</h3>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>INCUBACION DE PROYECTOS</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>INCUBACION DE PROYECTOS</h3>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>GO TO MARKETS</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>GO TO MARKETS</h3>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>ONBOARDING ESTUDIANTES</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>ONBOARDING ESTUDIANTES</h3>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>DESARROLLO DE TALENTO</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>DESARROLLO DE TALENTO</h3>
                 </div>
-                <div style={{ 
-                  background: 'rgba(255,255,255,0.05)', 
-                  padding: '20px', 
-                  borderRadius: '12px',
-                  border: '1px solid rgba(212, 175, 55, 0.2)'
-                }}>
-                  <h3 style={{ color: 'var(--unam-gold)', marginBottom: '10px', fontSize: '20px' }}>CRIPTOUNAM DAO</h3>
+                <div className="future-card">
+                  <h3 style={{ color: 'var(--unam-gold)', fontSize: '22px', fontWeight: 'bold' }}>CRIPTOUNAM DAO</h3>
                 </div>
               </div>
             </div>
