@@ -342,14 +342,23 @@ const YearInReview: React.FC = () => {
           {compatibleImages.map((filename, index) => {
             // Construir diferentes variaciones de la ruta
             const basePath = `/images/${month}_CRIPTOUNAM/`
+            
+            // Generar todas las variaciones posibles
             const paths = [
-              basePath + encodeURIComponent(filename), // Codificado (para espacios)
-              basePath + filename, // Sin codificar
+              basePath + encodeURIComponent(filename), // Codificado completo
               basePath + filename.replace(/\s+/g, '%20'), // Espacios como %20
+              basePath + filename, // Sin codificar
+              basePath + filename.replace(/\s+/g, '+'), // Espacios como +
+              // Variaciones de mayúsculas/minúsculas
+              basePath + filename.toLowerCase(),
+              basePath + filename.toUpperCase(),
             ]
             
-            if (import.meta.env.DEV && index === 0) {
-              console.log(`🖼️ Intentando cargar: ${filename}`, paths[0])
+            // Eliminar duplicados
+            const uniquePaths = Array.from(new Set(paths))
+            
+            if (import.meta.env.DEV && index < 3) {
+              console.log(`🖼️ [${index}] Intentando cargar: ${filename}`, uniquePaths[0])
             }
             
             return (
@@ -358,23 +367,31 @@ const YearInReview: React.FC = () => {
                 className="gallery-image-wrapper"
               >
                 <img
-                  src={paths[0]}
+                  src={uniquePaths[0]}
                   alt={`${month} - ${filename}`}
                   className="gallery-image"
                   loading="lazy"
+                  data-filename={filename}
+                  data-attempt="0"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
                     const attempt = parseInt(target.dataset.attempt || '0')
                     
-                    if (attempt < paths.length - 1) {
+                    if (attempt < uniquePaths.length - 1) {
                       // Intentar siguiente variación
-                      target.dataset.attempt = String(attempt + 1)
-                      target.src = paths[attempt + 1]
-                      console.warn(`🔄 Reintentando (${attempt + 2}/${paths.length}): ${paths[attempt + 1]}`)
+                      const nextAttempt = attempt + 1
+                      target.dataset.attempt = String(nextAttempt)
+                      target.src = uniquePaths[nextAttempt]
+                      if (import.meta.env.DEV) {
+                        console.warn(`🔄 [${target.dataset.filename}] Reintentando (${nextAttempt + 1}/${uniquePaths.length}): ${uniquePaths[nextAttempt]}`)
+                      }
                     } else {
                       // Todas las variaciones fallaron
-                      console.error(`❌ No se pudo cargar: ${filename}`, paths)
+                      if (import.meta.env.DEV) {
+                        console.error(`❌ No se pudo cargar: ${filename}`, uniquePaths)
+                      }
                       target.style.display = 'none'
+                      target.style.opacity = '0'
                     }
                   }}
                   onLoad={(e) => {
@@ -382,7 +399,9 @@ const YearInReview: React.FC = () => {
                     target.style.opacity = '1'
                     target.style.filter = 'none'
                     target.style.display = 'block'
-                    console.log(`✅ Cargada: ${filename}`)
+                    if (import.meta.env.DEV && index < 3) {
+                      console.log(`✅ Cargada: ${filename}`)
+                    }
                   }}
                 />
               </div>
