@@ -381,6 +381,7 @@ const YearInReview: React.FC = () => {
                     const target = e.currentTarget as HTMLImageElement
                     target.style.opacity = '1'
                     target.style.filter = 'none'
+                    target.style.display = 'block'
                     console.log(`✅ Cargada: ${filename}`)
                   }}
                 />
@@ -705,14 +706,10 @@ const YearInReview: React.FC = () => {
             cursor: pointer;
             display: block !important;
             background: rgba(255,255,255,0.02);
-            opacity: 0;
+            opacity: 1 !important;
             visibility: visible !important;
             position: relative;
             z-index: 2;
-          }
-          
-          .gallery-image[src]:not([src=""]) {
-            opacity: 1 !important;
           }
           
           .gallery-image:not([src]), 
