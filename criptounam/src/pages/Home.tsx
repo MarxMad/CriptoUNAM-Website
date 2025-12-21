@@ -690,22 +690,6 @@ const Home = () => {
     },
     // Embajadores
     {
-      name: 'Tadeo Sepúlveda',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Especialista en educación blockchain.',
-      image: '/images/Equipo/TadeoSepulveda.png',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'Benjamín Romero',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Experto en desarrollo de aplicaciones descentralizadas.',
-      image: '/images/Equipo/BenjaminRomero.png',
-      linkedin: '#',
-      github: '#'
-    },
-    {
       name: 'Andrés Rodríguez',
       role: 'Embajador CriptoUNAM',
       description: 'Embajador de la comunidad. Especialista en investigación blockchain.',
@@ -722,28 +706,36 @@ const Home = () => {
       github: '#'
     },
     {
-      name: 'Linda',
-      role: 'Embajadora CriptoUNAM',
-      description: 'Embajadora de la comunidad. Especialista en UX/UI para aplicaciones blockchain.',
-      image: '/images/Equipo/Linda.jpeg',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'David Ricardo',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Experto en seguridad blockchain.',
-      image: '/images/Equipo/DavidRicardo.jpeg',
-      linkedin: '#',
-      github: '#'
-    },
-    {
       name: 'Ian Hernández',
       role: 'Embajador CriptoUNAM',
       description: 'Embajador de la comunidad. Especialista en smart contracts.',
       image: '/images/Equipo/IanHernandes.jpg',
       linkedin: '#',
       twitter: '#'
+    },
+    {
+      name: 'Jorge Saldaña',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Experto en desarrollo blockchain y Web3.',
+      image: '/images/Equipo/JorgeSaldana.jpg',
+      linkedin: '#',
+      github: '#'
+    },
+    {
+      name: 'Tadeo Sepúlveda',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Especialista en educación blockchain.',
+      image: '/images/Equipo/TadeoSepulveda.png',
+      linkedin: '#',
+      twitter: '#'
+    },
+    {
+      name: 'Benjamín Romero',
+      role: 'Embajador CriptoUNAM',
+      description: 'Embajador de la comunidad. Experto en desarrollo de aplicaciones descentralizadas.',
+      image: '/images/Equipo/BenjaminRomero.png',
+      linkedin: '#',
+      github: '#'
     }
   ];
 
@@ -1030,6 +1022,110 @@ const Home = () => {
             Únete a la comunidad
           </Link>
         </div>
+      </section>
+
+      {/* Sección Recap 2025 */}
+      <section style={{
+        maxWidth: '1200px',
+        width: '95%',
+        margin: '0 auto 3rem auto',
+        padding: '0 20px'
+      }}>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{
+            background: 'rgba(0, 0, 0, 0.6)',
+            borderRadius: '24px',
+            padding: '3rem',
+            border: '3px solid #D4AF37',
+            boxShadow: '0 12px 48px rgba(212, 175, 55, 0.3), inset 0 0 60px rgba(212, 175, 55, 0.1)',
+            position: 'relative',
+            overflow: 'hidden',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <div style={{
+            position: 'absolute',
+            top: '-50%',
+            right: '-50%',
+            width: '200%',
+            height: '200%',
+            background: 'radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%)',
+            animation: 'rotate 20s linear infinite',
+            pointerEvents: 'none'
+          }}></div>
+          
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            textAlign: 'center',
+            position: 'relative',
+            zIndex: 2
+          }}>
+            <div style={{
+              fontSize: '4rem',
+              marginBottom: '1rem',
+              animation: 'bounce 2s ease-in-out infinite'
+            }}>
+              🎉
+            </div>
+            <h2 style={{
+              fontFamily: 'Orbitron',
+              color: '#D4AF37',
+              fontSize: '2.5rem',
+              marginBottom: '1rem',
+              textShadow: '0 0 30px rgba(212, 175, 55, 0.6)',
+              fontWeight: 'bold'
+            }}>
+              CRIPTOUNAM RECAP 2025
+            </h2>
+            <p style={{
+              color: '#E0E0E0',
+              fontSize: '1.3rem',
+              marginBottom: '2rem',
+              maxWidth: '700px',
+              lineHeight: '1.6'
+            }}>
+              Descubre todo lo que logramos en 2025: hackathones ganados, proyectos destacados, eventos y el crecimiento de nuestra comunidad.
+            </p>
+            <Link 
+              to="/year-in-review"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.8rem',
+                background: '#D4AF37',
+                color: '#0A0A0A',
+                padding: '1.2rem 3rem',
+                borderRadius: '16px',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                fontSize: '1.2rem',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 8px 32px rgba(212, 175, 55, 0.4)',
+                textTransform: 'uppercase',
+                letterSpacing: '1px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)'
+                e.currentTarget.style.boxShadow = '0 12px 48px rgba(212, 175, 55, 0.6)'
+                e.currentTarget.style.background = '#F4C842'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(212, 175, 55, 0.4)'
+                e.currentTarget.style.background = '#D4AF37'
+              }}
+            >
+              Ver Recap Completo
+              <FontAwesomeIcon icon={faRocket} style={{ fontSize: '1.2rem' }} />
+            </Link>
+          </div>
+        </motion.div>
       </section>
 
       {/* ¿Por qué CriptoUNAM? */}
@@ -1800,6 +1896,30 @@ const Home = () => {
         box-shadow: 0 0 32px 8px #D4AF37cc, 0 0 48px 16px #2563EB99;
         background: linear-gradient(90deg, #1E3A8A 60%, #D4AF37 100%);
         color: #fff;
+      }
+      @keyframes rotate {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      @media (max-width: 768px) {
+        .recap-section h2 {
+          font-size: 1.8rem !important;
+        }
+        .recap-section p {
+          font-size: 1.1rem !important;
+        }
       }
     `}</style>
     </div>

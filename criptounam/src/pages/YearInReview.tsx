@@ -301,7 +301,7 @@ const monthImages: Record<string, string[]> = {
 
 const YearInReview: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const totalSlides = 17
+  const totalSlides = 18
 
   // Función helper para obtener la ruta de la imagen
   const getImagePath = (month: string, filename: string) => {
@@ -1258,6 +1258,167 @@ const YearInReview: React.FC = () => {
             pointer-events: none;
           }
 
+          /* Estilos para tarjetas de embajadores */
+          .ambassador-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+          }
+
+          .ambassador-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid var(--unam-gold);
+            border-radius: 24px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: scaleIn 0.6s ease-out backwards;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4),
+                        inset 0 0 60px rgba(212, 175, 55, 0.1),
+                        0 0 50px rgba(212, 175, 55, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+
+          .ambassador-card::before {
+            content: '⭐';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 28px;
+            opacity: 0.4;
+            animation: twinkle 2s ease-in-out infinite;
+            transition: all 0.3s;
+          }
+
+          .ambassador-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(212, 175, 55, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: rotate 10s linear infinite;
+          }
+
+          .ambassador-card:hover::before {
+            opacity: 1;
+            transform: scale(1.3) rotate(15deg);
+          }
+
+          .ambassador-card:hover::after {
+            opacity: 1;
+          }
+
+          .ambassador-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            border-color: var(--unam-gold);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.5),
+                        inset 0 0 80px rgba(212, 175, 55, 0.2),
+                        0 0 80px rgba(212, 175, 55, 0.4);
+            background: rgba(212, 175, 55, 0.15);
+          }
+
+          .ambassador-card:nth-child(1) { animation-delay: 0.1s; }
+          .ambassador-card:nth-child(2) { animation-delay: 0.2s; }
+          .ambassador-card:nth-child(3) { animation-delay: 0.3s; }
+
+          .ambassador-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 4px solid var(--unam-gold);
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.4);
+            transition: all 0.4s;
+            position: relative;
+            z-index: 2;
+          }
+
+          .ambassador-card:hover .ambassador-photo {
+            transform: scale(1.1);
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.6);
+            border-color: #F4C842;
+          }
+
+          .ambassador-name {
+            color: var(--unam-gold);
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+          }
+
+          .ambassador-card:hover .ambassador-name {
+            transform: scale(1.05);
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.9);
+          }
+
+          .ambassador-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+
+          .ambassador-description {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+            max-height: 200px;
+            overflow-y: auto;
+          }
+
+          .ambassador-description::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          .ambassador-description::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+          }
+
+          .ambassador-description::-webkit-scrollbar-thumb {
+            background: var(--unam-gold);
+            border-radius: 3px;
+          }
+
+          .ambassador-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--unam-gold);
+            color: #000;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+          }
+
           @media (max-width: 768px) {
             .slide {
               padding: 30px 20px;
@@ -1305,6 +1466,26 @@ const YearInReview: React.FC = () => {
 
             .gallery-image {
               height: 120px;
+            }
+
+            .ambassador-grid {
+              grid-template-columns: 1fr;
+              gap: 20px;
+              padding: 10px;
+            }
+
+            .ambassador-photo {
+              width: 140px;
+              height: 140px;
+            }
+
+            .ambassador-name {
+              font-size: 22px;
+            }
+
+            .ambassador-description {
+              font-size: 12px;
+              max-height: 150px;
             }
           }
         `}</style>
@@ -1647,8 +1828,71 @@ const YearInReview: React.FC = () => {
             </div>
           </div>
 
-          {/* SLIDE 18: GRACIAS */}
+          {/* SLIDE 17: RECONOCIMIENTO ESPECIAL */}
           <div className={`slide ${currentSlide === 16 ? 'active' : ''}`}>
+            <h2 className="slide-title">
+              RECONOCIMIENTO <span style={{ color: 'var(--unam-gold)' }}>ESPECIAL</span>
+            </h2>
+            <p className="slide-subtitle">Nuevos Líderes de CriptoUNAM</p>
+            <div className="ambassador-grid">
+              <div className="ambassador-card">
+                <div className="ambassador-badge">Líder</div>
+                <img 
+                  src="/images/Equipo/AndresRodriguez.jpg" 
+                  alt="Andrés Rodríguez"
+                  className="ambassador-photo"
+                />
+                <h3 className="ambassador-name">Andrés Rodríguez</h3>
+                <p className="ambassador-title">Ingeniero en Computación | Desarrollador Full-Stack | Founder</p>
+                <p className="ambassador-description">
+                  Ingeniero en Computación y desarrollador de software especializado en tecnologías descentralizadas y blockchain. 
+                  Actualmente estudiante en la Universidad Nacional Autónoma de México (UNAM), se desempeña como embajador de CriptoUNAM, 
+                  donde ha apoyado iniciativas educativas y programas de mentoría orientados a impulsar la adopción tecnológica en América Latina.
+                  <br /><br />
+                  Su experiencia técnica abarca el desarrollo de contratos inteligentes sobre Ethereum y sus soluciones de escalabilidad. 
+                  Participa activamente en hackathones como competidor y mentor, impulsando el desarrollo de aplicaciones descentralizadas 
+                  con la misión de democratizar el acceso a herramientas financieras avanzadas.
+                </p>
+              </div>
+              <div className="ambassador-card">
+                <div className="ambassador-badge">Líder</div>
+                <img 
+                  src="/images/Equipo/IanHernandes.jpg" 
+                  alt="Ian Hernández"
+                  className="ambassador-photo"
+                />
+                <h3 className="ambassador-name">Ian Hernández</h3>
+                <p className="ambassador-title">IanClavely | Embajador Arbitrum</p>
+                <p className="ambassador-description">
+                  Joven desarrollador blockchain mexicano, es estudiante de Infraestructura de Redes Digitales con enfoque en blockchain, 
+                  redes y ciberseguridad. Embajador de CriptoUNAM y Arbitrum, destaca en Web3 LATAM educando y construyendo.
+                  <br /><br />
+                  Colaborativo y apasionado por trading y las tecnologías emergentes y disruptivas. Su compromiso con la educación 
+                  y el desarrollo de la comunidad blockchain lo ha posicionado como una figura clave en el ecosistema Web3 latinoamericano.
+                </p>
+              </div>
+              <div className="ambassador-card">
+                <div className="ambassador-badge">Líder</div>
+                <img 
+                  src="/images/Equipo/AdrianMartinez.png" 
+                  alt="Adrián Martínez"
+                  className="ambassador-photo"
+                />
+                <h3 className="ambassador-name">Adrián Martínez</h3>
+                <p className="ambassador-title">Economista | Trader | Entusiasta Web3</p>
+                <p className="ambassador-description">
+                  Estudiante de economía con gran interés en el mundo financiero y el trading. Entusiasta del ecosistema Web3, 
+                  siempre dispuesto a conectar y colaborar con la comunidad.
+                  <br /><br />
+                  Su perspectiva única combina conocimientos económicos tradicionales con la innovación de las tecnologías descentralizadas, 
+                  aportando una visión integral al desarrollo de CriptoUNAM y al crecimiento del ecosistema blockchain en México.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* SLIDE 18: GRACIAS */}
+          <div className={`slide ${currentSlide === 17 ? 'active' : ''}`}>
             <h1 className="slide-title" style={{ fontSize: '100px' }}>GRACIAS</h1>
             <p className="slide-subtitle" style={{ color: 'white', fontSize: '24px' }}>
               ¡NOS VEMOS EN EL CÓDIGO!
