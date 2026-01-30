@@ -14,9 +14,6 @@ import {
   faEnvelope, 
   faTimes,
   faWallet,
-  faPlus,
-  faNewspaper,
-  faCalendarPlus,
   faGamepad
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -65,7 +62,7 @@ const Navbar = () => {
   const { data: balanceData } = useBalance({ address: address as `0x${string}` | undefined })
   const { open } = useAppKit()
   const appKitAccount = useAppKitAccount()
-  const { isAdmin, canCreateCourse, canCreateNewsletter, canCreateEvent } = useAdmin()
+  const { isAdmin } = useAdmin()
   const [networkName, setNetworkName] = useState<string>('')
   const [networkLogo, setNetworkLogo] = useState<string>('')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
@@ -473,94 +470,6 @@ const Navbar = () => {
               </button>
             )}
 
-            {/* Botones de Admin */}
-            {isAdmin && isConnected && (
-              <div style={{ display: 'flex', gap: '6px' }}>
-                {/* Botón para Cursos */}
-                {canCreateCourse && (
-                  <button
-                    onClick={() => {
-                      const event = new CustomEvent('openCursosModal');
-                      window.dispatchEvent(event);
-                    }}
-                    style={{
-                      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
-                      border: 'none',
-                      borderRadius: '6px',
-                      width: '32px',
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.4)',
-                      fontSize: '12px',
-                      color: '#000',
-                      fontWeight: 'bold'
-                    }}
-                    title="Agregar Curso"
-                  >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </button>
-                )}
-                
-                {/* Botón para Newsletter */}
-                {canCreateNewsletter && (
-                  <button
-                    onClick={() => {
-                      const event = new CustomEvent('openNewsletterModal');
-                      window.dispatchEvent(event);
-                    }}
-                    style={{
-                      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
-                      border: 'none',
-                      borderRadius: '6px',
-                      width: '32px',
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.4)',
-                      fontSize: '12px',
-                      color: '#000',
-                      fontWeight: 'bold'
-                    }}
-                    title="Agregar Entrada"
-                  >
-                    <FontAwesomeIcon icon={faNewspaper} />
-                  </button>
-                )}
-                
-                {/* Botón para Comunidad */}
-                {canCreateEvent && (
-                  <button
-                    onClick={() => {
-                      const event = new CustomEvent('openComunidadModal');
-                      window.dispatchEvent(event);
-                    }}
-                    style={{
-                      background: 'linear-gradient(135deg, #D4AF37, #FFD700)',
-                      border: 'none',
-                      borderRadius: '6px',
-                      width: '32px',
-                      height: '32px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      boxShadow: '0 2px 8px rgba(212, 175, 55, 0.4)',
-                      fontSize: '12px',
-                      color: '#000',
-                      fontWeight: 'bold'
-                    }}
-                    title="Agregar Evento"
-                  >
-                    <FontAwesomeIcon icon={faCalendarPlus} />
-                  </button>
-                )}
-              </div>
-            )}
           </div>
 
             {/* Panel de wallet */}

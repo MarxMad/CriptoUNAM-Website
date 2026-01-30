@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
 import { sendTelegramMessage } from '../api/telegram'
-import { API_ENDPOINTS } from '../config/api'
+import { cursosData, type Curso } from '../constants/cursosData'
 import '../styles/global.css'
 
 const RegistroCurso = () => {
   const { address, isConnected } = useAccount()
   const { id } = useParams()
   const navigate = useNavigate()
-  const [curso, setCurso] = useState<any>(null)
+  const [curso, setCurso] = useState<Curso | null>(null)
   const [loading, setLoading] = useState(true)
   const [inscrito, setInscrito] = useState(false)
   const [formData, setFormData] = useState({
@@ -22,30 +21,9 @@ const RegistroCurso = () => {
   const [leccionesCompletadas, setLeccionesCompletadas] = useState<number[]>([])
 
   useEffect(() => {
-    const fetchCurso = async () => {
-      try {
-        // Temporalmente deshabilitado para evitar errores de CORS
-        // const res = await axios.get(API_ENDPOINTS.CURSO(id))
-        // setCurso(res.data)
-        
-        // Datos de ejemplo para evitar errores
-        setCurso({
-          id: id,
-          titulo: 'Curso de Ejemplo',
-          descripcion: 'Este es un curso de ejemplo',
-          duracion: '4 semanas',
-          nivel: 'Principiante',
-          instructor: 'Instructor de Ejemplo',
-          precio: 0,
-          imagen: '/images/cursos/1.svg'
-        });
-      } catch (e) {
-        setCurso(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchCurso()
+    const c = id ? cursosData.find((x) => x.id === id) : undefined
+    setCurso(c !== undefined ? c : null)
+    setLoading(false)
   }, [id])
 
   if (loading) return <div style={{minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center', color:'#D4AF37'}}>Cargando...</div>
@@ -196,7 +174,7 @@ const RegistroCurso = () => {
         <h2 style={{color:'#D4AF37', marginBottom:12}}>Sobre el curso</h2>
         <p style={{color:'#E0E0E0', marginBottom:16}}>{curso.descripcion}</p>
         <h3 style={{color:'#2563EB', marginBottom:8}}>Requisitos</h3>
-        <p style={{color:'#E0E0E0'}}>{curso.requisitos}</p>
+        <p style={{color:'#E0E0E0'}}>{curso.requisitos ?? 'No especificados.'}</p>
       </div>
     </div>
   )

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
 import { handleRegistration, handleNewsletterSubscription } from '../api/telegram'
 import { API_ENDPOINTS } from '../config/api'
-import { newsletterApi } from '../config/supabaseApi'
+import { newsletterData } from '../data/newsletterData'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faGraduationCap, 
@@ -58,6 +58,7 @@ import StatsSection from '../components/StatsSection'
 import InteractiveCTA from '../components/InteractiveCTA'
 import CryptoActions from '../components/CryptoActions'
 import EventsCarousel from '../components/EventsCarousel'
+import { eventosData } from '../data/eventosData'
 
 interface RegistrationForm {
   nombre: string
@@ -323,59 +324,8 @@ const Home = () => {
   const [cursosHome, setCursosHome] = useState<any[]>([])
   const [eventosHome, setEventosHome] = useState<any[]>([])
   const [newslettersHome, setNewslettersHome] = useState<any[]>([])
-  const [eventosCarousel, setEventosCarousel] = useState<any[]>([])
-
-  // Datos de eventos para el carrusel
-  const eventosEjemplo = [
-    {
-      id: '1',
-      title: 'Taller "Mi primer wallet" UNAM 2024',
-      date: ' 9 de Septiembre, 2024',
-      time: '9:00 AM - 6:00 PM',
-      location: 'Anexo de la Facultad de Ingeniería, UNAM',
-      image: '/images/Comunidad/FI-Billetera.jpg',
-      description: 'Creacion de una wallet en la red de Ethereum usando Metamask',
-      capacity: 200,
-      registered: 156,
-      isUpcoming: true
-    },
-    {
-      id: '2',
-      title: 'Workshop: DeFi Fundamentals',
-      date: '22 de Marzo, 2024',
-      time: '2:00 PM - 5:00 PM',
-      location: 'Auditorio Ho Chi Minh, FE-UNAM',
-      image: '/images/Comunidad/Wrokshop.jpg',
-      description: 'Aprendiendo los fundamentos de las finanzas descentralizadas.',
-      capacity: 80,
-      registered: 67,
-      isUpcoming: true
-    },
-    {
-      id: '3',
-      title: 'Bitcoin Day',
-      date: '7 de Mayo, 2024',
-      time: '10:00 AM - 2:00 PM',
-      location: 'FES Acatlan',
-      image: '/images/Comunidad/_DSC0118 (1).jpg',
-      description: 'Explora las últimas tendencias en Web3 con expertos de la industria. Networking, demos en vivo y oportunidades de colaboración.',
-      capacity: 150,
-      registered: 134,
-      isUpcoming: true
-    },
-    {
-      id: '4',
-      title: 'Meetup: NFT y Arte Digital',
-      date: '5 de Abril, 2024',
-      time: '6:00 PM - 9:00 PM',
-      location: 'Espacio de Innovación, UNAM',
-      image: '/images/Comunidad/_DSC0083 (1).jpg',
-      description: 'Descubre el mundo de los NFTs y su impacto en el arte digital. Presentaciones de artistas, galería virtual y subasta en vivo.',
-      capacity: 60,
-      registered: 45,
-      isUpcoming: true
-    }
-  ]
+  // Eventos desde código (src/data/eventosData.ts)
+  const eventosCarousel = eventosData
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -970,27 +920,12 @@ const Home = () => {
       }
     };
     
-    const fetchNewsletters = async () => {
-      try {
-        const newsletters = await newsletterApi.getAll();
-        setNewslettersHome(newsletters.slice(0, 3)); // Solo las últimas 3
-      } catch (e) {
-        setNewslettersHome([]);
-      }
-    };
-    
-    const fetchEventosCarousel = async () => {
-      try {
-        // Por ahora usamos datos de ejemplo, pero aquí se conectaría con la API
-        setEventosCarousel(eventosEjemplo);
-      } catch (e) {
-        setEventosCarousel([]);
-      }
+    const fetchNewsletters = () => {
+      setNewslettersHome(newsletterData.slice(0, 3)); // Últimas 3 desde código
     };
     
     fetchCursosYEventos();
     fetchNewsletters();
-    fetchEventosCarousel();
   }, []);
 
   return (

@@ -157,6 +157,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           <OptimizedImage
             src={currentEvent.image}
             alt={currentEvent.title}
+            fallback="/images/LogosCriptounam2.svg"
             style={{
               width: '100%',
               height: '100%',
@@ -166,12 +167,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
               backgroundColor: 'rgba(26,26,26,0.8)'
             }}
             onError={() => {
-              console.log('Error loading image:', currentEvent.image);
-              // Fallback a una imagen por defecto si falla
-              const img = carouselRef.current?.querySelector('img');
-              if (img) {
-                img.src = '/images/LogosCriptounam.svg';
-              }
+              // Imagen no encontrada: se usa fallback (logo) desde OptimizedImage
             }}
             onLoad={() => {
               // Efecto de zoom sutil al cargar
