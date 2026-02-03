@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { cursosData, type Curso } from '../constants/cursosData'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheckCircle, faBook, faCode, faRocket } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
 const NIVELES = ['todos', 'principiante', 'intermedio', 'avanzado'] as const
@@ -90,6 +92,78 @@ const Cursos = () => {
             Aprende blockchain, smart contracts y DeFi con contenido creado por la comunidad.
           </p>
         </header>
+
+        {/* Tu Camino de Aprendizaje */}
+        <section style={{ maxWidth: 1000, margin: '0 auto 3rem auto', padding: '0 1rem' }}>
+          <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.8rem', textAlign: 'center', marginBottom: '2rem' }}>
+            Tu Camino de Aprendizaje
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2rem',
+            maxWidth: 900,
+            margin: '0 auto'
+          }}>
+            {[
+              { number: 1, title: 'Fundamentos', description: 'Blockchain, Bitcoin, Ethereum y conceptos básicos', icon: faBook, color: '#4ecdc4' },
+              { number: 2, title: 'Desarrollo', description: 'Smart Contracts, DApps y desarrollo Web3', icon: faCode, color: '#D4AF37' },
+              { number: 3, title: 'Especialización', description: 'DeFi, NFTs, DAOs y más', icon: faRocket, color: '#8B5CF6' }
+            ].map((step, i) => (
+              <div key={i} className="card" style={{
+                background: 'rgba(26,26,26,0.85)',
+                borderRadius: 20,
+                padding: '2rem',
+                border: '1px solid rgba(212,175,55,0.3)',
+                textAlign: 'center',
+                transition: 'all 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)'
+                e.currentTarget.style.borderColor = step.color
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'
+              }}
+              >
+                <div style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: '50%',
+                  background: `rgba(${step.color === '#4ecdc4' ? '78, 205, 196' : step.color === '#D4AF37' ? '212, 175, 55' : '139, 92, 246'}, 0.15)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  margin: '0 auto 1rem auto',
+                  border: `2px solid ${step.color}`,
+                  position: 'relative'
+                }}>
+                  <FontAwesomeIcon icon={step.icon} style={{ color: step.color, fontSize: '1.5rem' }} />
+                  <span style={{
+                    position: 'absolute',
+                    top: -8,
+                    right: -8,
+                    background: '#D4AF37',
+                    color: '#000',
+                    width: 24,
+                    height: 24,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold',
+                    fontSize: '0.8rem'
+                  }}>
+                    {step.number}
+                  </span>
+                </div>
+                <h3 style={{ color: '#D4AF37', fontSize: '1.3rem', marginBottom: '0.5rem' }}>{step.title}</h3>
+                <p style={{ color: '#aaa', margin: 0, lineHeight: 1.5 }}>{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <div className="cursos-layout">
           {/* Sidebar filtros */}
