@@ -13,6 +13,7 @@ import Perfil from './pages/Perfil'
 import RegistroCurso from './pages/RegistroCurso'
 import Newsletter from './pages/Newsletter'
 import NewsletterEntry from './pages/NewsletterEntry'
+import Eventos from './pages/Eventos'
 import ProyectosDestacados from './pages/ProyectosDestacados'
 import Juegos from './pages/Juegos'
 import YearInReview from './pages/YearInReview'
@@ -34,6 +35,7 @@ const AppContent = () => {
           <Route path="/newsletter" element={<Newsletter />} />
           <Route path="/newsletter/:id" element={<NewsletterEntry />} />
           <Route path="/proyectos" element={<ProyectosDestacados />} />
+          <Route path="/eventos" element={<Eventos />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/registro-curso/:id" element={<RegistroCurso />} />
           <Route path="/juegos" element={<Juegos />} />
@@ -53,13 +55,13 @@ const App = () => {
         console.log('📊 Resultados del diagnóstico:', results)
       })
     }
-    
+
     // Temporalmente deshabilitado para resolver problemas de carga
     // registerServiceWorker()
-    
+
     // Precargar recursos críticos - temporalmente deshabilitado
     // preloadCriticalResources()
-    
+
     // Prefetch de rutas importantes - temporalmente deshabilitado
     // const prefetchRoutes = ['/cursos', '/comunidad', '/newsletter', '/proyectos']
     // prefetchRoutes.forEach(route => {

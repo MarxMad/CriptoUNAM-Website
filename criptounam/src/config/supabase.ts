@@ -30,7 +30,16 @@ export const TABLES = {
   PUMA_TRANSACTIONS: 'puma_transactions',
   PUMA_MISSIONS: 'puma_missions',
   PUMA_MISSION_COMPLETIONS: 'puma_mission_completions',
-  USERS: 'users'
+  USERS: 'users',
+  // Tablas de cursos
+  CURSOS: 'cursos',
+  MODULOS: 'modulos',
+  LECCIONES: 'lecciones',
+  INSCRIPCIONES_CURSOS: 'inscripciones_cursos',
+  PROGRESO_LECCIONES: 'progreso_lecciones',
+  CERTIFICADOS: 'certificados',
+  // Tablas de eventos
+  EVENTOS: 'eventos'
 } as const
 
 // Esquemas de base de datos

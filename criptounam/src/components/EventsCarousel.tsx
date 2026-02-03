@@ -98,8 +98,8 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         border: '1px solid rgba(212,175,55,0.3)',
         margin: '2rem 0'
       }}>
-        <h3 style={{ color: '#D4AF37', marginBottom: '1rem' }}>Eventos Anteriores</h3>
-        <p style={{ color: '#E0E0E0' }}>No hay eventos anteriores por el momento</p>
+        <h3 style={{ color: '#D4AF37', marginBottom: '1rem' }}>Pr?ximos Eventos</h3>
+        <p style={{ color: '#E0E0E0' }}>No hay eventos pr?ximos por el momento</p>
       </div>
     )
   }
@@ -127,7 +127,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           fontSize: '2.5rem',
           marginBottom: '1rem'
         }}>
-          Eventos Anteriores
+          Pr?ximos Eventos
         </h2>
         <p style={{
           color: '#E0E0E0',
@@ -135,7 +135,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           maxWidth: '600px',
           margin: '0 auto'
         }}>
-          No te pierdas nuestros eventos y actividades especiales
+          No te pierdas nuestros pr?ximos eventos y actividades
         </p>
       </div>
 
@@ -355,7 +355,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
       }}>
         {events.length > 1 && (
           <p>
-            Evento {currentIndex + 1} de {events.length} â€¢ 
+            Evento {currentIndex + 1} de {events.length} âÿ¢ 
             <span style={{ color: '#D4AF37', marginLeft: '0.5rem' }}>
               {autoPlay ? 'Auto-reproducciÃ³n activada' : 'NavegaciÃ³n manual'}
             </span>

@@ -13,6 +13,38 @@ import '../styles/global.css'
 import { newsletterData, type NewsletterEntryItem } from '../data/newsletterData'
 import SEOHead from '../components/SEOHead'
 
+const MESES_ES: Record<string, number> = {
+  'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3, 'mayo': 4, 'junio': 5,
+  'julio': 6, 'agosto': 7, 'septiembre': 8, 'octubre': 9, 'noviembre': 10, 'diciembre': 11
+}
+
+const parseDateToTimestamp = (dateStr: string): number => {
+  try {
+    // Formato ISO: 2024-09-15
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return new Date(dateStr).getTime()
+    }
+    // Formato español: "15 de Septiembre, 2025" o "5 de Enero, 2026"
+    const match = dateStr.match(/(\d{1,2})\s+de\s+(\w+),?\s+(\d{4})/i)
+    if (match) {
+      const day = parseInt(match[1])
+      const month = MESES_ES[match[2].toLowerCase()]
+      const year = parseInt(match[3])
+      if (month !== undefined) {
+        return new Date(year, month, day).getTime()
+      }
+    }
+    // Formato dd/mm/yyyy
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      const [day, month, year] = dateStr.split('/')
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day)).getTime()
+    }
+    return 0
+  } catch {
+    return 0
+  }
+}
+
 const formatDateToSpanish = (dateStr: string): string => {
   try {
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
@@ -54,8 +86,13 @@ const Newsletter = () => {
   const [filtroTag, setFiltroTag] = useState<string>('')
 
   const entradasFiltradas = useMemo(() => {
-    if (!filtroTag) return newsletterData
-    return newsletterData.filter((entrada) =>
+    // Ordenar por fecha (más recientes primero)
+    const ordenadas = [...newsletterData].sort((a, b) => {
+      return parseDateToTimestamp(b.fecha) - parseDateToTimestamp(a.fecha)
+    })
+    
+    if (!filtroTag) return ordenadas
+    return ordenadas.filter((entrada) =>
       entrada.tags?.some((tag) => tag.toLowerCase().includes(filtroTag.toLowerCase()))
     )
   }, [filtroTag])

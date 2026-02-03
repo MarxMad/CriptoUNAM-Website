@@ -6,14 +6,15 @@ import '../styles/global.css'
 import { useAdmin } from '../hooks/useAdmin'
 import { API_ENDPOINTS } from '../config/api'
 import { cursosApi, eventosApi, newsletterApi } from '../config/supabaseApi'
-import { 
-  faBell, 
-  faHome, 
-  faGraduationCap, 
-  faUsers, 
-  faEnvelope, 
+import {
+  faBell,
+  faHome,
+  faGraduationCap,
+  faUsers,
+  faEnvelope,
   faTimes,
   faWallet,
+  faCalendarAlt,
   faGamepad
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -66,11 +67,11 @@ const Navbar = () => {
   const [networkName, setNetworkName] = useState<string>('')
   const [networkLogo, setNetworkLogo] = useState<string>('')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-  
+
   // Estados para notificaciones
   const [notificaciones, setNotificaciones] = useState<Notificacion[]>([])
   const [panelNotif, setPanelNotif] = useState(false)
-  const noLeidas = notificaciones.filter(n=>!n.leida).length
+  const noLeidas = notificaciones.filter(n => !n.leida).length
   const marcarLeida = (id: string) => setNotificaciones(nots => nots.map(n => n.id === id ? { ...n, leida: true } : n))
 
   // Estados para wallet panel
@@ -122,7 +123,7 @@ const Navbar = () => {
     //     setNotificaciones(data.map((n: any) => ({ ...n, leida: false })));
     //   })
     //   .catch(err => console.error('Error al cargar notificaciones:', err));
-    
+
     // Cargar notificaciones reales
     cargarNotificacionesReales();
   }, []);
@@ -130,7 +131,7 @@ const Navbar = () => {
   const cargarNotificacionesReales = async () => {
     try {
       const notificaciones = [];
-      
+
       // Notificación de bienvenida (solo si es la primera vez)
       const hasVisited = localStorage.getItem('criptounam_visited');
       if (!hasVisited) {
@@ -143,7 +144,7 @@ const Navbar = () => {
         });
         localStorage.setItem('criptounam_visited', 'true');
       }
-      
+
       // Verificar nuevos cursos
       try {
         const cursos = await cursosApi.getAll();
@@ -152,7 +153,7 @@ const Navbar = () => {
           const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return fechaCreacion > hace24Horas;
         });
-        
+
         cursosRecientes.forEach(curso => {
           notificaciones.push({
             id: `curso-${curso.id}`,
@@ -165,7 +166,7 @@ const Navbar = () => {
       } catch (error) {
         console.log('No se pudieron cargar cursos:', error);
       }
-      
+
       // Verificar nuevos eventos
       try {
         const eventos = await eventosApi.getAll();
@@ -174,7 +175,7 @@ const Navbar = () => {
           const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return fechaCreacion > hace24Horas;
         });
-        
+
         eventosRecientes.forEach(evento => {
           notificaciones.push({
             id: `evento-${evento.id}`,
@@ -187,7 +188,7 @@ const Navbar = () => {
       } catch (error) {
         console.log('No se pudieron cargar eventos:', error);
       }
-      
+
       // Verificar nuevas entradas de newsletter
       try {
         const newsletters = await newsletterApi.getAll();
@@ -196,7 +197,7 @@ const Navbar = () => {
           const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return fechaCreacion > hace24Horas;
         });
-        
+
         newslettersRecientes.forEach(newsletter => {
           notificaciones.push({
             id: `newsletter-${newsletter.id}`,
@@ -209,10 +210,10 @@ const Navbar = () => {
       } catch (error) {
         console.log('No se pudieron cargar newsletters:', error);
       }
-      
+
       // Ordenar por fecha (más recientes primero)
       notificaciones.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
-      
+
       setNotificaciones(notificaciones);
     } catch (error) {
       console.error('Error al cargar notificaciones reales:', error);
@@ -242,6 +243,7 @@ const Navbar = () => {
     { path: '/', icon: faHome, label: 'Home' },
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
     { path: '/comunidad', icon: faUsers, label: 'Comunidad' },
+    { path: '/eventos', icon: faCalendarAlt, label: 'Eventos' },
     { path: '/newsletter', icon: faEnvelope, label: 'Newsletter' },
     { path: '/juegos', icon: faGamepad, label: 'Juegos' },
   ]
@@ -253,7 +255,7 @@ const Navbar = () => {
   return (
     <>
       {/* Barra Superior - Logo, Notificaciones y Wallet */}
-      <header 
+      <header
         style={{
           position: 'fixed',
           top: 0,
@@ -272,8 +274,8 @@ const Navbar = () => {
         }}
       >
         {/* Logo */}
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           style={{
             color: '#D4AF37',
             fontWeight: 700,
@@ -290,7 +292,7 @@ const Navbar = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {/* Notificaciones */}
           <div style={{ position: 'relative' }}>
-            <button 
+            <button
               onClick={() => setPanelNotif(!panelNotif)}
               style={{
                 background: 'none',
@@ -304,12 +306,12 @@ const Navbar = () => {
               onMouseEnter={(e) => (e.target as HTMLButtonElement).style.background = 'rgba(212, 175, 55, 0.1)'}
               onMouseLeave={(e) => (e.target as HTMLButtonElement).style.background = 'none'}
             >
-              <FontAwesomeIcon 
-                icon={faBell} 
+              <FontAwesomeIcon
+                icon={faBell}
                 style={{
                   fontSize: '1.3rem',
                   color: '#D4AF37'
-                }} 
+                }}
               />
               {noLeidas > 0 && (
                 <span style={{
@@ -345,7 +347,7 @@ const Navbar = () => {
                   <h4 style={{ color: '#D4AF37', margin: 0, fontWeight: 700, fontSize: '1.1rem' }}>
                     Notificaciones
                   </h4>
-                  <button 
+                  <button
                     onClick={() => setPanelNotif(false)}
                     style={{
                       background: 'none',
@@ -359,15 +361,15 @@ const Navbar = () => {
                     <FontAwesomeIcon icon={faTimes} />
                   </button>
                 </div>
-                
+
                 {notificaciones.length === 0 ? (
                   <div style={{ color: '#aaa', textAlign: 'center', padding: '1rem' }}>
                     No hay notificaciones.
                   </div>
                 ) : (
                   notificaciones.map(n => (
-                    <div 
-                      key={n.id} 
+                    <div
+                      key={n.id}
                       style={{
                         marginBottom: '12px',
                         background: n.leida ? '#23233a' : 'rgba(30, 58, 138, 0.15)',
@@ -381,7 +383,7 @@ const Navbar = () => {
                           {n.titulo}
                         </div>
                         {!n.leida && (
-                          <button 
+                          <button
                             onClick={() => marcarLeida(n.id)}
                             style={{
                               background: 'none',
@@ -449,7 +451,7 @@ const Navbar = () => {
                 )}
               </button>
             ) : (
-              <button 
+              <button
                 onClick={handleLogin}
                 style={{
                   background: 'linear-gradient(135deg, #D4AF37, #F4C842)',
@@ -472,81 +474,81 @@ const Navbar = () => {
 
           </div>
 
-            {/* Panel de wallet */}
-            {walletPanelOpen && isConnected && (
-              <div style={{
-                position: 'absolute',
-                right: 0,
-                top: '100%',
-                marginTop: '8px',
-                background: '#18181b',
-                border: '1.5px solid #D4AF37',
-                borderRadius: '12px',
-                minWidth: '250px',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                padding: '1.2rem',
-                zIndex: 2000
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <h4 style={{ color: '#D4AF37', margin: 0, fontWeight: 700 }}>Wallet</h4>
-                  <button 
-                    onClick={() => setWalletPanelOpen(false)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#D4AF37',
-                      cursor: 'pointer',
-                      fontSize: '1.2rem',
-                      padding: '4px'
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTimes} />
-                  </button>
-                </div>
-                
-                <div style={{ marginBottom: '16px' }}>
-                  <appkit-account-button balance="show" />
-                </div>
-                
-                <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
-                  <Link 
-                    to="/perfil" 
-                    onClick={() => setWalletPanelOpen(false)}
-                    style={{
-                      background: '#2563EB',
-                      color: '#fff',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      textDecoration: 'none',
-                      textAlign: 'center',
-                      fontSize: '0.9rem',
-                      fontWeight: 600
-                    }}
-                  >
-                    Ver Perfil
-                  </Link>
-                  <button 
-                    onClick={() => {
-                      disconnect()
-                      setWalletPanelOpen(false)
-                    }}
-                    style={{
-                      background: 'none',
-                      color: '#D4AF37',
-                      border: '1px solid #D4AF37',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '0.9rem',
-                      fontWeight: 600
-                    }}
-                  >
-                    Desconectar
-                  </button>
-                </div>
+          {/* Panel de wallet */}
+          {walletPanelOpen && isConnected && (
+            <div style={{
+              position: 'absolute',
+              right: 0,
+              top: '100%',
+              marginTop: '8px',
+              background: '#18181b',
+              border: '1.5px solid #D4AF37',
+              borderRadius: '12px',
+              minWidth: '250px',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+              padding: '1.2rem',
+              zIndex: 2000
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <h4 style={{ color: '#D4AF37', margin: 0, fontWeight: 700 }}>Wallet</h4>
+                <button
+                  onClick={() => setWalletPanelOpen(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#D4AF37',
+                    cursor: 'pointer',
+                    fontSize: '1.2rem',
+                    padding: '4px'
+                  }}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
               </div>
-            )}
-          </div>
+
+              <div style={{ marginBottom: '16px' }}>
+                <appkit-account-button balance="show" />
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
+                <Link
+                  to="/perfil"
+                  onClick={() => setWalletPanelOpen(false)}
+                  style={{
+                    background: '#2563EB',
+                    color: '#fff',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    textDecoration: 'none',
+                    textAlign: 'center',
+                    fontSize: '0.9rem',
+                    fontWeight: 600
+                  }}
+                >
+                  Ver Perfil
+                </Link>
+                <button
+                  onClick={() => {
+                    disconnect()
+                    setWalletPanelOpen(false)
+                  }}
+                  style={{
+                    background: 'none',
+                    color: '#D4AF37',
+                    border: '1px solid #D4AF37',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    fontWeight: 600
+                  }}
+                >
+                  Desconectar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Menú Inferior - Navegación principal */}
@@ -582,16 +584,16 @@ const Navbar = () => {
               borderRadius: '12px',
               textDecoration: 'none',
               transition: 'all 0.3s ease',
-              background: isActiveRoute(item.path) 
-                ? 'rgba(212, 175, 55, 0.15)' 
+              background: isActiveRoute(item.path)
+                ? 'rgba(212, 175, 55, 0.15)'
                 : 'transparent',
-              border: isActiveRoute(item.path) 
-                ? '1px solid rgba(212, 175, 55, 0.3)' 
+              border: isActiveRoute(item.path)
+                ? '1px solid rgba(212, 175, 55, 0.3)'
                 : '1px solid transparent',
               minWidth: '60px'
             }}
           >
-            <FontAwesomeIcon 
+            <FontAwesomeIcon
               icon={item.icon}
               style={{
                 fontSize: '1.4rem',
