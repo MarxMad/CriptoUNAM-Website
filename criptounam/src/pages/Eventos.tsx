@@ -103,14 +103,17 @@ const Eventos = () => {
                     </div>
                 </section>
 
-                {/* Sección 2: Spaces & Online Talks */}
+                {/* Sección 2: CriptoUNAM Connect - Spaces y Charlas */}
                 <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                         <FontAwesomeIcon icon={faMicrophone} style={{ fontSize: '2rem', color: '#4ecdc4' }} />
                         <h2 style={{ fontFamily: 'Orbitron', color: '#fff', fontSize: '2rem', margin: 0 }}>
-                            Spaces & Charlas
+                            CriptoUNAM Connect
                         </h2>
                     </div>
+                    <p style={{ color: '#888', marginBottom: '2rem', maxWidth: 600 }}>
+                        Spaces en vivo, charlas y conversaciones sobre blockchain, Web3 y el ecosistema cripto.
+                    </p>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
                         {spacesData.map(space => (
@@ -121,31 +124,118 @@ const Eventos = () => {
                                 key={space.id}
                                 className="card"
                                 style={{
-                                    background: 'linear-gradient(145deg, rgba(20,20,20,0.9), rgba(30,30,30,0.9))',
-                                    padding: '1.5rem',
-                                    borderRadius: 16,
-                                    borderLeft: `4px solid ${space.status === 'upcoming' ? '#4ecdc4' : '#666'}`,
+                                    background: 'rgba(26,26,26,0.8)',
+                                    borderRadius: 20,
+                                    border: `2px solid ${space.status === 'upcoming' ? 'rgba(78, 205, 196, 0.4)' : 'rgba(255,255,255,0.1)'}`,
                                     textDecoration: 'none',
-                                    display: 'block',
-                                    transition: 'transform 0.2s'
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    overflow: 'hidden',
+                                    transition: 'all 0.3s ease'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-5px)'
+                                    e.currentTarget.style.borderColor = '#4ecdc4'
+                                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(78, 205, 196, 0.2)'
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)'
+                                    e.currentTarget.style.borderColor = space.status === 'upcoming' ? 'rgba(78, 205, 196, 0.4)' : 'rgba(255,255,255,0.1)'
+                                    e.currentTarget.style.boxShadow = 'none'
+                                }}
                             >
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                    <span style={{
-                                        color: space.status === 'upcoming' ? '#4ecdc4' : '#888',
-                                        fontWeight: 700,
-                                        fontSize: '0.8rem',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '1px'
+                                {/* Banner del Space */}
+                                <div style={{ 
+                                    height: 140, 
+                                    overflow: 'hidden', 
+                                    position: 'relative',
+                                    background: 'linear-gradient(135deg, #1a3a4a, #0d1f29)'
+                                }}>
+                                    <img 
+                                        src={space.image} 
+                                        alt={space.title}
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            objectFit: 'cover'
+                                        }}
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).style.display = 'none'
+                                        }}
+                                    />
+                                    {/* Fallback gradient si no hay imagen */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        inset: 0,
+                                        background: 'linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(37, 99, 235, 0.3))',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        zIndex: 0
                                     }}>
-                                        {space.status === 'upcoming' ? 'PROXIMAMENTE' : 'GRABACIÓN'}
-                                    </span>
-                                    <FontAwesomeIcon icon={faExternalLinkAlt} style={{ color: '#666' }} />
+                                        <FontAwesomeIcon icon={faMicrophone} style={{ fontSize: '3rem', color: 'rgba(255,255,255,0.2)' }} />
+                                    </div>
+                                    
+                                    {/* Badge de estado */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 12,
+                                        left: 12,
+                                        background: space.status === 'upcoming' ? 'rgba(78, 205, 196, 0.9)' : 'rgba(100,100,100,0.9)',
+                                        color: space.status === 'upcoming' ? '#000' : '#fff',
+                                        padding: '0.3rem 0.8rem',
+                                        borderRadius: 8,
+                                        fontSize: '0.75rem',
+                                        fontWeight: 700,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                    }}>
+                                        {space.status === 'upcoming' ? '🔴 PRÓXIMAMENTE' : '▶️ GRABACIÓN'}
+                                    </div>
                                 </div>
-                                <h3 style={{ color: '#fff', fontSize: '1.2rem', margin: '0 0 0.5rem 0', fontWeight: 600 }}>{space.title}</h3>
-                                <p style={{ color: '#aaa', fontSize: '0.9rem', margin: 0 }}>{space.host} • {space.date}</p>
+
+                                {/* Contenido */}
+                                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                    <h3 style={{ 
+                                        color: '#fff', 
+                                        fontSize: '1.15rem', 
+                                        margin: '0 0 0.5rem 0', 
+                                        fontWeight: 600,
+                                        lineHeight: 1.3
+                                    }}>
+                                        {space.title}
+                                    </h3>
+                                    
+                                    {space.description && (
+                                        <p style={{ 
+                                            color: '#aaa', 
+                                            fontSize: '0.9rem', 
+                                            margin: '0 0 1rem 0',
+                                            lineHeight: 1.5,
+                                            flex: 1
+                                        }}>
+                                            {space.description}
+                                        </p>
+                                    )}
+                                    
+                                    <div style={{ 
+                                        display: 'flex', 
+                                        justifyContent: 'space-between', 
+                                        alignItems: 'center',
+                                        paddingTop: '0.75rem',
+                                        borderTop: '1px solid rgba(255,255,255,0.1)'
+                                    }}>
+                                        <div>
+                                            <p style={{ color: '#4ecdc4', fontSize: '0.85rem', margin: 0, fontWeight: 600 }}>
+                                                {space.host}
+                                            </p>
+                                            <p style={{ color: '#888', fontSize: '0.8rem', margin: 0 }}>
+                                                {space.date} • {space.time}
+                                            </p>
+                                        </div>
+                                        <FontAwesomeIcon icon={faExternalLinkAlt} style={{ color: '#4ecdc4', fontSize: '1rem' }} />
+                                    </div>
+                                </div>
                             </a>
                         ))}
                     </div>

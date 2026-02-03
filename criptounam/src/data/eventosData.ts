@@ -22,6 +22,10 @@ export interface EventoItem {
 }
 
 
+/**
+ * CriptoUNAM Connect - Spaces y charlas en vivo
+ * Cada space debe tener un banner/imagen para mostrar en la página
+ */
 export interface SpaceItem {
   id: string
   title: string
@@ -29,7 +33,8 @@ export interface SpaceItem {
   time: string
   host: string
   url: string // Link to X Space / Recording
-  image?: string // Optional host avatar or banner
+  image: string // Banner del space (requerido)
+  description?: string // Descripción breve del tema
   status: 'upcoming' | 'past'
 }
 
@@ -46,6 +51,7 @@ export interface HackathonItem {
 }
 
 export const eventosData: EventoItem[] = [
+  // ========== EVENTOS PRÓXIMOS ==========
   {
     id: '5',
     title: 'Binance University Tour - BUAP Puebla',
@@ -69,60 +75,14 @@ export const eventosData: EventoItem[] = [
     isUpcoming: true,
     link: 'https://labitconf.com',
   },
-  {
-    id: '1',
-    title: 'Taller "Mi primer wallet" UNAM 2024',
-    date: '9 de Septiembre, 2024',
-    time: '9:00 AM - 6:00 PM',
-    location: 'Anexo de la Facultad de Ingeniería, UNAM',
-    image: '/images/eventos/01-taller-mi-primer-wallet-2024.jpg',
-    description: 'Creación de una wallet en la red de Ethereum usando Metamask.',
-    capacity: 200,
-    registered: 156,
-    isUpcoming: false,
-    link: 'https://lu.ma/criptounam',
-  },
-  {
-    id: '2',
-    title: 'Workshop: DeFi Fundamentals',
-    date: '22 de Marzo, 2024',
-    time: '2:00 PM - 5:00 PM',
-    location: 'Auditorio Ho Chi Minh, FE-UNAM',
-    image: '/images/eventos/02-workshop-defi-fundamentals-2024.jpg',
-    description: 'Aprendiendo los fundamentos de las finanzas descentralizadas.',
-    capacity: 80,
-    registered: 67,
-    isUpcoming: false,
-    link: 'https://lu.ma/criptounam',
-  },
-  {
-    id: '3',
-    title: 'Bitcoin Day',
-    date: '7 de Mayo, 2024',
-    time: '10:00 AM - 2:00 PM',
-    location: 'FES Acatlán',
-    image: '/images/eventos/03-bitcoin-day-2024.jpg',
-    description: 'Explora las últimas tendencias en Web3 con expertos de la industria. Networking, demos en vivo y oportunidades de colaboración.',
-    capacity: 150,
-    registered: 134,
-    isUpcoming: false,
-    link: 'https://lu.ma/criptounam',
-  },
-  {
-    id: '4',
-    title: 'Meetup: NFT y Arte Digital',
-    date: '5 de Abril, 2024',
-    time: '6:00 PM - 9:00 PM',
-    location: 'Espacio de Innovación, UNAM',
-    image: '/images/eventos/04-meetup-nft-arte-digital-2024.jpg',
-    description: 'Descubre el mundo de los NFTs y su impacto en el arte digital. Presentaciones de artistas, galería virtual y subasta en vivo.',
-    capacity: 60,
-    registered: 45,
-    isUpcoming: false,
-    link: 'https://lu.ma/criptounam',
-  },
+  // Nota: Los eventos finalizados sin foto fueron removidos para evitar confusión.
+  // Agregar eventos pasados aquí solo cuando tengan imagen disponible en /images/eventos/
 ]
 
+/**
+ * CriptoUNAM Connect - Spaces y charlas en vivo
+ * Agregar banners en /public/images/spaces/
+ */
 export const spacesData: SpaceItem[] = [
   {
     id: 'space-1',
@@ -131,6 +91,8 @@ export const spacesData: SpaceItem[] = [
     time: '8:00 PM',
     host: 'CriptoUNAM Core Team',
     url: 'https://twitter.com/criptounam',
+    image: '/images/spaces/ethereum-future.png', // TODO: Agregar imagen
+    description: 'Análisis de las últimas propuestas de Vitalik para el futuro de Ethereum.',
     status: 'past',
   },
   {
@@ -140,6 +102,8 @@ export const spacesData: SpaceItem[] = [
     time: '7:00 PM',
     host: 'Starknet Mexico',
     url: 'https://twitter.com/criptounam',
+    image: '/images/spaces/starknet-l2s.png', // TODO: Agregar imagen
+    description: 'Aprende sobre las soluciones de escalabilidad Layer 2 y Starknet.',
     status: 'upcoming',
   }
 ]
