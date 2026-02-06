@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { IMAGES } from '../constants/images'
 import { handleRegistration, handleNewsletterSubscription } from '../api/telegram'
 import { API_ENDPOINTS } from '../config/api'
-import { newsletterData } from '../data/newsletterData'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
   faGraduationCap, 
@@ -940,6 +939,23 @@ const Home = () => {
     };
     
     fetchCursosYEventos();
+    
+    // Cargar newsletters desde el JSON generado
+    const fetchNewsletters = async () => {
+      try {
+        const response = await fetch('/blog-posts.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        // El script de build ya ordena los posts, así que solo tomamos los 3 primeros.
+        setNewslettersHome(data.slice(0, 3));
+      } catch (error) {
+        console.error("Error fetching blog posts for home page:", error);
+        // Opcional: manejar estado de error en la UI
+      }
+    };
+    
     fetchNewsletters();
   }, []);
 
