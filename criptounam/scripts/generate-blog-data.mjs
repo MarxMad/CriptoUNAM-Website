@@ -2,8 +2,17 @@ import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
 
-// Importa los datos antiguos
-import { newsletterData } from '../src/data/newsletterData.js';
+// Lee los datos antiguos directamente del archivo JSON
+async function readOldData() {
+  const oldDataPath = path.join(process.cwd(), 'src', 'data', 'newsletterData.json');
+  try {
+    const oldDataContent = await fs.readFile(oldDataPath, 'utf-8');
+    return JSON.parse(oldDataContent);
+  } catch (error) {
+    console.warn("No se pudo leer el archivo de datos antiguo, se procederá solo con los nuevos posts.", error);
+    return [];
+  }
+}
 
 const BLOG_DIR = path.join(process.cwd(), 'blog');
 const OUTPUT_FILE = path.join(process.cwd(), 'public', 'blog-posts.json');
@@ -20,18 +29,17 @@ async function generateBlogData() {
       const fileContent = await fs.readFile(filePath, 'utf-8');
       const { data, content } = matter(fileContent);
 
-      // Validar metadatos
       if (!data.title || !data.date || !data.author || !data.image) {
         console.warn(`Saltando archivo ${file}: metadatos incompletos.`);
         continue;
       }
 
       newPosts.push({
-        id: path.basename(file, '.md'), // ej: '2025-02-05-navegando-la-tormenta'
+        id: path.basename(file, '.md'),
         titulo: data.title,
-        fecha: data.date, // ej: '2025-02-05'
+        fecha: data.date,
         autor: data.author,
-        imagen: data.image, // ej: '/images/blog/2025-02-05-caida-mercado-puma.png'
+        imagen: data.image,
         tags: data.tags || ['General'],
         contenido: content,
       });
@@ -39,12 +47,12 @@ async function generateBlogData() {
   }
   
   console.log(`Se encontraron ${newPosts.length} nuevos posts en formato Markdown.`);
+  
+  const newsletterData = await readOldData();
+  console.log(`Se encontraron ${newsletterData.length} posts en el archivo JSON antiguo.`);
 
-  // Combina los posts antiguos con los nuevos
-  // Asegurándose de que los tipos coincidan
   const combinedData = [...newsletterData, ...newPosts];
   
-  // Ordena por fecha (más recientes primero)
   combinedData.sort((a, b) => {
     const dateA = new Date(a.fecha).getTime();
     const dateB = new Date(b.fecha).getTime();
