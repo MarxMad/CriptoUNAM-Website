@@ -87,16 +87,11 @@ const Newsletter = () => {
   const [filtroTag, setFiltroTag] = useState<string>('')
 
   const entradasFiltradas = useMemo(() => {
-    // Ordenar por fecha (más recientes primero)
-    const ordenadas = [...newsletterData].sort((a, b) => {
-      return parseDateToTimestamp(b.fecha) - parseDateToTimestamp(a.fecha)
-    })
-    
-    if (!filtroTag) return ordenadas
-    return ordenadas.filter((entrada) =>
+    if (!filtroTag) return newsletterData
+    return newsletterData.filter((entrada) =>
       entrada.tags?.some((tag) => tag.toLowerCase().includes(filtroTag.toLowerCase()))
     )
-  }, [filtroTag])
+  }, [filtroTag]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
