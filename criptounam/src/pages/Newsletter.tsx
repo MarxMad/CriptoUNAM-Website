@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -10,8 +10,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { handleNewsletterSubscription } from '../api/telegram'
 import '../styles/global.css'
-import { newsletterData, type NewsletterEntryItem } from '../data/newsletterData'
 import SEOHead from '../components/SEOHead'
+import { type NewsletterEntryItem } from '../data/newsletterData'; // Mantenemos el tipo por ahora
 
 const MESES_ES: Record<string, number> = {
   'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3, 'mayo': 4, 'junio': 5,
@@ -78,6 +78,7 @@ const TAGS_DISPONIBLES = [
 ]
 
 const Newsletter = () => {
+  const [posts, setPosts] = useState<NewsletterEntryItem[]>([]);
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -85,17 +86,19 @@ const Newsletter = () => {
   const [loading, setLoading] = useState(false)
   const [filtroTag, setFiltroTag] = useState<string>('')
 
+  useEffect(() => {
+    fetch('/blog-posts.json')
+      .then(res => res.json())
+      .then(data => setPosts(data))
+      .catch(err => console.error("Error cargando los posts:", err));
+  }, []);
+
   const entradasFiltradas = useMemo(() => {
-    // Ordenar por fecha (más recientes primero)
-    const ordenadas = [...newsletterData].sort((a, b) => {
-      return parseDateToTimestamp(b.fecha) - parseDateToTimestamp(a.fecha)
-    })
-    
-    if (!filtroTag) return ordenadas
-    return ordenadas.filter((entrada) =>
+    if (!filtroTag) return posts;
+    return posts.filter((entrada) =>
       entrada.tags?.some((tag) => tag.toLowerCase().includes(filtroTag.toLowerCase()))
     )
-  }, [filtroTag])
+  }, [filtroTag, posts]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
