@@ -1,4 +1,8 @@
-export interface NewsletterEntry {
+/**
+ * Interfaz legacy (inglés). No usar para el blog actual.
+ * Las entradas del newsletter están en src/data/newsletterData.ts (NewsletterEntryItem).
+ */
+export interface NewsletterEntryLegacy {
   id: number
   _id?: string
   title: string
@@ -8,6 +12,4 @@ export interface NewsletterEntry {
   imageUrl?: string
   author?: string
   tags?: string[]
-}
-
-// Eliminadas las entradas hardcodeadas. Si se requiere la interfaz, se puede dejar solo la exportación de la interfaz NewsletterEntry. 
+} 

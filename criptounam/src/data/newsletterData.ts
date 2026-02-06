@@ -1,6 +1,10 @@
 /**
  * Entradas del blog / newsletter. Editar aquí para agregar o modificar notas.
  * El `id` se usa en la URL: /newsletter/:id
+ *
+ * Imágenes: UNA carpeta solo para newsletter → public/images/newsletter/
+ * Cada imagen debe llamarse igual que el `id` de la entrada (ej. intro-blockchain-2024.jpg).
+ * Ver public/images/newsletter/README.md y docs/GUIA_NEWSLETTER_AGENTE.md
  */
 export interface NewsletterEntryItem {
   id: string
@@ -18,7 +22,7 @@ export const newsletterData: NewsletterEntryItem[] = [
     titulo: 'Introducción a Blockchain en la UNAM: El Comienzo de una Nueva Era',
     autor: 'CriptoUNAM',
     fecha: '2024-09-15',
-    imagen: '/images/cursos/1.svg',
+    imagen: '/images/newsletter/intro-blockchain-2024.svg',
     tags: ['Blockchain', 'Educación', 'UNAM'],
     contenido: `# El Despertar de la Blockchain en la Universidad Nacional
 
@@ -53,7 +57,7 @@ Te invitamos a sumarte a nuestros próximos eventos. No importa si estudias Inge
     titulo: 'Fundamentos de Blockchain: Entendiendo la Tecnología Detrás del Hype',
     autor: 'CriptoUNAM',
     fecha: '2024-10-01',
-    imagen: '/images/blog/blockchain-intro.png',
+    imagen: '/images/newsletter/fundamentos-blockchain-2024.png',
     tags: ['Blockchain', 'Educación', 'Tecnología'],
     contenido: `# Descifrando la Cadena de Bloques
 
@@ -92,7 +96,7 @@ No te quedes fuera de esta transformación. Aprender los fundamentos hoy te dar�
     titulo: 'Workshop DeFi: Revolucionando las Finanzas desde la UNAM',
     autor: 'CriptoUNAM',
     fecha: '2024-03-22',
-    imagen: '/images/cursos/3.svg',
+    imagen: '/images/newsletter/defi-fundamentals-workshop.svg',
     tags: ['DeFi', 'Ethereum', 'Educación'],
     contenido: `# Finanzas Sin Bancos: Resumen del Workshop DeFi
 
@@ -131,7 +135,7 @@ Si te perdiste este evento, no te preocupes. Estamos preparando una segunda edic
     titulo: 'Tu Primer Smart Contract: Programando la Confianza con Solidity',
     autor: 'DevTeam CriptoUNAM',
     fecha: '2024-10-15',
-    imagen: '/images/blog/smart-contracts.png',
+    imagen: '/images/newsletter/intro-smart-contracts-solidity.png',
     tags: ['Blockchain', 'Programación', 'Solidity', 'Ethereum'],
     contenido: `# El Código es la Ley: Introducción a Solidity
 
@@ -195,7 +199,7 @@ La curva de aprendizaje puede ser empinada, pero los recursos son abundantes. En
     titulo: 'Bitcoin Day en FES Acatlán: Innovación y Comunidad',
     autor: 'CriptoUNAM',
     fecha: '2024-05-07',
-    imagen: '/images/Comunidad/_DSC0118 (1).jpg',
+    imagen: '/images/newsletter/bitcoin-day-2024.jpg',
     tags: ['Bitcoin', 'Eventos', 'Web3'],
     contenido: `# Celebrando al Rey: Relatoría del Bitcoin Day
 
@@ -233,7 +237,7 @@ Agradecemos a **Bitcoin Monks** y a todos los patrocinadores por hacer posible e
     titulo: 'Frontend para dApps: La Guía Definitiva para Conectar Web3 con React',
     autor: 'DevTeam CriptoUNAM',
     fecha: '2024-11-01',
-    imagen: '/images/blog/frontend-dapps.png',
+    imagen: '/images/newsletter/frontend-dapps-web3.png',
     tags: ['Web3', 'Frontend', 'React', 'Programación'],
     contenido: `# El Puente hacia la Blockchain: Desarrollo Frontend Web3
 
@@ -312,7 +316,7 @@ Esta actualización, prevista para finales de 2025 o inicios de 2026, marcará e
 *   [EIP-6800: Ethereum Improvement Proposal for Verkle Trees](https://eips.ethereum.org/EIPS/eip-6800)`,
     autor: 'Equipo Técnico CriptoUNAM',
     fecha: '15 de Septiembre, 2025',
-    imagen: '/images/ethereum-verge.png',
+    imagen: '/images/newsletter/ethereum-verge-upgrade.png',
     tags: ['Ethereum', 'Tecnología', 'Blockchain']
   },
   {
@@ -352,7 +356,7 @@ Una solución de identidad soberana (DID) para emitir títulos universitarios qu
 *   [Galería de Fotos Oficial](https://instagram.com/criptounam)`,
     autor: 'Comunidad CriptoUNAM',
     fecha: '20 de Octubre, 2025',
-    imagen: '/images/hackathon-2025.png',
+    imagen: '/images/newsletter/recap-hackathon-2025.png',
     tags: ['Comunidad', 'Hackathon', 'Eventos']
   },
   {
@@ -388,7 +392,7 @@ Como comunidad universitaria, nuestra postura es clara: abogamos por una regulac
 *   [Reglamento MiCA (Unión Europea)](https://www.esma.europa.eu/esmas-activities/digital-finance-and-innovation/markets-crypto-assets-regulation-mica) (Referencia global)`,
     autor: 'Área Legal',
     fecha: '10 de Noviembre, 2025',
-    imagen: '/images/defi-regulations.png',
+    imagen: '/images/newsletter/defi-regulation-2025.png',
     tags: ['DeFi', 'Regulación', 'Legal']
   },
   {
@@ -422,7 +426,7 @@ El 2025 probó que la infraestructura está lista. El 2026 será sobre las aplic
 *   [TRM Labs: Crypto Illicit Finance Report 2025](https://www.trmlabs.com/)`,
     autor: 'Editorial CriptoUNAM',
     fecha: '28 de Diciembre, 2025',
-    imagen: '/images/year-review-2025.png',
+    imagen: '/images/newsletter/year-review-2025.png',
     tags: ['Análisis', 'Adopción', 'Resumen']
   },
   {
@@ -456,7 +460,7 @@ Prepárate, estudia y construye. Las herramientas nunca han sido tan poderosas c
 *   [Vitalik Buterin: The Convergence of AI and Crypto](https://vitalik.eth.limo/general/2024/01/30/cryptoai.html)`,
     autor: 'Vitalik Fan',
     fecha: '5 de Enero, 2026',
-    imagen: '/images/trends-2026.png',
+    imagen: '/images/newsletter/trends-watch-2026.png',
     tags: ['Tendencias', 'Futuro', 'AI']
   }
 ]

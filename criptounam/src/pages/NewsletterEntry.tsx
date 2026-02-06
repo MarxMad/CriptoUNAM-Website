@@ -4,7 +4,7 @@ import { faArrowLeft, faCalendarAlt, faHeart as faHeartSolid } from '@fortawesom
 import { faHeart as faHeartRegular } from '@fortawesome/free-regular-svg-icons'
 import '../styles/global.css'
 import { useState, useEffect } from 'react'
-import { newsletterData } from '../data/newsletterData'
+import { newsletterData, type NewsletterEntryItem } from '../data/newsletterData'
 import SEOHead from '../components/SEOHead'
 import { useWallet } from '../context/WalletContext'
 import { supabase } from '../config/supabase'
@@ -13,8 +13,8 @@ import BlogContent from '../components/BlogContent'
 const NewsletterEntry = () => {
   const { id } = useParams()
   const { walletAddress, isConnected } = useWallet()
-  const found = id ? newsletterData.find((e) => e.id === id) : undefined
-  const entry = found !== undefined ? found : null
+  const found = id ? newsletterData.find((e: NewsletterEntryItem) => String(e.id) === id) : undefined
+  const entry: NewsletterEntryItem | null = found !== undefined ? found : null
 
   const [isLiked, setIsLiked] = useState(false)
   const [likeCount, setLikeCount] = useState(0)

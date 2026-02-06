@@ -10,7 +10,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { handleNewsletterSubscription } from '../api/telegram'
 import '../styles/global.css'
-import { newsletterData, type NewsletterEntryItem } from '../data/newsletterData'
+import { newsletterData } from '../data/newsletterData'
+import type { NewsletterEntryItem } from '../data/newsletterData'
 import SEOHead from '../components/SEOHead'
 
 const MESES_ES: Record<string, number> = {
