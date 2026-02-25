@@ -98,8 +98,8 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         border: '1px solid rgba(212,175,55,0.3)',
         margin: '2rem 0'
       }}>
-        <h3 style={{ color: '#D4AF37', marginBottom: '1rem' }}>Pr?ximos Eventos</h3>
-        <p style={{ color: '#E0E0E0' }}>No hay eventos pr?ximos por el momento</p>
+        <h3 style={{ color: '#D4AF37', marginBottom: '1rem' }}>Próximos Eventos</h3>
+        <p style={{ color: '#E0E0E0' }}>No hay eventos próximos por el momento</p>
       </div>
     )
   }
@@ -127,7 +127,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           fontSize: '2.5rem',
           marginBottom: '1rem'
         }}>
-          Pr?ximos Eventos
+          Próximos Eventos
         </h2>
         <p style={{
           color: '#E0E0E0',
@@ -135,7 +135,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           maxWidth: '600px',
           margin: '0 auto'
         }}>
-          No te pierdas nuestros pr?ximos eventos y actividades
+          No te pierdas nuestros próximos eventos y actividades
         </p>
       </div>
 
@@ -180,57 +180,30 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
             }}
           />
           
-          {/* Overlay con información del evento */}
+          {/* Solo la fecha sobre el flyer para no taparlo */}
           <div style={{
             position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
-            padding: '2rem',
-            color: 'white'
+            bottom: '1rem',
+            left: '1rem',
+            right: '1rem',
+            display: 'flex',
+            justifyContent: 'center'
           }}>
-            <h3 style={{
-              fontFamily: 'Orbitron',
-              fontSize: '1.8rem',
-              marginBottom: '0.5rem',
-              color: '#D4AF37'
-            }}>
-              {currentEvent.title}
-            </h3>
-            
             <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '1rem',
-              marginBottom: '1rem'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#2563EB' }} />
-                <span>{currentEvent.date} - {currentEvent.time}</span>
-              </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FontAwesomeIcon icon={faMapMarkerAlt} style={{ color: '#10B981' }} />
-                <span>{currentEvent.location}</span>
-              </div>
-              
-              {currentEvent.capacity && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <FontAwesomeIcon icon={faUsers} style={{ color: '#F59E0B' }} />
-                  <span>{currentEvent.registered || 0}/{currentEvent.capacity} participantes</span>
-                </div>
-              )}
-            </div>
-            
-            <p style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              background: 'rgba(0,0,0,0.7)',
+              padding: '0.6rem 1.2rem',
+              borderRadius: '12px',
+              color: '#fff',
               fontSize: '1rem',
-              lineHeight: '1.5',
-              margin: 0,
-              opacity: 0.9
+              fontWeight: 600,
+              backdropFilter: 'blur(8px)'
             }}>
-              {currentEvent.description}
-            </p>
+              <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#D4AF37' }} />
+              <span>{currentEvent.date} {currentEvent.time && `| ${currentEvent.time}`}</span>
+            </div>
           </div>
         </div>
 
@@ -346,7 +319,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         </div>
       )}
 
-      {/* Información adicional */}
+      {/* Informaci?n adicional */}
       <div style={{
         textAlign: 'center',
         marginTop: '1.5rem',
@@ -355,7 +328,7 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
       }}>
         {events.length > 1 && (
           <p>
-            Evento {currentIndex + 1} de {events.length} ��� 
+            Evento {currentIndex + 1} de {events.length} 
             <span style={{ color: '#D4AF37', marginLeft: '0.5rem' }}>
               {autoPlay ? 'Auto-reproducción activada' : 'Navegación manual'}
             </span>

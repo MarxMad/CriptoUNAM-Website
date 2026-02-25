@@ -5,6 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiscord, faTwitter, faTelegram, faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faUsers, faHandshake, faBolt, faChevronDown, faChevronUp, faTrophy, faRocket, faCamera, faExternalLinkAlt, faCode } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
+import TeamCard from '../components/TeamCard'
+import ImageGallery from '../components/ImageGallery'
+import { teamMembers } from '../data/teamData'
+import { galleryData } from '../data/galleryData'
 
 // Datos de imágenes por mes
 const MESES_2025 = [
@@ -390,7 +394,37 @@ const Comunidad = () => {
           </div>
         </section>
 
-        {/* Sección 2: Roles y Participación */}
+        {/* Sección 2: Nuestro equipo */}
+        <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '2.5rem', marginBottom: '1rem' }}>
+              Nuestro Equipo
+            </h2>
+            <p style={{ color: '#E0E0E0', fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
+              Conoce a los expertos y líderes que hacen posible CriptoUNAM
+            </p>
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '24px'
+          }}>
+            {teamMembers.map((member, index) => (
+              <TeamCard key={index} member={member} />
+            ))}
+          </div>
+        </section>
+
+        {/* Sección 3: Nuestra Comunidad en Acción */}
+        <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
+          <ImageGallery
+            images={galleryData}
+            title="Nuestra Comunidad en Acción"
+            description="Momentos especiales, eventos y actividades que definen nuestra comunidad"
+          />
+        </section>
+
+        {/* Sección 4: Roles y Participación */}
         <section style={{ maxWidth: 1000, margin: '0 auto 5rem auto', padding: '0 20px' }}>
           <div style={{ background: 'rgba(26,26,26,0.8)', borderRadius: 24, padding: '3rem', border: '1px solid rgba(212,175,55,0.15)' }}>
             <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '2rem', textAlign: 'center', marginBottom: '3rem' }}>
@@ -428,7 +462,7 @@ const Comunidad = () => {
           </div>
         </section>
 
-        {/* Sección 3: CriptoUNAM 2025 - Recap */}
+        {/* Sección 5: CriptoUNAM 2025 - Recap */}
         <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '2.5rem', marginBottom: '1rem' }}>
@@ -447,7 +481,7 @@ const Comunidad = () => {
           </div>
         </section>
 
-        {/* Sección 4: CriptoUNAM 2024 */}
+        {/* Sección 6: CriptoUNAM 2024 */}
         <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <h2 style={{ fontFamily: 'Orbitron', color: '#fff', fontSize: '2rem', marginBottom: '0.5rem' }}>
@@ -507,7 +541,7 @@ const Comunidad = () => {
           </div>
         </section>
 
-        {/* Sección 5: Proyectos y Hackathones Ganados */}
+        {/* Sección 7: Proyectos y Hackathones Ganados */}
         <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginBottom: '1rem' }}>
@@ -699,7 +733,7 @@ const Comunidad = () => {
           </div>
         </section>
 
-        {/* Sección 7: Lo que viene para 2026 */}
+        {/* Sección 8: Lo que viene para 2026 */}
         <section style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
           <div style={{
             background: 'linear-gradient(135deg, rgba(212,175,55,0.1), rgba(0,0,0,0.5))',

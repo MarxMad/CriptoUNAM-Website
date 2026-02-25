@@ -51,14 +51,13 @@ import {
   Tooltip as RechartsTooltip
 } from 'recharts'
 import axios from 'axios'
-import TeamCard from '../components/TeamCard'
 import ProjectCard from '../components/ProjectCard'
-import ImageGallery from '../components/ImageGallery'
 import StatsSection from '../components/StatsSection'
 import InteractiveCTA from '../components/InteractiveCTA'
 import CryptoActions from '../components/CryptoActions'
 import EventsCarousel from '../components/EventsCarousel'
 import { eventosData } from '../data/eventosData'
+import { partnersData } from '../data/partnersData'
 
 interface RegistrationForm {
   nombre: string
@@ -603,92 +602,6 @@ const Home = () => {
     },
   ];
 
-  // Datos del equipo
-  const teamMembers = [
-    // Founders
-    {
-      name: 'Gerardo Vela',
-      role: 'Founder & CEO',
-      description: 'Fundador y líder de CriptoUNAM. Experto en blockchain y criptomonedas.',
-      image: '/images/Equipo/GerardoVela.jpg',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'Fernanda Tello',
-      role: 'Founder & COO',
-      description: 'Co-fundadora y directora de operaciones. Especialista en estrategia y desarrollo.',
-      image: '/images/Equipo/FernandaTello.jpg',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'Adrian Armenta',
-      role: 'Founder & CTO',
-      description: 'Co-fundador y director técnico. Desarrollador blockchain y experto en DeFi.',
-      image: '/images/Equipo/AArmenta.png',
-      linkedin: '#',
-      github: '#'
-    },
-    {
-      name: 'Daniel Cruz',
-      role: 'Founder & CMO',
-      description: 'Co-fundador y director de marketing. Experto en crecimiento de comunidades blockchain.',
-      image: '/images/Equipo/Kubs.png',
-      linkedin: '#',
-      twitter: '#'
-    },
-    // Embajadores
-    {
-      name: 'Andrés Rodríguez',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Especialista en investigación blockchain.',
-      image: '/images/Equipo/AndresRodriguez.jpg',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'Adrián Martínez',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Experto en protocolos de consenso.',
-      image: '/images/Equipo/AdrianMartinez.png',
-      linkedin: '#',
-      github: '#'
-    },
-    {
-      name: 'Ian Hernández',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Especialista en smart contracts.',
-      image: '/images/Equipo/IanHernandes.jpg',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'Jorge Saldaña',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Experto en desarrollo blockchain y Web3.',
-      image: '/images/Equipo/JorgeSaldana.jpg',
-      linkedin: '#',
-      github: '#'
-    },
-    {
-      name: 'Tadeo Sepúlveda',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Especialista en educación blockchain.',
-      image: '/images/Equipo/TadeoSepulveda.png',
-      linkedin: '#',
-      twitter: '#'
-    },
-    {
-      name: 'Benjamín Romero',
-      role: 'Embajador CriptoUNAM',
-      description: 'Embajador de la comunidad. Experto en desarrollo de aplicaciones descentralizadas.',
-      image: '/images/Equipo/BenjaminRomero.png',
-      linkedin: '#',
-      github: '#'
-    }
-  ];
-
   // Proyectos destacados
   const projects = [
     {
@@ -815,58 +728,6 @@ const Home = () => {
       technologies: ['Ethereum', 'Solidity', 'React', 'The Graph'],
       link: '#',
       github: '#'
-    }
-  ];
-
-  // Galería de imágenes
-  const galleryImages = [
-    {
-      id: '1',
-      src: '/images/Comunidad/_DSC0027 (1).jpg',
-      alt: 'Hackathon Blockchain 2024',
-      title: 'Hackathon Blockchain 2024',
-      description: 'Estudiantes desarrollando proyectos innovadores',
-      category: 'eventos'
-    },
-    {
-      id: '2',
-      src: '/images/Comunidad/_DSC0151.jpg',
-      alt: 'Conferencia CriptoUNAM',
-      title: 'Conferencia Anual 2024',
-      description: 'Expertos compartiendo conocimiento sobre blockchain',
-      category: 'eventos'
-    },
-    {
-      id: '3',
-      src: '/images/Comunidad/_DSC0051.jpg',
-      alt: 'Workshop de Smart Contracts',
-      title: 'Workshop Smart Contracts',
-      description: 'Aprendiendo desarrollo de contratos inteligentes',
-      category: 'talleres'
-    },
-    {
-      id: '4',
-      src: '/images/Comunidad/_DSC0278 (2).jpg',
-      alt: 'Networking Event',
-      title: 'Networking Event',
-      description: 'Conectando con la comunidad blockchain',
-      category: 'networking'
-    },
-    {
-      id: '5',
-      src: '/images/Comunidad/_DSC0118 (1).jpg',
-      alt: 'Laboratorio de Blockchain',
-      title: 'Laboratorio de Blockchain',
-      description: 'Espacio de trabajo colaborativo',
-      category: 'infraestructura'
-    },
-    {
-      id: '6',
-      src: '/images/Comunidad/_DSC0158 (1).jpg',
-      alt: 'Equipo CriptoUNAM',
-      title: 'Equipo CriptoUNAM',
-      description: 'Nuestro equipo trabajando en proyectos innovadores',
-      category: 'equipo'
     }
   ];
 
@@ -1008,49 +869,6 @@ const Home = () => {
         title="Nuestros Logros"
         description="Cifras que demuestran el impacto y crecimiento de nuestra comunidad"
         stats={stats}
-      />
-
-      {/* Equipo */}
-      <section style={{
-        maxWidth: '1200px',
-        margin: '0 auto 3rem auto',
-        padding: '0 20px'
-      }}>
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <h2 style={{
-            fontFamily: 'Orbitron',
-            color: '#D4AF37',
-            fontSize: '2.5rem',
-            marginBottom: '1rem'
-          }}>
-            Nuestro Equipo
-          </h2>
-          <p style={{
-            color: '#E0E0E0',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto'
-          }}>
-            Conoce a los expertos y líderes que hacen posible CriptoUNAM
-          </p>
-        </div>
-        
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '24px'
-        }}>
-          {teamMembers.map((member, index) => (
-            <TeamCard key={index} member={member} />
-          ))}
-        </div>
-      </section>
-
-      {/* Galería de Imágenes */}
-      <ImageGallery
-        images={galleryImages}
-        title="Nuestra Comunidad en Acción"
-        description="Momentos especiales, eventos y actividades que definen nuestra comunidad"
       />
 
       {/* Últimas Newsletters */}
@@ -1282,26 +1100,19 @@ const Home = () => {
           </div>
     </section>
 
-  {/* PARTNERS - Ticker */}
+  {/* PARTNERS - Ticker (datos en src/data/partnersData.ts, imágenes en public/images/partners/) */}
   <section className="section" style={{paddingTop:0}}>
     <h2 className="text-center" style={{marginBottom: '2rem'}}>Nuestros Aliados</h2>
     <div className="ticker-container">
       <div className="ticker-track">
-        {[
-          { img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', alt: 'JavaScript' },
-          { img: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Python_logo.png', alt: 'Python' },
-          { img: 'https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg', alt: 'C' },
-          { img: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', alt: 'JavaScript' },
-          { img: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/Python_logo.png', alt: 'Python' },
-          { img: 'https://upload.wikimedia.org/wikipedia/commons/1/18/C_Programming_Language.svg', alt: 'C' },
-        ].map((p, i) => (
+        {partnersData.map((p, i) => (
           <div key={i} className="ticker-item card">
             <img src={p.img} alt={p.alt} style={{maxWidth:100, maxHeight:60, objectFit:'contain'}} />
           </div>
         ))}
-          </div>
-        </div>
-      </section>
+      </div>
+    </div>
+  </section>
 
 
       {/* Sección de On-Ramp */}
@@ -1496,15 +1307,15 @@ const Home = () => {
         justify-content: center;
         min-width: 180px;
         margin: 0 2rem;
-        background: rgba(30,58,138,0.10);
-        border: 1px solid rgba(212, 175, 55, 0.10);
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.5);
         border-radius: 16px;
-        box-shadow: 0 2px 12px #1E3A8A22;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         padding: 1rem 2rem;
         transition: transform 0.2s;
       }
       .ticker-item img {
-        filter: drop-shadow(0 2px 8px #1E3A8A33);
+        filter: none;
       }
       @keyframes ticker {
         0% { transform: translateX(0); }

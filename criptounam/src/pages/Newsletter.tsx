@@ -115,7 +115,7 @@ const Newsletter = () => {
 
   return (
     <>
-      <SEOHead
+      <SEOHead 
         title="Newsletter CriptoUNAM - Noticias y Eventos Blockchain"
         description="Mantente actualizado con las últimas noticias, eventos y artículos sobre blockchain, criptomonedas y Web3 en la UNAM."
         image="https://criptounam.xyz/images/LogosCriptounam.svg"
@@ -130,7 +130,7 @@ const Newsletter = () => {
           <p className="hero-subtitle" style={{ color: '#E0E0E0', fontSize: '1.15rem', maxWidth: 560, margin: '0 auto' }}>
             Noticias, eventos y artículos sobre blockchain y criptomonedas.
           </p>
-        </header>
+      </header>
 
         {/* Filtros por tags */}
         <div style={{ maxWidth: 1000, margin: '0 auto 2rem auto', padding: '0 20px' }}>
@@ -145,46 +145,46 @@ const Newsletter = () => {
           >
             <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.1rem', marginBottom: '1rem', textAlign: 'center' }}>
               Filtrar por categoría
-            </h3>
+          </h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
-              <button
+            <button
                 type="button"
-                onClick={() => setFiltroTag('')}
-                style={{
-                  padding: '0.5rem 1rem',
+              onClick={() => setFiltroTag('')}
+              style={{
+                padding: '0.5rem 1rem',
                   borderRadius: 14,
-                  border: filtroTag === '' ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.3)',
-                  background: filtroTag === '' ? '#D4AF37' : 'rgba(26,26,26,0.5)',
-                  color: filtroTag === '' ? '#0A0A0A' : '#E0E0E0',
-                  cursor: 'pointer',
+                border: filtroTag === '' ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.3)',
+                background: filtroTag === '' ? '#D4AF37' : 'rgba(26,26,26,0.5)',
+                color: filtroTag === '' ? '#0A0A0A' : '#E0E0E0',
+                cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   fontWeight: filtroTag === '' ? 600 : 400,
-                }}
-              >
-                Todos
-              </button>
+              }}
+            >
+              Todos
+            </button>
               {TAGS_DISPONIBLES.map((tag) => (
-                <button
-                  key={tag}
+              <button
+                key={tag}
                   type="button"
-                  onClick={() => setFiltroTag(tag)}
-                  style={{
-                    padding: '0.5rem 1rem',
+                onClick={() => setFiltroTag(tag)}
+                style={{
+                  padding: '0.5rem 1rem',
                     borderRadius: 14,
-                    border: filtroTag === tag ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.3)',
-                    background: filtroTag === tag ? '#D4AF37' : 'rgba(26,26,26,0.5)',
-                    color: filtroTag === tag ? '#0A0A0A' : '#E0E0E0',
-                    cursor: 'pointer',
+                  border: filtroTag === tag ? '2px solid #D4AF37' : '1px solid rgba(212,175,55,0.3)',
+                  background: filtroTag === tag ? '#D4AF37' : 'rgba(26,26,26,0.5)',
+                  color: filtroTag === tag ? '#0A0A0A' : '#E0E0E0',
+                  cursor: 'pointer',
                     transition: 'all 0.2s ease',
                     fontWeight: filtroTag === tag ? 600 : 400,
-                  }}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
+                }}
+              >
+                {tag}
+              </button>
+            ))}
           </div>
         </div>
+      </div>
 
         <div
           className="content-container"
@@ -193,17 +193,17 @@ const Newsletter = () => {
             maxWidth: 1200,
             margin: '0 auto',
             padding: '0 20px',
-            display: 'flex',
-            flexDirection: 'column',
+                display: 'flex',
+                flexDirection: 'column',
             gap: '4rem'
           }}
         >
           {/* Grid de Artículos */}
           <section className="entries-grid">
-            <h2 style={{
-              fontFamily: 'Orbitron',
-              color: '#D4AF37',
-              fontSize: '1.5rem',
+                  <h2 style={{
+                    fontFamily: 'Orbitron',
+                    color: '#D4AF37',
+                    fontSize: '1.5rem',
               marginBottom: '2rem',
               borderLeft: '4px solid #D4AF37',
               paddingLeft: '1rem'
@@ -292,7 +292,7 @@ const Newsletter = () => {
                             key={index}
                             style={{
                               background: 'rgba(212,175,55,0.15)',
-                              color: '#D4AF37',
+                          color: '#D4AF37',
                               padding: '0.2rem 0.6rem',
                               borderRadius: 8,
                               fontSize: '0.75rem',
@@ -301,10 +301,10 @@ const Newsletter = () => {
                               letterSpacing: '0.5px'
                             }}
                           >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
 
                       <h2
                         style={{
@@ -325,8 +325,8 @@ const Newsletter = () => {
                           <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#D4AF37' }} />
                           {formatDateToSpanish(entry.fecha)}
                         </span>
-                      </div>
-
+                  </div>
+                  
                       <p
                         style={{
                           color: '#B0B0B0',
@@ -352,7 +352,7 @@ const Newsletter = () => {
                           color: '#D4AF37',
                           fontWeight: 600,
                           fontSize: '0.95rem',
-                          textDecoration: 'none',
+                      textDecoration: 'none',
                           marginTop: 'auto',
                           width: 'fit-content',
                           paddingBottom: '2px',
@@ -363,13 +363,13 @@ const Newsletter = () => {
                         onMouseLeave={(e) => e.currentTarget.style.borderBottomColor = 'transparent'}
                       >
                         Leer artículo <i className="fas fa-arrow-right" />
-                      </Link>
-                    </div>
-                  </article>
+                    </Link>
+                </div>
+              </article>
                 )
               })}
-            </div>
-          </section>
+          </div>
+        </section>
 
           {/* Sección de Suscripción Rediseñada */}
           <section
@@ -398,8 +398,8 @@ const Newsletter = () => {
             }} />
 
             <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-              {!showConfirmation ? (
-                <>
+          {!showConfirmation ? (
+            <>
                   <div style={{ marginBottom: '1.5rem' }}>
                     <FontAwesomeIcon icon={faEnvelope} style={{ fontSize: '2.5rem', color: '#D4AF37' }} />
                   </div>
@@ -475,11 +475,11 @@ const Newsletter = () => {
                       }}
                     >
                       {loading ? 'Suscrito...' : 'Suscribirme'}
-                    </button>
-                  </form>
+                  </button>
+                </form>
                   {error && <p style={{ color: '#ff6b6b', marginTop: '1rem' }}>{error}</p>}
-                </>
-              ) : (
+            </>
+          ) : (
                 <div style={{ padding: '2rem' }}>
                   <div style={{ fontSize: '4rem', marginBottom: '1rem', color: '#D4AF37' }}>✅</div>
                   <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.8rem', marginBottom: '1rem' }}>
@@ -488,8 +488,8 @@ const Newsletter = () => {
                   <p style={{ color: '#E0E0E0', fontSize: '1.1rem' }}>
                     Bienvenido a la comunidad. Revisa tu correo para confirmar.
                   </p>
-                  <button
-                    onClick={() => setShowConfirmation(false)}
+              <button 
+                onClick={() => setShowConfirmation(false)}
                     style={{
                       marginTop: '2rem',
                       background: 'transparent',
@@ -502,17 +502,17 @@ const Newsletter = () => {
                     }}
                   >
                     Suscribir otro correo
-                  </button>
-                </div>
-              )}
+              </button>
             </div>
+          )}
+      </div>
           </section>
-        </div>
+      </div>
 
         <div className="benefits-section" style={{ margin: '3rem auto 0 auto', maxWidth: 1200 }}>
           <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.35rem', marginBottom: '1.25rem', textAlign: 'center' }}>
             Beneficios de suscribirte
-          </h2>
+              </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', maxWidth: 900, margin: '0 auto' }}>
             <div className="card" style={{ textAlign: 'center', padding: '1.75rem 1rem', background: 'rgba(26,26,26,0.8)', borderRadius: 16, border: '1px solid rgba(212,175,55,0.3)' }}>
               <FontAwesomeIcon icon={faGraduationCap} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: 10 }} />
@@ -523,22 +523,22 @@ const Newsletter = () => {
               <FontAwesomeIcon icon={faCalendarAlt} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: 10 }} />
               <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.05rem', margin: 0 }}>Eventos prioritarios</h3>
               <p style={{ color: '#E0E0E0', margin: 0, fontSize: '0.9rem' }}>Información anticipada de eventos y conferencias</p>
-            </div>
+              </div>
             <div className="card" style={{ textAlign: 'center', padding: '1.75rem 1rem', background: 'rgba(26,26,26,0.8)', borderRadius: 16, border: '1px solid rgba(212,175,55,0.3)' }}>
               <FontAwesomeIcon icon={faCertificate} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: 10 }} />
               <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.05rem', margin: 0 }}>Certificaciones</h3>
               <p style={{ color: '#E0E0E0', margin: 0, fontSize: '0.9rem' }}>Oportunidades de certificaciones reconocidas</p>
-            </div>
+              </div>
             <div className="card" style={{ textAlign: 'center', padding: '1.75rem 1rem', background: 'rgba(26,26,26,0.8)', borderRadius: 16, border: '1px solid rgba(212,175,55,0.3)' }}>
               <FontAwesomeIcon icon={faTrophy} style={{ fontSize: '2rem', color: '#D4AF37', marginBottom: 10 }} />
               <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.05rem', margin: 0 }}>Logros y recompensas</h3>
               <p style={{ color: '#E0E0E0', margin: 0, fontSize: '0.9rem' }}>Programas de recompensas y logros</p>
-            </div>
+              </div>
           </div>
         </div>
-      </div>
+    </div>
     </>
   )
 }
 
-export default Newsletter
+export default Newsletter 
