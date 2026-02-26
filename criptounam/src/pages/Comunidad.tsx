@@ -9,6 +9,7 @@ import TeamCard from '../components/TeamCard'
 import ImageGallery from '../components/ImageGallery'
 import { teamMembers } from '../data/teamData'
 import { galleryData } from '../data/galleryData'
+import { proyectosHacksData } from '../data/proyectosHacksData'
 
 // Datos de imágenes por mes
 const MESES_2025 = [
@@ -41,175 +42,6 @@ const IMAGENES_POR_MES: Record<string, string[]> = {
   NOVIEMBRE: ['007f7872bdaaf1719ef62595f2f2bd39 2.JPG', 'IMG_7079 2.JPG', 'IMG_7283 2.JPG', 'IMG_7509 2.PNG', 'IMG_7595 2.PNG', 'IMG_7596 2.PNG', 'IMG_7598 2.PNG', 'photo_2025-12-20 13.33.26.jpeg', 'photo_2025-12-20 13.33.29.jpeg'],
   DICIEMBRE: ['IMG_8034.JPG', 'IMG_8062.PNG', 'IMG_8088.PNG', 'IMG_8129.PNG', 'IMG_8164.JPG', 'IMG_8049.jpg', 'IMG_8156.jpg'],
 }
-
-// Proyectos y Hackathones combinados con formato visual
-const PROYECTOS_HACKATHONES = [
-  {
-    nombre: 'Utonoma',
-    descripcion: 'Plataforma de videos descentralizada construida con Solidity para la distribución de contenido educativo.',
-    imagen: '/images/Proyectos/Utonoma.png',
-    tecnologias: ['Solidity', 'React', 'Web3.js', 'IPFS'],
-    premio: 'Proyecto Destacado - Hackathon Blockchain 2024',
-    premioUSD: 0,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'Verifica.xyz',
-    descripcion: 'Transparencia institucional con ENS. Ganador de 3 tracks en ETH México Monterrey.',
-    imagen: '/images/Proyectos/Verifica.png',
-    tecnologias: ['Ethereum', 'ENS', 'React', 'Solidity'],
-    premio: 'ETH Mexico Monterrey - 3 Tracks',
-    premioUSD: 1500,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'La Kiniela',
-    descripcion: 'Mercado de predicciones mexicano construido en Arbitrum con Solidity para apuestas deportivas.',
-    imagen: '/images/Proyectos/LaKiniela.png',
-    tecnologias: ['Arbitrum', 'Solidity', 'React', 'Chainlink'],
-    premio: 'Bitso Hackathon',
-    premioUSD: 1500,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'PumaPay',
-    descripcion: 'Wallet universitaria para pagos diarios en cafeterías usando MXNB, Bitso y Juno.',
-    imagen: '/images/Proyectos/PumaPay.png',
-    tecnologias: ['MXNB', 'Bitso', 'Juno', 'React Native'],
-    premio: null,
-    premioUSD: 0,
-    categoria: 'community'
-  },
-  {
-    nombre: 'CU-Shop',
-    descripcion: 'Marketplace sobre blockchain para estudiantes universitarios construido en Base con Solidity.',
-    imagen: '/images/Proyectos/CU-Shop.png',
-    tecnologias: ['Base', 'Solidity', 'React', 'Web3.js'],
-    premio: null,
-    premioUSD: 0,
-    categoria: 'community'
-  },
-  {
-    nombre: 'EVVM Scanner',
-    descripcion: 'Escáner de vulnerabilidades para contratos inteligentes. Ganador en ETH Global Argentina.',
-    imagen: '/images/Proyectos/EVVMScanner.png',
-    tecnologias: ['Ethereum', 'Solidity', 'Python', 'React'],
-    premio: 'ETH Global Argentina',
-    premioUSD: 1375,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'UniFood',
-    descripcion: 'Sistema de distribución de becas para alimentación construido en ZKsync.',
-    imagen: '/images/Proyectos/UniFood.png',
-    tecnologias: ['ZKsync', 'Solidity', 'React', 'Zero-Knowledge'],
-    premio: 'ETHCDMX',
-    premioUSD: 500,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'CampusCoin',
-    descripcion: 'Token universitario para incentivos y gobernanza en comunidades educativas.',
-    imagen: '/images/Proyectos/CampusCoin.png',
-    tecnologias: ['Base', 'Solidity', 'React', 'The Graph'],
-    premio: 'BaseBatch Latam 001',
-    premioUSD: 1250,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'My DentalVault',
-    descripcion: 'Sistema de registro dental de tratamientos e historia médica construido en Polkadot.',
-    imagen: '/images/Proyectos/MyDentalVault.png',
-    tecnologias: ['Polkadot', 'Substrate', 'React', 'IPFS'],
-    premio: 'Polkadot Hackathon',
-    premioUSD: 200,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'EnerPay',
-    descripcion: 'Sistema de pagos para servicios de energía usando blockchain.',
-    imagen: '/images/Proyectos/EnerPay.png',
-    tecnologias: ['Ethereum', 'Solidity', 'React', 'Chainlink'],
-    premio: 'Bitso Hackathon',
-    premioUSD: 1000,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'NearMint',
-    descripcion: 'Plataforma de minting de NFTs en la red NEAR Protocol.',
-    imagen: '/images/Proyectos/NearMint.png',
-    tecnologias: ['NEAR', 'Rust', 'React', 'IPFS'],
-    premio: 'Starknet Resolve',
-    premioUSD: 600,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'Unbox',
-    descripcion: 'Tokenización de streetwear y art toys en Solana.',
-    imagen: '/images/Proyectos/Unbox.png',
-    tecnologias: ['Solana', 'Rust', 'React', 'Anchor'],
-    premio: 'Solana Shipyard',
-    premioUSD: 150,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'UNAM DAO',
-    descripcion: 'Organización autónoma descentralizada para la comunidad universitaria.',
-    imagen: '/images/Proyectos/UNAMDAO.png',
-    tecnologias: ['Avalanche', 'Solidity', 'React', 'Snapshot'],
-    premio: 'Sherry (AVAX)',
-    premioUSD: 300,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'SkillHub ID',
-    descripcion: 'Sistema de certificación a través de la comunidad construido en Stellar.',
-    imagen: '/images/Proyectos/SkillHubID.png',
-    tecnologias: ['Stellar', 'JavaScript', 'React', 'Soroswap'],
-    premio: 'Stellar Mexico',
-    premioUSD: 100,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'Premio.xyz',
-    descripcion: 'Plataforma de sorteos y premios descentralizados en Celo.',
-    imagen: '/images/Proyectos/Premio.png',
-    tecnologias: ['Celo', 'Solidity', 'React', 'Web3.js'],
-    premio: 'Celo Proof of Ship',
-    premioUSD: 40,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'Mundial-Buzz',
-    descripcion: 'Sistema de apuestas para el mundial 2026 desarrollado en EthGlobal NYC.',
-    imagen: '/images/Proyectos/MundialBuzz.png',
-    tecnologias: ['Ethereum', 'Solidity', 'React', 'The Graph'],
-    premio: 'EthGlobal NYC 2024',
-    premioUSD: 0,
-    categoria: 'hackathon'
-  },
-  {
-    nombre: 'PumaAgentAI',
-    descripcion: 'Agente de inteligencia artificial para asistencia estudiantil y gestión universitaria.',
-    imagen: '/images/Proyectos/PumaAgentAI.png',
-    tecnologias: ['AI', 'Machine Learning', 'Python', 'OpenAI'],
-    premio: null,
-    premioUSD: 0,
-    categoria: 'research'
-  },
-  {
-    nombre: 'CoreWeavesAgent',
-    descripcion: 'TokenLauncher sobre CoreDAO para la creación y gestión de tokens comunitarios.',
-    imagen: '/images/Proyectos/CoreWeavesAgent.png',
-    tecnologias: ['CoreDAO', 'Solidity', 'React', 'Web3.js'],
-    premio: 'CoreDAO Hackathon 2024',
-    premioUSD: 0,
-    categoria: 'hackathon'
-  },
-]
-
-// Calcular total de premios
-const totalPremiosUSD = PROYECTOS_HACKATHONES.reduce((acc, p) => acc + p.premioUSD, 0)
 
 // Fotos de 2024 (carpeta Comunidad)
 const FOTOS_2024 = [
@@ -554,7 +386,6 @@ const Comunidad = () => {
               Innovación y desarrollo blockchain creado por nuestra comunidad
             </p>
             
-            {/* Badge de premios totales */}
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -566,9 +397,9 @@ const Comunidad = () => {
             }}>
               <FontAwesomeIcon icon={faTrophy} style={{ color: '#D4AF37', fontSize: '1.5rem' }} />
               <div style={{ textAlign: 'left' }}>
-                <p style={{ color: '#888', fontSize: '0.85rem', margin: 0 }}>Total en premios ganados</p>
+                <p style={{ color: '#888', fontSize: '0.85rem', margin: 0 }}>Proyectos de hackathones</p>
                 <p style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.8rem', fontWeight: 'bold', margin: 0 }}>
-                  ${totalPremiosUSD.toLocaleString()} USD
+                  {proyectosHacksData.length} proyectos
                 </p>
               </div>
             </div>
@@ -577,13 +408,13 @@ const Comunidad = () => {
           {/* Grid de proyectos */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-            gap: '2rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gap: '1.5rem',
             marginBottom: '2rem'
           }}>
-            {PROYECTOS_HACKATHONES.slice(0, 9).map((proyecto, idx) => (
-              <article key={idx} style={{
-                background: 'rgba(26,26,26,0.9)',
+            {proyectosHacksData.slice(0, 9).map((proyecto) => (
+              <article key={proyecto.id} style={{
+                background: 'rgba(26,26,26,0.95)',
                 borderRadius: 20,
                 overflow: 'hidden',
                 border: '1px solid rgba(212,175,55,0.3)',
@@ -603,131 +434,86 @@ const Comunidad = () => {
                 e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)'
               }}
               >
-                {/* Imagen del proyecto */}
                 <div style={{
                   height: 180,
-                  background: 'linear-gradient(135deg, #D4AF37, #2563EB)',
+                  background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  position: 'relative',
-                  overflow: 'hidden'
+                  padding: '1.5rem',
+                  position: 'relative'
                 }}>
                   <img
                     src={proyecto.imagen}
                     alt={proyecto.nombre}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover'
-                    }}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = 'none'
-                    }}
+                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                   />
-                  {/* Fallback icon if no image */}
                   <FontAwesomeIcon icon={faCode} style={{
                     position: 'absolute',
                     fontSize: '3rem',
-                    color: 'rgba(255,255,255,0.3)',
+                    color: 'rgba(255,255,255,0.1)',
                     zIndex: 0
                   }} />
-                  
-                  {/* Badge de premio */}
-                  {proyecto.premioUSD > 0 && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      background: 'rgba(0,0,0,0.85)',
-                      color: '#4ecdc4',
-                      padding: '0.4rem 0.8rem',
-                      borderRadius: 8,
-                      fontSize: '0.85rem',
-                      fontWeight: 700,
-                      border: '1px solid #4ecdc4',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.3rem'
-                    }}>
-                      <FontAwesomeIcon icon={faTrophy} style={{ fontSize: '0.75rem' }} />
-                      ${proyecto.premioUSD} USD
-                    </div>
-                  )}
+                  <span style={{
+                    position: 'absolute',
+                    top: 12,
+                    right: 12,
+                    background: 'rgba(37,99,235,0.3)',
+                    color: '#60A5FA',
+                    padding: '0.35rem 0.7rem',
+                    borderRadius: 10,
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    zIndex: 1
+                  }}>
+                    {proyecto.red}
+                  </span>
                 </div>
-
-                {/* Contenido */}
-                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.3rem', margin: 0 }}>
-                      {proyecto.nombre}
-                    </h3>
-                  </div>
-                  
-                  {proyecto.premio && (
-                    <span style={{
-                      background: 'rgba(245,158,11,0.2)',
-                      color: '#FBBF24',
-                      padding: '0.3rem 0.6rem',
-                      borderRadius: 8,
-                      fontSize: '0.8rem',
-                      fontWeight: 500,
-                      marginBottom: '0.75rem',
-                      alignSelf: 'flex-start'
-                    }}>
-                      {proyecto.premio}
-                    </span>
-                  )}
-                  
-                  <p style={{ color: '#E0E0E0', lineHeight: 1.6, margin: '0 0 1rem 0', flex: 1 }}>
+                <div style={{ padding: '1.25rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.25rem', margin: '0 0 0.5rem 0' }}>
+                    {proyecto.nombre}
+                  </h3>
+                  <p style={{ color: '#E0E0E0', lineHeight: 1.5, margin: '0 0 1rem 0', fontSize: '0.95rem', flex: 1 }}>
                     {proyecto.descripcion}
                   </p>
-
-                  {/* Tecnologías */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    {proyecto.tecnologias.slice(0, 4).map((tech, techIdx) => (
-                      <span key={techIdx} style={{
-                        background: 'rgba(37,99,235,0.2)',
-                        color: '#60A5FA',
-                        padding: '0.25rem 0.6rem',
-                        borderRadius: 12,
-                        fontSize: '0.75rem',
-                        fontWeight: 500
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {proyecto.demo && (
+                      <a href={proyecto.demo} target="_blank" rel="noopener noreferrer" style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                        background: 'linear-gradient(45deg, #D4AF37, #b8962e)', color: '#0A0A0A',
+                        padding: '0.45rem 0.9rem', borderRadius: 10, textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600
                       }}>
-                        {tech}
-                      </span>
-                    ))}
+                        <FontAwesomeIcon icon={faExternalLinkAlt} /> Demo
+                      </a>
+                    )}
+                    {proyecto.repo && (
+                      <a href={proyecto.repo} target="_blank" rel="noopener noreferrer" style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+                        background: 'rgba(26,26,26,0.9)', color: '#E0E0E0', border: '1px solid rgba(212,175,55,0.3)',
+                        padding: '0.45rem 0.9rem', borderRadius: 10, textDecoration: 'none', fontSize: '0.85rem', fontWeight: 600
+                      }}>
+                        <FontAwesomeIcon icon={faGithub} /> Repo
+                      </a>
+                    )}
                   </div>
                 </div>
               </article>
             ))}
           </div>
 
-          {/* Botón ver todos */}
           <div style={{ textAlign: 'center' }}>
-            <Link 
-              to="/proyectos" 
+            <Link
+              to="/proyectos"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                background: 'linear-gradient(45deg, #D4AF37, #2563EB)',
-                color: '#0A0A0A',
-                padding: '1rem 2rem',
-                borderRadius: 12,
-                textDecoration: 'none',
-                fontWeight: 600,
-                fontSize: '1.1rem',
-                transition: 'all 0.3s ease'
+                display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                background: 'linear-gradient(45deg, #D4AF37, #2563EB)', color: '#0A0A0A',
+                padding: '1rem 2rem', borderRadius: 12, textDecoration: 'none', fontWeight: 600, fontSize: '1.1rem', transition: 'all 0.3s ease'
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)'
-              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
             >
-              Ver Todos los Proyectos ({PROYECTOS_HACKATHONES.length})
+              Ver todos los proyectos ({proyectosHacksData.length})
               <FontAwesomeIcon icon={faRocket} />
             </Link>
           </div>

@@ -15,10 +15,10 @@ export interface TeamMember {
 }
 
 export const teamMembers: TeamMember[] = [
-  // Founders
+  // Founders (Core Team)
   {
     name: 'Gerardo Vela',
-    role: 'Founder & CEO',
+    role: 'Core Team · Founder & CEO',
     description: 'Fundador y líder de CriptoUNAM. Experto en blockchain y criptomonedas.',
     image: '/images/Equipo/GerardoVela.jpg',
     linkedin: '#',
@@ -26,7 +26,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Fernanda Tello',
-    role: 'Founder & COO',
+    role: 'Core Team · Founder & COO',
     description: 'Co-fundadora y directora de operaciones. Especialista en estrategia y desarrollo.',
     image: '/images/Equipo/FernandaTello.jpg',
     linkedin: '#',
@@ -34,7 +34,7 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Adrian Armenta',
-    role: 'Founder & CTO',
+    role: 'Core Team · Founder & CTO',
     description: 'Co-fundador y director técnico. Desarrollador blockchain y experto en DeFi.',
     image: '/images/Equipo/AArmenta.png',
     linkedin: '#',
@@ -42,37 +42,38 @@ export const teamMembers: TeamMember[] = [
   },
   {
     name: 'Daniel Cruz',
-    role: 'Founder & CMO',
+    role: 'Core Team · Founder & CMO',
     description: 'Co-fundador y director de marketing. Experto en crecimiento de comunidades blockchain.',
     image: '/images/Equipo/Kubs.png',
     linkedin: '#',
     twitter: '#'
   },
-  // Embajadores
+  // Core Team
   {
     name: 'Andrés Rodríguez',
-    role: 'Embajador CriptoUNAM',
-    description: 'Embajador de la comunidad. Especialista en investigación blockchain.',
+    role: 'Core Team · Investigación',
+    description: 'Especialista en investigación blockchain.',
     image: '/images/Equipo/AndresRodriguez.jpg',
     linkedin: '#',
     twitter: '#'
   },
   {
     name: 'Adrián Martínez',
-    role: 'Embajador CriptoUNAM',
-    description: 'Embajador de la comunidad. Experto en protocolos de consenso.',
+    role: 'Core Team · Protocolos',
+    description: 'Experto en protocolos de consenso.',
     image: '/images/Equipo/AdrianMartinez.png',
     linkedin: '#',
     github: '#'
   },
   {
     name: 'Ian Hernández',
-    role: 'Embajador CriptoUNAM',
-    description: 'Embajador de la comunidad. Especialista en smart contracts.',
+    role: 'Core Team · Smart Contracts',
+    description: 'Especialista en smart contracts.',
     image: '/images/Equipo/IanHernandes.jpg',
     linkedin: '#',
     twitter: '#'
   },
+  // Embajadores
   {
     name: 'Jorge Saldaña',
     role: 'Embajador CriptoUNAM',
@@ -96,5 +97,61 @@ export const teamMembers: TeamMember[] = [
     image: '/images/Equipo/BenjaminRomero.png',
     linkedin: '#',
     github: '#'
+  },
+  {
+    name: 'Nayeli',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/Nayeli.jpg',
+    linkedin: '#',
+    twitter: '#'
+  },
+  {
+    name: 'Vai0X',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/Vai0X.png',
+    linkedin: '#',
+    twitter: '#'
+  },
+  {
+    name: 'Miriam',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/Miriam.jpg',
+    linkedin: '#',
+    twitter: '#'
+  },
+  {
+    name: 'Edgadafi',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/Edgadafi.jpg',
+    linkedin: '#',
+    twitter: '#'
+  },
+  {
+    name: 'Don Eth',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/DonEth.jpg',
+    linkedin: '#',
+    twitter: '#'
+  },
+  {
+    name: 'Liz',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/Liz.jpg',
+    linkedin: '#',
+    twitter: '#'
+  },
+  {
+    name: 'Jazmin',
+    role: 'Embajador CriptoUNAM',
+    description: 'Embajador de la comunidad.',
+    image: '/images/Equipo/Jazmin.jpg',
+    linkedin: '#',
+    twitter: '#'
   }
 ]
