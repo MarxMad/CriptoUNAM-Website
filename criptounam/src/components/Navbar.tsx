@@ -6,17 +6,7 @@ import '../styles/global.css'
 import { useAdmin } from '../hooks/useAdmin'
 import { API_ENDPOINTS } from '../config/api'
 import { cursosApi, eventosApi, newsletterApi } from '../config/supabaseApi'
-import {
-  faBell,
-  faHome,
-  faGraduationCap,
-  faUsers,
-  faEnvelope,
-  faTimes,
-  faWallet,
-  faCalendarAlt,
-  faGamepad
-} from '@fortawesome/free-solid-svg-icons'
+import { faBell, faHome, faGraduationCap, faUsers, faEnvelope, faTimes, faWallet, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface SocialProfile {
@@ -238,14 +228,13 @@ const Navbar = () => {
     }
   }
 
-  // Datos de navegación con iconos
+  // Datos de navegación (Juegos no se muestra)
   const navigationItems = [
     { path: '/', icon: faHome, label: 'Home' },
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
     { path: '/comunidad', icon: faUsers, label: 'Comunidad' },
     { path: '/eventos', icon: faCalendarAlt, label: 'Eventos' },
     { path: '/newsletter', icon: faEnvelope, label: 'Newsletter' },
-    { path: '/juegos', icon: faGamepad, label: 'Juegos' },
   ]
 
   const isActiveRoute = (path: string) => {

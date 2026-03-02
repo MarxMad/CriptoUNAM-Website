@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
 import { registerServiceWorker, preloadCriticalResources } from './utils/optimization'
 import { runDiagnostics } from './utils/diagnostics'
 
@@ -15,7 +16,6 @@ import Newsletter from './pages/Newsletter'
 import NewsletterEntry from './pages/NewsletterEntry'
 import Eventos from './pages/Eventos'
 import ProyectosDestacados from './pages/ProyectosDestacados'
-import Juegos from './pages/Juegos'
 import YearInReview from './pages/YearInReview'
 import { WalletProvider } from './context/WalletContext'
 import './styles/global.css'
@@ -26,6 +26,7 @@ const AppContent = () => {
 
   return (
     <div className="app">
+      <ScrollToTop />
       {!isYearInReview && <Navbar />}
       <main>
         <Routes>
@@ -38,7 +39,7 @@ const AppContent = () => {
           <Route path="/eventos" element={<Eventos />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/registro-curso/:id" element={<RegistroCurso />} />
-          <Route path="/juegos" element={<Juegos />} />
+          <Route path="/juegos" element={<Navigate to="/" replace />} />
           <Route path="/year-in-review" element={<YearInReview />} />
         </Routes>
       </main>

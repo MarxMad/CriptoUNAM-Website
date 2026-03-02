@@ -53,11 +53,10 @@ import {
 import axios from 'axios'
 import ProjectCard from '../components/ProjectCard'
 import StatsSection from '../components/StatsSection'
-import InteractiveCTA from '../components/InteractiveCTA'
-import CryptoActions from '../components/CryptoActions'
 import EventsCarousel from '../components/EventsCarousel'
-import { eventosData } from '../data/eventosData'
+import { eventosData, eventosLumaPresenciales } from '../data/eventosData'
 import { partnersData } from '../data/partnersData'
+import { fotosComunidadLanding } from '../data/fotosComunidadLanding'
 
 interface RegistrationForm {
   nombre: string
@@ -323,8 +322,20 @@ const Home = () => {
   const [cursosHome, setCursosHome] = useState<any[]>([])
   const [eventosHome, setEventosHome] = useState<any[]>([])
   const [newslettersHome, setNewslettersHome] = useState<any[]>([])
-  // Eventos desde código (src/data/eventosData.ts) - Solo próximos eventos (máx 3)
-  const eventosCarousel = eventosData.filter(e => e.isUpcoming).slice(0, 3)
+  // Eventos: primero de eventosData (con imagen), si no hay, usar eventos presenciales Luma (AVAX y Economía)
+  const eventosCarousel = eventosData.filter(e => e.isUpcoming).length > 0
+    ? eventosData.filter(e => e.isUpcoming).slice(0, 3)
+    : eventosLumaPresenciales.map(e => ({
+        id: e.id,
+        title: e.title,
+        date: 'Próximamente',
+        time: '',
+        location: 'Ver evento en Luma',
+        image: '/images/LogosCriptounam2.svg',
+        description: e.description || '',
+        isUpcoming: true,
+        lumaEventId: e.lumaEventId
+      }))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -835,17 +846,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ¿Por qué CriptoUNAM? */}
-      <section className="section" style={{background:'rgba(26,26,26,0.7)', borderRadius:18, maxWidth:900, margin:'0 auto 2.5rem auto', boxShadow:'0 4px 24px #1E3A8A22'}}>
-        <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', marginBottom:'1.5rem'}}>¿Por qué CriptoUNAM?</h2>
-        <div className="grid-4" style={{gap:'2rem'}}>
-          <TechCard icon={faUsers} title="+500 Miembros" description="Comunidad activa y colaborativa de estudiantes y entusiastas." />
-          <TechCard icon={faGraduationCap} title="Cursos Gratuitos" description="Aprende sobre blockchain, DeFi, NFTs y más, sin costo." />
-          <TechCard icon={faCertificate} title="Certificados NFT" description="Obtén certificados digitales únicos por tu aprendizaje." />
-          <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en eventos, hackathons y talleres exclusivos." />
-        </div>
-      </section>
-
         {/* Carrusel de Eventos */}
         {eventosCarousel.length > 0 && (
           <section style={{
@@ -861,8 +861,110 @@ const Home = () => {
             showIndicators={true}
             showNavigation={true}
           />
+          <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+            <Link
+              to="/eventos"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: 'linear-gradient(45deg, #D4AF37, #b8962e)',
+                color: '#0A0A0A',
+                padding: '0.75rem 1.5rem',
+                borderRadius: 12,
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: '1rem'
+              }}
+            >
+              Ver todos los eventos e inscribirse
+              <FontAwesomeIcon icon={faCalendarAlt} />
+            </Link>
+          </div>
         </section>
       )}
+
+      {/* ¿Por qué CriptoUNAM? */}
+      <section className="section" style={{background:'rgba(26,26,26,0.7)', borderRadius:18, maxWidth:900, margin:'0 auto 2.5rem auto', boxShadow:'0 4px 24px #1E3A8A22'}}>
+        <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', marginBottom:'1.5rem'}}>¿Por qué CriptoUNAM?</h2>
+        <div className="grid-4" style={{gap:'2rem'}}>
+          <TechCard icon={faUsers} title="+500 Miembros" description="Comunidad activa y colaborativa de estudiantes y entusiastas." />
+          <TechCard icon={faGraduationCap} title="Cursos Gratuitos" description="Aprende sobre blockchain, DeFi, NFTs y más, sin costo." />
+          <TechCard icon={faCertificate} title="Certificados NFT" description="Obtén certificados digitales únicos por tu aprendizaje." />
+          <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en eventos, hackathons y talleres exclusivos." />
+        </div>
+      </section>
+
+      {/* Fotos de nuestra comunidad - grid 4×6 responsive */}
+      <section style={{
+        maxWidth: '1200px',
+        margin: '0 auto 3rem auto',
+        padding: '0 20px'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <h2 style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+            marginBottom: '0.5rem'
+          }}>
+            Nuestra comunidad
+          </h2>
+          <p style={{ color: '#E0E0E0', fontSize: '1.1rem', maxWidth: 560, margin: '0 auto' }}>
+            Momentos de eventos, talleres y hackathones en 2025
+          </p>
+        </div>
+        <div
+          className="fotos-comunidad-grid"
+          style={{
+            display: 'grid',
+            gap: '0.75rem'
+          }}
+        >
+          {fotosComunidadLanding.map((foto, index) => (
+            <div
+              key={index}
+              style={{
+                aspectRatio: '1',
+                borderRadius: 12,
+                overflow: 'hidden',
+                border: '1px solid rgba(212,175,55,0.2)',
+                background: 'rgba(26,26,26,0.6)'
+              }}
+            >
+              <img
+                src={foto.src}
+                alt={foto.alt}
+                loading="lazy"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block'
+                }}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none'
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        <style>{`
+          .fotos-comunidad-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
+          @media (max-width: 900px) {
+            .fotos-comunidad-grid {
+              grid-template-columns: repeat(2, 1fr);
+            }
+          }
+          @media (max-width: 480px) {
+            .fotos-comunidad-grid {
+              grid-template-columns: 1fr;
+            }
+          }
+        `}</style>
+      </section>
 
       {/* Estadísticas */}
       <StatsSection
@@ -1114,33 +1216,6 @@ const Home = () => {
     </div>
   </section>
 
-
-      {/* Sección de On-Ramp */}
-      <section style={{
-        maxWidth: '1200px',
-        margin: '0 auto 3rem auto',
-        padding: '0 20px'
-      }}>
-        <div style={{
-          background: 'rgba(26, 26, 26, 0.8)',
-          borderRadius: '20px',
-          padding: '3rem',
-          border: '1px solid rgba(212, 175, 55, 0.2)',
-          backdropFilter: 'blur(10px)',
-          textAlign: 'center'
-        }}>
-          <CryptoActions 
-            layout="horizontal" 
-            showLabels={true}
-          />
-        </div>
-      </section>
-
-      {/* Sección Interactiva Final */}
-      <InteractiveCTA
-        title="¡Únete a la Revolución Blockchain!"
-        description="Forma parte de la comunidad universitaria más innovadora de México. Aprende, desarrolla y crea el futuro de la Web3 junto a nosotros."
-      />
 
     <style>{`
       html {

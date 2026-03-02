@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDiscord, faTelegram, faTwitter } from '@fortawesome/free-brands-svg-icons'
-import { handleNewsletterSubscription, handleRegistration } from '../api/telegram'
+import { faDiscord, faTelegram, faTwitter, faWhatsapp, faFacebookF, faInstagram } from '@fortawesome/free-brands-svg-icons'
+import { handleRegistration } from '../api/telegram'
+import { suscripcionesApi } from '../config/supabaseApi'
 import SuccessPopup from './SuccessPopup'
 
 const Footer = () => {
@@ -82,9 +83,7 @@ const Footer = () => {
     setIsNewsletterLoading(true)
     
     try {
-      // Enviar notificación a Telegram
-      await handleNewsletterSubscription(email, 'home')
-      
+      await suscripcionesApi.create(email, 'home')
       setEmail('')
       setShowNewsletterPopup(true)
     } catch (error) {
@@ -202,7 +201,7 @@ const Footer = () => {
             gap: '1rem',
             flexWrap: 'wrap'
           }}>
-            <a href="https://discord.gg/Pmu4JQeNR6" 
+            <a href="https://discord.gg/wW4RZkyH" 
                target="_blank" 
                rel="noopener noreferrer" 
                style={{
@@ -229,7 +228,7 @@ const Footer = () => {
             >
               <FontAwesomeIcon icon={faDiscord} />
             </a>
-            <a href="https://t.me/+tPgjd4cOxG05NmVh" 
+            <a href="https://t.me/+US3WLlw1uuU0ZjUx" 
                target="_blank" 
                rel="noopener noreferrer" 
                style={{
@@ -283,6 +282,87 @@ const Footer = () => {
             >
               <FontAwesomeIcon icon={faTwitter} />
             </a>
+            <a href="https://chat.whatsapp.com/ItF2XhThb8W5Cd7qvqxFyw?mode=gi_t" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 width: '40px',
+                 height: '40px',
+                 background: 'linear-gradient(135deg, #25D366, #128C7E)',
+                 color: 'white',
+                 borderRadius: '50%',
+                 textDecoration: 'none',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 2px 8px rgba(37, 211, 102, 0.3)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.1)';
+                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(37, 211, 102, 0.5)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(37, 211, 102, 0.3)';
+               }}
+            >
+              <FontAwesomeIcon icon={faWhatsapp} />
+            </a>
+            <a href="https://www.facebook.com/criptounam/?locale=es_LA" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 width: '40px',
+                 height: '40px',
+                 background: 'linear-gradient(135deg, #1877F2, #0d65d9)',
+                 color: 'white',
+                 borderRadius: '50%',
+                 textDecoration: 'none',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 2px 8px rgba(24, 119, 242, 0.3)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.1)';
+                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(24, 119, 242, 0.5)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 119, 242, 0.3)';
+               }}
+            >
+              <FontAwesomeIcon icon={faFacebookF} />
+            </a>
+            <a href="https://www.instagram.com/cripto_unam/" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               style={{
+                 display: 'flex',
+                 alignItems: 'center',
+                 justifyContent: 'center',
+                 width: '40px',
+                 height: '40px',
+                 background: 'linear-gradient(135deg, #E4405F, #C13584)',
+                 color: 'white',
+                 borderRadius: '50%',
+                 textDecoration: 'none',
+                 transition: 'all 0.3s ease',
+                 boxShadow: '0 2px 8px rgba(228, 64, 95, 0.3)'
+               }}
+               onMouseEnter={(e) => {
+                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.1)';
+                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(228, 64, 95, 0.5)';
+               }}
+               onMouseLeave={(e) => {
+                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                 e.currentTarget.style.boxShadow = '0 2px 8px rgba(228, 64, 95, 0.3)';
+               }}
+            >
+              <FontAwesomeIcon icon={faInstagram} />
+            </a>
           </div>
         </div>
       </div>
@@ -323,21 +403,25 @@ const Footer = () => {
           flexWrap: 'wrap',
           alignItems: 'center'
         }}>
-          <button 
-            className="glow-button" 
+          <a
+            href="https://t.me/+US3WLlw1uuU0ZjUx"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glow-button"
             style={{
-              fontWeight: 700, 
-              fontSize: '1.1rem', 
-              padding: '0.8rem 2rem', 
-              borderRadius: '12px', 
-              border: 'none', 
-              background: 'linear-gradient(135deg, #1E3A8A, #2563EB)', 
-              color: '#fff', 
-              boxShadow: '0 0 16px 4px rgba(37, 99, 235, 0.6), 0 0 32px 8px rgba(212, 175, 55, 0.3)', 
-              cursor: 'pointer', 
-              transition: 'all 0.3s ease'
-            }} 
-            onClick={() => setShowJoinModal(true)}
+              fontWeight: 700,
+              fontSize: '1.1rem',
+              padding: '0.8rem 2rem',
+              borderRadius: '12px',
+              border: 'none',
+              background: 'linear-gradient(135deg, #1E3A8A, #2563EB)',
+              color: '#fff',
+              boxShadow: '0 0 16px 4px rgba(37, 99, 235, 0.6), 0 0 32px 8px rgba(212, 175, 55, 0.3)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              textDecoration: 'none',
+              display: 'inline-block'
+            }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 4px 20px rgba(37, 99, 235, 0.8), 0 8px 40px rgba(212, 175, 55, 0.4)';
@@ -348,7 +432,7 @@ const Footer = () => {
             }}
           >
             Únete a la comunidad
-          </button>
+          </a>
           
           <form onSubmit={handleNewsletterSubmit} style={{
             display: 'flex',

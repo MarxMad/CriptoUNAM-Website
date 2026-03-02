@@ -1,10 +1,26 @@
-import { spacesData, hackathonsData, eventosData } from '../data/eventosData'
+import React, { useEffect } from 'react'
+import { hackathonsData, eventosLumaPresenciales, eventosLumaPasados } from '../data/eventosData'
 import SEOHead from '../components/SEOHead'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCalendarAlt, faMapMarkerAlt, faMicrophone, faCode, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
+import { faCalendarAlt, faMapMarkerAlt, faCode, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
+const LUMA_CHECKOUT_SCRIPT = 'https://embed.lu.ma/checkout-button.js'
+
 const Eventos = () => {
+    useEffect(() => {
+        if (document.getElementById('luma-checkout')) return
+        const script = document.createElement('script')
+        script.id = 'luma-checkout'
+        script.src = LUMA_CHECKOUT_SCRIPT
+        script.async = true
+        document.body.appendChild(script)
+        return () => {
+            const s = document.getElementById('luma-checkout')
+            if (s) s.remove()
+        }
+    }, [])
+
     return (
         <>
             <SEOHead
@@ -27,7 +43,7 @@ const Eventos = () => {
                     </p>
                 </header>
 
-                {/* Sección 1: Eventos Presenciales */}
+                {/* Sección 1: Eventos Presenciales (vigentes) */}
                 <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
                         <FontAwesomeIcon icon={faMapMarkerAlt} style={{ fontSize: '2rem', color: '#D4AF37' }} />
@@ -35,213 +51,146 @@ const Eventos = () => {
                             Eventos Presenciales
                         </h2>
                     </div>
-
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                        gap: '2rem'
-                    }}>
-                        {eventosData.map((evento) => (
-                            <article key={evento.id} className="card" style={{
-                                background: 'rgba(26,26,26,0.8)',
-                                borderRadius: 20,
-                                border: '1px solid rgba(212,175,55,0.2)',
-                                overflow: 'hidden',
-                                display: 'flex',
-                                flexDirection: 'column'
-                            }}>
-                                <div style={{ height: 200, overflow: 'hidden', position: 'relative' }}>
-                                    <img src={evento.image} alt={evento.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                    {!evento.isUpcoming && (
-                                        <div style={{
-                                            position: 'absolute',
-                                            top: 10,
-                                            right: 10,
-                                            background: 'rgba(0,0,0,0.7)',
-                                            color: '#B0B0B0',
-                                            padding: '0.2rem 0.6rem',
-                                            borderRadius: 8,
-                                            fontSize: '0.8rem'
-                                        }}>
-                                            Finalizado
-                                        </div>
-                                    )}
-                                </div>
-                                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                    <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.3rem', marginBottom: '0.5rem' }}>
-                                        {evento.title}
-                                    </h3>
-                                    <p style={{ color: '#E0E0E0', fontSize: '0.95rem', marginBottom: '1rem', flex: 1 }}>
-                                        {evento.description}
-                                    </p>
-                                    <div style={{ fontSize: '0.9rem', color: '#A0A0A0', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                                        <span><FontAwesomeIcon icon={faCalendarAlt} /> {evento.date} - {evento.time}</span>
-                                        <span><FontAwesomeIcon icon={faMapMarkerAlt} /> {evento.location}</span>
-                                    </div>
-                                    {evento.link && (
-                                        <a
-                                            href={evento.link}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="primary-button"
-                                            style={{
-                                                marginTop: '1rem',
-                                                textAlign: 'center',
-                                                textDecoration: 'none',
-                                                borderRadius: 12,
-                                                padding: '0.8rem',
-                                                fontWeight: 600,
-                                                fontSize: '0.95rem'
-                                            }}
-                                        >
-                                            Registrarse
-                                        </a>
-                                    )}
-                                </div>
-                            </article>
-                        ))}
-                    </div>
-                </section>
-
-                {/* Sección 2: CriptoUNAM Connect - Spaces y Charlas */}
-                <section style={{ maxWidth: 1200, margin: '0 auto 5rem auto', padding: '0 20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                        <FontAwesomeIcon icon={faMicrophone} style={{ fontSize: '2rem', color: '#4ecdc4' }} />
-                        <h2 style={{ fontFamily: 'Orbitron', color: '#fff', fontSize: '2rem', margin: 0 }}>
-                            CriptoUNAM Connect
-                        </h2>
-                    </div>
                     <p style={{ color: '#888', marginBottom: '2rem', maxWidth: 600 }}>
-                        Spaces en vivo, charlas y conversaciones sobre blockchain, Web3 y el ecosistema cripto.
+                        Eventos vigentes. Inscríbete y participa.
                     </p>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
-                        {spacesData.map(space => (
-                            <a
-                                href={space.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                key={space.id}
-                                className="card"
-                                style={{
-                                    background: 'rgba(26,26,26,0.8)',
-                                    borderRadius: 20,
-                                    border: `2px solid ${space.status === 'upcoming' ? 'rgba(78, 205, 196, 0.4)' : 'rgba(255,255,255,0.1)'}`,
-                                    textDecoration: 'none',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    overflow: 'hidden',
-                                    transition: 'all 0.3s ease'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(-5px)'
-                                    e.currentTarget.style.borderColor = '#4ecdc4'
-                                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(78, 205, 196, 0.2)'
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'translateY(0)'
-                                    e.currentTarget.style.borderColor = space.status === 'upcoming' ? 'rgba(78, 205, 196, 0.4)' : 'rgba(255,255,255,0.1)'
-                                    e.currentTarget.style.boxShadow = 'none'
-                                }}
-                            >
-                                {/* Banner del Space */}
-                                <div style={{ 
-                                    height: 140, 
-                                    overflow: 'hidden', 
-                                    position: 'relative',
-                                    background: 'linear-gradient(135deg, #1a3a4a, #0d1f29)'
-                                }}>
-                                    <img 
-                                        src={space.image} 
-                                        alt={space.title}
-                                        style={{
-                                            width: '100%',
-                                            height: '100%',
-                                            objectFit: 'cover'
-                                        }}
-                                        onError={(e) => {
-                                            (e.target as HTMLImageElement).style.display = 'none'
-                                        }}
-                                    />
-                                    {/* Fallback gradient si no hay imagen */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        inset: 0,
-                                        background: 'linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(37, 99, 235, 0.3))',
+                    {/* Eventos vigentes: mismo nivel, 2 columnas en desktop */}
+                    {eventosLumaPresenciales.length > 0 && (
+                        <div className="eventos-presenciales-grid eventos-vigentes-grid" style={{ display: 'grid', gap: '2.5rem', alignItems: 'stretch' }}>
+                            {eventosLumaPresenciales.map((evento) => (
+                                <article
+                                    key={evento.id}
+                                    className="card"
+                                    style={{
+                                        background: 'rgba(26,26,26,0.8)',
+                                        borderRadius: 20,
+                                        border: '1px solid rgba(212,175,55,0.2)',
+                                        overflow: 'hidden',
+                                        padding: '1.5rem',
                                         display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        zIndex: 0
-                                    }}>
-                                        <FontAwesomeIcon icon={faMicrophone} style={{ fontSize: '3rem', color: 'rgba(255,255,255,0.2)' }} />
-                                    </div>
-                                    
-                                    {/* Badge de estado */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: 12,
-                                        left: 12,
-                                        background: space.status === 'upcoming' ? 'rgba(78, 205, 196, 0.9)' : 'rgba(100,100,100,0.9)',
-                                        color: space.status === 'upcoming' ? '#000' : '#fff',
-                                        padding: '0.3rem 0.8rem',
-                                        borderRadius: 8,
-                                        fontSize: '0.75rem',
-                                        fontWeight: 700,
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px'
-                                    }}>
-                                        {space.status === 'upcoming' ? '🔴 PRÓXIMAMENTE' : '▶️ GRABACIÓN'}
-                                    </div>
-                                </div>
-
-                                {/* Contenido */}
-                                <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                    <h3 style={{ 
-                                        color: '#fff', 
-                                        fontSize: '1.15rem', 
-                                        margin: '0 0 0.5rem 0', 
-                                        fontWeight: 600,
-                                        lineHeight: 1.3
-                                    }}>
-                                        {space.title}
+                                        flexDirection: 'column',
+                                        minHeight: 320,
+                                    }}
+                                >
+                                    <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.4rem', marginBottom: '0.5rem' }}>
+                                        {evento.title}
                                     </h3>
-                                    
-                                    {space.description && (
-                                        <p style={{ 
-                                            color: '#aaa', 
-                                            fontSize: '0.9rem', 
-                                            margin: '0 0 1rem 0',
-                                            lineHeight: 1.5,
-                                            flex: 1
-                                        }}>
-                                            {space.description}
+                                    {evento.description && (
+                                        <p style={{ color: '#E0E0E0', fontSize: '0.95rem', marginBottom: '1rem' }}>
+                                            {evento.description}
                                         </p>
                                     )}
-                                    
-                                    <div style={{ 
-                                        display: 'flex', 
-                                        justifyContent: 'space-between', 
-                                        alignItems: 'center',
-                                        paddingTop: '0.75rem',
-                                        borderTop: '1px solid rgba(255,255,255,0.1)'
-                                    }}>
-                                        <div>
-                                            <p style={{ color: '#4ecdc4', fontSize: '0.85rem', margin: 0, fontWeight: 600 }}>
-                                                {space.host}
-                                            </p>
-                                            <p style={{ color: '#888', fontSize: '0.8rem', margin: 0 }}>
-                                                {space.date} • {space.time}
-                                            </p>
-                                        </div>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt} style={{ color: '#4ecdc4', fontSize: '1rem' }} />
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '1rem', flex: 1 }}>
+                                        <iframe
+                                            src={`https://luma.com/embed/event/${evento.lumaEventId}/simple`}
+                                            width="100%"
+                                            height="450"
+                                            style={{
+                                                maxWidth: 600,
+                                                border: '1px solid rgba(191, 203, 218, 0.53)',
+                                                borderRadius: 4,
+                                                background: '#fff',
+                                            }}
+                                            title={evento.title}
+                                            allow="fullscreen; payment"
+                                        />
+                                        <a
+                                            href={`https://luma.com/event/${evento.lumaEventId}`}
+                                            className="luma-checkout--button"
+                                            data-luma-action="checkout"
+                                            data-luma-event-id={evento.lumaEventId}
+                                            style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: '0.5rem',
+                                                background: 'linear-gradient(45deg, #D4AF37, #b8962e)',
+                                                color: '#0A0A0A',
+                                                padding: '0.75rem 1.5rem',
+                                                borderRadius: 12,
+                                                textDecoration: 'none',
+                                                fontWeight: 600,
+                                                fontSize: '1rem',
+                                            }}
+                                        >
+                                            Inscribirse al evento
+                                            <FontAwesomeIcon icon={faExternalLinkAlt} style={{ fontSize: '0.85rem' }} />
+                                        </a>
                                     </div>
-                                </div>
-                            </a>
-                        ))}
-                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Eventos pasados desde Luma */}
+                    {eventosLumaPasados.length > 0 && (
+                        <>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '4rem', marginBottom: '2rem' }}>
+                                <FontAwesomeIcon icon={faCalendarAlt} style={{ fontSize: '1.75rem', color: '#888' }} />
+                                <h3 style={{ fontFamily: 'Orbitron', color: '#A0A0A0', fontSize: '1.5rem', margin: 0 }}>
+                                    Eventos pasados
+                                </h3>
+                            </div>
+                            <div className="eventos-pasados-grid" style={{ display: 'grid', gap: '2rem' }}>
+                                {eventosLumaPasados.map((evento) => (
+                                    <article
+                                        key={evento.id}
+                                        className="card"
+                                        style={{
+                                            background: 'rgba(26,26,26,0.6)',
+                                            borderRadius: 20,
+                                            border: '1px solid rgba(212,175,55,0.15)',
+                                            overflow: 'hidden',
+                                            padding: '1.5rem',
+                                        }}
+                                    >
+                                        <h4 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.2rem', marginBottom: '0.5rem' }}>
+                                            {evento.title}
+                                        </h4>
+                                        <div style={{ fontSize: '0.9rem', color: '#A0A0A0', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                                            <span><FontAwesomeIcon icon={faCalendarAlt} style={{ marginRight: '0.5rem' }} /> {evento.date}{evento.time ? ` · ${evento.time}` : ''}</span>
+                                            <span><FontAwesomeIcon icon={faMapMarkerAlt} style={{ marginRight: '0.5rem' }} /> {evento.location}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                            <iframe
+                                                src={`https://luma.com/embed/event/${evento.lumaEventId}/simple`}
+                                                width="100%"
+                                                height="450"
+                                                style={{
+                                                    maxWidth: 600,
+                                                    border: '1px solid rgba(191, 203, 218, 0.53)',
+                                                    borderRadius: 4,
+                                                    background: '#fff',
+                                                }}
+                                                title={evento.title}
+                                                allow="fullscreen; payment"
+                                            />
+                                            <a
+                                                href={`https://luma.com/event/${evento.lumaEventId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem',
+                                                    color: '#D4AF37',
+                                                    fontSize: '0.95rem',
+                                                    fontWeight: 600,
+                                                    textDecoration: 'none',
+                                                }}
+                                            >
+                                                Ver en Luma
+                                                <FontAwesomeIcon icon={faExternalLinkAlt} style={{ fontSize: '0.8rem' }} />
+                                            </a>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </section>
 
-                {/* Sección 3: Hackathons */}
+                {/* Sección 2: Hackathons */}
                 <section style={{ maxWidth: 1200, margin: '0 auto', padding: '0 20px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                         <FontAwesomeIcon icon={faCode} style={{ fontSize: '2rem', color: '#F4D03F' }} />
@@ -253,7 +202,7 @@ const Eventos = () => {
                         Participa en los mejores hackathones del ecosistema Web3. ¡Gana premios y construye el futuro!
                     </p>
 
-                    <div style={{ 
+                    <div style={{
                         display: 'grid', 
                         gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', 
                         gap: '1.5rem' 
@@ -394,6 +343,25 @@ const Eventos = () => {
                 </section>
 
             </div>
+
+            <style>{`
+              .eventos-presenciales-grid.eventos-vigentes-grid {
+                grid-template-columns: 1fr;
+              }
+              @media (min-width: 900px) {
+                .eventos-presenciales-grid.eventos-vigentes-grid {
+                  grid-template-columns: repeat(2, 1fr);
+                }
+              }
+              .eventos-pasados-grid {
+                grid-template-columns: 1fr;
+              }
+              @media (min-width: 700px) {
+                .eventos-pasados-grid {
+                  grid-template-columns: repeat(2, 1fr);
+                }
+              }
+            `}</style>
         </>
     )
 }

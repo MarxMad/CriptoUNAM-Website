@@ -462,5 +462,112 @@ Prepárate, estudia y construye. Las herramientas nunca han sido tan poderosas c
     fecha: '5 de Enero, 2026',
     imagen: '/images/newsletter/trends-watch-2026.png',
     tags: ['Tendencias', 'Futuro', 'AI']
+  },
+  {
+    id: 'ai-openclau-claucode-herramientas-2026',
+    titulo: 'IA en 2026: OpenClau, ClauCode y las Herramientas que Todo Dev Debe Conocer',
+    autor: 'CriptoUNAM',
+    fecha: '2026-01-15',
+    imagen: '/images/newsletter/trends-watch-2026.png',
+    tags: ['AI', 'OpenClau', 'ClauCode', 'Herramientas', '2026'],
+    contenido: `# IA Generativa y Desarrollo en 2026: OpenClau, ClauCode y Más
+
+El ecosistema de herramientas de IA para desarrolladores ha explotado en los últimos meses. En CriptoUNAM te resumimos las que no puedes ignorar en 2026.
+
+## OpenClau y ClauCode
+
+**OpenClau** y **ClauCode** representan la nueva ola de asistentes de código abierto y especializados en programación. A diferencia de asistentes genéricos, están optimizados para entender contexto técnico, documentación de APIs y buenas prácticas de seguridad (crucial en smart contracts).
+
+*   **OpenClau:** Ideal para explorar código legacy y generar documentación automática.
+*   **ClauCode:** Enfocado en flujos de desarrollo Web3: Solidity, pruebas, despliegue en testnets.
+
+## Herramientas de IA que Todo Dev Debe Probar en 2026
+
+1.  **Asistentes de código en IDE:** Integraciones nativas en VS Code/Cursor que sugieren completado, refactors y explicaciones en tiempo real.
+2.  **Generación de tests:** IA que escribe unit tests y casos edge a partir de tu contrato o función.
+3.  **Auditoría asistida:** Herramientas que escanean contratos y señalan patrones de riesgo (reentrancy, overflow) antes de una auditoría formal.
+4.  **Documentación y tutoriales:** Generación de guías y ejemplos a partir de tu repo o de documentación oficial.
+
+> "La IA no reemplaza al desarrollador; amplifica su capacidad para iterar más rápido y con menos errores. En Web3, donde un bug puede costar millones, eso es oro."
+
+Mantente al día en nuestro canal de Discord y newsletter para talleres prácticos con estas herramientas.
+
+### Recursos
+*   Documentación oficial de las herramientas que menciones en tu stack.
+*   Cursos CriptoUNAM: módulos de Solidity y buenas prácticas.`
+  },
+  {
+    id: 'guia-solidity-2026',
+    titulo: 'Guía Definitiva para Empezar con Solidity en 2026',
+    autor: 'DevTeam CriptoUNAM',
+    fecha: '2026-01-20',
+    imagen: '/images/newsletter/intro-smart-contracts-solidity.png',
+    tags: ['Solidity', 'Ethereum', 'Guía', 'Smart Contracts'],
+    contenido: `# Tu Ruta de Aprendizaje en Solidity para 2026
+
+Solidity sigue siendo el lenguaje rey para contratos inteligentes en Ethereum y en muchas EVM-compatible chains. Esta guía te lleva de cero a tu primer contrato desplegado en 2026.
+
+## Paso 1: Entorno de Desarrollo
+
+*   **Remix IDE:** Sigue siendo la forma más rápida de escribir, compilar y desplegar sin instalar nada. Ideal para prototipos.
+*   **Foundry o Hardhat:** Para proyectos serios. Foundry (Rust) es extremadamente rápido para tests; Hardhat (JavaScript/TypeScript) tiene un ecosistema enorme de plugins.
+
+## Paso 2: Conceptos que Debes Dominar
+
+1.  **Tipos de datos:** \`uint256\`, \`address\`, \`mapping\`, \`struct\`, \`enum\`.
+2.  **Visibilidad y modificadores:** \`public\`, \`private\`, \`internal\`, \`external\`; \`view\`, \`pure\`, \`payable\`.
+3.  **Eventos y logs:** Es la forma estándar de comunicar al frontend qué pasó en una transacción.
+4.  **Seguridad básica:** Reentrancy, overflow/underflow (Solidity 0.8+ los previene por defecto), y el uso de OpenZeppelin.
+
+## Paso 3: Desplegar en Testnet
+
+Usa **Sepolia** o **Base Sepolia** para no gastar dinero real. Obtén ETH de grifo, conecta MetaMask o WalletConnect y despliega desde Remix o con scripts en Foundry/Hardhat.
+
+> "La mejor forma de aprender Solidity es escribiendo y rompiendo cosas en testnet. No tengas miedo a fallar."
+
+En CriptoUNAM tenemos cursos con guías paso a paso y cuestionarios para afianzar cada módulo. ¡Te esperamos!
+
+### Recursos
+*   [Docs Solidity](https://docs.soliditylang.org/)
+*   [CryptoZombies](https://cryptozombies.io/)
+*   [OpenZeppelin Contracts](https://www.openzeppelin.com/contracts)`
+  },
+  {
+    id: 'guia-stellar-novedades-febrero-2026',
+    titulo: 'Guía de Stellar y Novedades de Febrero 2026',
+    autor: 'CriptoUNAM',
+    fecha: '2026-02-01',
+    imagen: '/images/newsletter/year-review-2025.png',
+    tags: ['Stellar', 'XLM', 'Guía', 'Febrero 2026', 'Blockchain'],
+    contenido: `# Stellar (XLM): Guía Rápida y Qué Esperar en Febrero 2026
+
+Stellar es una red de pagos abierta diseñada para conectar instituciones financieras, sistemas de pago y personas. Si aún no la conoces, esta guía te pone al día.
+
+## ¿Qué es Stellar?
+
+*   **Red de pagos:** Enfocada en transferencias rápidas y baratas entre cualquier par de activos (XLM, stablecoins, activos tokenizados).
+*   **Anclores (Anchors):** Entidades que emiten activos en la red (por ejemplo, una stablecoin respaldada por dólares).
+*   **Cuentas y llaves:** Cada cuenta tiene una clave pública y una secreta; las transacciones se firman con la clave secreta.
+
+## Conceptos Clave
+
+1.  **Lumens (XLM):** La criptomoneda nativa. Se usa para pagar fees y mantener reservas en cuentas.
+2.  **Operaciones:** Pagos, creación de ofertas (DEX nativo), cambios de confianza (trustlines) para recibir activos emitidos por anclores.
+3.  **Soroban:** La capa de smart contracts de Stellar, que acerca capacidades similares a Ethereum pero con fees y latencia muy bajas.
+
+## Novedades de Febrero 2026
+
+*   **Actualizaciones de protocolo:** Revisa el [blog oficial de Stellar](https://stellar.org/blog) y las notas de versión de **Soroban** para nuevas opcodes o mejoras de rendimiento.
+*   **Adopción institucional:** Stellar suele anunciar alianzas con empresas de remesas y bancos; febrero suele traer noticias post-CES y arranque de año fiscal.
+*   **Herramientas para devs:** SDKs en JavaScript, Rust y Go; integración con billeteras y APIs de anclores para emisión y transferencia de activos.
+
+> "Stellar es ideal cuando tu caso de uso es pagos cross-border o tokenización de activos del mundo real con bajos costos y alta velocidad."
+
+Si quieres profundizar en Stellar y Soroban, en CriptoUNAM preparamos talleres y material específico. Suscríbete al newsletter y únete a nuestro Discord para fechas.
+
+### Recursos
+*   [Stellar Developers](https://developers.stellar.org/)
+*   [Soroban Documentation](https://soroban.stellar.org/)
+*   [Stellar Blog](https://stellar.org/blog)`
   }
 ]

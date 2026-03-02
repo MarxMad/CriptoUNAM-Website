@@ -15,6 +15,8 @@ interface EventData {
   capacity?: number
   registered?: number
   isUpcoming: boolean
+  /** Si está presente, se muestra el embed de Luma en lugar de la imagen */
+  lumaEventId?: string
 }
 
 interface EventsCarouselProps {
@@ -148,39 +150,51 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         border: '1px solid rgba(212,175,55,0.3)',
         boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
       }}>
-        {/* Imagen del evento */}
+        {/* Contenido del evento: embed Luma o imagen */}
         <div style={{
           position: 'relative',
           height: '450px',
           overflow: 'hidden'
         }}>
-          <OptimizedImage
-            src={currentEvent.image}
-            alt={currentEvent.title}
-            fallback="/images/LogosCriptounam2.svg"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              transition: 'transform 0.3s ease',
-              backgroundColor: 'rgba(26,26,26,0.8)'
-            }}
-            onError={() => {
-              // Imagen no encontrada: se usa fallback (logo) desde OptimizedImage
-            }}
-            onLoad={() => {
-              // Efecto de zoom sutil al cargar
-              if (carouselRef.current) {
-                const img = carouselRef.current.querySelector('img')
-                if (img) {
-                  img.style.transform = 'scale(1.05)'
+          {currentEvent.lumaEventId ? (
+            <iframe
+              src={`https://luma.com/embed/event/${currentEvent.lumaEventId}/simple`}
+              title={currentEvent.title}
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                display: 'block',
+                background: '#fff'
+              }}
+              allow="fullscreen; payment"
+            />
+          ) : (
+            <OptimizedImage
+              src={currentEvent.image}
+              alt={currentEvent.title}
+              fallback="/images/LogosCriptounam2.svg"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center',
+                transition: 'transform 0.3s ease',
+                backgroundColor: 'rgba(26,26,26,0.8)'
+              }}
+              onError={() => {}}
+              onLoad={() => {
+                if (carouselRef.current) {
+                  const img = carouselRef.current.querySelector('img')
+                  if (img) {
+                    img.style.transform = 'scale(1.05)'
+                  }
                 }
-              }
-            }}
-          />
+              }}
+            />
+          )}
           
-          {/* Solo la fecha sobre el flyer para no taparlo */}
+          {/* Badge de fecha sobre el contenido */}
           <div style={{
             position: 'absolute',
             bottom: '1rem',
@@ -319,22 +333,6 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         </div>
       )}
 
-      {/* Informaci?n adicional */}
-      <div style={{
-        textAlign: 'center',
-        marginTop: '1.5rem',
-        color: '#E0E0E0',
-        fontSize: '0.9rem'
-      }}>
-        {events.length > 1 && (
-          <p>
-            Evento {currentIndex + 1} de {events.length} 
-            <span style={{ color: '#D4AF37', marginLeft: '0.5rem' }}>
-              {autoPlay ? 'Auto-reproducción activada' : 'Navegación manual'}
-            </span>
-          </p>
-        )}
-      </div>
     </div>
   )
 }

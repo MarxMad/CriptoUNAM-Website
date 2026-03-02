@@ -51,32 +51,114 @@ export interface HackathonItem {
 }
 
 export const eventosData: EventoItem[] = [
-  // ========== EVENTOS PRÓXIMOS ==========
+  // Eventos con imagen/card se agregan aquí si se necesitan en el futuro.
+  // Los vigentes actuales son solo los de eventosLumaPresenciales (Economía UNAM y AVAX).
+]
+
+/**
+ * Eventos presenciales con embed de Luma (misma sección que Eventos Presenciales).
+ * Cada evento usa el iframe de Luma y el botón de inscripción.
+ */
+export interface EventoLumaItem {
+  id: string
+  title: string
+  lumaEventId: string
+  description?: string
+}
+
+export const eventosLumaPresenciales: EventoLumaItem[] = [
   {
-    id: '5',
-    title: 'Binance University Tour - BUAP Puebla',
-    date: '9 de Febrero, 2026',
-    time: '10:30 AM - 4:00 PM',
-    location: 'BUAP, Puebla',
-    image: '/images/eventos/BinancePuebla.png',
-    description: 'Binance University Tour llega a Puebla. Aprende sobre blockchain y criptomonedas con expertos de Binance.',
-    capacity: 200,
-    isUpcoming: true,
-    link: 'https://luma.com/ljcqpyv2',
+    id: 'luma-economia',
+    title: 'Evento AVAX',
+    lumaEventId: 'evt-l60ZZPw90Y3rDb7',
+    description: 'Bootcamp Economía y Blockchain 103 - UNAM → Stellar.',
   },
   {
-    id: '6',
-    title: 'Labitconf 2026',
-    date: '8-9 de Mayo, 2026',
-    time: 'Todo el día',
-    location: 'Buenos Aires, Argentina',
-    image: '/images/eventos/Labitconf.svg',
-    description: 'La conferencia de Bitcoin y blockchain más importante de Latinoamérica.',
-    isUpcoming: true,
-    link: 'https://labitconf.com',
+    id: 'luma-avax',
+    title: 'Eventos en Economía UNAM',
+    lumaEventId: 'evt-9EZHF61m0RlO7GF',
+    description: 'Eventos y talleres de CriptoUNAM en la Facultad de Economía.',
   },
-  // Nota: Los eventos finalizados sin foto fueron removidos para evitar confusión.
-  // Agregar eventos pasados aquí solo cuando tengan imagen disponible en /images/eventos/
+]
+
+/**
+ * Eventos pasados con embed de Luma (solo visualización / replay).
+ */
+export interface EventoLumaPasadoItem {
+  id: string
+  title: string
+  lumaEventId: string
+  date: string
+  time?: string
+  location: string
+  description?: string
+}
+
+export const eventosLumaPasados: EventoLumaPasadoItem[] = [
+  {
+    id: 'pasado-monad-blitz',
+    title: 'Monad Blitz - UNAM',
+    lumaEventId: 'evt-otiVS1hdI5QlmC7',
+    date: '19 de febrero',
+    time: '16:00 - 17:30',
+    location: 'Facultad de Economía - Edificio Anexo, Ciudad de México',
+  },
+  {
+    id: 'pasado-arg-side',
+    title: 'CriptoUNAM ARG Side Event',
+    lumaEventId: 'evt-BYqyc09TyCmXyYg',
+    date: '15 de noviembre de 2025',
+    time: '13:45 - 15:15 GMT-3',
+    location: 'Paraguay 412, Ciudad Autónoma de Buenos Aires',
+  },
+  {
+    id: 'pasado-pitch-starknet',
+    title: 'Pitch Day Starknet - Cámara de Diputados',
+    lumaEventId: 'evt-ywXRPGBAwHia8yt',
+    date: '16 de octubre de 2025',
+    time: '10:00 - 15:00',
+    location: 'Cámara de Diputados LXVI Legislatura, Ciudad de México',
+  },
+  {
+    id: 'pasado-stellar-summer',
+    title: 'Stellar Summer Fridays - CDMX',
+    lumaEventId: 'evt-KnpUpK0yh786nXD',
+    date: '15 de agosto de 2025',
+    time: '14:00 - 19:00',
+    location: 'Flemish Pixel, Ciudad de México',
+  },
+  {
+    id: 'pasado-workshop-ideathon',
+    title: 'Workshop e Ideathon US2025',
+    lumaEventId: 'evt-FfvZZNFozVVyGnN',
+    date: '1 de agosto de 2025',
+    time: '9:00 - 19:00',
+    location: 'Zacatlán de las Manzanas, Zacatlán, Puebla',
+  },
+  {
+    id: 'pasado-ledger-leaders',
+    title: 'Ledger Leaders - Side Event CriptoUNAM',
+    lumaEventId: 'evt-QAAORjKngI2AT6X',
+    date: '19 de mayo de 2025',
+    time: '16:30 - 20:30',
+    location: 'Auditorium Raúl J. Marsal, Ciudad de México',
+  },
+  {
+    id: 'pasado-blockchain-defi',
+    title: 'Blockchain y Finanzas Descentralizadas',
+    lumaEventId: 'evt-8m8B6nemQOH9FcV',
+    date: '7 de mayo de 2025',
+    time: '13:00 - 15:00',
+    location: 'Facultad de Contaduría y Administración UNAM, Ciudad de México',
+  },
+  {
+    id: 'pasado-tour-unam',
+    title: 'CriptoUNAM Tour: Experiencia UNAM',
+    lumaEventId: 'evt-u6VOlnOIkDps7dD',
+    date: '29 de abril de 2025',
+    time: '10:00 - 14:00',
+    location: 'UNAM, Ciudad de México',
+  },
 ]
 
 /**

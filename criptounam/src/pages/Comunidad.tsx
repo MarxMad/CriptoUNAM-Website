@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '../styles/global.css'
 import SEOHead from '../components/SEOHead'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDiscord, faTwitter, faTelegram, faGithub } from '@fortawesome/free-brands-svg-icons'
+import { faDiscord, faTwitter, faTelegram, faGithub, faWhatsapp, faFacebookF, faInstagram } from '@fortawesome/free-brands-svg-icons'
 import { faUsers, faHandshake, faBolt, faChevronDown, faChevronUp, faTrophy, faRocket, faCamera, faExternalLinkAlt, faCode } from '@fortawesome/free-solid-svg-icons'
 import { Link } from 'react-router-dom'
 import TeamCard from '../components/TeamCard'
@@ -194,7 +194,7 @@ const Comunidad = () => {
             Conéctate con Nosotros
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
-            <a href="https://discord.gg/criptounam" target="_blank" rel="noreferrer" className="card" style={{
+            <a href="https://discord.gg/wW4RZkyH" target="_blank" rel="noreferrer" className="card" style={{
               textDecoration: 'none', textAlign: 'center', padding: '2.5rem',
               background: 'linear-gradient(145deg, rgba(88, 101, 242, 0.1), rgba(88, 101, 242, 0.05))',
               border: '1px solid rgba(88, 101, 242, 0.3)', transition: 'transform 0.2s'
@@ -204,7 +204,7 @@ const Comunidad = () => {
               <p style={{ color: '#aaa' }}>El corazón de nuestra comunidad. Charlas diarias, soporte y networking.</p>
             </a>
 
-            <a href="https://twitter.com/criptounam" target="_blank" rel="noreferrer" className="card" style={{
+            <a href="https://x.com/Cripto_UNAM" target="_blank" rel="noreferrer" className="card" style={{
               textDecoration: 'none', textAlign: 'center', padding: '2.5rem',
               background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02))',
               border: '1px solid rgba(255, 255, 255, 0.2)', transition: 'transform 0.2s'
@@ -214,7 +214,7 @@ const Comunidad = () => {
               <p style={{ color: '#aaa' }}>Mantente al día con las últimas noticias, anuncios y spaces.</p>
             </a>
 
-            <a href="https://t.me/criptounam" target="_blank" rel="noreferrer" className="card" style={{
+            <a href="https://t.me/+US3WLlw1uuU0ZjUx" target="_blank" rel="noreferrer" className="card" style={{
               textDecoration: 'none', textAlign: 'center', padding: '2.5rem',
               background: 'linear-gradient(145deg, rgba(36, 161, 222, 0.1), rgba(36, 161, 222, 0.05))',
               border: '1px solid rgba(36, 161, 222, 0.3)', transition: 'transform 0.2s'
@@ -222,6 +222,36 @@ const Comunidad = () => {
               <FontAwesomeIcon icon={faTelegram} style={{ fontSize: '3rem', color: '#24A1DE', marginBottom: '1.5rem' }} />
               <h3 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Telegram</h3>
               <p style={{ color: '#aaa' }}>Anuncios rápidos y coordinación directa.</p>
+            </a>
+
+            <a href="https://chat.whatsapp.com/ItF2XhThb8W5Cd7qvqxFyw?mode=gi_t" target="_blank" rel="noreferrer" className="card" style={{
+              textDecoration: 'none', textAlign: 'center', padding: '2.5rem',
+              background: 'linear-gradient(145deg, rgba(37, 211, 102, 0.1), rgba(37, 211, 102, 0.05))',
+              border: '1px solid rgba(37, 211, 102, 0.3)', transition: 'transform 0.2s'
+            }}>
+              <FontAwesomeIcon icon={faWhatsapp} style={{ fontSize: '3rem', color: '#25D366', marginBottom: '1.5rem' }} />
+              <h3 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '0.5rem' }}>WhatsApp</h3>
+              <p style={{ color: '#aaa' }}>Únete al grupo de la comunidad y mantente en contacto.</p>
+            </a>
+
+            <a href="https://www.facebook.com/criptounam/?locale=es_LA" target="_blank" rel="noreferrer" className="card" style={{
+              textDecoration: 'none', textAlign: 'center', padding: '2.5rem',
+              background: 'linear-gradient(145deg, rgba(24, 119, 242, 0.1), rgba(24, 119, 242, 0.05))',
+              border: '1px solid rgba(24, 119, 242, 0.3)', transition: 'transform 0.2s'
+            }}>
+              <FontAwesomeIcon icon={faFacebookF} style={{ fontSize: '3rem', color: '#1877F2', marginBottom: '1.5rem' }} />
+              <h3 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Facebook</h3>
+              <p style={{ color: '#aaa' }}>Síguenos en Facebook para eventos y noticias.</p>
+            </a>
+
+            <a href="https://www.instagram.com/cripto_unam/" target="_blank" rel="noreferrer" className="card" style={{
+              textDecoration: 'none', textAlign: 'center', padding: '2.5rem',
+              background: 'linear-gradient(145deg, rgba(228, 64, 95, 0.1), rgba(195, 53, 132, 0.05))',
+              border: '1px solid rgba(228, 64, 95, 0.3)', transition: 'transform 0.2s'
+            }}>
+              <FontAwesomeIcon icon={faInstagram} style={{ fontSize: '3rem', color: '#E4405F', marginBottom: '1.5rem' }} />
+              <h3 style={{ color: '#fff', fontSize: '1.5rem', marginBottom: '0.5rem' }}>Instagram</h3>
+              <p style={{ color: '#aaa' }}>Fotos, stories y contenido de nuestros eventos.</p>
             </a>
           </div>
         </section>
