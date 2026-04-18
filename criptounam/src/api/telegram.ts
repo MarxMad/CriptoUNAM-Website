@@ -30,12 +30,20 @@ interface ApiResponse {
 
 export const sendTelegramMessage = async (message: string, chatId: string): Promise<ApiResponse> => {
   try {
-    // Credenciales hardcodeadas temporalmente para que funcione
-    const botToken = '7988985791:AAGEvzxwgDa0ERXoKS1G6J5s8XIhxcywYYM';
-    const telegramChatId = '1608242541';
+    const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN?.trim()
+    const defaultChatId = import.meta.env.VITE_TELEGRAM_CHAT_ID?.trim()
 
-    const finalChatId = chatId || telegramChatId;
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    if (!botToken) {
+      console.warn('VITE_TELEGRAM_BOT_TOKEN no configurado; no se envía a Telegram.')
+      return { success: false, message: 'Telegram no configurado' }
+    }
+
+    const finalChatId = chatId || defaultChatId || ''
+    if (!finalChatId) {
+      return { success: false, message: 'Falta chat_id de Telegram' }
+    }
+
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`
 
     // Validación de la URL
     if (!url.startsWith('https://api.telegram.org/bot')) {

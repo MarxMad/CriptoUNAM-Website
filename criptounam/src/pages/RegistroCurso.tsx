@@ -86,7 +86,7 @@ const RegistroCurso = () => {
     setFirmando(true)
     try {
       const mensajeAFirmar = `Me inscribo al curso "${curso.titulo}" en CriptoUNAM. Wallet: ${address}. Fecha: ${new Date().toISOString()}`
-      await signMessageAsync({ message: mensajeAFirmar })
+      await signMessageAsync({ account: address, message: mensajeAFirmar })
       const notif = `🚀 Nuevo alumno inscrito en CriptoUNAM\nCurso: ${curso.titulo}\nWallet: ${address}`
       if (formData.nombre) await sendTelegramMessage(notif + `\nNombre: ${formData.nombre}`, '1608242541')
       else await sendTelegramMessage(notif, '1608242541')

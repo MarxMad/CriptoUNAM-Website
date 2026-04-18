@@ -3,12 +3,12 @@
 ## 🎯 Lo que necesitas hacer AHORA para que las newsletters aparezcan:
 
 ### Paso 1: Ve a tu Supabase (2 minutos)
-1. Abre: https://supabase.com/dashboard/project/shccrrwnmogswspvlakf
+1. Abre el dashboard de tu proyecto en Supabase (sustituye `TU_REF` por el ref de tu proyecto).
 2. Click en **SQL Editor** (icono de código en el menú izquierdo)
 
 ### Paso 2: Ejecuta el esquema SQL (1 minuto)
 1. Click en **New Query**
-2. Copia **TODO** el contenido del archivo: `criptounam/supabase-complete-schema.sql`
+2. Copia **TODO** el contenido del archivo SQL de esquema que uses en tu repo (p. ej. `criptounam/supabase-schema-unico.sql`).
 3. Pégalo en el editor
 4. Click en **Run** o presiona `Ctrl/Cmd + Enter`
 5. Espera a que termine (verás un mensaje de éxito)
@@ -21,17 +21,18 @@ SELECT COUNT(*) as total_newsletters FROM public.newsletters;
 Deberías ver: `total_newsletters: 3` ✅
 
 ### Paso 4: Configura Vercel (1 minuto)
-Ya tienes las variables configuradas en el código, pero para mayor seguridad, agrégalas también en Vercel:
+Configura las variables **solo en Vercel** (o en `.env` local), nunca en el repositorio:
 
-1. Ve a: https://vercel.com/tu-proyecto/settings/environment-variables
-2. Agrega estas variables:
+1. Ve a: Settings → Environment variables en tu proyecto de Vercel.
+2. Agrega al menos:
 
 ```
-VITE_SUPABASE_URL=https://shccrrwnmogswspvlakf.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNoY2NycndubW9nc3dzcHZsYWtmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyODYwNzcsImV4cCI6MjA3NDg2MjA3N30.heVBb4qhASOv6UZlfrTkZpoiQbva3JXFynn2AhO6_oM
+VITE_SUPABASE_URL=https://TU_REF.supabase.co
+VITE_SUPABASE_ANON_KEY=tu_clave_anon_de_supabase
 ```
 
-3. Click **Save**
+3. Opcional: `RESEND_API_KEY`, `VITE_TELEGRAM_BOT_TOKEN`, `VITE_TELEGRAM_CHAT_ID`, etc.
+4. Click **Save**
 
 ### Paso 5: Redeploy (automático)
 Vercel hará redeploy automáticamente al guardar las variables. 

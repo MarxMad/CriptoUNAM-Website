@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js'
 import { ENV_CONFIG } from './env'
 
 // Validar configuración de Supabase
-const supabaseUrl = ENV_CONFIG.SUPABASE_URL || process.env.VITE_SUPABASE_URL || ''
-const supabaseAnonKey = ENV_CONFIG.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || ''
+const supabaseUrl = ENV_CONFIG.SUPABASE_URL
+const supabaseAnonKey = ENV_CONFIG.SUPABASE_ANON_KEY
 
 if (!supabaseUrl) {
   console.warn('⚠️ SUPABASE_URL no está configurada. La aplicación funcionará en modo offline.')
