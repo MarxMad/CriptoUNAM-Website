@@ -1,6 +1,6 @@
 # Imágenes de eventos (Home – Eventos anteriores)
 
-Coloca aquí **una imagen por evento** para el carrusel de la Home. Nombres esperados (o actualiza la ruta en `src/data/eventosData.ts`):
+Coloca **una imagen por evento** en `public/images/eventos/` para el carrusel de la Home. Nombres esperados (o actualiza la ruta en `src/data/eventosData.ts`):
 
 | Archivo | Evento |
 |---------|--------|

@@ -52,7 +52,7 @@ export interface HackathonItem {
 
 export const eventosData: EventoItem[] = [
   // Eventos con imagen/card se agregan aquí si se necesitan en el futuro.
-  // Los vigentes actuales son solo los de eventosLumaPresenciales (Economía UNAM y AVAX).
+  // Los vigentes actuales están en eventosLumaPresenciales (Luma embed + inscripción).
 ]
 
 /**
@@ -68,16 +68,10 @@ export interface EventoLumaItem {
 
 export const eventosLumaPresenciales: EventoLumaItem[] = [
   {
-    id: 'luma-economia',
-    title: 'Evento AVAX',
-    lumaEventId: 'evt-l60ZZPw90Y3rDb7',
-    description: 'Bootcamp Economía y Blockchain 103 - UNAM → Stellar.',
-  },
-  {
-    id: 'luma-avax',
-    title: 'Eventos en Economía UNAM',
-    lumaEventId: 'evt-9EZHF61m0RlO7GF',
-    description: 'Eventos y talleres de CriptoUNAM en la Facultad de Economía.',
+    id: 'luma-compufest-1',
+    title: 'compufest[1] - Charlas & Talleres',
+    lumaEventId: 'evt-YbUemgYQBVXzncy',
+    description: 'Charlas y talleres. Inscríbete en Luma.',
   },
 ]
 
@@ -95,6 +89,22 @@ export interface EventoLumaPasadoItem {
 }
 
 export const eventosLumaPasados: EventoLumaPasadoItem[] = [
+  {
+    id: 'pasado-avax-bootcamp',
+    title: 'Evento AVAX — Bootcamp Economía y Blockchain 103',
+    lumaEventId: 'evt-l60ZZPw90Y3rDb7',
+    date: 'Marzo de 2026',
+    location: 'Facultad de Economía UNAM, Ciudad de México',
+    description: 'Bootcamp Economía y Blockchain 103 - UNAM → Stellar.',
+  },
+  {
+    id: 'pasado-economia-unam-series',
+    title: 'Eventos en Economía UNAM',
+    lumaEventId: 'evt-9EZHF61m0RlO7GF',
+    date: 'Marzo de 2026',
+    location: 'Facultad de Economía UNAM, Ciudad de México',
+    description: 'Eventos y talleres de CriptoUNAM en la Facultad de Economía.',
+  },
   {
     id: 'pasado-monad-blitz',
     title: 'Monad Blitz - UNAM',

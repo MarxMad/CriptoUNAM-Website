@@ -1,6 +1,6 @@
 # Logos de partners / aliados
 
-Coloca aquí los logos de los aliados de CriptoUNAM para la sección **Nuestros Aliados** en la Home.
+Coloca los logos de los aliados de CriptoUNAM en `public/images/partners/` para la sección **Nuestros Aliados** en la Home.
 
 ## Archivos esperados (por defecto)
 
@@ -13,4 +13,4 @@ Coloca aquí los logos de los aliados de CriptoUNAM para la sección **Nuestros 
 - **Formato recomendado:** PNG o SVG, fondo transparente, aprox. 100–200 px de ancho.
 - Para **añadir más aliados** o usar otros nombres, edita el array en `src/data/partnersData.ts` y agrega la ruta (ej. `/images/partners/binance.png`).
 
-Ver también: `criptounam/docs/PLAN_MEJORA_ACTUALIZACION.md`.
+Ver también: [PLAN_MEJORA_ACTUALIZACION.md](PLAN_MEJORA_ACTUALIZACION.md).

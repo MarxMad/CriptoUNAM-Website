@@ -322,10 +322,11 @@ const Home = () => {
   const [cursosHome, setCursosHome] = useState<any[]>([])
   const [eventosHome, setEventosHome] = useState<any[]>([])
   const [newslettersHome, setNewslettersHome] = useState<any[]>([])
-  // Eventos: primero de eventosData (con imagen), si no hay, usar eventos presenciales Luma (AVAX y Economía)
+  // Eventos: primero de eventosData (con imagen), si no hay, solo compufest[1] desde Luma en el carrusel del home
+  const eventosLumaHome = eventosLumaPresenciales.filter((e) => e.id === 'luma-compufest-1')
   const eventosCarousel = eventosData.filter(e => e.isUpcoming).length > 0
     ? eventosData.filter(e => e.isUpcoming).slice(0, 3)
-    : eventosLumaPresenciales.map(e => ({
+    : eventosLumaHome.map(e => ({
         id: e.id,
         title: e.title,
         date: 'Próximamente',

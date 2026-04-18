@@ -1,4 +1,31 @@
 import { IMAGES } from './images'
+import { capitulosIntroBlockchain } from './cursoIntroBlockchain'
+
+export interface PreguntaCuestionario {
+  pregunta: string
+  opciones: string[]
+  correcta: number // índice de la opción correcta (0-based)
+}
+
+export interface Leccion {
+  id: number
+  titulo: string
+  descripcion: string
+  /** URL de video (opcional; si hay guía, se prioriza la guía) */
+  video?: string
+  /** Guía escrita tipo libro didáctico (HTML o texto con \n) */
+  guia?: string
+  /** Cuestionario para afianzar la lección */
+  cuestionario?: PreguntaCuestionario[]
+}
+
+/** Capítulo de un curso: agrupa secciones con un título común */
+export interface Capitulo {
+  id: number | string
+  titulo: string
+  descripcion?: string
+  secciones: Leccion[]
+}
 
 export interface Curso {
   id: string
@@ -7,13 +34,23 @@ export interface Curso {
   duracion: string
   imagen: string
   descripcion: string
-  instructor: string
   precio: number
   estudiantes: number
   rating: number
   categorias: string[]
-  lecciones?: { id: number, titulo: string, video: string, descripcion: string }[]
+  /** Lecciones en formato plano (cursos simples) */
+  lecciones?: Leccion[]
+  /** Capítulos con secciones (curso tipo libro; si existe, se usa en lugar de lecciones) */
+  capitulos?: Capitulo[]
   requisitos?: string
+}
+
+/** Devuelve la lista plana de lecciones/secciones para un curso (desde capitulos o lecciones) */
+export function getLeccionesFlat(curso: Curso): Leccion[] {
+  if (curso.capitulos && curso.capitulos.length > 0) {
+    return curso.capitulos.flatMap((c) => c.secciones)
+  }
+  return curso.lecciones ?? []
 }
 
 export const cursosData: Curso[] = [
@@ -21,20 +58,15 @@ export const cursosData: Curso[] = [
     id: '1',
     titulo: 'Introducción a Blockchain',
     nivel: 'Principiante',
-    duracion: '2 semanas',
+    duracion: '4-6 semanas',
     imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
-    descripcion: 'Aprende los fundamentos de la tecnología blockchain y sus aplicaciones.',
-    instructor: 'Gerardo Pedrizco Vela',
+    descripcion: 'Curso tipo libro: desde antes de Satoshi hasta contratos inteligentes. Contexto histórico, whitepaper, bloques, minería, consenso, Ethereum y referencias bibliográficas.',
     precio: 0,
     estudiantes: 1200,
     rating: 4.8,
     categorias: ['Blockchain', 'Tecnología', 'Fundamentos'],
     requisitos: 'No se requieren conocimientos previos.',
-    lecciones: [
-      { id: 1, titulo: '¿Qué es Blockchain?', video: 'https://www.youtube.com/embed/SSo_EIwHSd4', descripcion: 'Conceptos básicos de blockchain.' },
-      { id: 2, titulo: 'Criptomonedas y Bitcoin', video: 'https://www.youtube.com/embed/bBC-nXj3Ng4', descripcion: '¿Qué es una criptomoneda? ¿Cómo funciona Bitcoin?' },
-      { id: 3, titulo: 'Contratos Inteligentes', video: 'https://www.youtube.com/embed/ZE2HxTmxfrI', descripcion: 'Introducción a los smart contracts.' },
-    ]
+    capitulos: capitulosIntroBlockchain
   },
   {
     id: '2',
@@ -43,7 +75,6 @@ export const cursosData: Curso[] = [
     duracion: '4 semanas',
     imagen: IMAGES.CURSOS.SMART_CONTRACTS,
     descripcion: 'Desarrolla contratos inteligentes en la red Ethereum.',
-    instructor: 'Adrian Armenta Sequeira',
     precio: 0,
     estudiantes: 800,
     rating: 4.9,
@@ -62,7 +93,6 @@ export const cursosData: Curso[] = [
     duracion: '2 semanas',
     imagen: IMAGES.CURSOS.DEFI,
     descripcion: 'Explora el mundo de las finanzas descentralizadas y sus protocolos.',
-    instructor: 'Fernanda Tello Arzate',
     precio: 0,
     estudiantes: 600,
     rating: 4.7,
@@ -74,4 +104,4 @@ export const cursosData: Curso[] = [
       { id: 3, titulo: 'Riesgos y Seguridad', video: 'https://www.youtube.com/embed/8XGQGhli0IY', descripcion: 'Riesgos y mejores prácticas.' },
     ]
   }
-] 
+]

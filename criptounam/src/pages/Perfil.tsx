@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAccount, useBalance } from 'wagmi'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faWallet, faCoins } from '@fortawesome/free-solid-svg-icons'
+import { faWallet, faCoins, faStar } from '@fortawesome/free-solid-svg-icons'
 import { formatEther } from 'viem'
 import ProfilePicture from '../components/ProfilePicture'
 import ProfileNavigation from '../components/ProfileNavigation'
@@ -10,6 +10,7 @@ import ProfileCertificaciones from '../components/ProfileCertificaciones'
 import ProfileDashboard from '../components/ProfileDashboard'
 import ProfileConfiguracion from '../components/ProfileConfiguracion'
 import ProfileBonus from '../components/Profile/ProfileBonus'
+import { obtenerPuntos } from '../services/progresoCurso.service'
 import '../styles/global.css'
 
 // Datos de ejemplo para el perfil
@@ -102,7 +103,8 @@ const mockActividadReciente = [
 const Perfil = () => {
   const { address, isConnected } = useAccount()
   const { data: balance } = useBalance({ address })
-  
+  const [puntos, setPuntos] = useState<number>(0)
+
   const [activeTab, setActiveTab] = useState('cursos')
   const [userData, setUserData] = useState({
     nombre: 'Usuario',
@@ -114,6 +116,12 @@ const Perfil = () => {
     universidad: 'UNAM',
     fotoPerfil: ''
   })
+
+  useEffect(() => {
+    if (address) {
+      obtenerPuntos(address).then(setPuntos)
+    }
+  }, [address])
 
   const handleImageChange = (file: File) => {
     console.log('Nueva imagen de perfil:', file)
@@ -135,7 +143,7 @@ const Perfil = () => {
       case 'dashboard':
         return (
           <ProfileDashboard 
-            stats={mockStats}
+            stats={{ ...mockStats, puntosTotales: puntos }}
           />
         )
       case 'bonus':
@@ -223,6 +231,25 @@ const Perfil = () => {
                 alignItems: 'center',
                 gap: '16px'
               }}>
+                {/* Puntos del usuario (Issue #10) */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: 'rgba(212,175,55,0.15)',
+                  padding: '10px 20px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(212,175,55,0.4)'
+                }}>
+                  <FontAwesomeIcon icon={faStar} style={{ color: '#D4AF37' }} />
+                  <span style={{
+                    color: '#D4AF37',
+                    fontSize: '1.1rem',
+                    fontWeight: 700
+                  }}>
+                    {puntos} puntos
+                  </span>
+                </div>
                 <div style={{
                   display: 'flex',
                   alignItems: 'center',

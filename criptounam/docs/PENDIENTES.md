@@ -52,7 +52,7 @@
 - Imagenes del equipo: /public/images/Equipo/
 - Datos de eventos: /src/data/eventosData.ts
 - Datos del equipo: /src/pages/Home.tsx (array teamMembers)
-- Schema de cursos (Supabase): /src/config/database/cursos.sql
+- Schema Supabase (tablas y cursos): supabase-schema-unico.sql
 - Servicio de cursos: /src/services/cursos.service.ts
 
 ---
@@ -65,4 +65,4 @@
 
 2. Eventos sin foto fueron removidos - agregar fotos antes de re-anadirlos
 
-3. Sistema de cursos listo en Supabase - ejecutar SQL en /src/config/database/cursos.sql
+3. Sistema de cursos listo en Supabase - ejecutar supabase-schema-unico.sql en el SQL Editor

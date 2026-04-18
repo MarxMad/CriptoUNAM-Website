@@ -18,8 +18,7 @@ const Cursos = () => {
       const cumpleNivel = filtroNivel === 'todos' || curso.nivel?.toLowerCase() === filtroNivel
       const cumpleBusqueda =
         curso.titulo?.toLowerCase().includes(busqueda.toLowerCase()) ||
-        curso.descripcion?.toLowerCase().includes(busqueda.toLowerCase()) ||
-        curso.instructor?.toLowerCase().includes(busqueda.toLowerCase())
+        curso.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
       const cumpleCategoria =
         categoriaSeleccionada === 'todas' ||
         (curso.categorias && curso.categorias.some((c) => c.toLowerCase() === categoriaSeleccionada.toLowerCase()))
@@ -81,6 +80,10 @@ const Cursos = () => {
             width: 100%;
             grid-template-columns: 1fr;
           }
+
+          .camino-aprendizaje-grid {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
       <div className="cursos-page section" style={{ minHeight: '100vh', paddingTop: '2rem' }}>
@@ -98,11 +101,11 @@ const Cursos = () => {
           <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.8rem', textAlign: 'center', marginBottom: '2rem' }}>
             Tu Camino de Aprendizaje
           </h2>
-          <div style={{
+          <div className="camino-aprendizaje-grid" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             gap: '2rem',
-            maxWidth: 900,
+            maxWidth: 960,
             margin: '0 auto'
           }}>
             {[
@@ -295,7 +298,6 @@ const Cursos = () => {
                     <h2 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: '1.2rem', margin: 0, lineHeight: 1.3 }}>
                       {curso.titulo}
                     </h2>
-                    <p style={{ color: '#93C5FD', fontWeight: 600, margin: 0, fontSize: '0.9rem' }}>{curso.instructor}</p>
                     <p style={{ margin: 0, color: '#bbb', fontSize: '0.9rem', lineHeight: 1.5, flex: 1, display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {curso.descripcion}
                     </p>

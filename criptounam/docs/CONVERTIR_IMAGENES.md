@@ -60,4 +60,3 @@ find public/images -name "*.jpg" -o -name "*.JPG" | wc -l
 # Ver archivos HEIC pendientes
 find public/images -name "*.heic" -o -name "*.HEIC" | wc -l
 ```
-

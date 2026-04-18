@@ -131,4 +131,4 @@ app.post('/curso', requireAdmin, express.json(), async (req, res) => {
 
 ### Error: "No tienes permisos"
 - Verificar permisos específicos en el hook `useAdmin`
-- Verificar que la acción esté permitida en `ADMIN_PERMISSIONS` 
+- Verificar que la acción esté permitida en `ADMIN_PERMISSIONS`
