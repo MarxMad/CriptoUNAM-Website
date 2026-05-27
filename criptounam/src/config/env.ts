@@ -29,6 +29,16 @@ export const ENV_CONFIG = {
   EMAIL_TEMPLATE_NOTIFICATION: 'notification_template',
 
   PUMA_TOKEN_ADDRESS: envStr('VITE_PUMA_TOKEN_ADDRESS') || '0x0000000000000000000000000000000000000000',
+  BADGES_CONTRACT_ADDRESS: envStr('VITE_BADGES_CONTRACT_ADDRESS') || '0x0000000000000000000000000000000000000000',
+  DROPS_CONTRACT_ADDRESS: envStr('VITE_DROPS_CONTRACT_ADDRESS') || '0x0000000000000000000000000000000000000000',
+  /** Endpoint serverless que firma mints del Badge desde la wallet MINTER. Vacío = no disponible. */
+  BADGES_CLAIM_ENDPOINT: envStr('VITE_BADGES_CLAIM_ENDPOINT'),
+  /** Base URL para metadata IPFS/HTTP de los badges (ej. ipfs://CID/ o https://criptounam.xyz/badges/). */
+  BADGES_METADATA_BASE: envStr('VITE_BADGES_METADATA_BASE') || '',
+  /** Endpoint serverless que ejecuta burnReward para confirmar pago de curso en PUMA. */
+  COURSE_PAYMENT_ENDPOINT: envStr('VITE_COURSE_PAYMENT_ENDPOINT'),
+  /** @deprecated La UI lista todas las misiones desde el contrato; puedes dejar vacío. */
+  PUMA_WELCOME_MISSION_ID: envStr('VITE_PUMA_WELCOME_MISSION_ID'),
   PUMA_TOKEN_DECIMALS: parseInt(envStr('VITE_PUMA_TOKEN_DECIMALS') || '18', 10),
   PUMA_REWARD_RATE: parseInt(envStr('VITE_PUMA_REWARD_RATE') || '100', 10),
 
@@ -36,10 +46,10 @@ export const ENV_CONFIG = {
   MAX_LIKES_PER_USER: parseInt(envStr('VITE_MAX_LIKES_PER_USER') || '100', 10),
   LIKE_REWARD_AMOUNT: parseInt(envStr('VITE_LIKE_REWARD_AMOUNT') || '10', 10),
 
-  CHAIN_ID: parseInt(envStr('VITE_CHAIN_ID') || '1', 10),
-  RPC_URL: envStr('VITE_RPC_URL'),
+  CHAIN_ID: parseInt(envStr('VITE_CHAIN_ID') || '42161', 10), // Arbitrum One default
+  RPC_URL: envStr('VITE_RPC_URL') || 'https://arb1.arbitrum.io/rpc',
   INFURA_ID: envStr('VITE_INFURA_ID'),
-  EXPLORER_URL: envStr('VITE_EXPLORER_URL') || 'https://etherscan.io',
+  EXPLORER_URL: envStr('VITE_EXPLORER_URL') || 'https://arbiscan.io',
   ADMIN_PRIVATE_KEY: envStr('VITE_ADMIN_PRIVATE_KEY'),
 }
 

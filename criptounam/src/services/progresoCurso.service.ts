@@ -89,6 +89,48 @@ export async function obtenerProgresoCurso(
   return (data || []).map((r) => r.leccion_index)
 }
 
+export interface InscripcionResumen {
+  curso_id: string
+  inscrito_en: string
+  nombre_completo?: string | null
+  email?: string | null
+  lecciones_completadas: number[]
+}
+
+/** Devuelve todas las inscripciones del usuario con sus lecciones completadas. */
+export async function obtenerInscripcionesUsuario(
+  walletAddress: string
+): Promise<InscripcionResumen[]> {
+  if (!supabase) return []
+  const wallet = walletAddress.toLowerCase()
+
+  const { data: insRows, error: insErr } = await supabase
+    .from('curso_inscripciones')
+    .select('curso_id, inscrito_en, nombre_completo, email')
+    .eq('wallet_address', wallet)
+    .order('inscrito_en', { ascending: false })
+  if (insErr || !insRows || insRows.length === 0) return []
+
+  const { data: progRows } = await supabase
+    .from('curso_progreso')
+    .select('curso_id, leccion_index')
+    .eq('wallet_address', wallet)
+
+  const progByCurso: Record<string, number[]> = {}
+  for (const r of progRows || []) {
+    if (!progByCurso[r.curso_id]) progByCurso[r.curso_id] = []
+    progByCurso[r.curso_id].push(r.leccion_index)
+  }
+
+  return insRows.map((r) => ({
+    curso_id: r.curso_id,
+    inscrito_en: r.inscrito_en,
+    nombre_completo: r.nombre_completo,
+    email: r.email,
+    lecciones_completadas: progByCurso[r.curso_id] ?? [],
+  }))
+}
+
 /** Marcar lección como completada y actualizar puntos */
 export async function marcarLeccionCompletada(params: {
   walletAddress: string
@@ -203,4 +245,104 @@ export async function recalcularPuntos(walletAddress: string): Promise<number> {
 export const PUNTOS = {
   POR_LECCION: PUNTOS_POR_LECCION,
   CURSO_COMPLETO: PUNTOS_CURSO_COMPLETO
+}
+
+/* ======================================================================
+   Certificados NFT (CriptoUNAMBadges, kind=CourseCompletion)
+
+   Tabla sugerida en Supabase:
+     create table curso_certificados (
+       id uuid primary key default gen_random_uuid(),
+       wallet_address text not null,
+       curso_id       text not null,
+       badge_ref      text not null,  -- ej. course-1-v1
+       token_id       numeric,
+       tx_hash        text,
+       claimed_at     timestamptz not null default now(),
+       unique (wallet_address, badge_ref)
+     );
+
+   Si la tabla no existe, todas las funciones retornan estado vacío
+   sin tirar errores (el reclamo on-chain sigue funcionando).
+   ====================================================================== */
+
+export interface CertificadoCurso {
+  wallet_address: string
+  curso_id: string
+  badge_ref: string
+  token_id?: string | null
+  tx_hash?: string | null
+  claimed_at: string
+}
+
+/** Verifica si el alumno completó el 100% de las lecciones de un curso. */
+export async function cursoCompletado(
+  walletAddress: string,
+  cursoId: string,
+  totalLecciones: number
+): Promise<boolean> {
+  if (totalLecciones <= 0) return false
+  const completadas = await obtenerProgresoCurso(walletAddress, cursoId)
+  const unicos = new Set(completadas)
+  return unicos.size >= totalLecciones
+}
+
+/** Registra que el certificado fue emitido (idempotente por wallet+badge_ref). */
+export async function registrarCertificadoEmitido(params: {
+  walletAddress: string
+  cursoId: string
+  badgeRef: string
+  tokenId?: string
+  txHash?: string
+}): Promise<boolean> {
+  if (!supabase) return false
+  const { error } = await supabase.from('curso_certificados').upsert(
+    {
+      wallet_address: params.walletAddress.toLowerCase(),
+      curso_id: params.cursoId,
+      badge_ref: params.badgeRef,
+      token_id: params.tokenId ?? null,
+      tx_hash: params.txHash ?? null,
+      claimed_at: new Date().toISOString()
+    },
+    { onConflict: 'wallet_address,badge_ref' }
+  )
+  if (error) {
+    // Tabla puede no existir aún — log silencioso para no romper UX
+    console.warn('curso_certificados upsert error (¿tabla creada?):', error.message)
+    return false
+  }
+  return true
+}
+
+/** Devuelve el certificado registrado en Supabase si existe (puede ser null si no se ha reclamado). */
+export async function obtenerCertificadoCurso(
+  walletAddress: string,
+  badgeRef: string
+): Promise<CertificadoCurso | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('curso_certificados')
+    .select('wallet_address, curso_id, badge_ref, token_id, tx_hash, claimed_at')
+    .eq('wallet_address', walletAddress.toLowerCase())
+    .eq('badge_ref', badgeRef)
+    .maybeSingle()
+  if (error) {
+    return null
+  }
+  return (data as CertificadoCurso | null) ?? null
+}
+
+/** Lista todos los certificados registrados para una wallet (para el perfil). */
+export async function obtenerCertificadosUsuario(
+  walletAddress: string
+): Promise<CertificadoCurso[]> {
+  if (!supabase) return []
+  const { data, error } = await supabase
+    .from('curso_certificados')
+    .select('wallet_address, curso_id, badge_ref, token_id, tx_hash, claimed_at')
+    .eq('wallet_address', walletAddress.toLowerCase())
+    .order('claimed_at', { ascending: false })
+  if (error) return []
+  return (data as CertificadoCurso[]) ?? []
 }

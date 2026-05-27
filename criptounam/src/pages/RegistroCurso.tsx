@@ -9,6 +9,24 @@ import {
   obtenerProgresoCurso,
   marcarLeccionCompletada
 } from '../services/progresoCurso.service'
+import CoursePumaPayment from '../components/Cursos/CoursePumaPayment'
+import CourseCertificateCTA from '../components/Cursos/CourseCertificateCTA'
+import { cursoBadgeRef } from '../constants/cursosData'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faCoins,
+  faChevronLeft,
+  faChevronRight,
+  faCheck,
+  faCircleQuestion,
+  faGraduationCap,
+  faCheckCircle,
+  faClock,
+  faBars,
+  faPlay,
+  faBook,
+  faAward,
+} from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
 const RegistroCurso = () => {
@@ -243,55 +261,196 @@ const RegistroCurso = () => {
   }
 
   if (!inscrito) {
+  const precioPuma = curso.precioPuma ?? 0
+  const esPago = precioPuma > 0
   return (
     <div className="registro-curso-container" style={{ padding: '2rem 1rem' }}>
       <div className="registro-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <h1 style={{ marginBottom: 8 }}>{curso.titulo}</h1>
         <p style={{ color: '#888', fontSize: '0.95rem' }}>ID del curso: {id}</p>
-      </div>
-      <div className="registro-content" style={{ maxWidth: 420, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <p style={{ color: '#E0E0E0', marginBottom: 24, textAlign: 'center', lineHeight: 1.6 }}>
-          Con un clic te inscribes. Tu wallet firmará el mensaje para registrar tu inscripción.
-        </p>
-        <button
-          className="primary-button"
-          style={{ width: '100%', maxWidth: 280, marginBottom: 16, fontSize: '1.1rem', padding: '1rem 1.5rem' }}
-          onClick={handleInscribirse}
-          disabled={firmando}
-        >
-          {firmando ? 'Firmando...' : 'Inscribirse'}
-        </button>
-        {errorInscripcion && (
-          <p style={{ color: '#f87171', fontSize: '0.9rem', marginBottom: 16, textAlign: 'center' }}>{errorInscripcion}</p>
+        {esPago && (
+          <p
+            style={{
+              marginTop: '0.75rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              color: '#F4D03F',
+              fontWeight: 600,
+              background: 'rgba(212,175,55,0.1)',
+              padding: '0.4rem 0.9rem',
+              borderRadius: 999,
+              border: '1px solid rgba(212,175,55,0.35)',
+            }}
+          >
+            <FontAwesomeIcon icon={faCoins} />
+            Curso de pago — {precioPuma} $PUMA
+          </p>
         )}
-        <button className="secondary-button" style={{ marginBottom: 8 }} onClick={() => setShowForm(v => !v)}>
-          Quiero constancia (agregar nombre y correo)
-        </button>
-        {showForm && (
-          <form className="registro-form" style={{ width: '100%', marginTop: 16 }} onSubmit={e => { e.preventDefault(); handleInscribirse() }}>
-            <div className="form-group">
-              <label>Nombre completo</label>
-              <input type="text" name="nombre" value={formData.nombre} onChange={handleFormChange} required />
-            </div>
-            <div className="form-group">
-              <label>Correo electrónico</label>
-              <input type="email" name="email" value={formData.email} onChange={handleFormChange} required />
-            </div>
-            <button className="primary-button" type="submit" style={{ width: '100%' }} disabled={firmando}>
-              Inscribirse y obtener constancia
+      </div>
+
+      {esPago ? (
+        <div style={{ maxWidth: 600, margin: '0 auto' }}>
+          <CoursePumaPayment
+            cursoId={id!}
+            cursoTitulo={curso.titulo}
+            precioPuma={precioPuma}
+            isBusy={firmando}
+            onPaid={async () => {
+              await handleInscribirse()
+            }}
+          />
+          {errorInscripcion && (
+            <p style={{ color: '#f87171', fontSize: '0.9rem', marginTop: 16, textAlign: 'center' }}>
+              {errorInscripcion}
+            </p>
+          )}
+          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+            <button
+              className="secondary-button"
+              style={{ marginBottom: 8 }}
+              onClick={() => setShowForm((v) => !v)}
+            >
+              Datos para constancia (opcional)
             </button>
-          </form>
-        )}
-        <div className="registro-info" style={{ marginTop: 32, padding: '1.25rem', background: 'rgba(212,175,55,0.06)', borderRadius: 12, border: '1px solid rgba(212,175,55,0.2)' }}>
-          <h3 style={{ color: '#D4AF37', marginBottom: 12, fontSize: '1rem' }}>Importante</h3>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', color: '#E0E0E0', fontSize: '0.9rem', lineHeight: 1.8 }}>
-            <li>El curso es gratuito</li>
-            <li>Tu wallet solo firma un mensaje para inscribirte; no se envían fondos</li>
-            <li>Si quieres constancia, añade tu nombre y correo antes de inscribirte</li>
-            <li>Debes completar todas las lecciones para obtener tu constancia</li>
-          </ul>
+            {showForm && (
+              <form
+                className="registro-form"
+                style={{ maxWidth: 420, margin: '16px auto 0' }}
+                onSubmit={(e) => e.preventDefault()}
+              >
+                <div className="form-group">
+                  <label>Nombre completo</label>
+                  <input
+                    type="text"
+                    name="nombre"
+                    value={formData.nombre}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Correo electrónico</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleFormChange}
+                  />
+                </div>
+                <p style={{ color: '#888', fontSize: '0.8rem' }}>
+                  Estos datos se envían junto con la confirmación de pago.
+                </p>
+              </form>
+            )}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div
+          className="registro-content"
+          style={{
+            maxWidth: 420,
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <p style={{ color: '#E0E0E0', marginBottom: 24, textAlign: 'center', lineHeight: 1.6 }}>
+            Con un clic te inscribes. Tu wallet firmará el mensaje para registrar tu inscripción.
+          </p>
+          <button
+            className="primary-button"
+            style={{
+              width: '100%',
+              maxWidth: 280,
+              marginBottom: 16,
+              fontSize: '1.1rem',
+              padding: '1rem 1.5rem',
+            }}
+            onClick={handleInscribirse}
+            disabled={firmando}
+          >
+            {firmando ? 'Firmando...' : 'Inscribirse'}
+          </button>
+          {errorInscripcion && (
+            <p style={{ color: '#f87171', fontSize: '0.9rem', marginBottom: 16, textAlign: 'center' }}>
+              {errorInscripcion}
+            </p>
+          )}
+          <button
+            className="secondary-button"
+            style={{ marginBottom: 8 }}
+            onClick={() => setShowForm((v) => !v)}
+          >
+            Quiero constancia (agregar nombre y correo)
+          </button>
+          {showForm && (
+            <form
+              className="registro-form"
+              style={{ width: '100%', marginTop: 16 }}
+              onSubmit={(e) => {
+                e.preventDefault()
+                handleInscribirse()
+              }}
+            >
+              <div className="form-group">
+                <label>Nombre completo</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleFormChange}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Correo electrónico</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleFormChange}
+                  required
+                />
+              </div>
+              <button
+                className="primary-button"
+                type="submit"
+                style={{ width: '100%' }}
+                disabled={firmando}
+              >
+                Inscribirse y obtener constancia
+              </button>
+            </form>
+          )}
+          <div
+            className="registro-info"
+            style={{
+              marginTop: 32,
+              padding: '1.25rem',
+              background: 'rgba(212,175,55,0.06)',
+              borderRadius: 12,
+              border: '1px solid rgba(212,175,55,0.2)',
+            }}
+          >
+            <h3 style={{ color: '#D4AF37', marginBottom: 12, fontSize: '1rem' }}>Importante</h3>
+            <ul
+              style={{
+                margin: 0,
+                paddingLeft: '1.25rem',
+                color: '#E0E0E0',
+                fontSize: '0.9rem',
+                lineHeight: 1.8,
+              }}
+            >
+              <li>Este curso es gratuito</li>
+              <li>Tu wallet solo firma un mensaje para inscribirte; no se envían fondos</li>
+              <li>Si quieres constancia, añade tu nombre y correo antes de inscribirte</li>
+              <li>Debes completar todas las lecciones para obtener tu constancia</li>
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   )
   }
@@ -306,314 +465,862 @@ const RegistroCurso = () => {
   const cuestionarioCorrecto = cuestionario && cuestionarioCompleto && cuestionario.every((p, i) => respuestasLeccion[i] === p.correcta)
   const puedeCompletar = muestraGuia ? (cuestionario ? cuestionarioCorrecto : true) : true
 
+  const badgeRef = cursoBadgeRef(curso.id, curso.cohorteRef)
+  const yaCompletada = leccionesCompletadas.includes(leccionActual)
+  const irSiguienteLeccion = () => {
+    if (leccionActual < leccionesFlat.length - 1) {
+      setLeccionActual(leccionActual + 1)
+      setSidebarAbierto(false)
+    }
+  }
+  const irLeccionAnterior = () => {
+    if (leccionActual > 0) {
+      setLeccionActual(leccionActual - 1)
+      setSidebarAbierto(false)
+    }
+  }
+
   return (
     <>
       <style>{`
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @media (max-width: 768px) {
-          .curso-mobile-nav { display: block !important; }
+        @media (max-width: 880px) {
+          .curso-mobile-nav { display: flex !important; }
           .curso-lecciones-sidebar { display: none !important; }
-          .curso-main-content { flex-direction: column !important; }
+          .curso-main-content { grid-template-columns: 1fr !important; }
         }
       `}</style>
-    <div className="curso-platzi-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '90vh', padding: '1rem 0' }}>
-      {/* Móvil: selector de sección (desplegable) */}
-      <div className="curso-mobile-nav" style={{ display: 'none', padding: '0 1rem 1rem', maxWidth: 1400, margin: '0 auto', width: '100%' }}>
-        <label style={{ color: '#93C5FD', fontSize: '0.85rem', display: 'block', marginBottom: 6 }}>Ir a sección</label>
-        <select
-          value={leccionActual}
-          onChange={(e) => { setLeccionActual(Number(e.target.value)); setSidebarAbierto(false) }}
+      <div className="section" style={{ minHeight: '100vh', paddingTop: '1rem', paddingBottom: '4rem' }}>
+        {/* ============================================================
+            HEADER CON PROGRESO
+            ============================================================ */}
+        <div
+          className="puma-fade-in-up"
           style={{
-            width: '100%',
-            padding: '12px 14px',
-            borderRadius: 10,
-            border: '1px solid rgba(37,99,235,0.4)',
-            background: '#18181b',
-            color: '#E0E0E0',
-            fontSize: '0.95rem',
-            cursor: 'pointer'
+            maxWidth: 1300,
+            margin: '0 auto 1.25rem',
+            padding: '0 1rem',
           }}
         >
-          {leccionesFlat.map((sec, idx) => (
-            <option key={idx} value={idx}>
-              {sec.titulo} {leccionesCompletadas.includes(idx) ? '✔' : ''}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="curso-main-content" style={{
-        display: 'flex',
-        gap: 24,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        width: '100%',
-        maxWidth: 1400,
-        margin: '0 auto',
-        padding: '0 1rem',
-        flexWrap: 'wrap'
-      }}>
-        {/* Contenido principal */}
-        <div className="curso-video-container" style={{
-          flex: '2 1 320px',
-          minWidth: 0,
-          background: '#18181b',
-          borderRadius: 16,
-          boxShadow: '0 4px 32px #1E3A8A22',
-          padding: 'clamp(16px, 4vw, 24px)',
-          width: '100%'
-        }}>
-          {leccion && (
-            <>
-              {muestraGuia ? (
-                <div className="curso-guia-libro" style={{ marginBottom: 24 }}>
-                  <h2 style={{ color: '#D4AF37', marginBottom: 8 }}>{leccion.titulo}</h2>
-                  <p style={{ color: '#888', marginBottom: 20 }}>{leccion.descripcion}</p>
-                  <div style={{ color: '#E0E0E0', fontSize: '1rem' }}>{renderGuia(leccion.guia!)}</div>
-                </div>
-              ) : leccion.video ? (
-                <iframe
-                  width="100%"
-                  height="420"
-                  src={leccion.video}
-                  title={leccion.titulo}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  style={{ borderRadius: 12, boxShadow: '0 2px 12px #2563EB33', marginBottom: 16 }}
+          <div
+            className="puma-card puma-card--featured"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'auto 1fr auto',
+              alignItems: 'center',
+              gap: '1.25rem',
+              padding: '1rem 1.25rem',
+            }}
+          >
+            <div
+              style={{
+                width: 48,
+                height: 48,
+                borderRadius: 14,
+                background: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 22px rgba(124,58,237,0.4)',
+                flexShrink: 0,
+              }}
+            >
+              <FontAwesomeIcon icon={faGraduationCap} style={{ color: '#fff', fontSize: '1.2rem' }} />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p
+                style={{
+                  color: '#94a3b8',
+                  fontSize: '0.78rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: 1,
+                  margin: 0,
+                }}
+              >
+                Estás aprendiendo
+              </p>
+              <h1
+                style={{
+                  fontFamily: 'Orbitron',
+                  color: '#fff',
+                  fontSize: 'clamp(1.05rem, 3vw, 1.35rem)',
+                  margin: '0.15rem 0 0.4rem',
+                  lineHeight: 1.25,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {curso.titulo}
+              </h1>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: 'rgba(0,0,0,0.4)',
+                  overflow: 'hidden',
+                  marginBottom: 6,
+                }}
+              >
+                <div
+                  style={{
+                    width: `${progreso}%`,
+                    height: '100%',
+                    background:
+                      progreso === 100
+                        ? 'linear-gradient(90deg, #4ade80, #22c55e)'
+                        : 'linear-gradient(90deg, #D4AF37, #F4D03F)',
+                    transition: 'width 0.6s ease',
+                  }}
                 />
-              ) : null}
-              {!muestraGuia && <h2 style={{ color: '#D4AF37', margin: '1rem 0 0.5rem 0' }}>{leccion.titulo}</h2>}
-              {!muestraGuia && <p style={{ color: '#E0E0E0', marginBottom: 16 }}>{leccion.descripcion}</p>}
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 12,
+                  flexWrap: 'wrap',
+                  fontSize: '0.78rem',
+                  color: '#94a3b8',
+                }}
+              >
+                <span>
+                  <strong style={{ color: '#F4D03F' }}>{progreso}%</strong> completado
+                </span>
+                <span>
+                  {leccionesCompletadas.length} / {leccionesFlat.length} lecciones
+                </span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+              <span className="puma-chip puma-chip--gold">
+                <FontAwesomeIcon icon={faClock} />
+                {curso.duracion}
+              </span>
+            </div>
+          </div>
+        </div>
 
-              {/* Cuestionario tipo carrusel: una pregunta a la vez */}
-              {cuestionario && cuestionario.length > 0 && (
-                <div className="curso-cuestionario" style={{
-                  marginTop: 28,
-                  padding: 'clamp(20px, 4vw, 28px)',
-                  background: 'linear-gradient(145deg, rgba(37,99,235,0.12) 0%, rgba(30,58,138,0.08) 100%)',
-                  borderRadius: 16,
-                  border: '1px solid rgba(37,99,235,0.25)',
-                  boxShadow: '0 4px 24px rgba(37,99,235,0.15)'
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-                    <h3 style={{ color: '#2563EB', margin: 0, fontSize: '1.1rem' }}>Cuestionario</h3>
-                    <span style={{ color: '#93C5FD', fontSize: '0.9rem', fontWeight: 600 }}>
-                      Pregunta {Math.min(preguntaActual + 1, cuestionario.length)} de {cuestionario.length}
+        {/* selector móvil de lección */}
+        <div
+          className="curso-mobile-nav"
+          style={{
+            display: 'none',
+            maxWidth: 1300,
+            margin: '0 auto 1rem',
+            padding: '0 1rem',
+            gap: 8,
+            alignItems: 'center',
+          }}
+        >
+          <FontAwesomeIcon icon={faBars} style={{ color: '#D4AF37' }} />
+          <select
+            value={leccionActual}
+            onChange={(e) => {
+              setLeccionActual(Number(e.target.value))
+              setSidebarAbierto(false)
+            }}
+            className="puma-select"
+            style={{ flex: 1, marginBottom: 0 }}
+          >
+            {leccionesFlat.map((sec, idx) => (
+              <option key={idx} value={idx}>
+                {leccionesCompletadas.includes(idx) ? '✓ ' : ''}
+                {sec.titulo}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* ============================================================
+            MAIN CONTENT
+            ============================================================ */}
+        <div
+          className="curso-main-content"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 300px',
+            gap: '1.5rem',
+            maxWidth: 1300,
+            margin: '0 auto',
+            padding: '0 1rem',
+            alignItems: 'flex-start',
+          }}
+        >
+          {/* Contenido principal */}
+          <div className="puma-card puma-fade-in" style={{ padding: 'clamp(1rem, 3vw, 1.75rem)' }}>
+            {leccion && (
+              <>
+                {/* breadcrumb lección */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    flexWrap: 'wrap',
+                    marginBottom: '0.85rem',
+                    fontSize: '0.8rem',
+                    color: '#94a3b8',
+                  }}
+                >
+                  <span className="puma-chip puma-chip--gray">
+                    Lección {leccionActual + 1} de {leccionesFlat.length}
+                  </span>
+                  {yaCompletada && (
+                    <span className="puma-chip puma-chip--green">
+                      <FontAwesomeIcon icon={faCheck} /> Completada
                     </span>
-                  </div>
+                  )}
+                  {muestraGuia ? (
+                    <span className="puma-chip puma-chip--blue">
+                      <FontAwesomeIcon icon={faBook} /> Lectura
+                    </span>
+                  ) : leccion.video ? (
+                    <span className="puma-chip puma-chip--blue">
+                      <FontAwesomeIcon icon={faPlay} /> Video
+                    </span>
+                  ) : null}
+                </div>
 
-                  {/* Barra de progreso tipo carrusel */}
-                  <div style={{ display: 'flex', gap: 6, marginBottom: 20, flexWrap: 'wrap' }}>
-                    {cuestionario.map((_, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        aria-label={`Ir a pregunta ${idx + 1}`}
-                        onClick={() => setPreguntaActual(idx)}
-                        style={{
-                          width: Math.max(28, 40 - cuestionario.length * 2),
-                          height: 8,
-                          borderRadius: 4,
-                          border: 'none',
-                          background: idx === preguntaActual ? '#2563EB' : respuestasCuestionario[leccionActual * 10 + idx] !== undefined ? 'rgba(52, 211, 153, 0.6)' : 'rgba(37,99,235,0.25)',
-                          cursor: 'pointer',
-                          transition: 'background 0.2s'
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  {/* Una sola pregunta visible (carrusel) */}
-                  {cuestionario.map((preg, i) => (
-                    <div
-                      key={i}
+                {muestraGuia ? (
+                  <div className="curso-guia-libro" style={{ marginBottom: 24 }}>
+                    <h2
                       style={{
-                        display: i === preguntaActual ? 'block' : 'none',
-                        animation: 'fadeIn 0.25s ease'
+                        color: '#F4D03F',
+                        fontFamily: 'Orbitron',
+                        fontSize: 'clamp(1.25rem, 3.5vw, 1.7rem)',
+                        marginBottom: '0.5rem',
+                        lineHeight: 1.2,
                       }}
                     >
-                      <p style={{
-                        color: '#E0E0E0',
-                        fontWeight: 600,
-                        marginBottom: 16,
-                        fontSize: '1.05rem',
-                        lineHeight: 1.5
-                      }}>
-                        {preg.pregunta}
-                      </p>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                        {preg.opciones.map((op, j) => {
-                          const selected = respuestasCuestionario[leccionActual * 10 + i] === j
-                          const correcta = cuestionarioCompleto && preg.correcta === j
-                          const incorrecta = cuestionarioCompleto && selected && preg.correcta !== j
-                          return (
-                            <button
-                              key={j}
-                              type="button"
-                              onClick={() => setRespuestasCuestionario(prev => ({ ...prev, [leccionActual * 10 + i]: j }))}
+                      {leccion.titulo}
+                    </h2>
+                    <p style={{ color: '#94a3b8', marginBottom: 20, fontSize: '0.95rem' }}>
+                      {leccion.descripcion}
+                    </p>
+                    <div style={{ color: '#E0E0E0', fontSize: '1rem' }}>{renderGuia(leccion.guia!)}</div>
+                  </div>
+                ) : leccion.video ? (
+                  <>
+                    <div
+                      style={{
+                        position: 'relative',
+                        aspectRatio: '16 / 9',
+                        borderRadius: 16,
+                        overflow: 'hidden',
+                        boxShadow: '0 16px 40px rgba(0,0,0,0.5)',
+                        border: '1px solid rgba(212,175,55,0.3)',
+                        marginBottom: '1.25rem',
+                      }}
+                    >
+                      <iframe
+                        src={leccion.video}
+                        title={leccion.titulo}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          width: '100%',
+                          height: '100%',
+                          border: 'none',
+                        }}
+                      />
+                    </div>
+                    <h2
+                      style={{
+                        color: '#F4D03F',
+                        fontFamily: 'Orbitron',
+                        fontSize: 'clamp(1.2rem, 3.5vw, 1.6rem)',
+                        margin: '0 0 0.5rem',
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {leccion.titulo}
+                    </h2>
+                    <p style={{ color: '#cbd5e1', marginBottom: 16, lineHeight: 1.65 }}>
+                      {leccion.descripcion}
+                    </p>
+                  </>
+                ) : null}
+
+                {/* ============================================================
+                    CUESTIONARIO
+                    ============================================================ */}
+                {cuestionario && cuestionario.length > 0 && (
+                  <div
+                    className="puma-card puma-card--rainbow"
+                    style={{
+                      marginTop: '1.5rem',
+                      padding: 'clamp(1rem, 3vw, 1.5rem)',
+                      background:
+                        'linear-gradient(160deg, rgba(124,58,237,0.08) 0%, rgba(20,20,30,0.92) 60%)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: 12,
+                        flexWrap: 'wrap',
+                        marginBottom: '1rem',
+                      }}
+                    >
+                      <h3
+                        style={{
+                          color: '#fff',
+                          fontFamily: 'Orbitron',
+                          margin: 0,
+                          fontSize: '1.05rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faCircleQuestion} style={{ color: '#a78bfa' }} />
+                        Cuestionario
+                      </h3>
+                      <span className="puma-chip puma-chip--blue">
+                        {Math.min(preguntaActual + 1, cuestionario.length)} / {cuestionario.length}
+                      </span>
+                    </div>
+
+                    {/* Progreso de preguntas */}
+                    <div style={{ display: 'flex', gap: 5, marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+                      {cuestionario.map((_, idx) => {
+                        const answered = respuestasCuestionario[leccionActual * 10 + idx] !== undefined
+                        const isActive = idx === preguntaActual
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            aria-label={`Ir a pregunta ${idx + 1}`}
+                            onClick={() => setPreguntaActual(idx)}
+                            style={{
+                              flex: 1,
+                              minWidth: 24,
+                              maxWidth: 60,
+                              height: 6,
+                              borderRadius: 3,
+                              border: 'none',
+                              cursor: 'pointer',
+                              transition: 'all 0.25s ease',
+                              background: isActive
+                                ? 'linear-gradient(90deg, #F4D03F, #D4AF37)'
+                                : answered
+                                ? 'rgba(74, 222, 128, 0.55)'
+                                : 'rgba(212,175,55,0.18)',
+                              boxShadow: isActive ? '0 0 10px rgba(244,208,63,0.55)' : 'none',
+                            }}
+                          />
+                        )
+                      })}
+                    </div>
+
+                    {/* Pregunta activa */}
+                    {cuestionario.map((preg, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display: i === preguntaActual ? 'block' : 'none',
+                        }}
+                        className="puma-fade-in"
+                      >
+                        <p
+                          style={{
+                            color: '#fff',
+                            fontWeight: 600,
+                            marginBottom: 16,
+                            fontSize: 'clamp(1rem, 2.5vw, 1.1rem)',
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {preg.pregunta}
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          {preg.opciones.map((op, j) => {
+                            const selected = respuestasCuestionario[leccionActual * 10 + i] === j
+                            const correcta = cuestionarioCompleto && preg.correcta === j
+                            const incorrecta =
+                              cuestionarioCompleto && selected && preg.correcta !== j
+                            let borderColor = 'rgba(212,175,55,0.25)'
+                            let bg = 'rgba(0,0,0,0.35)'
+                            let color = '#cbd5e1'
+                            if (incorrecta) {
+                              borderColor = 'rgba(248,113,113,0.6)'
+                              bg = 'rgba(127,29,29,0.25)'
+                              color = '#fecaca'
+                            } else if (correcta) {
+                              borderColor = 'rgba(74,222,128,0.6)'
+                              bg = 'rgba(20,83,45,0.25)'
+                              color = '#bbf7d0'
+                            } else if (selected) {
+                              borderColor = '#F4D03F'
+                              bg = 'rgba(212,175,55,0.15)'
+                              color = '#fff'
+                            }
+                            return (
+                              <button
+                                key={j}
+                                type="button"
+                                onClick={() =>
+                                  setRespuestasCuestionario((prev) => ({
+                                    ...prev,
+                                    [leccionActual * 10 + i]: j,
+                                  }))
+                                }
+                                style={{
+                                  width: '100%',
+                                  textAlign: 'left',
+                                  padding: '0.85rem 1rem',
+                                  borderRadius: 12,
+                                  border: `2px solid ${borderColor}`,
+                                  background: bg,
+                                  color,
+                                  fontSize: '0.95rem',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.2s ease',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 10,
+                                  fontFamily: 'inherit',
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    flexShrink: 0,
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: '50%',
+                                    background: selected
+                                      ? 'rgba(244,208,63,0.25)'
+                                      : 'rgba(212,175,55,0.1)',
+                                    color: selected ? '#F4D03F' : '#94a3b8',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontWeight: 700,
+                                    fontSize: '0.78rem',
+                                    fontFamily: 'Orbitron',
+                                  }}
+                                >
+                                  {String.fromCharCode(65 + j)}
+                                </span>
+                                <span style={{ flex: 1 }}>{op}</span>
+                                {correcta && (
+                                  <FontAwesomeIcon icon={faCheck} style={{ color: '#4ade80' }} />
+                                )}
+                              </button>
+                            )
+                          })}
+                        </div>
+
+                        {cuestionarioCompleto &&
+                          respuestasCuestionario[leccionActual * 10 + i] !== preg.correcta && (
+                            <p
                               style={{
-                                width: '100%',
-                                textAlign: 'left',
-                                padding: '14px 18px',
-                                borderRadius: 12,
-                                border: `2px solid ${selected ? '#2563EB' : 'rgba(37,99,235,0.3)'}`,
-                                background: incorrecta ? 'rgba(248,113,113,0.15)' : correcta ? 'rgba(52,211,153,0.12)' : selected ? 'rgba(37,99,235,0.15)' : 'rgba(15,23,42,0.6)',
-                                color: '#E0E0E0',
-                                fontSize: '0.98rem',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s'
+                                color: '#fca5a5',
+                                fontSize: '0.85rem',
+                                marginTop: 12,
+                                padding: '0.5rem 0.75rem',
+                                borderRadius: 8,
+                                background: 'rgba(127,29,29,0.2)',
+                                border: '1px solid rgba(248,113,113,0.3)',
                               }}
                             >
-                              <span style={{ marginRight: 10 }}>{String.fromCharCode(65 + j)}.</span> {op}
-                              {correcta && ' ✓'}
-                              {incorrecta && ' ✗'}
-                            </button>
+                              Respuesta correcta: <strong>{preg.opciones[preg.correcta]}</strong>
+                            </p>
+                          )}
+
+                        {/* Navegación carrusel */}
+                        <div
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginTop: '1.25rem',
+                            gap: 12,
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <button
+                            type="button"
+                            onClick={() => setPreguntaActual((p) => Math.max(0, p - 1))}
+                            disabled={preguntaActual === 0}
+                            className="puma-btn puma-btn--ghost"
+                            style={{ padding: '0.55rem 1rem', fontSize: '0.88rem' }}
+                          >
+                            <FontAwesomeIcon icon={faChevronLeft} />
+                            Anterior
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (preguntaActual < cuestionario.length - 1)
+                                setPreguntaActual((p) => p + 1)
+                            }}
+                            disabled={
+                              respuestasCuestionario[leccionActual * 10 + i] === undefined
+                            }
+                            className="puma-btn puma-btn--gold"
+                            style={{ padding: '0.55rem 1rem', fontSize: '0.88rem' }}
+                          >
+                            {preguntaActual < cuestionario.length - 1 ? 'Siguiente' : 'Ver resultado'}
+                            <FontAwesomeIcon icon={faChevronRight} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                    {cuestionarioCompleto && !cuestionarioCorrecto && (
+                      <div className="puma-alert puma-alert--warn" style={{ marginTop: '1rem' }}>
+                        <span>
+                          Revisa las respuestas marcadas en rojo. Toca cualquier opción para
+                          cambiarla.
+                        </span>
+                      </div>
+                    )}
+                    {cuestionarioCorrecto && (
+                      <div className="puma-alert puma-alert--success" style={{ marginTop: '1rem' }}>
+                        <FontAwesomeIcon icon={faCheckCircle} style={{ marginTop: 3 }} />
+                        <span>
+                          <strong>Todas correctas.</strong> Puedes marcar la lección como completada.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Botón de completar */}
+                <div
+                  style={{
+                    marginTop: '1.5rem',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: 12,
+                    alignItems: 'center',
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={handleCompletarLeccion}
+                    disabled={yaCompletada || (cuestionario && !puedeCompletar)}
+                    className={yaCompletada ? 'puma-btn puma-btn--ghost' : 'puma-btn puma-btn--gold'}
+                    style={{ flex: '1 1 auto', minWidth: 200, justifyContent: 'center' }}
+                  >
+                    <FontAwesomeIcon icon={yaCompletada ? faCheckCircle : faCheck} />
+                    {yaCompletada
+                      ? 'Lección completada'
+                      : cuestionario && !cuestionarioCompleto
+                      ? 'Responde el cuestionario'
+                      : cuestionario && !cuestionarioCorrecto
+                      ? 'Revisa tus respuestas'
+                      : 'Marcar como completada'}
+                  </button>
+                </div>
+
+                {/* Bottom nav: lección anterior / siguiente */}
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    gap: 12,
+                    marginTop: '1.5rem',
+                    paddingTop: '1.25rem',
+                    borderTop: '1px solid rgba(212,175,55,0.15)',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={irLeccionAnterior}
+                    disabled={leccionActual === 0}
+                    className="puma-btn puma-btn--ghost"
+                    style={{
+                      padding: '0.6rem 1rem',
+                      fontSize: '0.88rem',
+                      opacity: leccionActual === 0 ? 0.5 : 1,
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                    Anterior
+                  </button>
+                  <button
+                    type="button"
+                    onClick={irSiguienteLeccion}
+                    disabled={leccionActual === leccionesFlat.length - 1}
+                    className="puma-btn puma-btn--gold"
+                    style={{
+                      padding: '0.6rem 1.25rem',
+                      fontSize: '0.88rem',
+                      opacity: leccionActual === leccionesFlat.length - 1 ? 0.5 : 1,
+                    }}
+                  >
+                    Siguiente lección
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </button>
+                </div>
+              </>
+            )}
+
+            {/* ============================================================
+                CTA DE CERTIFICADO (solo al completar)
+                ============================================================ */}
+            <CourseCertificateCTA
+              cursoId={curso.id}
+              cursoTitulo={curso.titulo}
+              cohorteRef={curso.cohorteRef}
+              badgeRef={badgeRef}
+              progreso={progreso}
+              totalLecciones={leccionesFlat.length}
+            />
+          </div>
+
+          {/* ============================================================
+              SIDEBAR
+              ============================================================ */}
+          <aside
+            className="curso-lecciones-sidebar puma-fade-in-up"
+            style={{
+              position: 'sticky',
+              top: 90,
+            }}
+          >
+            <div className="puma-card" style={{ padding: '1.1rem' }}>
+              <h3
+                style={{
+                  color: '#D4AF37',
+                  fontFamily: 'Orbitron',
+                  fontSize: '0.95rem',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <FontAwesomeIcon icon={faBook} />
+                {curso.capitulos ? 'Contenido' : 'Lecciones'}
+              </h3>
+
+              {curso.capitulos && curso.capitulos.length > 0 ? (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {curso.capitulos.map((cap: Capitulo) => (
+                    <li key={cap.id} style={{ marginBottom: 14 }}>
+                      <div
+                        style={{
+                          color: '#94a3b8',
+                          fontSize: '0.75rem',
+                          fontWeight: 700,
+                          marginBottom: 6,
+                          textTransform: 'uppercase',
+                          letterSpacing: 1,
+                        }}
+                      >
+                        {cap.titulo}
+                      </div>
+                      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                        {cap.secciones.map((sec, secIdx) => {
+                          const flatIdx =
+                            curso.capitulos!
+                              .slice(0, curso.capitulos!.indexOf(cap))
+                              .reduce((acc, c) => acc + c.secciones.length, 0) + secIdx
+                          const active = flatIdx === leccionActual
+                          const done = leccionesCompletadas.includes(flatIdx)
+                          return (
+                            <li key={sec.id} style={{ marginBottom: 4 }}>
+                              <button
+                                style={{
+                                  width: '100%',
+                                  textAlign: 'left',
+                                  padding: '0.5rem 0.7rem',
+                                  borderRadius: 10,
+                                  border: `1px solid ${
+                                    active ? '#F4D03F' : 'rgba(255,255,255,0.06)'
+                                  }`,
+                                  background: active
+                                    ? 'rgba(212,175,55,0.16)'
+                                    : 'rgba(255,255,255,0.02)',
+                                  color: done ? '#86efac' : active ? '#fff' : '#cbd5e1',
+                                  fontWeight: active ? 700 : 500,
+                                  cursor: 'pointer',
+                                  fontSize: '0.85rem',
+                                  transition: 'all 0.2s ease',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 8,
+                                  fontFamily: 'inherit',
+                                }}
+                                onClick={() => setLeccionActual(flatIdx)}
+                              >
+                                <span
+                                  style={{
+                                    width: 18,
+                                    height: 18,
+                                    borderRadius: '50%',
+                                    background: done
+                                      ? '#4ade80'
+                                      : active
+                                      ? '#F4D03F'
+                                      : 'rgba(212,175,55,0.15)',
+                                    color: done || active ? '#0a0a0a' : '#94a3b8',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '0.65rem',
+                                    fontWeight: 800,
+                                    flexShrink: 0,
+                                  }}
+                                >
+                                  {done ? <FontAwesomeIcon icon={faCheck} /> : secIdx + 1}
+                                </span>
+                                <span
+                                  style={{
+                                    flex: 1,
+                                    minWidth: 0,
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                  }}
+                                >
+                                  {sec.titulo}
+                                </span>
+                              </button>
+                            </li>
                           )
                         })}
-                      </div>
-                      {cuestionarioCompleto && respuestasCuestionario[leccionActual * 10 + i] !== preg.correcta && (
-                        <p style={{ color: '#f87171', fontSize: '0.9rem', marginTop: 12 }}>Respuesta correcta: {preg.opciones[preg.correcta]}</p>
-                      )}
-
-                      {/* Navegación carrusel */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24, gap: 12, flexWrap: 'wrap' }}>
-                        <button
-                          type="button"
-                          onClick={() => setPreguntaActual(p => Math.max(0, p - 1))}
-                          disabled={preguntaActual === 0}
-                          style={{
-                            padding: '10px 18px',
-                            borderRadius: 10,
-                            border: '1px solid rgba(37,99,235,0.4)',
-                            background: preguntaActual === 0 ? 'rgba(0,0,0,0.2)' : 'rgba(37,99,235,0.15)',
-                            color: preguntaActual === 0 ? '#64748b' : '#93C5FD',
-                            cursor: preguntaActual === 0 ? 'not-allowed' : 'pointer',
-                            fontSize: '0.95rem'
-                          }}
-                        >
-                          ← Anterior
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (preguntaActual < cuestionario.length - 1) setPreguntaActual(p => p + 1)
-                          }}
-                          disabled={respuestasCuestionario[leccionActual * 10 + i] === undefined}
-                          style={{
-                            padding: '10px 20px',
-                            borderRadius: 10,
-                            border: 'none',
-                            background: respuestasCuestionario[leccionActual * 10 + i] !== undefined ? '#2563EB' : 'rgba(37,99,235,0.3)',
-                            color: '#fff',
-                            cursor: respuestasCuestionario[leccionActual * 10 + i] !== undefined ? 'pointer' : 'not-allowed',
-                            fontSize: '0.95rem',
-                            fontWeight: 600
-                          }}
-                        >
-                          {preguntaActual < cuestionario.length - 1 ? 'Siguiente →' : 'Ver resultado'}
-                        </button>
-                      </div>
-                    </div>
+                      </ul>
+                    </li>
                   ))}
-
-                  {cuestionarioCompleto && !cuestionarioCorrecto && (
-                    <p style={{ color: '#f87171', marginTop: 16, fontWeight: 500 }}>Revisa las respuestas incorrectas. Puedes cambiar de pregunta con los botones o los puntos de arriba.</p>
-                  )}
-                  {cuestionarioCorrecto && (
-                    <p style={{ color: '#34d399', fontWeight: 600, marginTop: 16, fontSize: '1.05rem' }}>✓ Todas correctas. Puedes marcar la lección como completada.</p>
-                  )}
-                </div>
+                </ul>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {(curso.lecciones || []).map((l: Leccion, idx: number) => {
+                    const active = idx === leccionActual
+                    const done = leccionesCompletadas.includes(idx)
+                    return (
+                      <li key={l.titulo || idx} style={{ marginBottom: 6 }}>
+                        <button
+                          style={{
+                            width: '100%',
+                            textAlign: 'left',
+                            padding: '0.6rem 0.8rem',
+                            borderRadius: 10,
+                            border: `1px solid ${
+                              active ? '#F4D03F' : 'rgba(255,255,255,0.06)'
+                            }`,
+                            background: active
+                              ? 'rgba(212,175,55,0.16)'
+                              : 'rgba(255,255,255,0.02)',
+                            color: done ? '#86efac' : active ? '#fff' : '#cbd5e1',
+                            fontWeight: active ? 700 : 500,
+                            cursor: 'pointer',
+                            fontSize: '0.88rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 10,
+                            fontFamily: 'inherit',
+                          }}
+                          onClick={() => setLeccionActual(idx)}
+                        >
+                          <span
+                            style={{
+                              width: 22,
+                              height: 22,
+                              borderRadius: '50%',
+                              background: done
+                                ? '#4ade80'
+                                : active
+                                ? '#F4D03F'
+                                : 'rgba(212,175,55,0.15)',
+                              color: done || active ? '#0a0a0a' : '#94a3b8',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '0.72rem',
+                              fontWeight: 800,
+                              flexShrink: 0,
+                            }}
+                          >
+                            {done ? <FontAwesomeIcon icon={faCheck} /> : idx + 1}
+                          </span>
+                          <span
+                            style={{
+                              flex: 1,
+                              minWidth: 0,
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            {l.titulo}
+                          </span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
               )}
 
-              <button
-                className="primary-button"
-                style={{ marginTop: 20, marginBottom: 16 }}
-                onClick={handleCompletarLeccion}
-                disabled={leccionesCompletadas.includes(leccionActual) || (cuestionario && !puedeCompletar)}
+              {/* Sidebar footer: NFT badge mini */}
+              <div
+                style={{
+                  marginTop: '1.25rem',
+                  padding: '0.85rem',
+                  borderRadius: 12,
+                  background: 'rgba(212,175,55,0.08)',
+                  border: '1px dashed rgba(212,175,55,0.3)',
+                  textAlign: 'center',
+                }}
               >
-                {leccionesCompletadas.includes(leccionActual) ? 'Lección completada' : cuestionario && !cuestionarioCompleto ? 'Responde el cuestionario' : cuestionario && !cuestionarioCorrecto ? 'Revisa tus respuestas' : 'Marcar como completada'}
-              </button>
-              <div style={{ marginTop: 16, color: '#34d399', fontWeight: 600 }}>
-                Progreso del curso: {progreso}%
+                <FontAwesomeIcon
+                  icon={faAward}
+                  style={{ color: '#F4D03F', fontSize: '1.4rem', marginBottom: '0.4rem' }}
+                />
+                <p style={{ color: '#cbd5e1', fontSize: '0.78rem', margin: 0, lineHeight: 1.5 }}>
+                  Al completar el curso desbloqueas tu <strong style={{ color: '#F4D03F' }}>credencial NFT</strong> soulbound.
+                </p>
               </div>
-            </>
-          )}
+            </div>
+          </aside>
         </div>
-        {/* Sidebar: capítulos + secciones o solo lecciones */}
-        <div className="curso-lecciones-sidebar" style={{ flex: 1, minWidth: 260, background: '#101014', borderRadius: 16, boxShadow: '0 2px 12px #2563EB22', padding: 24 }}>
-          <h3 style={{ color: '#2563EB', marginBottom: 16 }}>{curso.capitulos ? 'Contenido' : 'Lecciones'}</h3>
-          {curso.capitulos && curso.capitulos.length > 0 ? (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {curso.capitulos.map((cap: Capitulo) => (
-                <li key={cap.id} style={{ marginBottom: 16 }}>
-                  <div style={{ color: '#D4AF37', fontSize: '0.85rem', fontWeight: 700, marginBottom: 8, paddingBottom: 4, borderBottom: '1px solid rgba(212,175,55,0.3)' }}>
-                    {cap.titulo}
-                  </div>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {cap.secciones.map((sec, secIdx) => {
-                      const flatIdx = curso.capitulos!.slice(0, curso.capitulos!.indexOf(cap)).reduce((acc, c) => acc + c.secciones.length, 0) + secIdx
-                      return (
-                        <li key={sec.id} style={{ marginBottom: 6 }}>
-                          <button
-                            style={{
-                              width: '100%',
-                              textAlign: 'left',
-                              padding: '0.6rem 0.75rem',
-                              borderRadius: 8,
-                              border: flatIdx === leccionActual ? '2px solid #D4AF37' : '1px solid #2563EB44',
-                              background: flatIdx === leccionActual ? 'rgba(212,175,55,0.08)' : 'rgba(37,99,235,0.06)',
-                              color: leccionesCompletadas.includes(flatIdx) ? '#34d399' : '#E0E0E0',
-                              fontWeight: leccionesCompletadas.includes(flatIdx) ? 700 : 500,
-                              cursor: 'pointer',
-                              fontSize: '0.9rem'
-                            }}
-                            onClick={() => setLeccionActual(flatIdx)}
-                          >
-                            {sec.titulo} {leccionesCompletadas.includes(flatIdx) && '✔️'}
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-              {(curso.lecciones || []).map((l: Leccion, idx: number) => (
-                <li key={l.titulo || idx} style={{ marginBottom: 12 }}>
-                  <button
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: '0.7rem 1rem',
-                      borderRadius: 8,
-                      border: idx === leccionActual ? '2px solid #D4AF37' : '1px solid #2563EB44',
-                      background: idx === leccionActual ? 'rgba(212,175,55,0.08)' : 'rgba(37,99,235,0.06)',
-                      color: leccionesCompletadas.includes(idx) ? '#34d399' : '#E0E0E0',
-                      fontWeight: leccionesCompletadas.includes(idx) ? 700 : 500,
-                      cursor: 'pointer',
-                      marginBottom: 2
-                    }}
-                    onClick={() => setLeccionActual(idx)}
-                  >
-                    {l.titulo} {leccionesCompletadas.includes(idx) && '✔️'}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+
+        {/* ============================================================
+            INFO EXTRA
+            ============================================================ */}
+        <div
+          className="puma-card puma-fade-in-up"
+          style={{
+            maxWidth: 1300,
+            margin: '2rem auto 0',
+            padding: 'clamp(1.25rem, 4vw, 2rem)',
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: 'Orbitron',
+              color: '#D4AF37',
+              fontSize: 'clamp(1.1rem, 3vw, 1.35rem)',
+              margin: '0 0 0.85rem',
+            }}
+          >
+            Sobre el curso
+          </h2>
+          <p style={{ color: '#cbd5e1', marginBottom: '1.25rem', lineHeight: 1.65 }}>
+            {curso.descripcion}
+          </p>
+          <h3
+            style={{
+              color: '#fff',
+              fontFamily: 'Orbitron',
+              fontSize: '1rem',
+              marginBottom: '0.5rem',
+            }}
+          >
+            Requisitos
+          </h3>
+          <p style={{ color: '#94a3b8', margin: 0, lineHeight: 1.6 }}>
+            {curso.requisitos ?? 'No especificados.'}
+          </p>
         </div>
       </div>
-      {/* Info relevante bajo el video */}
-      <div className="curso-info-extra" style={{maxWidth:900, margin:'2rem auto 0 auto', background:'#18181b', borderRadius:16, boxShadow:'0 2px 12px #2563EB22', padding:32}}>
-        <h2 style={{color:'#D4AF37', marginBottom:12}}>Sobre el curso</h2>
-        <p style={{color:'#E0E0E0', marginBottom:16}}>{curso.descripcion}</p>
-        <h3 style={{color:'#2563EB', marginBottom:8}}>Requisitos</h3>
-        <p style={{color:'#E0E0E0'}}>{curso.requisitos ?? 'No especificados.'}</p>
-      </div>
-    </div>
     </>
   )
 }

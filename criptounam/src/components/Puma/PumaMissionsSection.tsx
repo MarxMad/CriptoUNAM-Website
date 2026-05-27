@@ -1,0 +1,212 @@
+import React, { useEffect } from 'react'
+import { useAccount, useChainId, useConfig, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { formatEther } from 'viem'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCoins, faCheck, faClock } from '@fortawesome/free-solid-svg-icons'
+import { pumaCompleteMissionAbi, type PumaMissionRow } from '../../constants/pumaTokenAbi'
+import { usePumaMissionClaims } from '../../hooks/usePumaMissions'
+import ENV_CONFIG from '../../config/env'
+
+const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
+
+type Props = {
+  missions: PumaMissionRow[]
+  isLoading: boolean
+  onTxConfirmed: () => void
+  /** Textos en lenguaje claro para la comunidad. */
+  tone?: 'embajador' | 'neutral'
+}
+
+const PumaMissionsSection: React.FC<Props> = ({ missions, isLoading, onTxConfirmed, tone = 'neutral' }) => {
+  const { address } = useAccount()
+  const chainId = useChainId()
+  const wagmiConfig = useConfig()
+  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+
+  const { data: claimedMap, refetch: refetchClaims } = usePumaMissionClaims(missions, address)
+
+  const {
+    writeContract,
+    data: txHash,
+    isPending: isSendingTx,
+    error: writeError,
+    reset,
+  } = useWriteContract()
+
+  const { isLoading: isConfirming, isSuccess: txSuccess } = useWaitForTransactionReceipt({ hash: txHash })
+
+  useEffect(() => {
+    if (txSuccess) {
+      refetchClaims()
+      onTxConfirmed()
+      reset()
+    }
+  }, [txSuccess, refetchClaims, onTxConfirmed, reset])
+
+  const busy = isSendingTx || isConfirming
+
+  const claim = (missionId: string, canClaim: boolean) => {
+    if (!canClaim || !chain || !address) return
+    writeContract({
+      address: tokenAddr,
+      abi: pumaCompleteMissionAbi,
+      functionName: 'completeMission',
+      args: [missionId],
+      chain,
+      account: address,
+    })
+  }
+
+  const loadingMsg =
+    tone === 'embajador'
+      ? 'Estamos trayendo la lista de misiones…'
+      : 'Cargando misiones desde el contrato…'
+  const emptyMsg =
+    tone === 'embajador' ? (
+      <span>
+        Todavía no hay misiones publicadas en esta red. Cuando el equipo publique una, la verás aquí al instante.
+      </span>
+    ) : (
+      <span>
+        Aún no hay misiones registradas en esta red. Cuando el equipo cree una con{' '}
+        <code style={{ color: '#777' }}>createMission</code>, aparecerá aquí (también puedes usar el{' '}
+        <strong style={{ color: '#D4AF37' }}>panel admin PUMA</strong>).
+      </span>
+    )
+
+  if (isLoading) {
+    return (
+      <p style={{ color: '#888', textAlign: 'center', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>
+        <FontAwesomeIcon icon={faClock} style={{ marginRight: 8 }} />
+        {loadingMsg}
+      </p>
+    )
+  }
+
+  if (missions.length === 0) {
+    return (
+      <p style={{ color: '#888', textAlign: 'center', margin: 0, fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>{emptyMsg}</p>
+    )
+  }
+
+  const nowSec = Math.floor(Date.now() / 1000)
+
+  return (
+    <div className="puma-stagger" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {missions.map((m, idx) => {
+        const expired = m.deadline > 0n ? nowSec > Number(m.deadline) : false
+        const claimed = claimedMap?.[m.missionId] === true
+        const canClaim =
+          !!chain && !!address && m.exists && m.active && !expired && !claimed
+
+        let statusChip: React.ReactNode = null
+        if (!m.exists || !m.active) {
+          statusChip = (
+            <span className="puma-chip puma-chip--amber">
+              {tone === 'embajador' ? 'Cerrada por el equipo' : 'No disponible'}
+            </span>
+          )
+        } else if (expired) {
+          statusChip = <span className="puma-chip puma-chip--red">Expirada</span>
+        } else if (claimed) {
+          statusChip = (
+            <span className="puma-chip puma-chip--green">
+              <FontAwesomeIcon icon={faCheck} />
+              {tone === 'embajador' ? 'Ya cobraste' : 'Reclamada'}
+            </span>
+          )
+        } else {
+          statusChip = <span className="puma-chip puma-chip--green">Disponible</span>
+        }
+
+        return (
+          <div
+            key={m.missionId}
+            className={`puma-card puma-card--shimmer ${canClaim ? 'puma-glow' : ''}`}
+            style={
+              {
+                '--i': idx,
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '1rem',
+                padding: 'clamp(0.9rem, 3vw, 1.15rem) clamp(1rem, 3vw, 1.35rem)',
+              } as React.CSSProperties
+            }
+          >
+            <div style={{ flex: '1 1 240px', minWidth: 0 }}>
+              <div
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: '0.78rem',
+                  color: '#777',
+                  marginBottom: '0.4rem',
+                }}
+              >
+                {m.missionId}
+              </div>
+              <div
+                style={{
+                  color: '#fff',
+                  fontWeight: 600,
+                  marginBottom: '0.5rem',
+                  fontSize: 'clamp(0.98rem, 2.5vw, 1.08rem)',
+                  lineHeight: 1.3,
+                }}
+              >
+                {m.title}
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.6rem',
+                  flexWrap: 'wrap',
+                }}
+              >
+                <span className="puma-chip puma-chip--gold">
+                  <FontAwesomeIcon icon={faCoins} />
+                  {formatEther(m.reward)} PUMA
+                </span>
+                {statusChip}
+              </div>
+            </div>
+            <div>
+              <button
+                type="button"
+                disabled={!canClaim || busy}
+                onClick={() => claim(m.missionId, canClaim)}
+                className={canClaim ? 'puma-btn puma-btn--gold' : 'puma-btn puma-btn--ghost'}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {busy ? 'Procesando…' : claimed ? 'Listo' : 'Reclamar PUMA'}
+              </button>
+            </div>
+          </div>
+        )
+      })}
+      {writeError && (
+        <div className="puma-alert puma-alert--error">
+          <span>{writeError.message.slice(0, 220)}</span>
+        </div>
+      )}
+      {!address && (
+        <p
+          style={{
+            color: '#888',
+            fontSize: 'clamp(0.85rem, 2.4vw, 0.95rem)',
+            margin: 0,
+            textAlign: 'center',
+          }}
+        >
+          {tone === 'embajador'
+            ? 'Conecta tu wallet para reclamar y para que podamos marcar si ya cobraste esta misión.'
+            : 'Conecta tu wallet para ver si ya reclamaste y para reclamar recompensas.'}
+        </p>
+      )}
+    </div>
+  )
+}
+
+export default PumaMissionsSection

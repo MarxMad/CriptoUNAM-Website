@@ -35,6 +35,14 @@ export interface Curso {
   imagen: string
   descripcion: string
   precio: number
+  /** Precio del curso en $PUMA. Si es undefined o 0 → curso gratuito (solo firma). */
+  precioPuma?: number
+  /**
+   * Identificador de cohorte/versión del curso para el certificado on-chain.
+   * Se usa para construir el `ref` único en CriptoUNAMBadges (kind=CourseCompletion).
+   * Default: "v1". Cambia cuando relances el curso (ej. "2026-Q2").
+   */
+  cohorteRef?: string
   estudiantes: number
   rating: number
   categorias: string[]
@@ -51,6 +59,16 @@ export function getLeccionesFlat(curso: Curso): Leccion[] {
     return curso.capitulos.flatMap((c) => c.secciones)
   }
   return curso.lecciones ?? []
+}
+
+/**
+ * Devuelve el `ref` único del certificado on-chain para un curso.
+ * Formato estable: `course-{cursoId}-{cohorteRef}` (cohorteRef default = "v1").
+ * Coincide con la convención de CriptoUNAMBadges (kind=CourseCompletion).
+ */
+export function cursoBadgeRef(cursoId: string, cohorteRef?: string): string {
+  const cohort = (cohorteRef && cohorteRef.trim()) || 'v1'
+  return `course-${cursoId}-${cohort}`
 }
 
 export const cursosData: Curso[] = [

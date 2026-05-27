@@ -1,0 +1,639 @@
+/* ===============================================
+   🐾 PUMA · Animaciones + componentes de soporte
+   Usa las variables del global.css (D4AF37, 0A0A0A…)
+   =============================================== */
+
+/* ---------- KEYFRAMES ---------- */
+@keyframes pumaFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pumaFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pumaPopIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.86);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pumaFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes pumaGlow {
+  0%, 100% {
+    box-shadow: 0 0 18px rgba(212, 175, 55, 0.25),
+                0 0 0 1px rgba(212, 175, 55, 0.35) inset;
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(244, 208, 63, 0.45),
+                0 0 0 1px rgba(244, 208, 63, 0.55) inset;
+  }
+}
+
+@keyframes pumaShimmer {
+  0% { background-position: -480px 0; }
+  100% { background-position: 480px 0; }
+}
+
+@keyframes pumaCoinSpin {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+@keyframes pumaPulseRing {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.55);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 18px rgba(212, 175, 55, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0);
+  }
+}
+
+@keyframes pumaSweep {
+  0% { transform: translateX(-120%) skewX(-15deg); }
+  100% { transform: translateX(220%) skewX(-15deg); }
+}
+
+@keyframes pumaConfetti {
+  0%   { transform: translateY(0) rotate(0); opacity: 1; }
+  100% { transform: translateY(220px) rotate(540deg); opacity: 0; }
+}
+
+@keyframes pumaGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* ---------- UTILIDADES REUTILIZABLES ---------- */
+
+.puma-fade-in        { animation: pumaFadeIn 0.5s ease-out both; }
+.puma-fade-in-up     { animation: pumaFadeInUp 0.6s ease-out both; }
+.puma-pop-in         { animation: pumaPopIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.puma-float          { animation: pumaFloat 4s ease-in-out infinite; }
+.puma-glow           { animation: pumaGlow 3.5s ease-in-out infinite; }
+.puma-pulse-ring     { animation: pumaPulseRing 2.4s ease-in-out infinite; }
+.puma-coin-spin      { animation: pumaCoinSpin 4.5s linear infinite; transform-style: preserve-3d; }
+
+/* Aparece escalonadamente: usa --delay como inline style */
+.puma-stagger > * {
+  animation: pumaFadeInUp 0.6s ease-out both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* ---------- HERO / FONDO DECORATIVO ---------- */
+
+.puma-hero-bg {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.puma-hero-bg::before,
+.puma-hero-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  z-index: -1;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.puma-hero-bg::before {
+  width: 380px;
+  height: 380px;
+  top: -120px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.55), transparent 70%);
+  animation: pumaFloat 9s ease-in-out infinite;
+}
+
+.puma-hero-bg::after {
+  width: 320px;
+  height: 320px;
+  bottom: -140px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.45), transparent 70%);
+  animation: pumaFloat 11s ease-in-out infinite reverse;
+}
+
+/* Grid decorativo sutil */
+.puma-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ---------- TARJETAS PUMA ---------- */
+
+.puma-card {
+  background: linear-gradient(160deg, rgba(26, 26, 26, 0.92) 0%, rgba(20, 20, 30, 0.92) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  border-radius: 20px;
+  padding: clamp(1.1rem, 3vw, 1.6rem);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.puma-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 208, 63, 0.6);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45),
+              0 0 0 1px rgba(212, 175, 55, 0.4) inset;
+}
+
+.puma-card--featured {
+  background:
+    linear-gradient(160deg, rgba(36, 28, 8, 0.96) 0%, rgba(26, 26, 26, 0.94) 60%),
+    radial-gradient(circle at top right, rgba(212, 175, 55, 0.18), transparent 60%);
+  border-color: rgba(244, 208, 63, 0.55);
+}
+
+/* Shimmer en hover para tarjetas */
+.puma-card--shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(244, 208, 63, 0.18) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  pointer-events: none;
+  transition: transform 0.8s ease;
+}
+.puma-card--shimmer:hover::before {
+  transform: translateX(120%);
+}
+
+/* Borde con gradiente animado */
+.puma-card--rainbow {
+  position: relative;
+}
+.puma-card--rainbow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #D4AF37, #2563eb, #D4AF37, #F4D03F);
+  background-size: 200% 200%;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: pumaGradientShift 6s ease infinite;
+  pointer-events: none;
+}
+
+/* ---------- BOTONES ---------- */
+
+.puma-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+.puma-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+
+.puma-btn--gold {
+  color: #0a0a0a;
+  background: linear-gradient(135deg, #F4D03F 0%, #D4AF37 60%, #b8962e 100%);
+  box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
+}
+.puma-btn--gold:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(244, 208, 63, 0.5);
+}
+.puma-btn--gold::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+  transform: translateX(-120%) skewX(-15deg);
+}
+.puma-btn--gold:hover:not(:disabled)::after {
+  animation: pumaSweep 0.9s ease;
+}
+
+.puma-btn--ghost {
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+}
+.puma-btn--ghost:hover:not(:disabled) {
+  background: rgba(212, 175, 55, 0.18);
+  transform: translateY(-2px);
+}
+
+.puma-btn--blue {
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+}
+.puma-btn--blue:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.5);
+}
+
+.puma-btn--danger {
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.35);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+}
+.puma-btn--danger:hover:not(:disabled) {
+  background: rgba(127, 29, 29, 0.55);
+}
+
+/* ---------- INPUTS ---------- */
+
+.puma-input,
+.puma-textarea,
+.puma-select {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: rgba(0, 0, 0, 0.4);
+  color: #E0E0E0;
+  font-size: 0.95rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.puma-input:focus,
+.puma-textarea:focus,
+.puma-select:focus {
+  outline: none;
+  border-color: #F4D03F;
+  box-shadow: 0 0 0 3px rgba(244, 208, 63, 0.18);
+  background: rgba(0, 0, 0, 0.55);
+}
+.puma-label {
+  display: block;
+  color: #aaa;
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+/* ---------- CHIPS / BADGES ---------- */
+
+.puma-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border: 1px solid currentColor;
+  background: rgba(0, 0, 0, 0.25);
+}
+.puma-chip--gold   { color: #F4D03F; }
+.puma-chip--green  { color: #4ade80; }
+.puma-chip--red    { color: #f87171; }
+.puma-chip--amber  { color: #fbbf24; }
+.puma-chip--blue   { color: #60a5fa; }
+.puma-chip--gray   { color: #94a3b8; }
+
+/* ---------- HERO TITLE BRILLO ---------- */
+
+.puma-title-glow {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  background: linear-gradient(135deg, #F4D03F 0%, #D4AF37 40%, #fff5b8 60%, #D4AF37 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: pumaGradientShift 6s ease infinite;
+  text-shadow: 0 0 18px rgba(212, 175, 55, 0.2);
+}
+
+/* ---------- STAT CARDS ---------- */
+
+.puma-stat {
+  position: relative;
+  background: linear-gradient(160deg, rgba(26, 26, 26, 0.95), rgba(16, 16, 20, 0.95));
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 18px;
+  padding: 1.3rem 1.4rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.puma-stat:hover {
+  transform: translateY(-4px);
+  border-color: rgba(244, 208, 63, 0.55);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.35);
+}
+.puma-stat__label {
+  color: #94a3b8;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+.puma-stat__value {
+  color: #F4D03F;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.puma-stat__hint {
+  color: #777;
+  font-size: 0.78rem;
+  margin-top: 0.35rem;
+}
+.puma-stat__icon {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  font-size: 1.4rem;
+  color: rgba(212, 175, 55, 0.55);
+}
+
+/* ---------- BREADCRUMB ---------- */
+
+.puma-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #D4AF37;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.puma-breadcrumb:hover {
+  background: rgba(212, 175, 55, 0.16);
+  color: #F4D03F;
+  transform: translateX(-3px);
+}
+
+/* ---------- TABS ---------- */
+
+.puma-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.4rem;
+  background: rgba(26, 26, 26, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+}
+.puma-tab {
+  padding: 0.55rem 1.1rem;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: #aaa;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.puma-tab:hover {
+  color: #F4D03F;
+  background: rgba(212, 175, 55, 0.08);
+}
+.puma-tab--active {
+  color: #0a0a0a;
+  background: linear-gradient(135deg, #F4D03F, #D4AF37);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+.puma-tab--active:hover {
+  color: #0a0a0a;
+}
+
+/* ---------- BADGE / NFT PREVIEW ---------- */
+
+.puma-nft-preview {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(244, 208, 63, 0.35), transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(37, 99, 235, 0.35), transparent 55%),
+    linear-gradient(135deg, #1a1a1a, #0a0a0a);
+  border: 2px solid rgba(212, 175, 55, 0.55);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(244, 208, 63, 0.25) inset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+}
+.puma-nft-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-conic-gradient(from 0deg, rgba(244,208,63,0.06) 0deg 10deg, transparent 10deg 30deg);
+  animation: pumaCoinSpin 25s linear infinite;
+  z-index: -1;
+  opacity: 0.6;
+}
+.puma-nft-preview img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  border-radius: 16px;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.6));
+}
+.puma-nft-preview__icon {
+  font-size: clamp(3.5rem, 12vw, 6rem);
+  color: #F4D03F;
+  filter: drop-shadow(0 6px 20px rgba(212, 175, 55, 0.5));
+  animation: pumaFloat 4s ease-in-out infinite;
+}
+.puma-nft-preview__overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.2rem;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.85));
+  color: #fff;
+}
+
+/* ---------- ALERTAS ---------- */
+
+.puma-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  font-size: 0.93rem;
+  line-height: 1.55;
+  border: 1px solid;
+}
+.puma-alert--info {
+  color: #93c5fd;
+  background: rgba(30, 58, 138, 0.25);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+.puma-alert--success {
+  color: #86efac;
+  background: rgba(20, 83, 45, 0.25);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+.puma-alert--warn {
+  color: #fde68a;
+  background: rgba(120, 53, 15, 0.25);
+  border-color: rgba(251, 191, 36, 0.4);
+}
+.puma-alert--error {
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.3);
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+/* ---------- COIN ÍCONO DECORATIVO ---------- */
+
+.puma-coin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F4D03F, #D4AF37 60%, #8b6e1d);
+  color: #0a0a0a;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
+  box-shadow:
+    0 8px 22px rgba(212, 175, 55, 0.45),
+    0 0 0 2px rgba(244, 208, 63, 0.55) inset;
+  position: relative;
+}
+.puma-coin--lg {
+  width: 80px;
+  height: 80px;
+  font-size: 1.7rem;
+}
+.puma-coin::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  border: 1.5px dashed rgba(10, 10, 10, 0.35);
+}
+
+/* ---------- CONFETTI (al reclamar) ---------- */
+
+.puma-confetti {
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  overflow: hidden;
+}
+.puma-confetti span {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  animation: pumaConfetti 1.6s ease-out forwards;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 720px) {
+  .puma-hero-bg::before { width: 240px; height: 240px; }
+  .puma-hero-bg::after  { width: 220px; height: 220px; }
+  .puma-tabs { padding: 0.3rem; }
+  .puma-tab { padding: 0.45rem 0.85rem; font-size: 0.82rem; }
+}
+
+/* Reducir movimiento si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+  .puma-fade-in,
+  .puma-fade-in-up,
+  .puma-pop-in,
+  .puma-float,
+  .puma-glow,
+  .puma-pulse-ring,
+  .puma-coin-spin,
+  .puma-stagger > *,
+  .puma-hero-bg::before,
+  .puma-hero-bg::after,
+  .puma-title-glow,
+  .puma-card--rainbow::after,
+  .puma-nft-preview::before {
+    animation: none !important;
+  }
+}

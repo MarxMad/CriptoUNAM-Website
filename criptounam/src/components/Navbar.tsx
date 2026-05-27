@@ -6,7 +6,15 @@ import '../styles/global.css'
 import { useAdmin } from '../hooks/useAdmin'
 import { API_ENDPOINTS } from '../config/api'
 import { cursosApi, eventosApi, newsletterApi } from '../config/supabaseApi'
-import { faBell, faHome, faGraduationCap, faUsers, faEnvelope, faTimes, faWallet, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
+import {
+  faBell,
+  faHome,
+  faGraduationCap,
+  faTimes,
+  faWallet,
+  faCalendarAlt,
+  faGift,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 interface SocialProfile {
@@ -232,12 +240,18 @@ const Navbar = () => {
   const navigationItems = [
     { path: '/', icon: faHome, label: 'Home' },
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
-    { path: '/comunidad', icon: faUsers, label: 'Comunidad' },
     { path: '/eventos', icon: faCalendarAlt, label: 'Eventos' },
-    { path: '/newsletter', icon: faEnvelope, label: 'Newsletter' },
+    { path: '/recompensas', icon: faGift, label: 'Recompensas' },
   ]
+  const compactNav = navigationItems.length >= 6
 
   const isActiveRoute = (path: string) => {
+    if (path === '/eventos') {
+      return location.pathname === '/eventos' || location.pathname === '/comunidad'
+    }
+    if (path === '/recompensas') {
+      return location.pathname === '/recompensas' || location.pathname.startsWith('/recompensas/')
+    }
     return location.pathname === path
   }
 
@@ -592,7 +606,7 @@ const Navbar = () => {
             />
             <span
               style={{
-                fontSize: '0.75rem',
+                fontSize: compactNav ? (isMobile ? '0.6rem' : '0.68rem') : '0.75rem',
                 color: isActiveRoute(item.path) ? '#D4AF37' : '#888',
                 fontWeight: isActiveRoute(item.path) ? 600 : 400,
                 transition: 'all 0.3s ease'

@@ -610,7 +610,7 @@ const Home = () => {
       fecha: '28 Mayo 2025',
       lugar: 'Facultad de Economia',
       imagen: IMAGES.CURSOS?.BLOCKCHAIN_BASICS,
-      link: '/comunidad',
+      link: '/eventos',
     },
   ];
 
@@ -841,10 +841,16 @@ const Home = () => {
           <Link to="/cursos" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem'}}>
             Explora los cursos
           </Link>
-          <Link to="/comunidad" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem', background:'rgba(37, 99, 235, 0.8)', border:'1px solid #2563EB'}}>
+          <Link to="/eventos#comunidad" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem', background:'rgba(37, 99, 235, 0.8)', border:'1px solid #2563EB'}}>
             Únete a la comunidad
           </Link>
         </div>
+        <p style={{ marginTop: '1.25rem', marginBottom: 0 }}>
+          <Link to="/newsletter" style={{ color: '#9ca3af', fontSize: '1rem', textDecoration: 'underline', textUnderlineOffset: '4px' }}>
+            Newsletter
+          </Link>
+          <span style={{ color: '#6b7280', fontSize: '0.95rem' }}> — ediciones y archivo</span>
+        </p>
       </section>
 
         {/* Carrusel de Eventos */}

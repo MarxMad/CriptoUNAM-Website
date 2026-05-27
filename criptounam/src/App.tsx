@@ -17,8 +17,13 @@ import NewsletterEntry from './pages/NewsletterEntry'
 import Eventos from './pages/Eventos'
 import ProyectosDestacados from './pages/ProyectosDestacados'
 import YearInReview from './pages/YearInReview'
+import Recompensas from './pages/Recompensas'
+import Misiones from './pages/Misiones'
+import AdminPuma from './pages/AdminPuma'
 import { WalletProvider } from './context/WalletContext'
 import './styles/global.css'
+import './styles/puma-animations.css'
+import Claim from './pages/Claim'
 
 const AppContent = () => {
   const location = useLocation()
@@ -37,6 +42,14 @@ const AppContent = () => {
           <Route path="/newsletter/:id" element={<NewsletterEntry />} />
           <Route path="/proyectos" element={<ProyectosDestacados />} />
           <Route path="/eventos" element={<Eventos />} />
+          <Route path="/recompensas" element={<Recompensas />} />
+          <Route path="/recompensas/misiones" element={<Misiones />} />
+          <Route path="/misiones" element={<Navigate to="/recompensas/misiones" replace />} />
+          <Route path="/embajadores" element={<Navigate to="/recompensas/misiones" replace />} />
+          <Route path="/admin/puma" element={<AdminPuma />} />
+          <Route path="/claim" element={<Claim />} />
+          <Route path="/claim/:kindSlug" element={<Claim />} />
+          <Route path="/claim/:kindSlug/:ref" element={<Claim />} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/registro-curso/:id" element={<RegistroCurso />} />
           <Route path="/juegos" element={<Navigate to="/" replace />} />

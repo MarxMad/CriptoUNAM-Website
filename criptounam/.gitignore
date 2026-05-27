@@ -44,3 +44,9 @@ dist-ssr
 # IDE
 .idea/
 .vscode/
+
+# Foundry — artifacts y dependencias instaladas con `forge install`
+out/
+cache/
+broadcast/
+lib/openzeppelin-contracts/

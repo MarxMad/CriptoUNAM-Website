@@ -18,12 +18,14 @@ const metadata = {
   icons: ['https://criptounam.xyz/favicon.png']
 }
 
-// 3. Redes soportadas (más redes para mejor compatibilidad)
-const networks = [mainnet, arbitrum, polygon, base, optimism]
+// 3. Redes soportadas. Arbitrum One es la red primaria donde viven
+//    PUMAToken y CriptoUNAMBadges. Mantengo mainnet para fallback de
+//    wallets que no han añadido Arbitrum, y otras L2 como referencia.
+const networks = [arbitrum, mainnet, base, optimism, polygon]
 
-// 4. Adapter de wagmi con configuración mínima
+// 4. Adapter de wagmi — Arbitrum primero = red por defecto al conectar
 const wagmiAdapter = new WagmiAdapter({
-  networks: [mainnet, arbitrum],
+  networks: [arbitrum, mainnet],
   projectId,
   ssr: true
 })
@@ -31,7 +33,8 @@ const wagmiAdapter = new WagmiAdapter({
 // 5. Inicializa AppKit con configuración completa incluyendo On-Ramp y Swaps
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [mainnet, arbitrum],
+  networks: [arbitrum, mainnet],
+  defaultNetwork: arbitrum,
   projectId,
   metadata,
   features: {

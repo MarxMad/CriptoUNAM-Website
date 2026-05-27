@@ -214,7 +214,7 @@ const ProyectosDestacados = () => {
               Únete a nuestra comunidad y desarrolla el próximo proyecto blockchain en un hackathon
             </p>
             <Link
-              to="/comunidad"
+              to="/eventos#comunidad"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',

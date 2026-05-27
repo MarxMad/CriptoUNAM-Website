@@ -166,13 +166,13 @@ const Footer = () => {
             }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#D4AF37'} onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#E0E0E0'}>
               Cursos
             </Link>
-            <Link to="/comunidad" style={{
+            <Link to="/eventos#comunidad" style={{
               color: '#E0E0E0',
               textDecoration: 'none',
               transition: 'color 0.3s ease',
               fontSize: '0.9rem'
             }} onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#D4AF37'} onMouseLeave={(e) => (e.target as HTMLElement).style.color = '#E0E0E0'}>
-              Comunidad
+              Eventos y comunidad
             </Link>
             <Link to="/newsletter" style={{
               color: '#E0E0E0',
