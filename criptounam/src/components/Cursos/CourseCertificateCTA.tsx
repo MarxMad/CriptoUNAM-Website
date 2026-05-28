@@ -35,6 +35,12 @@ type Props = {
   badgeRef: string
   progreso: number
   totalLecciones: number
+  /**
+   * Si el curso tiene examen final, debe estar aprobado para considerarse
+   * completado a efectos del certificado. Cursos sin examen final deben
+   * pasar `true` (o no pasar la prop).
+   */
+  examenFinalAprobado?: boolean
 }
 
 const CourseCertificateCTA: React.FC<Props> = ({
@@ -44,13 +50,14 @@ const CourseCertificateCTA: React.FC<Props> = ({
   badgeRef,
   progreso,
   totalLecciones,
+  examenFinalAprobado = true,
 }) => {
   const { address } = useAccount()
   const [cert, setCert] = useState<CertificadoCurso | null>(null)
   const [checking, setChecking] = useState(false)
   const [autoMint, setAutoMint] = useState<AutoMintStatus>({ state: 'idle' })
   const attempted = useRef(false)
-  const completado = progreso >= 100
+  const completado = progreso >= 100 && examenFinalAprobado
 
   // Buscar certificado existente
   useEffect(() => {

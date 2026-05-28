@@ -1,5 +1,8 @@
 import { IMAGES } from './images'
 import { capitulosIntroBlockchain } from './cursoIntroBlockchain'
+import { cursosStackBlockchain } from './cursosStackBlockchain'
+import { cursosApisProductividad } from './cursosApisProductividad'
+import { cursosNegocioDiseno } from './cursosNegocioDiseno'
 
 export interface PreguntaCuestionario {
   pregunta: string
@@ -51,6 +54,13 @@ export interface Curso {
   /** Capítulos con secciones (curso tipo libro; si existe, se usa en lugar de lecciones) */
   capitulos?: Capitulo[]
   requisitos?: string
+  /**
+   * Examen final del curso. Si está presente, aparece como paso adicional
+   * después de completar todas las lecciones. Sirve para verificar
+   * aprendizaje global y desbloquear el certificado NFT.
+   * Recomendado: 10 preguntas que crucen contenido de todas las lecciones.
+   */
+  examenFinal?: PreguntaCuestionario[]
 }
 
 /** Devuelve la lista plana de lecciones/secciones para un curso (desde capitulos o lecciones) */
@@ -121,5 +131,8 @@ export const cursosData: Curso[] = [
       { id: 2, titulo: 'Protocolos DeFi', video: 'https://www.youtube.com/embed/8XGQGhli0IY', descripcion: 'Principales protocolos y casos de uso.' },
       { id: 3, titulo: 'Riesgos y Seguridad', video: 'https://www.youtube.com/embed/8XGQGhli0IY', descripcion: 'Riesgos y mejores prácticas.' },
     ]
-  }
+  },
+  ...cursosStackBlockchain,
+  ...cursosApisProductividad,
+  ...cursosNegocioDiseno,
 ]

@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useAccount, useSignMessage } from 'wagmi'
 import { useNavigate, useParams } from 'react-router-dom'
 import { sendTelegramMessage } from '../api/telegram'
 import { cursosData, type Curso, type Leccion, type Capitulo, getLeccionesFlat } from '../constants/cursosData'
+import { shuffleCuestionario, nuevaSemilla } from '../utils/quizShuffle'
+import ExamenFinal from '../components/Cursos/ExamenFinal'
 import {
   inscripcionCurso,
   estaInscrito,
@@ -26,6 +28,7 @@ import {
   faPlay,
   faBook,
   faAward,
+  faRedo,
 } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
@@ -49,6 +52,11 @@ const RegistroCurso = () => {
   const [respuestasCuestionario, setRespuestasCuestionario] = useState<Record<number, number>>({})
   const [preguntaActual, setPreguntaActual] = useState(0) // índice en el cuestionario de la lección actual (carrusel)
   const [sidebarAbierto, setSidebarAbierto] = useState(false) // móvil: menú desplegable
+  // Semillas para barajar opciones de cuestionarios por lección (estables dentro de la sesión)
+  const [shuffleSeeds, setShuffleSeeds] = useState<Record<number, number>>({})
+  // Estado del examen final
+  const [examenAbierto, setExamenAbierto] = useState(false)
+  const [examenAprobado, setExamenAprobado] = useState(false)
 
   useEffect(() => {
     const c = id ? cursosData.find((x) => x.id === id) : undefined
@@ -68,10 +76,26 @@ const RegistroCurso = () => {
     load()
   }, [address, id])
 
-  // Al cambiar de lección, volver a la primera pregunta del cuestionario
+  // Al cambiar de lección, volver a la primera pregunta del cuestionario.
+  // Además, generamos (una sola vez) la semilla para barajear esa lección.
   useEffect(() => {
     setPreguntaActual(0)
+    setShuffleSeeds((prev) =>
+      prev[leccionActual] === undefined
+        ? { ...prev, [leccionActual]: nuevaSemilla() }
+        : prev,
+    )
   }, [leccionActual])
+
+  // Cuestionario barajeado de la lección actual (calculado siempre para respetar reglas de hooks)
+  const cuestionarioShuffled = useMemo(() => {
+    if (!curso) return undefined
+    const flat = getLeccionesFlat(curso)
+    const l = flat[leccionActual]
+    if (!l?.cuestionario || l.cuestionario.length === 0) return undefined
+    const seed = shuffleSeeds[leccionActual] ?? 1
+    return shuffleCuestionario(l.cuestionario, seed)
+  }, [curso, leccionActual, shuffleSeeds])
 
   if (loading) return <div style={{minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center', color:'#D4AF37'}}>Cargando...</div>
 
@@ -137,7 +161,10 @@ const RegistroCurso = () => {
     const leccion = leccionesFlat[leccionActual]
     const tieneCuestionario = leccion?.cuestionario && leccion.cuestionario.length > 0
     if (tieneCuestionario) {
-      const correctas = leccion.cuestionario!.every((p, i) => respuestasCuestionario[leccionActual * 10 + i] === p.correcta)
+      // Verificación usa la versión barajeada cacheada en cuestionarioShuffled
+      const correctas = cuestionarioShuffled!.every(
+        (p, i) => respuestasCuestionario[leccionActual * 10 + i] === p.correcta,
+      )
       if (!correctas) return
     }
     if (!leccionesCompletadas.includes(leccionActual)) {
@@ -459,11 +486,15 @@ const RegistroCurso = () => {
   const leccion = leccionesFlat[leccionActual] as Leccion | undefined
   const progreso = leccionesFlat.length > 0 ? Math.round((leccionesCompletadas.length / leccionesFlat.length) * 100) : 0
   const muestraGuia = leccion?.guia != null
-  const cuestionario = leccion?.cuestionario
+  const cuestionario = cuestionarioShuffled
   const respuestasLeccion = cuestionario ? cuestionario.map((_, i) => respuestasCuestionario[leccionActual * 10 + i]) : []
   const cuestionarioCompleto = !cuestionario || cuestionario.every((p, i) => respuestasLeccion[i] !== undefined)
   const cuestionarioCorrecto = cuestionario && cuestionarioCompleto && cuestionario.every((p, i) => respuestasLeccion[i] === p.correcta)
   const puedeCompletar = muestraGuia ? (cuestionario ? cuestionarioCorrecto : true) : true
+  // Examen final disponible cuando todas las lecciones están completas
+  const todasLeccionesCompletas =
+    leccionesFlat.length > 0 && leccionesCompletadas.length >= leccionesFlat.length
+  const hayExamenFinal = !!curso.examenFinal && curso.examenFinal.length > 0
 
   const badgeRef = cursoBadgeRef(curso.id, curso.cohorteRef)
   const yaCompletada = leccionesCompletadas.includes(leccionActual)
@@ -1062,6 +1093,85 @@ const RegistroCurso = () => {
             )}
 
             {/* ============================================================
+                EXAMEN FINAL (cuando todas las lecciones están completas)
+                ============================================================ */}
+            {todasLeccionesCompletas && hayExamenFinal && (
+              <div
+                className="puma-card puma-fade-in-up"
+                style={{
+                  marginTop: '1.5rem',
+                  padding: '1.5rem',
+                  background:
+                    'linear-gradient(135deg, rgba(212,175,55,0.08), rgba(124,58,237,0.08))',
+                  border: '1.5px solid rgba(212,175,55,0.4)',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 52,
+                      height: 52,
+                      borderRadius: 14,
+                      background: examenAprobado
+                        ? 'linear-gradient(135deg, #4ade80, #16a34a)'
+                        : 'linear-gradient(135deg, #F4D03F, #D4AF37)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: examenAprobado ? '#fff' : '#0a0a0a',
+                      fontSize: '1.3rem',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <FontAwesomeIcon icon={examenAprobado ? faCheckCircle : faAward} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 200 }}>
+                    <h3
+                      style={{
+                        color: '#fff',
+                        fontFamily: 'Orbitron',
+                        fontSize: '1.05rem',
+                        margin: '0 0 0.3rem',
+                      }}
+                    >
+                      {examenAprobado ? '¡Examen aprobado!' : 'Examen final del curso'}
+                    </h3>
+                    <p
+                      style={{
+                        color: '#cbd5e1',
+                        fontSize: '0.9rem',
+                        margin: 0,
+                        lineHeight: 1.55,
+                      }}
+                    >
+                      {examenAprobado
+                        ? 'Ya demostraste comprensión global del curso. Puedes reclamar tu certificado NFT.'
+                        : 'Pon a prueba lo que aprendiste con 10 preguntas que cruzan todo el curso. Necesitas 8 de 10 para aprobar; las opciones cambian de orden cada intento.'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setExamenAbierto(true)}
+                    className={
+                      examenAprobado ? 'puma-btn puma-btn--ghost' : 'puma-btn puma-btn--gold'
+                    }
+                    style={{ minWidth: 160, justifyContent: 'center' }}
+                  >
+                    <FontAwesomeIcon icon={examenAprobado ? faRedo : faGraduationCap} />
+                    {examenAprobado ? 'Repetir examen' : 'Tomar examen'}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ============================================================
                 CTA DE CERTIFICADO (solo al completar)
                 ============================================================ */}
             <CourseCertificateCTA
@@ -1071,6 +1181,7 @@ const RegistroCurso = () => {
               badgeRef={badgeRef}
               progreso={progreso}
               totalLecciones={leccionesFlat.length}
+              examenFinalAprobado={!hayExamenFinal || examenAprobado}
             />
           </div>
 
@@ -1321,6 +1432,16 @@ const RegistroCurso = () => {
           </p>
         </div>
       </div>
+      {hayExamenFinal && (
+        <ExamenFinal
+          cursoTitulo={curso.titulo}
+          preguntas={curso.examenFinal!}
+          aprobacionMinima={8}
+          open={examenAbierto}
+          onClose={() => setExamenAbierto(false)}
+          onAprobado={() => setExamenAprobado(true)}
+        />
+      )}
     </>
   )
 }

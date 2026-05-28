@@ -5,9 +5,10 @@ export const IMAGES = {
   
   // Imágenes de cursos
   CURSOS: {
-    BLOCKCHAIN_BASICS: '/images/cursos/1.svg',
-    SMART_CONTRACTS: '/images/cursos/2.svg',
-    DEFI: '/images/cursos/3.svg'
+    BLOCKCHAIN_BASICS: '/images/cursos/intro_blockchain.png',
+    SMART_CONTRACTS: '/images/cursos/smart_contracts.png',
+    DEFI: '/images/cursos/defi.png',
+    SOLANA: '/images/cursos/solana.png'
   },
   
   // Imágenes de comunidad
