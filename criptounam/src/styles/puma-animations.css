@@ -257,7 +257,9 @@
 }
 .puma-btn--gold:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(244, 208, 63, 0.5);
+  background: linear-gradient(135deg, #FFE066 0%, #E8C547 60%, #C49E2C 100%);
+  color: #0a0a0a;
+  box-shadow: 0 10px 28px rgba(244, 208, 63, 0.55);
 }
 .puma-btn--gold::after {
   content: '';
@@ -473,6 +475,8 @@
 }
 .puma-tab--active:hover {
   color: #0a0a0a;
+  background: linear-gradient(135deg, #FFE066, #E8C547);
+  box-shadow: 0 6px 18px rgba(244, 208, 63, 0.5);
 }
 
 /* ---------- BADGE / NFT PREVIEW ---------- */

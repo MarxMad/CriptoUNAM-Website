@@ -152,6 +152,15 @@ a:hover {
   box-shadow: 0 5px 20px rgba(212,175,55,0.25);
   transform: translateY(-2px) scale(1.03);
 }
+.primary-button:hover, .button-primary:hover {
+  background: linear-gradient(45deg, #FFE066, #E8C547);
+  color: var(--dark-bg);
+}
+.secondary-button:hover, .button-secondary:hover {
+  background: rgba(212, 175, 55, 0.12);
+  color: #FFE066;
+  border-color: #FFE066;
+}
 
 input, select, textarea {
   border-radius: 12px;

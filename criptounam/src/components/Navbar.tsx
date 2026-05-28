@@ -14,6 +14,7 @@ import {
   faWallet,
   faCalendarAlt,
   faGift,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -242,8 +243,9 @@ const Navbar = () => {
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
     { path: '/eventos', icon: faCalendarAlt, label: 'Eventos' },
     { path: '/recompensas', icon: faGift, label: 'Recompensas' },
+    { path: '/perfil', icon: faUser, label: 'Perfil' },
   ]
-  const compactNav = navigationItems.length >= 6
+  const compactNav = navigationItems.length >= 5
 
   const isActiveRoute = (path: string) => {
     if (path === '/eventos') {
@@ -251,6 +253,9 @@ const Navbar = () => {
     }
     if (path === '/recompensas') {
       return location.pathname === '/recompensas' || location.pathname.startsWith('/recompensas/')
+    }
+    if (path === '/perfil') {
+      return location.pathname === '/perfil' || location.pathname.startsWith('/perfil/')
     }
     return location.pathname === path
   }
@@ -583,7 +588,7 @@ const Navbar = () => {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '4px',
-              padding: '8px 12px',
+              padding: isMobile ? '6px 8px' : '8px 12px',
               borderRadius: '12px',
               textDecoration: 'none',
               transition: 'all 0.3s ease',
@@ -593,13 +598,13 @@ const Navbar = () => {
               border: isActiveRoute(item.path)
                 ? '1px solid rgba(212, 175, 55, 0.3)'
                 : '1px solid transparent',
-              minWidth: '60px'
+              minWidth: isMobile ? '52px' : '60px'
             }}
           >
             <FontAwesomeIcon
               icon={item.icon}
               style={{
-                fontSize: '1.4rem',
+                fontSize: isMobile ? '1.2rem' : '1.4rem',
                 color: isActiveRoute(item.path) ? '#D4AF37' : '#888',
                 transition: 'all 0.3s ease'
               }}

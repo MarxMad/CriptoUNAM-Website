@@ -23,8 +23,10 @@ import {
   faChartLine,
   faGift,
   faFire,
+  faCircleQuestion,
 } from '@fortawesome/free-solid-svg-icons'
 import SEOHead from '../components/SEOHead'
+import ProfileTutorial from '../components/ProfileTutorial'
 import { useWallet } from '../context/WalletContext'
 import ENV_CONFIG from '../config/env'
 import { pumaTokenAbi, type PumaRewardRecord } from '../constants/pumaTokenAbi'
@@ -159,6 +161,10 @@ const Perfil: React.FC = () => {
     setCopied(true)
     setTimeout(() => setCopied(false), 1800)
   }
+
+  const [tutorialForceOpen, setTutorialForceOpen] = useState(false)
+  const openTutorial = () => setTutorialForceOpen(true)
+  const closeTutorial = () => setTutorialForceOpen(false)
 
   /* ----- PUMA on-chain ----- */
   const { data: userInfo } = useReadContract({
@@ -298,8 +304,29 @@ const Perfil: React.FC = () => {
               <FontAwesomeIcon icon={faWandMagicSparkles} />
               Conectar wallet
             </button>
+            <button
+              type="button"
+              onClick={openTutorial}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                marginTop: '1rem',
+                background: 'transparent',
+                border: 'none',
+                color: '#94a3b8',
+                cursor: 'pointer',
+                fontSize: '0.88rem',
+                textDecoration: 'underline',
+                textUnderlineOffset: 4,
+              }}
+            >
+              <FontAwesomeIcon icon={faCircleQuestion} />
+              ¿Cómo funciona el perfil?
+            </button>
           </div>
         </div>
+        <ProfileTutorial forceOpen={tutorialForceOpen} onClose={closeTutorial} />
       </>
     )
   }
@@ -403,30 +430,53 @@ const Perfil: React.FC = () => {
                 Mi perfil CriptoUNAM
               </h1>
 
-              <button
-                type="button"
-                onClick={copyAddress}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 8,
-                  background: 'rgba(0,0,0,0.4)',
-                  border: '1px solid rgba(212,175,55,0.3)',
-                  borderRadius: 12,
-                  padding: '0.45rem 0.85rem',
-                  color: '#cbd5e1',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {address?.slice(0, 8)}…{address?.slice(-6)}
-                <FontAwesomeIcon
-                  icon={copied ? faCheck : faCopy}
-                  style={{ color: copied ? '#4ade80' : '#94a3b8', fontSize: '0.78rem' }}
-                />
-              </button>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={copyAddress}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    background: 'rgba(0,0,0,0.4)',
+                    border: '1px solid rgba(212,175,55,0.3)',
+                    borderRadius: 12,
+                    padding: '0.45rem 0.85rem',
+                    color: '#cbd5e1',
+                    fontFamily: 'monospace',
+                    fontSize: '0.85rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {address?.slice(0, 8)}…{address?.slice(-6)}
+                  <FontAwesomeIcon
+                    icon={copied ? faCheck : faCopy}
+                    style={{ color: copied ? '#4ade80' : '#94a3b8', fontSize: '0.78rem' }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={openTutorial}
+                  title="Ver tutorial del perfil"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    background: 'rgba(212,175,55,0.08)',
+                    border: '1px solid rgba(212,175,55,0.3)',
+                    borderRadius: 12,
+                    padding: '0.45rem 0.7rem',
+                    color: '#F4D03F',
+                    fontSize: '0.82rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  <FontAwesomeIcon icon={faCircleQuestion} />
+                  ¿Cómo funciona?
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1201,6 +1251,7 @@ const Perfil: React.FC = () => {
           </div>
         </section>
       </div>
+      <ProfileTutorial forceOpen={tutorialForceOpen} onClose={closeTutorial} />
     </>
   )
 }
