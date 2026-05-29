@@ -33,13 +33,19 @@ import {
 import '../styles/global.css'
 
 const RegistroCurso = () => {
-  const { address, isConnected } = useAccount()
+  // status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected'.
+  // Mientras es reconnecting/connecting (típico tras un refresh) NO mostramos
+  // el CTA de "Conectar wallet" ni el form de inscribirse — esperamos a wagmi.
+  const { address, isConnected, status } = useAccount()
   const { signMessageAsync } = useSignMessage()
   const { id } = useParams()
   const navigate = useNavigate()
   const [curso, setCurso] = useState<Curso | null>(null)
   const [loading, setLoading] = useState(true)
   const [inscrito, setInscrito] = useState(false)
+  // Evita mostrar el form de "Inscribirse" mientras Supabase verifica si ya lo está.
+  // Arranca en true para que el primer render no muestre el form por defecto.
+  const [verificandoInscripcion, setVerificandoInscripcion] = useState(true)
   const [firmando, setFirmando] = useState(false)
   const [errorInscripcion, setErrorInscripcion] = useState<string | null>(null)
   const [formData, setFormData] = useState({
@@ -64,17 +70,41 @@ const RegistroCurso = () => {
     setLoading(false)
   }, [id])
 
-  // Cargar inscripción y progreso desde Supabase cuando hay wallet y curso
+  // Cargar inscripción y progreso desde Supabase cuando hay wallet y curso.
+  // Mientras wagmi rehidrata (status 'connecting' o 'reconnecting' tras un refresh)
+  // mantenemos verificandoInscripcion=true para no parpadear nada.
   useEffect(() => {
-    if (!address || !id) return
+    if (!id) return
+    // wagmi todavía decidiendo el estado: esperamos.
+    if (status === 'connecting' || status === 'reconnecting') {
+      setVerificandoInscripcion(true)
+      return
+    }
+    if (!address) {
+      // Estado terminal sin wallet: dejamos de cargar para mostrar "Conectar wallet".
+      setVerificandoInscripcion(false)
+      return
+    }
+    let cancelled = false
+    setVerificandoInscripcion(true)
     const load = async () => {
-      const ok = await estaInscrito(address, id)
-      if (ok) setInscrito(true)
-      const indices = await obtenerProgresoCurso(address, id)
-      if (indices.length > 0) setLeccionesCompletadas(indices)
+      try {
+        const [ok, indices] = await Promise.all([
+          estaInscrito(address, id),
+          obtenerProgresoCurso(address, id)
+        ])
+        if (cancelled) return
+        setInscrito(ok)
+        if (indices.length > 0) setLeccionesCompletadas(indices)
+      } finally {
+        if (!cancelled) setVerificandoInscripcion(false)
+      }
     }
     load()
-  }, [address, id])
+    return () => {
+      cancelled = true
+    }
+  }, [address, id, status])
 
   // Al cambiar de lección, volver a la primera pregunta del cuestionario.
   // Además, generamos (una sola vez) la semilla para barajear esa lección.
@@ -108,8 +138,12 @@ const RegistroCurso = () => {
     )
   }
 
-  // Si no está conectada la wallet, mostrar mensaje amigable
-  if (!isConnected) {
+  // Mientras wagmi reconecta tras un refresh, no mostramos ni "Conectar wallet"
+  // ni el form de inscribirse — esperamos al loader de verificación más abajo.
+  const wagmiReconectando = status === 'connecting' || status === 'reconnecting'
+
+  // Si no está conectada la wallet (y wagmi ya terminó de decidir), mostrar mensaje.
+  if (!isConnected && !wagmiReconectando) {
     return (
       <div className="registro-curso-container" style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center' }}>
         <h2 style={{ color: '#D4AF37', marginBottom: 12, fontSize: '1.5rem' }}>Un paso antes de inscribirte</h2>
@@ -285,6 +319,38 @@ const RegistroCurso = () => {
       i++
     }
     return out
+  }
+
+  // Mientras verificamos inscripción contra Supabase, mostramos un loader
+  // para no parpadear el form de "Inscribirse" a alguien que ya está inscrito.
+  if (verificandoInscripcion) {
+    return (
+      <div
+        className="registro-curso-container"
+        style={{
+          minHeight: '60vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 12,
+          color: '#D4AF37'
+        }}
+      >
+        <div
+          style={{
+            width: 36,
+            height: 36,
+            border: '3px solid rgba(212,175,55,0.25)',
+            borderTopColor: '#D4AF37',
+            borderRadius: '50%',
+            animation: 'spin 0.9s linear infinite'
+          }}
+        />
+        <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Verificando tu inscripción…</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    )
   }
 
   if (!inscrito) {

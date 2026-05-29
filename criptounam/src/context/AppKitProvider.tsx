@@ -1,5 +1,5 @@
 import { createAppKit } from '@reown/appkit/react'
-import { WagmiProvider } from 'wagmi'
+import { WagmiProvider, createStorage } from 'wagmi'
 import { arbitrum, mainnet, polygon, base, optimism } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -23,11 +23,19 @@ const metadata = {
 //    wallets que no han añadido Arbitrum, y otras L2 como referencia.
 const networks = [arbitrum, mainnet, base, optimism, polygon]
 
-// 4. Adapter de wagmi — Arbitrum primero = red por defecto al conectar
+// 4. Adapter de wagmi — Arbitrum primero = red por defecto al conectar.
+//    ssr: false porque es SPA Vite (sin server-rendering). Con ssr: true wagmi
+//    no auto-reconecta al refrescar y el usuario tiene que reabrir el modal.
+//    storage explícito en localStorage para persistir el último connector
+//    entre refreshes y pestañas.
 const wagmiAdapter = new WagmiAdapter({
   networks: [arbitrum, mainnet],
   projectId,
-  ssr: true
+  ssr: false,
+  storage: createStorage({
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined as any,
+    key: 'criptounam.wagmi'
+  })
 })
 
 // 5. Inicializa AppKit con configuración completa incluyendo On-Ramp y Swaps
