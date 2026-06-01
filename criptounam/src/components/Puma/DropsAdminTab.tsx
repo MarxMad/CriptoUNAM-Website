@@ -30,6 +30,7 @@ import {
 } from '../../hooks/useDrops'
 import { BadgeKind, BADGE_KIND_LABEL } from '../../constants/criptoUnamBadgesAbi'
 import { EMBAJADORES_MAY_13_2026 } from '../../constants/dropPresets'
+import FaucetButton from './FaucetButton'
 
 type Props = {
   isAdmin: boolean
@@ -381,6 +382,21 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
             <FontAwesomeIcon icon={faPlus} />
             {busy ? 'Procesando…' : wrongNetwork ? `Cambiar a ${targetChain?.name ?? 'red correcta'} y crear` : 'Crear drop'}
           </button>
+
+          {/* Crear/cerrar drops cuesta gas. En testnet ofrecemos AVAX gratis. */}
+          <div
+            style={{
+              marginTop: '0.75rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+            }}
+          >
+            <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>¿Sin AVAX para el gas?</span>
+            <FaucetButton compact style={{ padding: '0.4rem 0.8rem', fontSize: '0.82rem' }} />
+          </div>
 
           {writeError && (
             <div className="puma-alert puma-alert--error" style={{ marginTop: '0.85rem' }}>

@@ -4,6 +4,7 @@ import {
   useAccount,
   useChainId,
   useConfig,
+  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from 'wagmi'
@@ -31,6 +32,7 @@ import { useWallet } from '../../context/WalletContext'
 import ENV_CONFIG from '../../config/env'
 import { BadgeKind, BADGE_KIND_LABEL } from '../../constants/criptoUnamBadgesAbi'
 import { pumaBalanceQueryKey } from '../../hooks/usePumaTokenBalance'
+import FaucetButton from './FaucetButton'
 
 const explorerBase = ENV_CONFIG.EXPLORER_URL || 'https://etherscan.io'
 
@@ -62,7 +64,23 @@ const DropCodeClaim: React.FC = () => {
   const { address } = useAccount()
   const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { switchChainAsync } = useSwitchChain()
+
+  // La tx DEBE firmarse en la red de los contratos (43113 Fuji), no en la que
+  // tenga activa la wallet.
+  const targetChainId = ENV_CONFIG.CHAIN_ID
+  const targetChain = wagmiConfig.chains.find((c) => c.id === targetChainId)
+  const wrongNetwork = chainId !== targetChainId
+
+  const ensureTargetChain = async (): Promise<boolean> => {
+    if (chainId === targetChainId) return true
+    try {
+      await switchChainAsync({ chainId: targetChainId })
+      return true
+    } catch {
+      return false
+    }
+  }
 
   const [codeInput, setCodeInput] = useState('')
   const [submittedCode, setSubmittedCode] = useState('')
@@ -95,7 +113,7 @@ const DropCodeClaim: React.FC = () => {
     !expired &&
     !claimedBefore &&
     isConnected &&
-    !!chain &&
+    !!targetChain &&
     !!address
 
   const search = (e: React.FormEvent) => {
@@ -106,14 +124,15 @@ const DropCodeClaim: React.FC = () => {
     setSubmittedCode(c)
   }
 
-  const claim = () => {
-    if (!canClaim || !chain || !address) return
+  const claim = async () => {
+    if (!canClaim || !targetChain || !address) return
+    if (!(await ensureTargetChain())) return
     writeContract({
       address: DROPS_ADDRESS,
       abi: criptoUnamDropsAbi,
       functionName: 'claimDrop',
       args: [submittedCode],
-      chain,
+      chain: targetChain,
       account: address,
     })
   }
@@ -340,24 +359,56 @@ const DropCodeClaim: React.FC = () => {
           )}
 
           {isConnected && !txOk && (
-            <button
-              type="button"
-              onClick={claim}
-              disabled={!canClaim || busy}
-              className="puma-btn puma-btn--gold"
-              style={{ width: '100%', justifyContent: 'center' }}
-            >
-              <FontAwesomeIcon icon={faGift} />
-              {busy
-                ? 'Reclamando…'
-                : claimedBefore
-                ? 'Ya reclamado'
-                : expired
-                ? 'Expirado'
-                : !drop.active
-                ? 'Drop desactivado'
-                : 'Reclamar ahora'}
-            </button>
+            <>
+              {wrongNetwork && (
+                <div className="puma-alert puma-alert--warn" style={{ marginBottom: '0.75rem' }}>
+                  <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginTop: 3 }} />
+                  <span style={{ fontSize: '0.85rem' }}>
+                    Tu wallet está en la red {chainId}. Al reclamar se cambiará a{' '}
+                    <strong>{targetChain?.name ?? `chain ${targetChainId}`}</strong>; acepta el
+                    cambio en tu wallet.
+                  </span>
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={claim}
+                disabled={!canClaim || busy}
+                className="puma-btn puma-btn--gold"
+                style={{ width: '100%', justifyContent: 'center' }}
+              >
+                <FontAwesomeIcon icon={faGift} />
+                {busy
+                  ? 'Reclamando…'
+                  : claimedBefore
+                  ? 'Ya reclamado'
+                  : expired
+                  ? 'Expirado'
+                  : !drop.active
+                  ? 'Drop desactivado'
+                  : wrongNetwork
+                  ? `Cambiar a ${targetChain?.name ?? 'red correcta'} y reclamar`
+                  : 'Reclamar ahora'}
+              </button>
+
+              {/* El claim cuesta gas. En testnet ofrecemos AVAX gratis. */}
+              <div
+                style={{
+                  marginTop: '0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                }}
+              >
+                <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+                  ¿Sin AVAX para el gas?
+                </span>
+                <FaucetButton compact style={{ padding: '0.4rem 0.8rem', fontSize: '0.82rem' }} />
+              </div>
+            </>
           )}
 
           {writeError && (

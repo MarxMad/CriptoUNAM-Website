@@ -39,6 +39,7 @@ import {
 import { usePumaMissionsList, pumaTokenConfigured } from '../hooks/usePumaMissions'
 import { useAdmin } from '../hooks/useAdmin'
 import DropsAdminTab from '../components/Puma/DropsAdminTab'
+import DropsRoleWiring from '../components/Puma/DropsRoleWiring'
 import { faGift } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
@@ -871,7 +872,12 @@ const AdminPuma: React.FC = () => {
               </div>
             )}
             {/* ==================== DROPS ==================== */}
-            {tab === 'drops' && <DropsAdminTab isAdmin={canViewAdminPanel} />}
+            {tab === 'drops' && (
+              <div className="puma-fade-in" style={{ display: 'grid', gap: '1.25rem' }}>
+                <DropsRoleWiring />
+                <DropsAdminTab isAdmin={canViewAdminPanel} />
+              </div>
+            )}
           </>
         )}
 

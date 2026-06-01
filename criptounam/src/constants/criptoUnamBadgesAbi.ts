@@ -31,6 +31,16 @@ export const criptoUnamBadgesAbi = [
   },
   {
     type: 'function',
+    name: 'grantRole',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'role', type: 'bytes32' },
+      { name: 'account', type: 'address' },
+    ],
+    outputs: [],
+  },
+  {
+    type: 'function',
     name: 'ownerOf',
     stateMutability: 'view',
     inputs: [{ name: 'tokenId', type: 'uint256' }],
