@@ -13,7 +13,7 @@
  *
  * Variables de entorno (configurar en Vercel, NUNCA con prefijo VITE_):
  *   MINTER_PRIVATE_KEY        — wallet con MINTER_ROLE (Badges) + REWARD_MANAGER_ROLE (PUMA)
- *   ARBITRUM_RPC_URL          — RPC de Arbitrum One
+ *   AVAX_RPC_URL              — RPC de Avalanche C-Chain (ej. https://api.avax.network/ext/bc/C/rpc)
  *   BADGES_CONTRACT           — dirección de CriptoUNAMBadges
  *   PUMA_TOKEN                — dirección de PUMAToken
  *   SUPABASE_URL              — URL del proyecto Supabase
@@ -24,7 +24,7 @@
 
 import { createWalletClient, createPublicClient, http, parseEther, isAddress, decodeEventLog } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { arbitrum } from 'viem/chains'
+import { avalanche } from 'viem/chains'
 import { createClient } from '@supabase/supabase-js'
 
 const BADGE_KIND_COURSE = 0 // CourseCompletion en CriptoUNAMBadges
@@ -102,7 +102,7 @@ export default async function handler(req: any, res: any) {
   // ---- 1. env vars ----
   const {
     MINTER_PRIVATE_KEY,
-    ARBITRUM_RPC_URL,
+    AVAX_RPC_URL,
     BADGES_CONTRACT,
     PUMA_TOKEN,
     SUPABASE_URL,
@@ -111,7 +111,7 @@ export default async function handler(req: any, res: any) {
     CERT_PUMA_REWARD,
   } = process.env
 
-  if (!MINTER_PRIVATE_KEY || !ARBITRUM_RPC_URL || !BADGES_CONTRACT || !PUMA_TOKEN) {
+  if (!MINTER_PRIVATE_KEY || !AVAX_RPC_URL || !BADGES_CONTRACT || !PUMA_TOKEN) {
     return jsonError(res, 500, 'Backend mal configurado (faltan envs on-chain)')
   }
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
@@ -162,9 +162,9 @@ export default async function handler(req: any, res: any) {
 
   // ---- 4. Mint on-chain ----
   const account = privateKeyToAccount(MINTER_PRIVATE_KEY as `0x${string}`)
-  const transport = http(ARBITRUM_RPC_URL)
-  const walletClient = createWalletClient({ account, chain: arbitrum, transport })
-  const publicClient = createPublicClient({ chain: arbitrum, transport })
+  const transport = http(AVAX_RPC_URL)
+  const walletClient = createWalletClient({ account, chain: avalanche, transport })
+  const publicClient = createPublicClient({ chain: avalanche, transport })
 
   const tokenUri = BADGES_METADATA_BASE
     ? `${BADGES_METADATA_BASE.replace(/\/$/, '')}/${badgeRef}.json`

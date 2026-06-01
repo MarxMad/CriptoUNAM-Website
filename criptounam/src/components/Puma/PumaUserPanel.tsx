@@ -13,6 +13,7 @@ import { faCoins, faMedal, faStar, faPaperPlane, faClock } from '@fortawesome/fr
 import ENV_CONFIG from '../../config/env'
 import { pumaTokenAbi, pumaTransferRewardAbi, type PumaRewardRecord } from '../../constants/pumaTokenAbi'
 import { useWallet } from '../../context/WalletContext'
+import { usePumaTokenBalance } from '../../hooks/usePumaTokenBalance'
 
 const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
 const tokenOk = isAddress(tokenAddr) && tokenAddr !== zeroAddress
@@ -47,6 +48,13 @@ const PumaUserPanel: React.FC = () => {
   const [toAddr, setToAddr] = useState('')
   const [sendAmt, setSendAmt] = useState('')
 
+  const {
+    formatted: balanceFormatted,
+    refetch: refetchBalance,
+    onExpectedChain,
+    expectedChainId,
+  } = usePumaTokenBalance()
+
   const { data: userInfo, refetch: refetchInfo } = useReadContract({
     address: tokenOk && address ? tokenAddr : undefined,
     abi: pumaTokenAbi,
@@ -76,6 +84,7 @@ const PumaUserPanel: React.FC = () => {
 
   useEffect(() => {
     if (ok) {
+      refetchBalance()
       refetchInfo()
       refetchBadges()
       refetchRewards()
@@ -83,7 +92,7 @@ const PumaUserPanel: React.FC = () => {
       setToAddr('')
       setSendAmt('')
     }
-  }, [ok, refetchInfo, refetchBadges, refetchRewards, reset])
+  }, [ok, refetchBalance, refetchInfo, refetchBadges, refetchRewards, reset])
 
   const sendTransfer = (e: React.FormEvent) => {
     e.preventDefault()
@@ -151,7 +160,7 @@ const PumaUserPanel: React.FC = () => {
         <h3 style={{ fontFamily: 'Orbitron', color: '#D4AF37', fontSize: 'clamp(1rem, 3vw, 1.15rem)', marginTop: 0 }}>
           Tu progreso
         </h3>
-        {tuple && (
+        {(tuple || address) && (
           <div
             style={{
               display: 'grid',
@@ -164,20 +173,31 @@ const PumaUserPanel: React.FC = () => {
             <div>
               <FontAwesomeIcon icon={faCoins} style={{ color: '#D4AF37', marginRight: 8 }} />
               Saldo
-              <div style={{ color: '#fff', fontWeight: 700, marginTop: 4 }}>{formatEther(tuple[0])} PUMA</div>
-            </div>
-            <div>
-              <FontAwesomeIcon icon={faStar} style={{ color: '#93c5fd', marginRight: 8 }} />
-              Nivel
-              <div style={{ color: '#fff', fontWeight: 700, marginTop: 4 }}>{tuple[1].toString()}</div>
-            </div>
-            <div style={{ gridColumn: 'span 2', minWidth: 0 }}>
-              <FontAwesomeIcon icon={faMedal} style={{ color: '#fbbf24', marginRight: 8 }} />
-              Experiencia acumulada
-              <div style={{ color: '#fff', fontWeight: 600, marginTop: 4, wordBreak: 'break-word' }}>
-                {formatEther(tuple[2])} (unidades on-chain)
+              <div style={{ color: '#fff', fontWeight: 700, marginTop: 4 }}>
+                {balanceFormatted} PUMA
               </div>
+              {!onExpectedChain && (
+                <div style={{ color: '#fbbf24', fontSize: '0.78rem', marginTop: 4 }}>
+                  Conecta Avalanche (chain {expectedChainId}) para el saldo real.
+                </div>
+              )}
             </div>
+            {tuple && (
+              <>
+                <div>
+                  <FontAwesomeIcon icon={faStar} style={{ color: '#93c5fd', marginRight: 8 }} />
+                  Nivel
+                  <div style={{ color: '#fff', fontWeight: 700, marginTop: 4 }}>{tuple[1].toString()}</div>
+                </div>
+                <div style={{ gridColumn: 'span 2', minWidth: 0 }}>
+                  <FontAwesomeIcon icon={faMedal} style={{ color: '#fbbf24', marginRight: 8 }} />
+                  Experiencia acumulada
+                  <div style={{ color: '#fff', fontWeight: 600, marginTop: 4, wordBreak: 'break-word' }}>
+                    {formatEther(tuple[2])} (unidades on-chain)
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
         <p style={{ fontFamily: 'monospace', fontSize: '0.8rem', color: '#777', marginBottom: 0, wordBreak: 'break-all' }}>

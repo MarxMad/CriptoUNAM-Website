@@ -11,12 +11,11 @@ import {
   obtenerProgresoCurso,
   marcarLeccionCompletada
 } from '../services/progresoCurso.service'
-import CoursePumaPayment from '../components/Cursos/CoursePumaPayment'
+import CourseEnrollPreview from '../components/Cursos/CourseEnrollPreview'
 import CourseCertificateCTA from '../components/Cursos/CourseCertificateCTA'
 import { cursoBadgeRef } from '../constants/cursosData'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faCoins,
   faChevronLeft,
   faChevronRight,
   faCheck,
@@ -48,11 +47,6 @@ const RegistroCurso = () => {
   const [verificandoInscripcion, setVerificandoInscripcion] = useState(true)
   const [firmando, setFirmando] = useState(false)
   const [errorInscripcion, setErrorInscripcion] = useState<string | null>(null)
-  const [formData, setFormData] = useState({
-    nombre: '',
-    email: ''
-  })
-  const [showForm, setShowForm] = useState(false)
   const [leccionActual, setLeccionActual] = useState(0)
   const [leccionesCompletadas, setLeccionesCompletadas] = useState<number[]>([])
   const [respuestasCuestionario, setRespuestasCuestionario] = useState<Record<number, number>>({})
@@ -156,22 +150,20 @@ const RegistroCurso = () => {
     )
   }
 
-  const handleInscribirse = async () => {
+  const handleInscribirse = async (datos: { nombre: string; email: string }) => {
     if (!curso || !address) return
     setErrorInscripcion(null)
     setFirmando(true)
     try {
       const mensajeAFirmar = `Me inscribo al curso "${curso.titulo}" en CriptoUNAM. Wallet: ${address}. Fecha: ${new Date().toISOString()}`
       await signMessageAsync({ account: address, message: mensajeAFirmar })
-      const notif = `🚀 Nuevo alumno inscrito en CriptoUNAM\nCurso: ${curso.titulo}\nWallet: ${address}`
-      if (formData.nombre) await sendTelegramMessage(notif + `\nNombre: ${formData.nombre}`, '1608242541')
-      else await sendTelegramMessage(notif, '1608242541')
-      if (formData.email) await sendTelegramMessage(`Email: ${formData.email}`, '1608242541')
+      const notif = `🚀 Nuevo alumno inscrito en CriptoUNAM\nCurso: ${curso.titulo}\nWallet: ${address}\nNombre: ${datos.nombre}\nEmail: ${datos.email}`
+      await sendTelegramMessage(notif, '1608242541')
       await inscripcionCurso({
         walletAddress: address,
         cursoId: id!,
-        nombre: formData.nombre || undefined,
-        email: formData.email || undefined
+        nombre: datos.nombre,
+        email: datos.email,
       })
       setInscrito(true)
     } catch (e: any) {
@@ -183,10 +175,6 @@ const RegistroCurso = () => {
     } finally {
       setFirmando(false)
     }
-  }
-
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const handleCompletarLeccion = () => {
@@ -354,198 +342,17 @@ const RegistroCurso = () => {
   }
 
   if (!inscrito) {
-  const precioPuma = curso.precioPuma ?? 0
-  const esPago = precioPuma > 0
-  return (
-    <div className="registro-curso-container" style={{ padding: '2rem 1rem' }}>
-      <div className="registro-header" style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ marginBottom: 8 }}>{curso.titulo}</h1>
-        <p style={{ color: '#888', fontSize: '0.95rem' }}>ID del curso: {id}</p>
-        {esPago && (
-          <p
-            style={{
-              marginTop: '0.75rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              color: '#F4D03F',
-              fontWeight: 600,
-              background: 'rgba(212,175,55,0.1)',
-              padding: '0.4rem 0.9rem',
-              borderRadius: 999,
-              border: '1px solid rgba(212,175,55,0.35)',
-            }}
-          >
-            <FontAwesomeIcon icon={faCoins} />
-            Curso de pago — {precioPuma} $PUMA
-          </p>
-        )}
+    return (
+      <div className="registro-curso-container" style={{ padding: '1.5rem 0 3rem' }}>
+        <CourseEnrollPreview
+          curso={curso}
+          walletAddress={address}
+          firmando={firmando}
+          errorInscripcion={errorInscripcion}
+          onConfirmar={handleInscribirse}
+        />
       </div>
-
-      {esPago ? (
-        <div style={{ maxWidth: 600, margin: '0 auto' }}>
-          <CoursePumaPayment
-            cursoId={id!}
-            cursoTitulo={curso.titulo}
-            precioPuma={precioPuma}
-            isBusy={firmando}
-            onPaid={async () => {
-              await handleInscribirse()
-            }}
-          />
-          {errorInscripcion && (
-            <p style={{ color: '#f87171', fontSize: '0.9rem', marginTop: 16, textAlign: 'center' }}>
-              {errorInscripcion}
-            </p>
-          )}
-          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-            <button
-              className="secondary-button"
-              style={{ marginBottom: 8 }}
-              onClick={() => setShowForm((v) => !v)}
-            >
-              Datos para constancia (opcional)
-            </button>
-            {showForm && (
-              <form
-                className="registro-form"
-                style={{ maxWidth: 420, margin: '16px auto 0' }}
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <div className="form-group">
-                  <label>Nombre completo</label>
-                  <input
-                    type="text"
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Correo electrónico</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleFormChange}
-                  />
-                </div>
-                <p style={{ color: '#888', fontSize: '0.8rem' }}>
-                  Estos datos se envían junto con la confirmación de pago.
-                </p>
-              </form>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div
-          className="registro-content"
-          style={{
-            maxWidth: 420,
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <p style={{ color: '#E0E0E0', marginBottom: 24, textAlign: 'center', lineHeight: 1.6 }}>
-            Con un clic te inscribes. Tu wallet firmará el mensaje para registrar tu inscripción.
-          </p>
-          <button
-            className="primary-button"
-            style={{
-              width: '100%',
-              maxWidth: 280,
-              marginBottom: 16,
-              fontSize: '1.1rem',
-              padding: '1rem 1.5rem',
-            }}
-            onClick={handleInscribirse}
-            disabled={firmando}
-          >
-            {firmando ? 'Firmando...' : 'Inscribirse'}
-          </button>
-          {errorInscripcion && (
-            <p style={{ color: '#f87171', fontSize: '0.9rem', marginBottom: 16, textAlign: 'center' }}>
-              {errorInscripcion}
-            </p>
-          )}
-          <button
-            className="secondary-button"
-            style={{ marginBottom: 8 }}
-            onClick={() => setShowForm((v) => !v)}
-          >
-            Quiero constancia (agregar nombre y correo)
-          </button>
-          {showForm && (
-            <form
-              className="registro-form"
-              style={{ width: '100%', marginTop: 16 }}
-              onSubmit={(e) => {
-                e.preventDefault()
-                handleInscribirse()
-              }}
-            >
-              <div className="form-group">
-                <label>Nombre completo</label>
-                <input
-                  type="text"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Correo electrónico</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              <button
-                className="primary-button"
-                type="submit"
-                style={{ width: '100%' }}
-                disabled={firmando}
-              >
-                Inscribirse y obtener constancia
-              </button>
-            </form>
-          )}
-          <div
-            className="registro-info"
-            style={{
-              marginTop: 32,
-              padding: '1.25rem',
-              background: 'rgba(212,175,55,0.06)',
-              borderRadius: 12,
-              border: '1px solid rgba(212,175,55,0.2)',
-            }}
-          >
-            <h3 style={{ color: '#D4AF37', marginBottom: 12, fontSize: '1rem' }}>Importante</h3>
-            <ul
-              style={{
-                margin: 0,
-                paddingLeft: '1.25rem',
-                color: '#E0E0E0',
-                fontSize: '0.9rem',
-                lineHeight: 1.8,
-              }}
-            >
-              <li>Este curso es gratuito</li>
-              <li>Tu wallet solo firma un mensaje para inscribirte; no se envían fondos</li>
-              <li>Si quieres constancia, añade tu nombre y correo antes de inscribirte</li>
-              <li>Debes completar todas las lecciones para obtener tu constancia</li>
-            </ul>
-          </div>
-        </div>
-      )}
-    </div>
-  )
+    )
   }
 
   const leccionesFlat = curso ? getLeccionesFlat(curso) : []

@@ -1,7 +1,10 @@
 /**
- * Proyectos de hackathones CriptoUNAM.
+ * Proyectos / startups CriptoUNAM nacidos en hackathones.
  * Imágenes en: public/images/Proyectos_Hacks/
- * Editar aquí para actualizar en /proyectos y en la sección de Comunidad.
+ * Editar aquí para actualizar en /proyectos y en el banner del Home.
+ *
+ * El orden controla la prioridad de aparición en el banner del Home y en /proyectos.
+ * Las "startups en desarrollo activo" van primero.
  */
 const IMG = '/images/Proyectos_Hacks'
 
@@ -16,6 +19,40 @@ export interface ProyectoHackItem {
 }
 
 export const proyectosHacksData: ProyectoHackItem[] = [
+  // ---------- Startups en desarrollo activo ----------
+  {
+    id: 'utonoma',
+    nombre: 'UTONOMA',
+    descripcion: 'Plataforma de videos descentralizada para contenido educativo.',
+    demo: 'https://utonoma.com/',
+    red: 'Web3',
+    imagen: `${IMG}/UTONOMA.svg`,
+  },
+  {
+    id: 'seyf',
+    nombre: 'SEYF',
+    descripcion: 'Startup nueva construida sobre Stellar por la comunidad CriptoUNAM.',
+    red: 'Stellar',
+    imagen: `${IMG}/SEYF.svg`, // pendiente — añadir SVG en public/images/Proyectos_Hacks/
+  },
+  {
+    id: 'faro',
+    nombre: 'Faro',
+    descripcion: 'Proyecto sobre la red Stellar.',
+    demo: 'https://faro-gamma.vercel.app/',
+    repo: 'https://github.com/MarxMad/Faro',
+    red: 'Stellar',
+    imagen: `${IMG}/Faro.svg`,
+  },
+  {
+    id: 'lakiniela',
+    nombre: 'La Kiniela',
+    descripcion: 'Plataforma de predicciones y quinielas descentralizadas.',
+    red: 'Web3',
+    imagen: `${IMG}/LaKiniela.svg`, // pendiente — añadir SVG en public/images/Proyectos_Hacks/
+  },
+
+  // ---------- Resto de proyectos de hackathones ----------
   {
     id: 'blueprint',
     nombre: 'Blueprint',
@@ -44,22 +81,13 @@ export const proyectosHacksData: ProyectoHackItem[] = [
     imagen: `${IMG}/PumaPay.svg`,
   },
   {
-    id: 'faro',
-    nombre: 'Faro',
-    descripcion: 'Proyecto sobre la red Stellar.',
-    demo: 'https://faro-gamma.vercel.app/',
-    repo: 'https://github.com/MarxMad/Faro',
-    red: 'Stellar',
-    imagen: `${IMG}/Faro.svg`,
-  },
-  {
     id: 'unbox',
     nombre: 'Unbox',
     descripcion: 'Tokenización de streetwear y art toys en Solana.',
     demo: 'https://unbo-x.vercel.app/',
     repo: 'https://github.com/MarxMad/UnboX/tree/main',
     red: 'Solana',
-    imagen: `${IMG}/Unbox.svg`, // Añadir Unbox.svg en public/images/Proyectos_Hacks/ cuando esté disponible
+    imagen: `${IMG}/Unbox.svg`,
   },
   {
     id: 'mydentalvault',
@@ -122,7 +150,7 @@ export const proyectosHacksData: ProyectoHackItem[] = [
     demo: 'https://coreweave-agents.vercel.app/dashboard',
     repo: 'https://github.com/MarxMad/coreweave-agents',
     red: 'Core',
-    imagen: `${IMG}/Sinter.svg`, // placeholder
+    imagen: `${IMG}/Sinter.svg`,
   },
   {
     id: 'verifica',
@@ -139,13 +167,5 @@ export const proyectosHacksData: ProyectoHackItem[] = [
     repo: 'https://github.com/MarxMad/SkillHubID/tree/main/frontend-skillchain',
     red: 'Stellar',
     imagen: `${IMG}/SkilhubID.svg`,
-  },
-  {
-    id: 'utonoma',
-    nombre: 'UTONOMA',
-    descripcion: 'Plataforma de videos descentralizada para contenido educativo.',
-    demo: 'https://utonoma.com/',
-    red: 'Web3',
-    imagen: `${IMG}/UTONOMA.svg`,
   },
 ]

@@ -10,30 +10,21 @@ import { formatEther, parseEther } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCoins,
-  faCheck,
   faShieldHalved,
   faGraduationCap,
   faExternalLinkAlt,
   faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons'
 import ENV_CONFIG from '../../config/env'
-import { pumaTokenAbi } from '../../constants/pumaTokenAbi'
+import { pumaPayCourseAbi } from '../../constants/pumaTokenAbi'
 import {
   PUMA_TOKEN_ADDRESS,
   pumaPaymentConfigured,
-  usePumaAllowance,
   usePumaBalance,
 } from '../../hooks/usePumaPayment'
 import { useWallet } from '../../context/WalletContext'
 
 const explorerBase = ENV_CONFIG.EXPLORER_URL || 'https://etherscan.io'
-const paymentEndpoint = ENV_CONFIG.COURSE_PAYMENT_ENDPOINT
-
-type ConfirmStatus =
-  | { state: 'idle' }
-  | { state: 'submitting' }
-  | { state: 'done'; txHash?: `0x${string}` }
-  | { state: 'failed'; message: string }
 
 type Props = {
   cursoId: string
@@ -44,6 +35,12 @@ type Props = {
   onPaid: () => Promise<void> | void
 }
 
+/**
+ * Pago de curso con $PUMA. Llama directamente a `payCourse(cursoId, amount)`
+ * en el contrato PUMAToken (función pública desde v2). Cero backend, cero
+ * approve. Una sola transacción que el alumno firma con su wallet y quema
+ * sus PUMA dejando registro on-chain del curso pagado.
+ */
 const CoursePumaPayment: React.FC<Props> = ({
   cursoId,
   cursoTitulo,
@@ -59,87 +56,43 @@ const CoursePumaPayment: React.FC<Props> = ({
 
   const precioWei = parseEther(String(precioPuma))
 
-  const { data: allowance = 0n, refetch: refetchAllowance } = usePumaAllowance(address)
   const { data: balance = 0n, refetch: refetchBalance } = usePumaBalance(address)
-
-  const allowanceBig = allowance as bigint
   const balanceBig = balance as bigint
-  const enoughAllowance = allowanceBig >= precioWei
   const enoughBalance = balanceBig >= precioWei
 
   const { writeContract, data: txHash, isPending, error: writeError, reset } = useWriteContract()
   const { isLoading: confirming, isSuccess: txOk } = useWaitForTransactionReceipt({ hash: txHash })
 
-  const [confirm, setConfirm] = useState<ConfirmStatus>({ state: 'idle' })
+  const [calledOnPaid, setCalledOnPaid] = useState(false)
 
   useEffect(() => {
-    if (txOk) {
-      refetchAllowance()
+    if (txOk && !calledOnPaid) {
+      setCalledOnPaid(true)
       refetchBalance()
+      void onPaid()
       reset()
     }
-  }, [txOk, refetchAllowance, refetchBalance, reset])
+  }, [txOk, calledOnPaid, refetchBalance, onPaid, reset])
 
-  const approve = () => {
+  const pagar = () => {
     if (!chain || !address) return
     writeContract({
       address: PUMA_TOKEN_ADDRESS,
-      abi: pumaTokenAbi,
-      functionName: 'approve',
-      args: [PUMA_TOKEN_ADDRESS, precioWei],
+      abi: pumaPayCourseAbi,
+      functionName: 'payCourse',
+      args: [cursoId, precioWei],
       chain,
       account: address,
     })
   }
 
-  const requestPaymentConfirmation = async () => {
-    if (!address) return
-    if (!paymentEndpoint) {
-      // Sin backend configurado, asumimos pago manual por staff
-      setConfirm({
-        state: 'failed',
-        message:
-          'Aún no configuramos el confirmador automático. Comparte tu wallet con el equipo para que registren el pago.',
-      })
-      return
-    }
-    setConfirm({ state: 'submitting' })
-    try {
-      const res = await fetch(paymentEndpoint, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({
-          wallet: address,
-          cursoId,
-          amount: precioPuma,
-          reason: `Pago curso ${cursoId}`,
-        }),
-      })
-      if (!res.ok) {
-        const text = await res.text().catch(() => '')
-        throw new Error(text || `Error ${res.status}`)
-      }
-      const data = (await res.json()) as { txHash?: `0x${string}` }
-      setConfirm({ state: 'done', txHash: data.txHash })
-      refetchAllowance()
-      refetchBalance()
-      await onPaid()
-    } catch (err) {
-      setConfirm({
-        state: 'failed',
-        message: err instanceof Error ? err.message : 'No pudimos confirmar el pago.',
-      })
-    }
-  }
-
-  /* ============================================================ */
   if (!pumaPaymentConfigured) {
     return (
       <div className="puma-alert puma-alert--warn">
         <FontAwesomeIcon icon={faShieldHalved} style={{ marginTop: 3 }} />
         <span>
-          Este curso cuesta {precioPuma} $PUMA, pero el contrato del token aún no está enlazado en
-          esta red.
+          Este curso cuesta {precioPuma} $PUMA, pero el contrato del token aún no está enlazado
+          en esta red.
         </span>
       </div>
     )
@@ -238,7 +191,12 @@ const CoursePumaPayment: React.FC<Props> = ({
           <p style={{ color: '#cbd5e1', lineHeight: 1.55, marginBottom: '1rem' }}>
             Conecta tu wallet para pagar con $PUMA.
           </p>
-          <button type="button" className="puma-btn puma-btn--gold" onClick={() => connectWallet()}>
+          <button
+            type="button"
+            className="puma-btn puma-btn--gold"
+            onClick={() => connectWallet()}
+            style={{ width: '100%', justifyContent: 'center' }}
+          >
             <FontAwesomeIcon icon={faWandMagicSparkles} />
             Conectar wallet
           </button>
@@ -255,176 +213,69 @@ const CoursePumaPayment: React.FC<Props> = ({
         </div>
       )}
 
-      {isConnected && enoughBalance && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-          {/* Step 1 — approve */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              padding: '0.85rem 1rem',
-              borderRadius: 12,
-              border: '1px solid',
-              borderColor: enoughAllowance ? 'rgba(74,222,128,0.45)' : 'rgba(212,175,55,0.35)',
-              background: enoughAllowance
-                ? 'rgba(20,83,45,0.18)'
-                : 'rgba(212,175,55,0.06)',
-            }}
-          >
-            <div
+      {isConnected && enoughBalance && !txOk && (
+        <button
+          type="button"
+          onClick={pagar}
+          disabled={isPending || confirming || isBusy}
+          className="puma-btn puma-btn--gold"
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            padding: '0.85rem 1.25rem',
+            fontSize: '1rem',
+            fontWeight: 700,
+          }}
+        >
+          <FontAwesomeIcon icon={faCoins} />
+          {isPending
+            ? 'Firma en tu wallet…'
+            : confirming
+            ? 'Confirmando on-chain…'
+            : `Pagar ${precioPuma} PUMA`}
+        </button>
+      )}
+
+      {txOk && (
+        <div
+          className="puma-alert puma-alert--success puma-pop-in"
+          style={{ flexDirection: 'column', alignItems: 'flex-start' }}
+        >
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+            <FontAwesomeIcon icon={faGraduationCap} style={{ marginTop: 3 }} />
+            <strong>¡Inscripción pagada con $PUMA!</strong>
+          </div>
+          {txHash && (
+            <a
+              href={`${explorerBase}/tx/${txHash}`}
+              target="_blank"
+              rel="noreferrer"
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: '50%',
-                background: enoughAllowance ? '#4ade80' : 'rgba(212,175,55,0.4)',
-                color: '#0a0a0a',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                flexShrink: 0,
+                gap: 6,
+                color: '#86efac',
+                fontWeight: 600,
+                fontSize: '0.88rem',
+                marginTop: '0.4rem',
               }}
             >
-              {enoughAllowance ? <FontAwesomeIcon icon={faCheck} /> : '1'}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
-                Autoriza al contrato PUMA
-              </div>
-              <div style={{ color: '#94a3b8', fontSize: '0.82rem', lineHeight: 1.45 }}>
-                {enoughAllowance
-                  ? `Autorizado: ${Number(formatEther(allowanceBig)).toFixed(2)} PUMA`
-                  : 'Firma una transacción approve() — gratis si tu red tiene fees bajas.'}
-              </div>
-            </div>
-            {!enoughAllowance && (
-              <button
-                type="button"
-                className="puma-btn puma-btn--gold"
-                onClick={approve}
-                disabled={isPending || confirming || isBusy}
-                style={{ padding: '0.55rem 1rem', fontSize: '0.88rem', whiteSpace: 'nowrap' }}
-              >
-                {isPending || confirming ? 'Firmando…' : 'Aprobar'}
-              </button>
-            )}
-          </div>
-
-          {/* Step 2 — confirm payment */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              padding: '0.85rem 1rem',
-              borderRadius: 12,
-              border: '1px solid',
-              borderColor:
-                confirm.state === 'done'
-                  ? 'rgba(74,222,128,0.45)'
-                  : enoughAllowance
-                  ? 'rgba(96,165,250,0.45)'
-                  : 'rgba(120,120,120,0.3)',
-              background:
-                confirm.state === 'done'
-                  ? 'rgba(20,83,45,0.18)'
-                  : enoughAllowance
-                  ? 'rgba(37,99,235,0.12)'
-                  : 'rgba(0,0,0,0.25)',
-              opacity: enoughAllowance ? 1 : 0.55,
-            }}
-          >
-            <div
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: '50%',
-                background:
-                  confirm.state === 'done' ? '#4ade80' : enoughAllowance ? '#60a5fa' : '#555',
-                color: '#0a0a0a',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                flexShrink: 0,
-              }}
-            >
-              {confirm.state === 'done' ? <FontAwesomeIcon icon={faCheck} /> : '2'}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
-                Confirma el pago
-              </div>
-              <div style={{ color: '#94a3b8', fontSize: '0.82rem', lineHeight: 1.45 }}>
-                {confirm.state === 'done'
-                  ? 'Pago confirmado en cadena.'
-                  : 'El equipo ejecuta burnReward() y queda como pago registrado.'}
-              </div>
-            </div>
-            {enoughAllowance && confirm.state !== 'done' && (
-              <button
-                type="button"
-                className="puma-btn puma-btn--blue"
-                onClick={requestPaymentConfirmation}
-                disabled={confirm.state === 'submitting' || isBusy}
-                style={{ padding: '0.55rem 1rem', fontSize: '0.88rem', whiteSpace: 'nowrap' }}
-              >
-                <FontAwesomeIcon icon={faCoins} />
-                {confirm.state === 'submitting' ? 'Procesando…' : 'Pagar'}
-              </button>
-            )}
-          </div>
-
-          {confirm.state === 'done' && (
-            <div
-              className="puma-alert puma-alert--success puma-pop-in"
-              style={{ flexDirection: 'column', alignItems: 'flex-start' }}
-            >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
-                <FontAwesomeIcon icon={faGraduationCap} style={{ marginTop: 3 }} />
-                <strong>¡Inscripción pagada con $PUMA!</strong>
-              </div>
-              {confirm.txHash && (
-                <a
-                  href={`${explorerBase}/tx/${confirm.txHash}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    color: '#86efac',
-                    fontWeight: 600,
-                    fontSize: '0.88rem',
-                    marginTop: '0.4rem',
-                  }}
-                >
-                  Ver transacción
-                  <FontAwesomeIcon icon={faExternalLinkAlt} style={{ fontSize: '0.72rem' }} />
-                </a>
-              )}
-            </div>
-          )}
-
-          {confirm.state === 'failed' && (
-            <div className="puma-alert puma-alert--error">
-              <FontAwesomeIcon icon={faShieldHalved} style={{ marginTop: 3 }} />
-              <span style={{ wordBreak: 'break-word' }}>{confirm.message}</span>
-            </div>
-          )}
-
-          {writeError && (
-            <div className="puma-alert puma-alert--error">
-              <span style={{ wordBreak: 'break-word' }}>{writeError.message.slice(0, 220)}</span>
-            </div>
+              Ver transacción
+              <FontAwesomeIcon icon={faExternalLinkAlt} style={{ fontSize: '0.72rem' }} />
+            </a>
           )}
         </div>
       )}
 
+      {writeError && (
+        <div className="puma-alert puma-alert--error" style={{ marginTop: '0.75rem' }}>
+          <span style={{ wordBreak: 'break-word' }}>{writeError.message.slice(0, 220)}</span>
+        </div>
+      )}
+
       <p style={{ color: '#777', fontSize: '0.78rem', marginTop: '1rem', marginBottom: 0, lineHeight: 1.5 }}>
-        El flujo usa <code>approve()</code> + <code>burnReward()</code>: tu PUMA se quema como pago
-        del curso. La inscripción queda activa después de la confirmación.
+        Tu wallet firma <code>payCourse({'{cursoId}, amount'})</code>. Tus PUMA se queman como
+        pago y el evento <code>CoursePaid</code> queda registrado en cadena.
       </p>
     </div>
   )

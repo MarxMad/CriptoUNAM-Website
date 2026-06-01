@@ -60,6 +60,7 @@ contract PUMAToken is ERC20, ERC20Burnable, ERC20Pausable, AccessControl, Reentr
     event RewardBurned(address indexed from, uint256 amount, string reason);
     event RewardTransferred(address indexed from, address indexed to, uint256 amount);
     event MissionClaimed(address indexed user, string missionId, uint256 reward);
+    event CoursePaid(address indexed user, string cursoId, uint256 amount);
     event MissionCreated(string missionId, string title, uint256 reward, uint256 deadline);
     event MissionDeactivated(string missionId);
     event BadgeGranted(address indexed user, string badge);
@@ -76,6 +77,7 @@ contract PUMAToken is ERC20, ERC20Burnable, ERC20Pausable, AccessControl, Reentr
     error InvalidDeadline();
     error MissionAlreadyExists();
     error AllowanceTooLow();
+    error EmptyCursoId();
 
     constructor(address initialAdmin, uint256 initialMint) ERC20("PUMA Token", "PUMA") {
         address admin = initialAdmin == address(0) ? msg.sender : initialAdmin;
@@ -250,6 +252,28 @@ contract PUMAToken is ERC20, ERC20Burnable, ERC20Pausable, AccessControl, Reentr
 
     function missionIdsLength() external view returns (uint256) {
         return missionIds.length;
+    }
+
+    /**
+     * @notice Pago de curso CriptoUNAM con $PUMA. Cualquier alumno con saldo suficiente
+     *         puede llamarla — quema sus propios tokens y deja registro on-chain
+     *         del curso que pagó. No requiere `approve` (es burn de uno mismo).
+     * @param cursoId Identificador del curso (ej. "stellar-soroban-dev"). No vacío.
+     * @param amount  Cantidad en wei a quemar como pago.
+     */
+    function payCourse(string calldata cursoId, uint256 amount)
+        external
+        nonReentrant
+        whenNotPaused
+    {
+        if (bytes(cursoId).length == 0) revert EmptyCursoId();
+        if (amount == 0) revert ZeroAmount();
+        if (balanceOf(msg.sender) < amount) revert InsufficientBalance();
+
+        _burn(msg.sender, amount);
+        totalRewardsBurned += amount;
+
+        emit CoursePaid(msg.sender, cursoId, amount);
     }
 
     function _addXp(address user, uint256 tokenWeiAmount) internal {

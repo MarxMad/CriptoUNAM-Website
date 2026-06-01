@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useAccount, useBalance } from 'wagmi'
-import { isAddress, formatEther, zeroAddress } from 'viem'
+import { useAccount } from 'wagmi'
 import SEOHead from '../components/SEOHead'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -11,39 +10,43 @@ import {
   faGift,
   faClipboardList,
   faArrowRight,
-  faUserGear,
-  faWandMagicSparkles,
   faAward,
   faBolt,
   faTrophy,
+  faTriangleExclamation,
 } from '@fortawesome/free-solid-svg-icons'
-import { useWallet } from '../context/WalletContext'
-import { useAdmin } from '../hooks/useAdmin'
 import ENV_CONFIG from '../config/env'
+import PageHero from '../components/PageHero'
 import PumaMissionsSection from '../components/Puma/PumaMissionsSection'
 import PumaPausedBanner from '../components/Puma/PumaPausedBanner'
-import { usePumaMissionsList, pumaTokenConfigured } from '../hooks/usePumaMissions'
+import { usePumaMissionsList } from '../hooks/usePumaMissions'
+import { usePumaTokenBalance } from '../hooks/usePumaTokenBalance'
 import '../styles/global.css'
 
-const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
-const tokenConfigured = isAddress(tokenAddr) && tokenAddr !== zeroAddress
-
 const Recompensas: React.FC = () => {
-  const { isConnected, walletAddress, connectWallet } = useWallet()
   const { address } = useAccount()
-  const { isAdmin: showEquipoLink } = useAdmin()
 
   const { data: missions = [], isLoading: loadingMissions, refetch: refetchMissions } =
     usePumaMissionsList()
 
-  const { data: balanceWei } = useBalance({
-    address,
-    token: tokenConfigured ? tokenAddr : undefined,
-    query: { enabled: tokenConfigured && !!address },
-  })
+  const {
+    formatted: balanceFormatted,
+    tokenConfigured,
+    onExpectedChain,
+    expectedChainId,
+    isLoading: balanceLoading,
+  } = usePumaTokenBalance()
 
-  const balanceFormatted = balanceWei ? Number(formatEther(balanceWei.value)).toFixed(2) : '0.00'
   const activeMissions = missions.filter((m) => m.active && Number(m.deadline) * 1000 > Date.now()).length
+
+  const saldoHero =
+    !tokenConfigured || !address
+      ? '—'
+      : balanceLoading
+        ? '…'
+        : !onExpectedChain
+          ? 'Red incorrecta'
+          : balanceFormatted
 
   return (
     <>
@@ -56,13 +59,8 @@ const Recompensas: React.FC = () => {
       />
 
       <div
-        className="section"
         style={{
-          minHeight: '100vh',
-          paddingTop: '1.5rem',
-          paddingBottom: '4rem',
-          paddingLeft: 'clamp(0.75rem, 4vw, 1.25rem)',
-          paddingRight: 'clamp(0.75rem, 4vw, 1.25rem)',
+          padding: '0.5rem clamp(0.5rem, 3vw, 1rem) 3rem',
         }}
       >
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
@@ -72,372 +70,216 @@ const Recompensas: React.FC = () => {
         {/* ============================================================
             HERO
             ============================================================ */}
-        <header
-          className="puma-hero-bg"
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto 2.5rem',
-            padding: '2.5rem 1rem 1.5rem',
-            textAlign: 'center',
-            position: 'relative',
+        <PageHero
+          icon={faCoins}
+          iconColor="#F4D03F"
+          iconGradient="linear-gradient(135deg, #F4D03F, #D4AF37 70%, #8b6e1d)"
+          eyebrow="Recompensas"
+          title="$PUMA"
+          description="Gánalo en misiones, talleres y trabajo con embajadores. Úsalo para inscribirte a cursos y unlocks especiales."
+          accentRgba="rgba(212,175,55,0.1)"
+          stats={[
+            {
+              icon: faCoins,
+              label: 'Tu saldo PUMA',
+              value: saldoHero,
+              color: '#F4D03F',
+            },
+            {
+              icon: faBolt,
+              label: 'Activas',
+              value: String(activeMissions),
+              color: '#4ade80',
+            },
+            {
+              icon: faTrophy,
+              label: 'Totales',
+              value: String(missions.length),
+              color: '#a78bfa',
+            },
+          ]}
+          cta={{
+            to: '/recompensas/misiones',
+            label: 'Misiones y código de sesión',
+            icon: faClipboardList,
+            variant: 'gold',
           }}
-        >
-          <div className="puma-hero-grid" />
+        />
 
+        {address && tokenConfigured && !onExpectedChain && (
           <div
-            className="puma-pop-in"
-            style={{ display: 'inline-flex', marginBottom: '1.25rem' }}
+            className="puma-alert puma-alert--warn"
+            style={{ maxWidth: 960, margin: '0 auto 1.25rem' }}
           >
-            <div className="puma-coin puma-coin--lg puma-pulse-ring">P</div>
+            <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginTop: 3 }} />
+            <span>
+              Cambia tu wallet a Avalanche (chain {expectedChainId}) para ver el saldo real de PUMA y
+              reclamar. El contrato está en{' '}
+              <code style={{ color: '#fde68a' }}>{ENV_CONFIG.EXPLORER_URL}</code>.
+            </span>
           </div>
+        )}
 
-          <h1
-            className="puma-title-glow puma-fade-in-up"
-            style={{
-              fontSize: 'clamp(2rem, 5.5vw, 3rem)',
-              marginBottom: '0.75rem',
-              lineHeight: 1.15,
-            }}
-          >
-            Recompensas $PUMA
-          </h1>
-          <p
-            className="puma-fade-in-up"
-            style={{
-              color: '#cbd5e1',
-              fontSize: 'clamp(1rem, 2.5vw, 1.12rem)',
-              maxWidth: 720,
-              margin: '0 auto 1.5rem',
-              lineHeight: 1.65,
-              animationDelay: '120ms',
-            }}
-          >
-            Token de reconocimiento de la comunidad. Lo ganas con misiones, talleres y el trabajo con
-            los embajadores, y lo usas para inscribirte a cursos y unlocks especiales.
-          </p>
-
+        {/* ============================================================
+            MISIONES — carrusel horizontal
+            ============================================================ */}
+        <section style={{ maxWidth: 1100, margin: '0 auto 2.5rem', padding: '0 0.25rem' }}>
           <div
-            className="puma-fade-in-up"
             style={{
               display: 'flex',
-              flexWrap: 'wrap',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
               gap: '0.75rem',
-              justifyContent: 'center',
-              animationDelay: '220ms',
+              marginBottom: '0.85rem',
+              padding: '0 0.25rem',
             }}
           >
-            <Link to="/recompensas/misiones" className="puma-btn puma-btn--gold">
-              <FontAwesomeIcon icon={faClipboardList} />
-              Ver misiones
-            </Link>
-            <Link to="/claim" className="puma-btn puma-btn--ghost">
-              <FontAwesomeIcon icon={faAward} />
-              Reclamar NFTs
-            </Link>
-          </div>
-        </header>
-
-        {/* ============================================================
-            STATS
-            ============================================================ */}
-        <section
-          style={{ maxWidth: 1100, margin: '0 auto 2rem' }}
-          className="puma-stagger"
-        >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
-              gap: '1rem',
-            }}
-          >
-            <div className="puma-stat" style={{ '--i': 0 } as React.CSSProperties}>
-              <FontAwesomeIcon icon={faCoins} className="puma-stat__icon" />
-              <div className="puma-stat__label">Tu saldo</div>
-              <div className="puma-stat__value">
-                {tokenConfigured && address ? balanceFormatted : '—'}
-              </div>
-              <div className="puma-stat__hint">PUMA disponibles</div>
-            </div>
-
-            <div className="puma-stat" style={{ '--i': 1 } as React.CSSProperties}>
-              <FontAwesomeIcon icon={faBolt} className="puma-stat__icon" />
-              <div className="puma-stat__label">Misiones activas</div>
-              <div className="puma-stat__value">{activeMissions}</div>
-              <div className="puma-stat__hint">Reclama antes del deadline</div>
-            </div>
-
-            <div className="puma-stat" style={{ '--i': 2 } as React.CSSProperties}>
-              <FontAwesomeIcon icon={faTrophy} className="puma-stat__icon" />
-              <div className="puma-stat__label">Misiones totales</div>
-              <div className="puma-stat__value">{missions.length}</div>
-              <div className="puma-stat__hint">Históricas en el contrato</div>
-            </div>
-          </div>
-        </section>
-
-        {/* ============================================================
-            TU WALLET
-            ============================================================ */}
-        <section style={{ maxWidth: 900, margin: '0 auto 2rem' }}>
-          <div className="puma-card puma-card--featured puma-fade-in-up">
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 14,
-                marginBottom: '1rem',
-                flexWrap: 'wrap',
-              }}
-            >
-              <div className="puma-coin">PU</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h2
-                  style={{
-                    fontFamily: 'Orbitron',
-                    color: '#fff',
-                    fontSize: 'clamp(1.05rem, 3vw, 1.25rem)',
-                    margin: 0,
-                  }}
-                >
-                  Tu wallet PUMA
-                </h2>
-                <p style={{ color: '#94a3b8', fontSize: '0.88rem', margin: '0.2rem 0 0' }}>
-                  Conecta para ver saldo y reclamar recompensas
-                </p>
-              </div>
-            </div>
-
-            {isConnected && walletAddress ? (
-              <p
-                style={{
-                  color: '#cbd5e1',
-                  margin: 0,
-                  wordBreak: 'break-all',
-                  fontFamily: 'monospace',
-                  fontSize: '0.9rem',
-                  background: 'rgba(0,0,0,0.35)',
-                  padding: '0.75rem 0.9rem',
-                  borderRadius: 12,
-                  border: '1px solid rgba(212,175,55,0.18)',
-                }}
-              >
-                {walletAddress}
-              </p>
-            ) : (
-              <>
-                <p style={{ color: '#aaa', marginBottom: '1rem', lineHeight: 1.55 }}>
-                  Conecta tu wallet para ver tu saldo de $PUMA y participar en misiones.
-                </p>
-                <button
-                  type="button"
-                  className="puma-btn puma-btn--gold"
-                  onClick={() => connectWallet()}
-                >
-                  <FontAwesomeIcon icon={faWandMagicSparkles} />
-                  Conectar wallet
-                </button>
-              </>
-            )}
-
-            {pumaTokenConfigured && address && balanceWei && (
-              <p
-                style={{
-                  color: '#F4D03F',
-                  marginTop: '1.1rem',
-                  marginBottom: 0,
-                  fontSize: '1.1rem',
-                  fontFamily: 'Orbitron',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 10,
-                }}
-              >
-                <FontAwesomeIcon icon={faCoins} />
-                {balanceFormatted} PUMA
-              </p>
-            )}
-            {!pumaTokenConfigured && (
-              <p style={{ color: '#888', marginTop: '1rem', marginBottom: 0, fontSize: '0.9rem' }}>
-                Pronto conectaremos el contrato en esta red.
-              </p>
-            )}
-            {pumaTokenConfigured && showEquipoLink && (
-              <p style={{ marginTop: '1.1rem', marginBottom: 0 }}>
-                <Link
-                  to="/admin/puma"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    color: '#94a3b8',
-                    fontWeight: 600,
-                    textDecoration: 'none',
-                    fontSize: '0.9rem',
-                  }}
-                >
-                  <FontAwesomeIcon icon={faUserGear} />
-                  Acceso equipo (administración PUMA)
-                </Link>
-              </p>
-            )}
-          </div>
-        </section>
-
-        {/* ============================================================
-            MISIONES RÁPIDAS
-            ============================================================ */}
-        <section style={{ maxWidth: 1000, margin: '0 auto 2.5rem' }}>
-          <div className="puma-card puma-card--featured puma-card--shimmer puma-fade-in-up">
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.75rem',
-                marginBottom: '1rem',
-                flexWrap: 'wrap',
-              }}
-            >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <FontAwesomeIcon
                 icon={faGift}
-                style={{ fontSize: 'clamp(1.35rem, 4vw, 1.75rem)', color: '#D4AF37' }}
+                style={{ fontSize: '1.1rem', color: '#F4D03F' }}
               />
               <h2
                 style={{
                   fontFamily: 'Orbitron',
                   color: '#fff',
-                  fontSize: 'clamp(1.1rem, 3.2vw, 1.4rem)',
+                  fontSize: 'clamp(1.05rem, 3vw, 1.3rem)',
                   margin: 0,
-                  flex: 1,
-                  minWidth: 0,
+                  lineHeight: 1.1,
                 }}
               >
                 Misiones disponibles
               </h2>
-              <Link
-                to="/recompensas/misiones"
-                className="puma-chip puma-chip--gold"
-                style={{ textDecoration: 'none' }}
-              >
-                Ver todas
-                <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
-              </Link>
             </div>
-            <p
+            <Link
+              to="/recompensas/misiones"
               style={{
-                color: '#94a3b8',
-                lineHeight: 1.65,
-                marginBottom: '1.25rem',
-                fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
+                color: '#D4AF37',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                whiteSpace: 'nowrap',
               }}
             >
-              Reclama tu PUMA por sesiones de embajadores, talleres y misiones académicas. Cada
-              wallet reclama una sola vez por misión.
-            </p>
-            <PumaMissionsSection
-              missions={missions.slice(0, 3)}
-              isLoading={loadingMissions}
-              onTxConfirmed={() => refetchMissions()}
-              tone="embajador"
-            />
+              Ver todas
+              <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
+            </Link>
           </div>
+          <p
+            style={{
+              color: '#94a3b8',
+              fontSize: '0.88rem',
+              margin: '0 0.25rem 0.85rem',
+              lineHeight: 1.5,
+            }}
+          >
+            Desliza para ver más. Cada wallet reclama una sola vez por misión.
+          </p>
+          <PumaMissionsSection
+            missions={missions.slice(0, 6)}
+            isLoading={loadingMissions}
+            onTxConfirmed={() => refetchMissions()}
+            tone="embajador"
+            layout="carousel"
+          />
         </section>
 
         {/* ============================================================
-            ATAJOS DEL ECOSISTEMA
+            NAVEGACIÓN A OTRAS SECCIONES
             ============================================================ */}
-        <section style={{ maxWidth: 1100, margin: '0 auto', padding: '0 0.25rem' }}>
-          <h2
-            className="puma-fade-in-up"
+        <section style={{ maxWidth: 720, margin: '0 auto', padding: '0 0.25rem' }}>
+          <div
             style={{
-              fontFamily: 'Orbitron',
-              color: '#D4AF37',
-              fontSize: 'clamp(1.2rem, 3.5vw, 1.5rem)',
-              textAlign: 'center',
-              marginBottom: '1.5rem',
+              color: '#94a3b8',
+              fontSize: '0.78rem',
+              textTransform: 'uppercase',
+              letterSpacing: 1,
+              marginBottom: 10,
+              paddingLeft: 4,
             }}
           >
-            Más del ecosistema
-          </h2>
-          <div
-            className="puma-stagger"
+            Ir a otra sección
+          </div>
+          <nav
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 240px), 1fr))',
-              gap: '1.1rem',
+              display: 'flex',
+              flexDirection: 'column',
+              borderRadius: 14,
+              overflow: 'hidden',
+              border: '1px solid rgba(212,175,55,0.18)',
+              background: 'rgba(20,20,30,0.55)',
             }}
           >
             {[
               {
                 icon: faAward,
                 title: 'Reclamar NFTs',
-                text: 'POAPs, certificados de cursos y badges de embajadores.',
+                text: 'POAPs, certificados y badges',
                 to: '/claim',
-                gradient: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
+                color: '#a78bfa',
               },
               {
                 icon: faGraduationCap,
                 title: 'Cursos',
-                text: 'Certificados y rutas de aprendizaje en la comunidad.',
+                text: 'Catálogo y rutas de aprendizaje',
                 to: '/cursos',
-                gradient: 'linear-gradient(135deg, #4ecdc4, #2dd4bf)',
+                color: '#4ecdc4',
               },
               {
                 icon: faCalendarCheck,
                 title: 'Eventos',
-                text: 'Encuentros presenciales y en línea.',
+                text: 'Encuentros presenciales y online',
                 to: '/eventos',
-                gradient: 'linear-gradient(135deg, #60a5fa, #2563eb)',
+                color: '#60a5fa',
               },
-            ].map((item, idx) => (
+            ].map((item, idx, arr) => (
               <Link
                 key={item.title}
                 to={item.to}
-                className="puma-card puma-card--shimmer"
-                style={
-                  {
-                    textDecoration: 'none',
-                    display: 'block',
-                    '--i': idx,
-                  } as React.CSSProperties
-                }
+                style={{
+                  textDecoration: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  padding: '0.95rem 1rem',
+                  borderBottom:
+                    idx < arr.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                  transition: 'background 0.18s ease',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(212,175,55,0.06)')}
+                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
               >
                 <div
                   style={{
-                    width: 52,
-                    height: 52,
-                    borderRadius: 14,
-                    background: item.gradient,
+                    width: 38,
+                    height: 38,
+                    borderRadius: 10,
+                    background: `${item.color}1f`,
+                    border: `1px solid ${item.color}40`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    marginBottom: '0.85rem',
-                    boxShadow: '0 8px 22px rgba(0,0,0,0.4)',
+                    flexShrink: 0,
                   }}
                 >
-                  <FontAwesomeIcon icon={item.icon} style={{ color: '#fff', fontSize: '1.35rem' }} />
+                  <FontAwesomeIcon icon={item.icon} style={{ color: item.color, fontSize: '0.95rem' }} />
                 </div>
-                <h3 style={{ color: '#fff', fontSize: '1.05rem', marginBottom: '0.45rem' }}>{item.title}</h3>
-                <p style={{ color: '#94a3b8', margin: 0, lineHeight: 1.55, fontSize: '0.9rem' }}>
-                  {item.text}
-                </p>
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    color: '#D4AF37',
-                    fontSize: '0.85rem',
-                    fontWeight: 600,
-                    marginTop: '0.85rem',
-                  }}
-                >
-                  Ir
-                  <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
-                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.2 }}>
+                    {item.title}
+                  </div>
+                  <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: 2 }}>{item.text}</div>
+                </div>
+                <FontAwesomeIcon
+                  icon={faArrowRight}
+                  style={{ color: '#94a3b8', fontSize: '0.85rem', flexShrink: 0 }}
+                />
               </Link>
             ))}
-          </div>
+          </nav>
         </section>
       </div>
     </>

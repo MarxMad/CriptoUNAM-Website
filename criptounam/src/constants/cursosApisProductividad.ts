@@ -23,7 +23,7 @@ const cursoBitsoApi: Curso = {
   descripcion:
     'Conecta tu app al exchange mexicano de cripto líder. Autenticación HMAC, libro de órdenes, place_order y SPEI para mover MXN ↔ cripto.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -408,7 +408,7 @@ const cursoEtherfuseApi: Curso = {
   descripcion:
     'Integra Stablebonds (CETES en cadena) en tu app. Comprar, redimir y mostrar yield real en pesos para tus usuarios.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -660,7 +660,7 @@ const cursoCriptografia: Curso = {
   descripcion:
     'Las primitivas detrás de toda blockchain: hashes, árboles de Merkle, firmas digitales (ECDSA, Ed25519) y una intro práctica a zero-knowledge proofs.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1024,7 +1024,7 @@ const cursoArquitectura: Curso = {
   descripcion:
     'Diseñar un sistema Web3 real: front, contratos, indexer, oráculos, RPC redundante y monitoreo. Lo que separa un demo de una app en producción.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 1000,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1272,7 +1272,7 @@ const cursoClaude: Curso = {
   descripcion:
     'API de Claude (Anthropic), tool use, prompt caching, batches y el SDK de agentes. Desde el primer call hasta agentes que ejecutan código.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1535,7 +1535,7 @@ const cursoVibecoding: Curso = {
   descripcion:
     'Filosofía y práctica de programar con asistentes IA. Cómo describir intención, iterar y mantener calidad sin entender todo cada línea — pero sí lo importante.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 100,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,

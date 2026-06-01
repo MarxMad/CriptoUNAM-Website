@@ -20,7 +20,10 @@ import {
   faCheckCircle,
   faStar,
   faTrophy,
-  faCalendarAlt
+  faCalendarAlt,
+  faExternalLinkAlt,
+  faArrowRight,
+  faSeedling
 } from '@fortawesome/free-solid-svg-icons'
 import { faEthereum, faBitcoin } from '@fortawesome/free-brands-svg-icons'
 import { 
@@ -57,6 +60,8 @@ import EventsCarousel from '../components/EventsCarousel'
 import { eventosData, eventosLumaPresenciales } from '../data/eventosData'
 import { partnersData } from '../data/partnersData'
 import { fotosComunidadLanding } from '../data/fotosComunidadLanding'
+import { proyectosHacksData } from '../data/proyectosHacksData'
+import { cursosData } from '../constants/cursosData'
 
 interface RegistrationForm {
   nombre: string
@@ -128,19 +133,52 @@ const TechCard: React.FC<TechCardProps> = ({ icon, title, description }) => {
   }, [])
 
   return (
-    <motion.div 
+    <motion.div
       ref={scope}
-      className="card" 
       style={{
+        background: 'rgba(20,20,30,0.6)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(212, 175, 55, 0.2)',
-        transition: 'all 0.3s ease'
+        borderRadius: 12,
+        padding: 'clamp(0.75rem, 2.5vw, 1.15rem)',
+        textAlign: 'left',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 6,
+        minHeight: 0,
+        transition: 'all 0.3s ease',
       }}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.03 }}
     >
-      <FontAwesomeIcon icon={icon} style={{color:'#D4AF37', fontSize:'2.2rem', marginBottom:12}} />
-      <h3 style={{color:'#D4AF37', fontSize:'1.3rem', margin:0}}>{title}</h3>
-      <p style={{margin:0}}>{description}</p>
+      <div
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: 8,
+          background: 'rgba(212,175,55,0.15)',
+          border: '1px solid rgba(212,175,55,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 4,
+        }}
+      >
+        <FontAwesomeIcon icon={icon} style={{ color: '#D4AF37', fontSize: '0.9rem' }} />
+      </div>
+      <h3
+        style={{
+          color: '#fff',
+          fontFamily: 'Orbitron',
+          fontSize: 'clamp(0.85rem, 2.5vw, 1rem)',
+          margin: 0,
+          lineHeight: 1.2,
+        }}
+      >
+        {title}
+      </h3>
+      <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.78rem', lineHeight: 1.45 }}>
+        {description}
+      </p>
     </motion.div>
   )
 }
@@ -827,30 +865,251 @@ const Home = () => {
 
 
 
-      {/* Hero principal */}
-      <section className="section" style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'70vh', textAlign:'center', paddingTop:60}}>
-        <img src={IMAGES?.LOGO} alt="CriptoUNAM" className="logo-hero" style={{marginBottom:24}} />
-        <h1 style={{fontFamily:'Orbitron', fontSize:'3rem', color:'#D4AF37', marginBottom:16, lineHeight:'1.2'}}>
-          Bienvenido a CriptoUNAM
-        </h1>
-        <p style={{color:'#E0E0E0', fontSize:'1.3rem', marginBottom:32, maxWidth:'800px', lineHeight:'1.6'}}>
-          La comunidad universitaria líder en blockchain, criptomonedas y Web3 en México. 
-          Formamos la próxima generación de desarrolladores e innovadores en tecnología descentralizada.
-        </p>
-        <div style={{display:'flex', gap:'16px', flexWrap:'wrap', justifyContent:'center'}}>
-          <Link to="/cursos" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem'}}>
-            Explora los cursos
-          </Link>
-          <Link to="/eventos#comunidad" className="primary-button" style={{fontSize:'1.1rem', borderRadius:18, padding:'0.8rem 2.2rem', background:'rgba(37, 99, 235, 0.8)', border:'1px solid #2563EB'}}>
-            Únete a la comunidad
+      {/* Hero principal — card glass con glow */}
+      <section
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: 'clamp(3rem, 10vw, 5rem) 1rem 1.5rem',
+          position: 'relative',
+        }}
+      >
+        {/* Glow ambiental detrás de la card */}
+        <div
+          aria-hidden
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 'min(720px, 92%)',
+            height: '100%',
+            background:
+              'radial-gradient(closest-side, rgba(212,175,55,0.18), transparent 70%)',
+            filter: 'blur(40px)',
+            pointerEvents: 'none',
+            zIndex: 0,
+          }}
+        />
+
+        <div
+          className="hero-card"
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            width: '100%',
+            maxWidth: 640,
+            background:
+              'linear-gradient(160deg, rgba(20,20,30,0.85) 0%, rgba(10,10,18,0.92) 100%)',
+            border: '1.5px solid rgba(212,175,55,0.35)',
+            borderRadius: 24,
+            padding: 'clamp(2.2rem, 6vw, 3rem) clamp(1.25rem, 5vw, 2.5rem) clamp(1.5rem, 4vw, 2rem)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow:
+              '0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset, 0 0 60px rgba(212,175,55,0.12)',
+            textAlign: 'center',
+            overflow: 'visible',
+          }}
+        >
+          {/* Logo con halo, sobresale del top */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 'clamp(-65px, -10vw, -55px)',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 'clamp(120px, 28vw, 150px)',
+              height: 'clamp(120px, 28vw, 150px)',
+              borderRadius: '50%',
+              background:
+                'radial-gradient(circle at 30% 25%, #fff7d6 0%, #F4D03F 35%, #D4AF37 70%, #8b6e1d 100%)',
+              padding: 3,
+              boxShadow:
+                '0 14px 40px rgba(212,175,55,0.5), 0 0 0 6px rgba(212,175,55,0.1)',
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                background: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+              }}
+            >
+              <img
+                src={IMAGES?.LOGO}
+                alt="CriptoUNAM"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '50%',
+                  display: 'block',
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Badge sutil arriba */}
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              marginTop: 'clamp(65px, 14vw, 85px)',
+              marginBottom: '0.85rem',
+              padding: '4px 12px',
+              background: 'rgba(212,175,55,0.1)',
+              border: '1px solid rgba(212,175,55,0.3)',
+              borderRadius: 999,
+              fontSize: 'clamp(0.7rem, 1.9vw, 0.78rem)',
+              color: '#F4D03F',
+              fontWeight: 600,
+              letterSpacing: 0.6,
+              textTransform: 'uppercase',
+            }}
+          >
+            <span style={{
+              width: 6,
+              height: 6,
+              borderRadius: '50%',
+              background: '#4ade80',
+              boxShadow: '0 0 8px #4ade80',
+              animation: 'hero-pulse 2s ease-in-out infinite',
+            }} />
+            Comunidad Web3 · UNAM
+          </div>
+
+          <h1
+            style={{
+              fontFamily: 'Orbitron',
+              fontSize: 'clamp(1.7rem, 6.5vw, 2.7rem)',
+              margin: '0 0 0.85rem',
+              lineHeight: 1.1,
+              background:
+                'linear-gradient(135deg, #fff7d6 0%, #F4D03F 50%, #D4AF37 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 4px 24px rgba(212,175,55,0.3))',
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Bienvenido a<br />
+            <span style={{ fontSize: '1.1em' }}>CriptoUNAM</span>
+          </h1>
+
+          <p
+            style={{
+              color: '#cbd5e1',
+              fontSize: 'clamp(0.88rem, 2.4vw, 1rem)',
+              margin: '0 auto 1.5rem',
+              maxWidth: 480,
+              lineHeight: 1.6,
+            }}
+          >
+            La comunidad universitaria líder en blockchain y Web3 en México. Formamos la próxima
+            generación de constructores descentralizados.
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '0.55rem',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <Link
+              to="/cursos"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: 'clamp(0.88rem, 2.3vw, 1rem)',
+                fontWeight: 700,
+                borderRadius: 12,
+                padding: '0.7rem 1.4rem',
+                background: 'linear-gradient(135deg, #F4D03F 0%, #D4AF37 60%, #b8962e 100%)',
+                color: '#0a0a0a',
+                textDecoration: 'none',
+                border: 'none',
+                boxShadow: '0 10px 28px rgba(212,175,55,0.4)',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 14px 34px rgba(212,175,55,0.55)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = '0 10px 28px rgba(212,175,55,0.4)'
+              }}
+            >
+              Explora los cursos
+            </Link>
+            <Link
+              to="/eventos#comunidad"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                fontSize: 'clamp(0.88rem, 2.3vw, 1rem)',
+                fontWeight: 600,
+                borderRadius: 12,
+                padding: '0.7rem 1.4rem',
+                background: 'rgba(37,99,235,0.15)',
+                color: '#bfdbfe',
+                textDecoration: 'none',
+                border: '1px solid rgba(37,99,235,0.5)',
+                transition: 'background 0.2s, border-color 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(37,99,235,0.28)'
+                e.currentTarget.style.borderColor = 'rgba(37,99,235,0.8)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(37,99,235,0.15)'
+                e.currentTarget.style.borderColor = 'rgba(37,99,235,0.5)'
+              }}
+            >
+              Únete a la comunidad
+            </Link>
+          </div>
+
+          <Link
+            to="/newsletter"
+            style={{
+              display: 'inline-block',
+              color: '#94a3b8',
+              fontSize: '0.78rem',
+              textDecoration: 'none',
+              borderTop: '1px solid rgba(255,255,255,0.06)',
+              paddingTop: '0.75rem',
+              marginTop: '0.25rem',
+              width: '100%',
+              transition: 'color 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = '#F4D03F')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
+          >
+            📬 Newsletter — ediciones y archivo
           </Link>
         </div>
-        <p style={{ marginTop: '1.25rem', marginBottom: 0 }}>
-          <Link to="/newsletter" style={{ color: '#9ca3af', fontSize: '1rem', textDecoration: 'underline', textUnderlineOffset: '4px' }}>
-            Newsletter
-          </Link>
-          <span style={{ color: '#6b7280', fontSize: '0.95rem' }}> — ediciones y archivo</span>
-        </p>
+
+        <style>{`
+          @keyframes hero-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+          }
+        `}</style>
       </section>
 
         {/* Carrusel de Eventos */}
@@ -868,47 +1127,77 @@ const Home = () => {
             showIndicators={true}
             showNavigation={true}
           />
-          <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
             <Link
               to="/eventos"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.5rem',
+                gap: '0.45rem',
                 background: 'linear-gradient(45deg, #D4AF37, #b8962e)',
                 color: '#0A0A0A',
-                padding: '0.75rem 1.5rem',
-                borderRadius: 12,
+                padding: '0.6rem 1.1rem',
+                borderRadius: 10,
                 textDecoration: 'none',
                 fontWeight: 600,
-                fontSize: '1rem'
+                fontSize: '0.88rem'
               }}
             >
-              Ver todos los eventos e inscribirse
-              <FontAwesomeIcon icon={faCalendarAlt} />
+              Ver todos los eventos
+              <FontAwesomeIcon icon={faCalendarAlt} style={{ fontSize: '0.78rem' }} />
             </Link>
           </div>
         </section>
       )}
 
       {/* ¿Por qué CriptoUNAM? */}
-      <section className="section" style={{background:'rgba(26,26,26,0.7)', borderRadius:18, maxWidth:900, margin:'0 auto 2.5rem auto', boxShadow:'0 4px 24px #1E3A8A22'}}>
-        <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.7rem', marginBottom:'1.5rem'}}>¿Por qué CriptoUNAM?</h2>
-        <div className="grid-4" style={{gap:'2rem'}}>
-          <TechCard icon={faUsers} title="+500 Miembros" description="Comunidad activa y colaborativa de estudiantes y entusiastas." />
-          <TechCard icon={faGraduationCap} title="Cursos Gratuitos" description="Aprende sobre blockchain, DeFi, NFTs y más, sin costo." />
-          <TechCard icon={faCertificate} title="Certificados NFT" description="Obtén certificados digitales únicos por tu aprendizaje." />
-          <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en eventos, hackathons y talleres exclusivos." />
+      <section
+        style={{
+          background: 'rgba(26,26,26,0.7)',
+          borderRadius: 14,
+          maxWidth: 900,
+          margin: '0 auto 2rem auto',
+          padding: 'clamp(1rem, 3vw, 1.5rem)',
+          boxShadow: '0 4px 24px #1E3A8A22',
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: 'Orbitron',
+            color: '#D4AF37',
+            fontSize: 'clamp(1.15rem, 3.2vw, 1.5rem)',
+            marginTop: 0,
+            marginBottom: '1rem',
+            textAlign: 'center',
+          }}
+        >
+          ¿Por qué CriptoUNAM?
+        </h2>
+        <div className="por-que-grid">
+          <TechCard icon={faUsers} title="+500 Miembros" description="Comunidad activa de estudiantes y entusiastas." />
+          <TechCard icon={faGraduationCap} title="Cursos Gratuitos" description="Blockchain, DeFi, NFTs y más, sin costo." />
+          <TechCard icon={faCertificate} title="Certificados NFT" description="Credenciales digitales únicas por tu aprendizaje." />
+          <TechCard icon={faRocket} title="Eventos y Talleres" description="Participa en hackathons y talleres exclusivos." />
         </div>
+        <style>{`
+          .por-que-grid {
+            display: grid;
+            gap: 0.65rem;
+            grid-template-columns: repeat(4, 1fr);
+          }
+          @media (max-width: 720px) {
+            .por-que-grid { grid-template-columns: repeat(2, 1fr); }
+          }
+        `}</style>
       </section>
 
-      {/* Fotos de nuestra comunidad - grid 4×6 responsive */}
+      {/* Fotos de nuestra comunidad - 3 marquees auto-deslizantes */}
       <section style={{
         maxWidth: '1200px',
         margin: '0 auto 3rem auto',
         padding: '0 20px'
       }}>
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{
             fontFamily: 'Orbitron',
             color: '#D4AF37',
@@ -917,57 +1206,88 @@ const Home = () => {
           }}>
             Nuestra comunidad
           </h2>
-          <p style={{ color: '#E0E0E0', fontSize: '1.1rem', maxWidth: 560, margin: '0 auto' }}>
+          <p style={{ color: '#E0E0E0', fontSize: '1.05rem', maxWidth: 560, margin: '0 auto' }}>
             Momentos de eventos, talleres y hackathones en 2025
           </p>
         </div>
-        <div
-          className="fotos-comunidad-grid"
-          style={{
-            display: 'grid',
-            gap: '0.75rem'
-          }}
-        >
-          {fotosComunidadLanding.map((foto, index) => (
-            <div
-              key={index}
-              style={{
-                aspectRatio: '1',
-                borderRadius: 12,
-                overflow: 'hidden',
-                border: '1px solid rgba(212,175,55,0.2)',
-                background: 'rgba(26,26,26,0.6)'
-              }}
-            >
-              <img
-                src={foto.src}
-                alt={foto.alt}
-                loading="lazy"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block'
-                }}
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none'
-                }}
-              />
+        {(() => {
+          const total = fotosComunidadLanding.length
+          const perRow = Math.ceil(total / 3)
+          const rows = [
+            fotosComunidadLanding.slice(0, perRow),
+            fotosComunidadLanding.slice(perRow, perRow * 2),
+            fotosComunidadLanding.slice(perRow * 2),
+          ].filter((r) => r.length > 0)
+          return rows.map((row, rowIdx) => (
+            <div key={rowIdx} className="fotos-marquee-viewport">
+              <div className={`fotos-marquee-track fotos-marquee-track--${rowIdx}`}>
+                {/* duplicado para loop infinito sin salto */}
+                {[...row, ...row].map((foto, i) => (
+                  <div className="fotos-marquee-card" key={`${rowIdx}-${i}`}>
+                    <img
+                      src={foto.src}
+                      alt={foto.alt}
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none'
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
+          ))
+        })()}
         <style>{`
-          .fotos-comunidad-grid {
-            grid-template-columns: repeat(4, 1fr);
+          .fotos-marquee-viewport {
+            overflow: hidden;
+            margin-bottom: 0.85rem;
+            -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+            mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
           }
-          @media (max-width: 900px) {
-            .fotos-comunidad-grid {
-              grid-template-columns: repeat(2, 1fr);
-            }
+          .fotos-marquee-track {
+            display: flex;
+            gap: 0.75rem;
+            width: max-content;
+            will-change: transform;
           }
-          @media (max-width: 480px) {
-            .fotos-comunidad-grid {
-              grid-template-columns: 1fr;
+          .fotos-marquee-track--0 { animation: marquee-left 50s linear infinite; }
+          .fotos-marquee-track--1 { animation: marquee-right 65s linear infinite; }
+          .fotos-marquee-track--2 { animation: marquee-left 42s linear infinite; }
+          .fotos-marquee-viewport:hover .fotos-marquee-track {
+            animation-play-state: paused;
+          }
+          @keyframes marquee-left {
+            from { transform: translateX(0); }
+            to   { transform: translateX(calc(-50% - 0.375rem)); }
+          }
+          @keyframes marquee-right {
+            from { transform: translateX(calc(-50% - 0.375rem)); }
+            to   { transform: translateX(0); }
+          }
+          .fotos-marquee-card {
+            flex: 0 0 clamp(140px, 30vw, 200px);
+            aspect-ratio: 4 / 3;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(212,175,55,0.2);
+            background: rgba(26,26,26,0.6);
+          }
+          .fotos-marquee-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease;
+          }
+          .fotos-marquee-card:hover img {
+            transform: scale(1.05);
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .fotos-marquee-track--0,
+            .fotos-marquee-track--1,
+            .fotos-marquee-track--2 {
+              animation: none;
             }
           }
         `}</style>
@@ -980,174 +1300,476 @@ const Home = () => {
         stats={stats}
       />
 
-      {/* Últimas Newsletters */}
-      {newslettersHome.length > 0 && (
-        <section style={{
-          maxWidth: '1200px',
-          margin: '0 auto 3rem auto',
-          padding: '0 20px'
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <h2 style={{
-              fontFamily: 'Orbitron',
-              color: '#D4AF37',
-              fontSize: '2.5rem',
-              marginBottom: '1rem'
-            }}>
-              Últimas Noticias
-            </h2>
-            <p style={{
-              color: '#E0E0E0',
-              fontSize: '1.2rem',
-              maxWidth: '700px',
-              margin: '0 auto'
-            }}>
-              Mantente actualizado con las últimas novedades de CriptoUNAM
-            </p>
+      {/* ============================================================
+          STARTUPS — proyectos nacidos en hackathons, en desarrollo
+          ============================================================ */}
+      {proyectosHacksData.length > 0 && (
+        <section
+          style={{
+            maxWidth: '1200px',
+            margin: '0 auto 3rem',
+            padding: '0 20px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              marginBottom: '1rem',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 12,
+                background: 'linear-gradient(135deg, #4ade80, #16a34a)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 22px rgba(34,197,94,0.4)',
+                flexShrink: 0,
+              }}
+            >
+              <FontAwesomeIcon icon={faSeedling} style={{ color: '#fff', fontSize: '1.1rem' }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h2
+                style={{
+                  fontFamily: 'Orbitron',
+                  color: '#fff',
+                  fontSize: 'clamp(1.25rem, 3.5vw, 1.7rem)',
+                  margin: 0,
+                  lineHeight: 1.2,
+                }}
+              >
+                Startups de la comunidad
+              </h2>
+              <p
+                style={{
+                  color: '#94a3b8',
+                  fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                  margin: '0.25rem 0 0',
+                }}
+              >
+                Proyectos nacidos en hackathones que hoy están en desarrollo activo.
+              </p>
+            </div>
+            {proyectosHacksData.length > 1 && (
+              <span
+                style={{
+                  fontSize: '0.78rem',
+                  color: '#94a3b8',
+                  padding: '4px 10px',
+                  background: 'rgba(34,197,94,0.08)',
+                  border: '1px solid rgba(34,197,94,0.25)',
+                  borderRadius: 999,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                ← desliza →
+              </span>
+            )}
           </div>
-          
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
-            gap: '24px',
-            marginBottom: '2rem'
-          }}>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: '0.85rem',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              scrollSnapType: 'x mandatory',
+              paddingBottom: '0.5rem',
+              WebkitOverflowScrolling: 'touch',
+              touchAction: 'pan-x',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(34,197,94,0.4) rgba(255,255,255,0.04)',
+            }}
+            className="startups-carousel"
+          >
+            {proyectosHacksData.map((p) => (
+              <article
+                key={p.id}
+                style={{
+                  flex: '0 0 clamp(240px, 78vw, 280px)',
+                  scrollSnapAlign: 'start',
+                  background: 'rgba(20,20,30,0.8)',
+                  border: '1px solid rgba(255,255,255,0.06)',
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'border-color 0.2s, transform 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(34,197,94,0.4)'
+                  e.currentTarget.style.transform = 'translateY(-3px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
+                <div
+                  style={{
+                    aspectRatio: '16 / 10',
+                    background: 'linear-gradient(135deg, #0a0a0a, #1a1a25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '1rem',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <img
+                    src={p.imagen}
+                    alt={p.nombre}
+                    loading="lazy"
+                    style={{
+                      maxWidth: '85%',
+                      maxHeight: '85%',
+                      objectFit: 'contain',
+                    }}
+                    onError={(e) => {
+                      ;(e.target as HTMLImageElement).style.display = 'none'
+                    }}
+                  />
+                </div>
+                <div style={{ padding: '0.9rem 1rem 1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                    <h3
+                      style={{
+                        fontFamily: 'Orbitron',
+                        color: '#fff',
+                        fontSize: '1rem',
+                        margin: 0,
+                        flex: 1,
+                        minWidth: 0,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {p.nombre}
+                    </h3>
+                    <span
+                      style={{
+                        fontSize: '0.65rem',
+                        color: '#86efac',
+                        padding: '2px 8px',
+                        background: 'rgba(34,197,94,0.12)',
+                        border: '1px solid rgba(34,197,94,0.3)',
+                        borderRadius: 999,
+                        textTransform: 'uppercase',
+                        letterSpacing: 0.4,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {p.red}
+                    </span>
+                  </div>
+                  <p
+                    style={{
+                      color: '#cbd5e1',
+                      fontSize: '0.82rem',
+                      lineHeight: 1.5,
+                      margin: '0 0 0.85rem',
+                      flex: 1,
+                    }}
+                  >
+                    {p.descripcion}
+                  </p>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    {p.demo && (
+                      <a
+                        href={p.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 5,
+                          padding: '0.45rem 0.75rem',
+                          background: 'linear-gradient(90deg, #4ade80, #22c55e)',
+                          color: '#052e16',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          textDecoration: 'none',
+                          borderRadius: 8,
+                        }}
+                      >
+                        Demo
+                        <FontAwesomeIcon icon={faExternalLinkAlt} style={{ fontSize: '0.65rem' }} />
+                      </a>
+                    )}
+                    {p.repo && (
+                      <a
+                        href={p.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 5,
+                          padding: '0.45rem 0.75rem',
+                          background: 'rgba(255,255,255,0.05)',
+                          color: '#cbd5e1',
+                          fontSize: '0.78rem',
+                          fontWeight: 600,
+                          textDecoration: 'none',
+                          borderRadius: 8,
+                          border: '1px solid rgba(255,255,255,0.08)',
+                        }}
+                      >
+                        Código
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+            <Link
+              to="/proyectos"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+                color: '#86efac',
+                fontSize: '0.88rem',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              Ver todos los proyectos
+              <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
+            </Link>
+          </div>
+
+          <style>{`
+            .startups-carousel::-webkit-scrollbar { height: 6px; }
+            .startups-carousel::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 4px; }
+            .startups-carousel::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.4); border-radius: 4px; }
+            .startups-carousel::-webkit-scrollbar-thumb:hover { background: rgba(34,197,94,0.6); }
+          `}</style>
+        </section>
+      )}
+
+      {/* Últimas Newsletters — carrusel horizontal */}
+      {newslettersHome.length > 0 && (
+        <section
+          style={{
+            maxWidth: '1200px',
+            margin: '0 auto 3rem auto',
+            padding: '0 20px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              justifyContent: 'space-between',
+              gap: '0.75rem',
+              marginBottom: '0.85rem',
+              padding: '0 0.25rem',
+              flexWrap: 'wrap',
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  fontFamily: 'Orbitron',
+                  color: '#D4AF37',
+                  fontSize: 'clamp(1.25rem, 3.5vw, 1.7rem)',
+                  margin: '0 0 0.25rem',
+                  lineHeight: 1.15,
+                }}
+              >
+                Últimas Noticias
+              </h2>
+              <p
+                style={{
+                  color: '#94a3b8',
+                  fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+                  margin: 0,
+                }}
+              >
+                Newsletters frescas de la comunidad.
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {newslettersHome.length > 1 && (
+                <span className="news-swipe-hint">← desliza →</span>
+              )}
+              <Link
+                to="/newsletter"
+                style={{
+                  color: '#D4AF37',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Ver todas
+                <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
+              </Link>
+            </div>
+          </div>
+
+          <div
+            className="newsletters-carousel"
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: '0.85rem',
+              overflowX: 'auto',
+              overflowY: 'hidden',
+              scrollSnapType: 'x mandatory',
+              paddingBottom: '0.5rem',
+              WebkitOverflowScrolling: 'touch',
+              touchAction: 'pan-x',
+              scrollbarWidth: 'thin',
+            }}
+          >
             {newslettersHome.map((newsletter, index) => (
-              <div key={newsletter.id || index} style={{
-                background: 'rgba(26,26,26,0.9)',
-                borderRadius: '20px',
-                padding: '2rem',
-                border: '1px solid rgba(212,175,55,0.3)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-                transition: 'all 0.3s ease',
-                cursor: 'pointer'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)'
-                e.currentTarget.style.borderColor = '#D4AF37'
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(212,175,55,0.2)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.borderColor = 'rgba(212,175,55,0.3)'
-                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)'
-              }}>
+              <Link
+                key={newsletter.id || index}
+                to={`/newsletter/${newsletter.id}`}
+                style={{
+                  flex: '0 0 clamp(260px, 80vw, 320px)',
+                  scrollSnapAlign: 'start',
+                  background: 'rgba(20,20,30,0.85)',
+                  border: '1px solid rgba(212,175,55,0.2)',
+                  borderRadius: 14,
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'border-color 0.2s, transform 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#D4AF37'
+                  e.currentTarget.style.transform = 'translateY(-3px)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }}
+              >
                 {newsletter.imagen && (
-                  <div style={{
-                    width: '100%',
-                    height: '200px',
-                    marginBottom: '1.5rem',
-                    borderRadius: '12px',
-                    overflow: 'hidden'
-                  }}>
-                    <img 
-                      src={newsletter.imagen} 
+                  <div
+                    style={{
+                      width: '100%',
+                      aspectRatio: '16 / 9',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <img
+                      src={newsletter.imagen}
                       alt={newsletter.titulo}
+                      loading="lazy"
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover'
+                        objectFit: 'cover',
+                        display: 'block',
                       }}
                     />
                   </div>
                 )}
-                
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <h3 style={{
-                    fontFamily: 'Orbitron',
-                    color: '#D4AF37',
-                    fontSize: '1.3rem',
-                    margin: '0 0 0.5rem 0'
-                  }}>
-                    {newsletter.titulo}
-                  </h3>
-                  <p style={{
-                    color: '#E0E0E0',
-                    fontSize: '0.9rem',
-                    margin: '0 0 1rem 0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}>
-                    <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#2563EB' }} />
+                <div style={{ padding: '0.95rem 1rem 1.1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                  <span
+                    style={{
+                      color: '#94a3b8',
+                      fontSize: '0.72rem',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 5,
+                      marginBottom: 6,
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#2563EB', fontSize: '0.7rem' }} />
                     {(() => {
                       const dateStr = newsletter.fecha
-                      // Formato ISO: 2024-09-15
                       if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-                        return new Date(dateStr).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })
+                        return new Date(dateStr).toLocaleDateString('es-MX', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })
                       }
-                      // Si ya tiene formato de texto español, retornarlo directamente
                       return dateStr
                     })()}
+                  </span>
+                  <h3
+                    style={{
+                      fontFamily: 'Orbitron',
+                      color: '#F4D03F',
+                      fontSize: '1rem',
+                      margin: '0 0 0.5rem',
+                      lineHeight: 1.25,
+                    }}
+                  >
+                    {newsletter.titulo}
+                  </h3>
+                  <p
+                    style={{
+                      color: '#cbd5e1',
+                      fontSize: '0.82rem',
+                      lineHeight: 1.5,
+                      margin: '0 0 0.85rem',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden',
+                      flex: 1,
+                    }}
+                  >
+                    {newsletter.contenido}
                   </p>
-                  <p style={{
-                    color: '#E0E0E0',
-                    lineHeight: '1.6',
-                    margin: '0 0 1rem 0'
-                  }}>
-                    {newsletter.contenido.substring(0, 150)}...
-                  </p>
+                  <span
+                    style={{
+                      color: '#D4AF37',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 5,
+                    }}
+                  >
+                    Leer más
+                    <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.68rem' }} />
+                  </span>
                 </div>
-                
-                <Link 
-                  to={`/newsletter/${newsletter.id}`}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    background: 'linear-gradient(45deg, #D4AF37, #2563EB)',
-                    color: '#0A0A0A',
-                    padding: '0.8rem 1.5rem',
-                    borderRadius: '12px',
-                    textDecoration: 'none',
-                    fontWeight: 600,
-                    fontSize: '1rem',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'scale(1.05)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'scale(1)'
-                  }}
-                >
-                  Leer Más
-                  <FontAwesomeIcon icon={faRocket} />
-                </Link>
-              </div>
+              </Link>
             ))}
           </div>
-          
-          <div style={{ textAlign: 'center' }}>
-            <Link 
-              to="/newsletter" 
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                background: 'rgba(26,26,26,0.8)',
-                color: '#D4AF37',
-                padding: '1rem 2rem',
-                borderRadius: '12px',
-                textDecoration: 'none',
-                fontWeight: 600,
-                fontSize: '1.1rem',
-                border: '1px solid rgba(212,175,55,0.3)',
-                transition: 'all 0.3s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#D4AF37'
-                e.currentTarget.style.color = '#0A0A0A'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(26,26,26,0.8)'
-                e.currentTarget.style.color = '#D4AF37'
-              }}
-            >
-              Ver Todas las Noticias
-              <FontAwesomeIcon icon={faRocket} />
-            </Link>
-          </div>
+
+          <style>{`
+            .newsletters-carousel::-webkit-scrollbar { height: 6px; }
+            .newsletters-carousel::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 4px; }
+            .newsletters-carousel::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.4); border-radius: 4px; }
+            .newsletters-carousel::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.6); }
+            .news-swipe-hint {
+              font-size: 0.75rem;
+              color: #94a3b8;
+              padding: 3px 9px;
+              background: rgba(212,175,55,0.08);
+              border: 1px solid rgba(212,175,55,0.2);
+              border-radius: 999px;
+              white-space: nowrap;
+            }
+          `}</style>
         </section>
       )}
 
@@ -1187,26 +1809,215 @@ const Home = () => {
 
       
 
-    {/* VIDEO SECTION */}
-    <section className="section" style={{paddingTop:0}}>
-      <h2 className="text-center" style={{marginBottom: '2rem'}}>Conoce Más Sobre Blockchain</h2>
-        <div className="video-container">
-            <iframe
-          width="100%"
-          height="500"
-          src="https://www.youtube.com/embed/y4SqAcri3HE?si=ZiJ4EjfC2m458n2Q"
-          title="YouTube video player"
-          frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
+    {/* CURSOS DESTACADOS — primeros 4 del catálogo */}
+    <section
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto 3rem auto',
+        padding: '0 20px',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          gap: '0.75rem',
+          marginBottom: '1rem',
+          padding: '0 0.25rem',
+          flexWrap: 'wrap',
+        }}
+      >
+        <div>
+          <h2
+            style={{
+              fontFamily: 'Orbitron',
+              color: '#D4AF37',
+              fontSize: 'clamp(1.25rem, 3.5vw, 1.7rem)',
+              margin: '0 0 0.25rem',
+              lineHeight: 1.15,
+            }}
+          >
+            Conoce más sobre blockchain
+          </h2>
+          <p
+            style={{
+              color: '#94a3b8',
+              fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+              margin: 0,
+            }}
+          >
+            Empieza con cualquiera de nuestros cursos gratuitos.
+          </p>
+        </div>
+        <Link
+          to="/cursos"
           style={{
-            borderRadius: '20px',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
-            border: '1px solid rgba(212, 175, 55, 0.2)'
+            color: '#D4AF37',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+            whiteSpace: 'nowrap',
           }}
-        />
-          </div>
+        >
+          Ver todos
+          <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
+        </Link>
+      </div>
+
+      <div
+        className="cursos-destacados-grid"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '0.85rem',
+        }}
+      >
+        {cursosData.slice(0, 4).map((curso) => {
+          const totalLecciones =
+            (curso.capitulos?.reduce((acc, c) => acc + c.secciones.length, 0) ?? 0) +
+            (curso.lecciones?.length ?? 0)
+          const esPago = (curso.precioPuma ?? 0) > 0
+          return (
+            <Link
+              key={curso.id}
+              to={`/registro-curso/${curso.id}`}
+              style={{
+                background: 'rgba(20,20,30,0.85)',
+                border: '1px solid rgba(212,175,55,0.2)',
+                borderRadius: 14,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'border-color 0.2s, transform 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#D4AF37'
+                e.currentTarget.style.transform = 'translateY(-3px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)'
+                e.currentTarget.style.transform = 'translateY(0)'
+              }}
+            >
+              <div
+                style={{
+                  aspectRatio: '16 / 10',
+                  background: `linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url(${curso.imagen}) center/cover no-repeat`,
+                  position: 'relative',
+                }}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 8,
+                    left: 8,
+                    display: 'flex',
+                    gap: 5,
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: '0.65rem',
+                      padding: '2px 8px',
+                      borderRadius: 999,
+                      background: 'rgba(0,0,0,0.7)',
+                      color: '#cbd5e1',
+                      backdropFilter: 'blur(6px)',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {curso.nivel}
+                  </span>
+                  {esPago && (
+                    <span
+                      style={{
+                        fontSize: '0.65rem',
+                        padding: '2px 8px',
+                        borderRadius: 999,
+                        background: 'linear-gradient(90deg, #F4D03F, #D4AF37)',
+                        color: '#0a0a0a',
+                        fontWeight: 700,
+                      }}
+                    >
+                      {curso.precioPuma} PUMA
+                    </span>
+                  )}
+                </div>
+              </div>
+              <div style={{ padding: '0.85rem 1rem 1rem', display: 'flex', flexDirection: 'column', flex: 1, gap: 6 }}>
+                <h3
+                  style={{
+                    fontFamily: 'Orbitron',
+                    color: '#F4D03F',
+                    fontSize: '0.95rem',
+                    margin: 0,
+                    lineHeight: 1.25,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {curso.titulo}
+                </h3>
+                <p
+                  style={{
+                    color: '#94a3b8',
+                    fontSize: '0.78rem',
+                    margin: 0,
+                    lineHeight: 1.45,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    flex: 1,
+                  }}
+                >
+                  {curso.descripcion}
+                </p>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 4,
+                    fontSize: '0.72rem',
+                    color: '#94a3b8',
+                  }}
+                >
+                  <span>
+                    {totalLecciones} {totalLecciones === 1 ? 'lección' : 'lecciones'}
+                  </span>
+                  <span style={{ color: '#D4AF37', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    Empezar
+                    <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.65rem' }} />
+                  </span>
+                </div>
+              </div>
+            </Link>
+          )
+        })}
+      </div>
+
+      <style>{`
+        @media (max-width: 880px) {
+          .cursos-destacados-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .cursos-destacados-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </section>
 
   {/* PARTNERS - Ticker (datos en src/data/partnersData.ts, imágenes en public/images/partners/) */}

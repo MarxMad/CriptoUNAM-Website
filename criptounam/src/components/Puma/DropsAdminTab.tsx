@@ -3,10 +3,12 @@ import {
   useAccount,
   useChainId,
   useConfig,
+  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
+import ENV_CONFIG from '../../config/env'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlus,
@@ -27,6 +29,7 @@ import {
   useIsDropManager,
 } from '../../hooks/useDrops'
 import { BadgeKind, BADGE_KIND_LABEL } from '../../constants/criptoUnamBadgesAbi'
+import { EMBAJADORES_MAY_13_2026 } from '../../constants/dropPresets'
 
 type Props = {
   isAdmin: boolean
@@ -36,7 +39,24 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
   const { address, isConnected } = useAccount()
   const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { switchChainAsync } = useSwitchChain()
+
+  // Red destino de los contratos (43113 Fuji por defecto). La tx DEBE firmarse aquí,
+  // no en la red que la wallet tenga activa (p. ej. Arbitrum Sepolia).
+  const targetChainId = ENV_CONFIG.CHAIN_ID
+  const targetChain = wagmiConfig.chains.find((c) => c.id === targetChainId)
+  const wrongNetwork = chainId !== targetChainId
+
+  /** Garantiza que la wallet esté en la red de los contratos antes de firmar. */
+  const ensureTargetChain = async (): Promise<boolean> => {
+    if (chainId === targetChainId) return true
+    try {
+      await switchChainAsync({ chainId: targetChainId })
+      return true
+    } catch {
+      return false
+    }
+  }
 
   const { data: hasDropRole, isLoading: roleLoading } = useIsDropManager(address)
   const { data: drops = [], isLoading: dropsLoading, refetch } = useAllDrops()
@@ -78,9 +98,9 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
     return BigInt(Math.floor(Date.now() / 1000) + h * 3600)
   }
 
-  const submitCreate = (e: React.FormEvent) => {
+  const submitCreate = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!chain || !address) return
+    if (!targetChain || !address) return
     if (!code.trim() || !title.trim()) return
     const deadline = computeDeadline()
     if (!deadline) return
@@ -93,6 +113,8 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
         return
       }
     }
+
+    if (!(await ensureTargetChain())) return
 
     writeContract({
       address: DROPS_ADDRESS,
@@ -107,19 +129,20 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
         badgeUri.trim(),
         deadline,
       ],
-      chain,
+      chain: targetChain,
       account: address,
     })
   }
 
-  const submitDeactivate = (codeStr: string) => {
-    if (!chain || !address) return
+  const submitDeactivate = async (codeStr: string) => {
+    if (!targetChain || !address) return
+    if (!(await ensureTargetChain())) return
     writeContract({
       address: DROPS_ADDRESS,
       abi: criptoUnamDropsAbi,
       functionName: 'deactivateDrop',
       args: [codeStr],
-      chain,
+      chain: targetChain,
       account: address,
     })
   }
@@ -186,8 +209,25 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
           }}
         >
           El código se dicta en la sesión. Quien lo escriba en{' '}
-          <code style={{ color: '#fff' }}>/claim</code> recibe PUMA + POAP. Una sola tx por wallet.
+          <code style={{ color: '#fff' }}>/recompensas/misiones</code> recibe PUMA + POAP. Una sola tx por wallet.
         </p>
+
+        <button
+          type="button"
+          className="puma-btn puma-btn--ghost"
+          style={{ width: '100%', marginBottom: '1rem', justifyContent: 'center' }}
+          onClick={() => {
+            setCode(EMBAJADORES_MAY_13_2026.code)
+            setTitle(EMBAJADORES_MAY_13_2026.title)
+            setPumaReward(EMBAJADORES_MAY_13_2026.pumaReward)
+            setBadgeRef('')
+            setBadgeUri('')
+            setDeadlineHours('custom')
+            setCustomDeadlineLocal(EMBAJADORES_MAY_13_2026.deadlineLocal)
+          }}
+        >
+          Plantilla: Sesión Embajadores 13 mayo 2026 (5,000 PUMA)
+        </button>
 
         <form onSubmit={submitCreate}>
           <label className="puma-label">Código (se dirá en la sesión)</label>
@@ -321,6 +361,17 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
             />
           )}
 
+          {wrongNetwork && (
+            <div className="puma-alert puma-alert--warn" style={{ marginBottom: '0.85rem' }}>
+              <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginTop: 3 }} />
+              <span style={{ fontSize: '0.85rem' }}>
+                Tu wallet está en la red {chainId}. Al crear el drop se cambiará automáticamente a{' '}
+                <strong>{targetChain?.name ?? `chain ${targetChainId}`}</strong>, donde viven los
+                contratos. Acepta el cambio de red en tu wallet.
+              </span>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={busy}
@@ -328,7 +379,7 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
             style={{ width: '100%', justifyContent: 'center' }}
           >
             <FontAwesomeIcon icon={faPlus} />
-            {busy ? 'Procesando…' : 'Crear drop'}
+            {busy ? 'Procesando…' : wrongNetwork ? `Cambiar a ${targetChain?.name ?? 'red correcta'} y crear` : 'Crear drop'}
           </button>
 
           {writeError && (

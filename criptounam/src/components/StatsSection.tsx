@@ -1,15 +1,5 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUsers, 
-  faGraduationCap, 
-  faTrophy, 
-  faCode,
-  faCalendarAlt,
-  faGlobe,
-  faRocket,
-  faStar
-} from '@fortawesome/free-solid-svg-icons';
 
 interface StatItem {
   icon: any;
@@ -28,115 +18,94 @@ interface StatsSectionProps {
 const StatsSection: React.FC<StatsSectionProps> = ({ title, description, stats }) => {
   return (
     <section style={{
-      maxWidth: '1200px',
-      margin: '0 auto 3rem auto',
+      maxWidth: '1100px',
+      margin: '0 auto 2rem auto',
       padding: '0 20px'
     }}>
-      {/* Título y descripción */}
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
         <h2 style={{
           fontFamily: 'Orbitron',
           color: '#D4AF37',
-          fontSize: '2.5rem',
-          marginBottom: '1rem'
+          fontSize: 'clamp(1.25rem, 3.5vw, 1.6rem)',
+          margin: '0 0 0.4rem',
+          lineHeight: 1.2
         }}>
           {title}
         </h2>
         {description && (
           <p style={{
-            color: '#E0E0E0',
-            fontSize: '1.2rem',
-            maxWidth: '700px',
-            margin: '0 auto'
+            color: '#94a3b8',
+            fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+            maxWidth: '560px',
+            margin: '0 auto',
+            lineHeight: 1.55
           }}>
             {description}
           </p>
         )}
       </div>
 
-      {/* Grid de estadísticas */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        gap: '24px'
-      }}>
+        gridTemplateColumns: `repeat(${Math.min(stats.length, 4)}, 1fr)`,
+        gap: 'clamp(0.5rem, 2vw, 0.85rem)'
+      }} className="stats-grid-compact">
         {stats.map((stat, index) => (
           <div
             key={index}
             style={{
-              background: 'rgba(26, 26, 26, 0.8)',
-              borderRadius: '16px',
-              padding: '32px 24px',
-              textAlign: 'center',
-              border: '1px solid rgba(212, 175, 55, 0.2)',
-              backdropFilter: 'blur(10px)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-8px)';
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
-              e.currentTarget.style.boxShadow = '0 12px 32px rgba(212, 175, 55, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.2)';
-              e.currentTarget.style.boxShadow = 'none';
+              background: 'rgba(20,20,30,0.7)',
+              borderRadius: '12px',
+              padding: 'clamp(0.7rem, 2vw, 0.95rem)',
+              textAlign: 'left',
+              border: `1px solid ${stat.color}33`,
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+              minHeight: 0
             }}
           >
-            {/* Icono */}
             <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              background: `linear-gradient(135deg, ${stat.color}, ${stat.color}40)`,
+              width: 30,
+              height: 30,
+              borderRadius: 8,
+              background: `${stat.color}22`,
+              border: `1px solid ${stat.color}40`,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px auto',
-              fontSize: '2rem',
-              color: 'white'
+              justifyContent: 'center'
             }}>
-              <FontAwesomeIcon icon={stat.icon} />
+              <FontAwesomeIcon icon={stat.icon} style={{ color: stat.color, fontSize: '0.85rem' }} />
             </div>
-
-            {/* Valor */}
             <div style={{
-              fontSize: '2.5rem',
-              fontWeight: 'bold',
-              color: stat.color,
-              marginBottom: '8px',
-              fontFamily: 'Orbitron'
+              fontSize: 'clamp(1.1rem, 4vw, 1.5rem)',
+              fontWeight: 700,
+              color: '#fff',
+              fontFamily: 'Orbitron',
+              lineHeight: 1.1
             }}>
               {stat.value}
             </div>
-
-            {/* Etiqueta */}
-            <h3 style={{
-              fontSize: '1.2rem',
-              fontWeight: '600',
-              color: '#D4AF37',
-              margin: '0 0 8px 0',
-              fontFamily: 'Orbitron'
+            <div style={{
+              color: '#94a3b8',
+              fontSize: '0.72rem',
+              textTransform: 'uppercase',
+              letterSpacing: 0.5,
+              fontWeight: 600
             }}>
               {stat.label}
-            </h3>
-
-            {/* Descripción */}
-            {stat.description && (
-              <p style={{
-                color: '#E0E0E0',
-                fontSize: '0.9rem',
-                lineHeight: '1.5',
-                margin: '0'
-              }}>
-                {stat.description}
-              </p>
-            )}
+            </div>
           </div>
         ))}
       </div>
+      <style>{`
+        @media (max-width: 600px) {
+          .stats-grid-compact {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+      `}</style>
     </section>
   );
 };

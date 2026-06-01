@@ -109,51 +109,52 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
   const currentEvent = events[currentIndex]
 
   return (
-    <div 
+    <div
       ref={carouselRef}
       style={{
         position: 'relative',
-        maxWidth: '1400px',
-        width: '95%',
+        maxWidth: '1200px',
+        width: '100%',
         margin: '0 auto',
-        padding: '0 20px'
+        padding: '0 12px'
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {/* Header del carrusel */}
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
         <h2 style={{
           fontFamily: 'Orbitron',
           color: '#D4AF37',
-          fontSize: '2.5rem',
-          marginBottom: '1rem'
+          fontSize: 'clamp(1.25rem, 3.5vw, 1.6rem)',
+          margin: '0 0 0.4rem'
         }}>
           Próximos Eventos
         </h2>
         <p style={{
-          color: '#E0E0E0',
-          fontSize: '1.2rem',
-          maxWidth: '600px',
-          margin: '0 auto'
+          color: '#94a3b8',
+          fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)',
+          maxWidth: '560px',
+          margin: '0 auto',
+          lineHeight: 1.5
         }}>
-          No te pierdas nuestros próximos eventos y actividades
+          No te pierdas nuestras próximas actividades
         </p>
       </div>
 
       {/* Carrusel principal */}
-      <div style={{
+      <div className="events-carousel-frame" style={{
         position: 'relative',
         background: 'rgba(26,26,26,0.9)',
-        borderRadius: '20px',
+        borderRadius: '16px',
         overflow: 'hidden',
         border: '1px solid rgba(212,175,55,0.3)',
         boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
       }}>
         {/* Contenido del evento: embed Luma o imagen */}
-        <div style={{
+        <div className="events-carousel-content" style={{
           position: 'relative',
-          height: '450px',
+          height: 'clamp(260px, 42vw, 400px)',
           overflow: 'hidden'
         }}>
           {currentEvent.lumaEventId ? (
@@ -197,25 +198,26 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
           {/* Badge de fecha sobre el contenido */}
           <div style={{
             position: 'absolute',
-            bottom: '1rem',
-            left: '1rem',
-            right: '1rem',
+            bottom: '0.7rem',
+            left: '0.7rem',
+            right: '0.7rem',
             display: 'flex',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            pointerEvents: 'none'
           }}>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '0.5rem',
+              gap: '0.4rem',
               background: 'rgba(0,0,0,0.7)',
-              padding: '0.6rem 1.2rem',
-              borderRadius: '12px',
+              padding: '0.4rem 0.8rem',
+              borderRadius: '10px',
               color: '#fff',
-              fontSize: '1rem',
+              fontSize: '0.82rem',
               fontWeight: 600,
               backdropFilter: 'blur(8px)'
             }}>
-              <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#D4AF37' }} />
+              <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#D4AF37', fontSize: '0.78rem' }} />
               <span>{currentEvent.date} {currentEvent.time && `| ${currentEvent.time}`}</span>
             </div>
           </div>
@@ -228,20 +230,20 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
               onClick={goToPrevious}
               style={{
                 position: 'absolute',
-                left: '20px',
+                left: 'clamp(8px, 2vw, 18px)',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 background: 'rgba(26,26,26,0.8)',
                 border: '1px solid rgba(212,175,55,0.3)',
                 color: '#D4AF37',
-                width: '50px',
-                height: '50px',
+                width: 'clamp(34px, 7vw, 44px)',
+                height: 'clamp(34px, 7vw, 44px)',
                 borderRadius: '50%',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '1.2rem',
+                fontSize: '0.95rem',
                 transition: 'all 0.3s ease',
                 zIndex: 10
               }}
@@ -263,20 +265,20 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
               onClick={goToNext}
               style={{
                 position: 'absolute',
-                right: '20px',
+                right: 'clamp(8px, 2vw, 18px)',
                 top: '50%',
                 transform: 'translateY(-50%)',
                 background: 'rgba(26,26,26,0.8)',
                 border: '1px solid rgba(212,175,55,0.3)',
                 color: '#D4AF37',
-                width: '50px',
-                height: '50px',
+                width: 'clamp(34px, 7vw, 44px)',
+                height: 'clamp(34px, 7vw, 44px)',
                 borderRadius: '50%',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '1.2rem',
+                fontSize: '0.95rem',
                 transition: 'all 0.3s ease',
                 zIndex: 10
               }}
@@ -302,16 +304,16 @@ const EventsCarousel: React.FC<EventsCarouselProps> = ({
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          gap: '0.5rem',
-          marginTop: '1.5rem'
+          gap: '0.4rem',
+          marginTop: '0.9rem'
         }}>
           {events.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               style={{
-                width: '12px',
-                height: '12px',
+                width: '8px',
+                height: '8px',
                 borderRadius: '50%',
                 border: 'none',
                 background: index === currentIndex ? '#D4AF37' : 'rgba(212,175,55,0.3)',

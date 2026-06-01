@@ -1,83 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import {
-  useAccount,
-  useChainId,
-  useConfig,
-  useReadContract,
-  useWriteContract,
-  useWaitForTransactionReceipt,
-} from 'wagmi'
-import { isAddress, parseEther, zeroAddress } from 'viem'
 import SEOHead from '../components/SEOHead'
 import PumaMissionsSection from '../components/Puma/PumaMissionsSection'
 import PumaPausedBanner from '../components/Puma/PumaPausedBanner'
 import PumaUserPanel from '../components/Puma/PumaUserPanel'
-import ENV_CONFIG from '../config/env'
-import { pumaTokenAbi } from '../constants/pumaTokenAbi'
-import { PUMA_REWARD_MANAGER_ROLE } from '../constants/pumaRoles'
+import DropCodeClaim from '../components/Puma/DropCodeClaim'
 import { usePumaMissionsList, pumaTokenConfigured } from '../hooks/usePumaMissions'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArrowLeft,
-  faCoins,
   faClipboardList,
   faBolt,
-  faPaperPlane,
   faShieldHalved,
 } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
-const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
-
 const Misiones: React.FC = () => {
   const { data: missions = [], isLoading, refetch } = usePumaMissionsList()
-  const { address, isConnected } = useAccount()
-  const chainId = useChainId()
-  const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
-
-  const { data: hasRewardRole } = useReadContract({
-    address: pumaTokenConfigured ? tokenAddr : undefined,
-    abi: pumaTokenAbi,
-    functionName: 'hasRole',
-    args: address ? [PUMA_REWARD_MANAGER_ROLE, address] : undefined,
-    query: { enabled: pumaTokenConfigured && !!address },
-  })
-
-  const [mintTo, setMintTo] = useState('')
-  const [mintAmount, setMintAmount] = useState('50')
-  const [mintReason, setMintReason] = useState('Recompensa CriptoUNAM')
-
-  const { writeContract, data: txHash, isPending, error: mintError, reset } = useWriteContract()
-  const { isLoading: confirmingMint, isSuccess: mintOk } = useWaitForTransactionReceipt({ hash: txHash })
-
-  useEffect(() => {
-    if (mintOk) reset()
-  }, [mintOk, reset])
-
-  const tokenOk = isAddress(tokenAddr) && tokenAddr !== zeroAddress
-  const mintBusy = isPending || confirmingMint
-
-  const submitMint = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!hasRewardRole || !chain || !address || !isAddress(mintTo.trim())) return
-    let amount: bigint
-    try {
-      amount = parseEther(mintAmount || '0')
-    } catch {
-      return
-    }
-    if (amount === 0n) return
-    writeContract({
-      address: tokenAddr,
-      abi: pumaTokenAbi,
-      functionName: 'mintReward',
-      args: [mintTo.trim() as `0x${string}`, amount, mintReason.trim() || 'reward'],
-      chain,
-      account: address,
-    })
-  }
 
   const activeMissions = missions.filter(
     (m) => m.active && Number(m.deadline) * 1000 > Date.now()
@@ -107,7 +46,6 @@ const Misiones: React.FC = () => {
           <PumaPausedBanner />
         </div>
 
-        {/* breadcrumb */}
         <div style={{ maxWidth: 1100, margin: '0 auto 1rem' }} className="puma-fade-in">
           <Link to="/recompensas" className="puma-breadcrumb">
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -115,9 +53,6 @@ const Misiones: React.FC = () => {
           </Link>
         </div>
 
-        {/* ============================================================
-            HERO
-            ============================================================ */}
         <header
           className="puma-hero-bg"
           style={{
@@ -167,20 +102,22 @@ const Misiones: React.FC = () => {
               animationDelay: '120ms',
             }}
           >
-            Revisa tu progreso, reclama misiones activas y —si el equipo te dio rol— envía
-            recompensas a otras wallets.
+            Conecta tu wallet en Avalanche. Si estuviste en una sesión de embajadores, usa el{' '}
+            <strong style={{ color: '#F4D03F' }}>código</strong> que te dictaron. También puedes
+            reclamar misiones publicadas (una vez por wallet).
           </p>
         </header>
 
-        {/* ============================================================
-            STATS
-            ============================================================ */}
+        <section style={{ maxWidth: 1100, margin: '0 auto 1.5rem' }}>
+          <DropCodeClaim />
+        </section>
+
         <section style={{ maxWidth: 1100, margin: '0 auto 1.5rem' }}>
           <div
             className="puma-stagger"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
               gap: '1rem',
             }}
           >
@@ -196,22 +133,9 @@ const Misiones: React.FC = () => {
               <div className="puma-stat__value">{missions.length}</div>
               <div className="puma-stat__hint">Misiones publicadas</div>
             </div>
-            <div className="puma-stat" style={{ '--i': 2 } as React.CSSProperties}>
-              <FontAwesomeIcon icon={faShieldHalved} className="puma-stat__icon" />
-              <div className="puma-stat__label">Rol activo</div>
-              <div className="puma-stat__value" style={{ fontSize: '1rem', textTransform: 'uppercase' }}>
-                {hasRewardRole ? 'Reward Mgr' : isConnected ? 'Comunidad' : '—'}
-              </div>
-              <div className="puma-stat__hint">
-                {hasRewardRole ? 'Puedes mintear recompensas' : 'Conecta tu wallet'}
-              </div>
-            </div>
           </div>
         </section>
 
-        {/* ============================================================
-            USER PANEL + GUIDE
-            ============================================================ */}
         <div
           style={{
             display: 'grid',
@@ -246,111 +170,25 @@ const Misiones: React.FC = () => {
               }}
             >
               <li style={{ marginBottom: '0.4rem' }}>
-                <strong style={{ color: '#F4D03F' }}>Conecta</strong> tu wallet para ver saldo,
-                nivel e historial.
+                <strong style={{ color: '#F4D03F' }}>Conecta</strong> tu wallet para ver tu saldo,
+                nivel e historial PUMA.
+              </li>
+              <li style={{ marginBottom: '0.4rem' }}>
+                En sesiones, escribe el <strong style={{ color: '#F4D03F' }}>código</strong> del
+                equipo (ej. embajadores-13-mayo-2026) y reclama PUMA + POAP si aplica.
               </li>
               <li style={{ marginBottom: '0.4rem' }}>
                 <strong style={{ color: '#F4D03F' }}>Reclama</strong> cada misión activa una sola
                 vez por wallet.
               </li>
               <li>
-                Si tienes <code style={{ color: '#94a3b8' }}>REWARD_MANAGER_ROLE</code>, te aparece
-                el formulario para enviar PUMA a otra wallet.
+                Los $PUMA llegan a tu wallet en la misma transacción y suman experiencia para
+                subir de nivel.
               </li>
             </ol>
           </div>
         </div>
 
-        {/* ============================================================
-            MINT BOX (solo con rol)
-            ============================================================ */}
-        {tokenOk && isConnected && hasRewardRole && (
-          <div
-            className="puma-card puma-card--rainbow puma-fade-in-up"
-            style={{
-              maxWidth: 1100,
-              margin: '0 auto 1.5rem',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                marginBottom: '0.9rem',
-                flexWrap: 'wrap',
-              }}
-            >
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 12,
-                  background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#fff',
-                }}
-              >
-                <FontAwesomeIcon icon={faCoins} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <h2 style={{ fontFamily: 'Orbitron', color: '#fff', fontSize: '1.1rem', margin: 0 }}>
-                  Enviar $PUMA (Reward Manager)
-                </h2>
-                <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: '0.2rem 0 0' }}>
-                  Cada envío queda registrado on-chain con la nota que indiques.
-                </p>
-              </div>
-            </div>
-            <form onSubmit={submitMint}>
-              <label className="puma-label">Wallet destino</label>
-              <input
-                className="puma-input"
-                value={mintTo}
-                onChange={(e) => setMintTo(e.target.value)}
-                placeholder="0x…"
-                style={{ marginBottom: '0.85rem' }}
-              />
-              <label className="puma-label">Cantidad (PUMA)</label>
-              <input
-                className="puma-input"
-                value={mintAmount}
-                onChange={(e) => setMintAmount(e.target.value)}
-                inputMode="decimal"
-                style={{ marginBottom: '0.85rem' }}
-              />
-              <label className="puma-label">Nota (visible on-chain)</label>
-              <input
-                className="puma-input"
-                value={mintReason}
-                onChange={(e) => setMintReason(e.target.value)}
-                style={{ marginBottom: '0.85rem' }}
-              />
-              <button type="submit" disabled={mintBusy} className="puma-btn puma-btn--blue">
-                <FontAwesomeIcon icon={faPaperPlane} />
-                {mintBusy ? 'Enviando…' : 'Enviar recompensa'}
-              </button>
-            </form>
-            {mintError && (
-              <p
-                style={{
-                  color: '#fca5a5',
-                  fontSize: '0.88rem',
-                  marginTop: '0.75rem',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {mintError.message.slice(0, 260)}
-              </p>
-            )}
-          </div>
-        )}
-
-        {/* ============================================================
-            LISTA DE MISIONES
-            ============================================================ */}
         <section
           className="puma-card puma-card--featured puma-fade-in-up"
           style={{
@@ -377,8 +215,8 @@ const Misiones: React.FC = () => {
               fontSize: 'clamp(0.9rem, 2.5vw, 1rem)',
             }}
           >
-            Las nuevas misiones aparecen cuando el equipo las publica. Si la red está en pausa, no
-            podrás reclamar hasta que se levante.
+            Las nuevas misiones aparecen cuando el equipo las publica. Si la red está en pausa,
+            no podrás reclamar hasta que se levante.
           </p>
           {!pumaTokenConfigured && (
             <div className="puma-alert puma-alert--warn" style={{ marginBottom: '1rem' }}>

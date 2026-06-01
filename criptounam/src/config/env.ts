@@ -46,10 +46,10 @@ export const ENV_CONFIG = {
   MAX_LIKES_PER_USER: parseInt(envStr('VITE_MAX_LIKES_PER_USER') || '100', 10),
   LIKE_REWARD_AMOUNT: parseInt(envStr('VITE_LIKE_REWARD_AMOUNT') || '10', 10),
 
-  CHAIN_ID: parseInt(envStr('VITE_CHAIN_ID') || '42161', 10), // Arbitrum One default
-  RPC_URL: envStr('VITE_RPC_URL') || 'https://arb1.arbitrum.io/rpc',
+  CHAIN_ID: parseInt(envStr('VITE_CHAIN_ID') || '43114', 10), // Avalanche C-Chain default
+  RPC_URL: envStr('VITE_RPC_URL') || 'https://api.avax.network/ext/bc/C/rpc',
   INFURA_ID: envStr('VITE_INFURA_ID'),
-  EXPLORER_URL: envStr('VITE_EXPLORER_URL') || 'https://arbiscan.io',
+  EXPLORER_URL: envStr('VITE_EXPLORER_URL') || 'https://snowtrace.io',
   ADMIN_PRIVATE_KEY: envStr('VITE_ADMIN_PRIVATE_KEY'),
 }
 

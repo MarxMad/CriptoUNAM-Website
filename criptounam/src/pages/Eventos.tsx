@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { hackathonsData, eventosLumaPresenciales, eventosLumaPasados } from '../data/eventosData'
 import SEOHead from '../components/SEOHead'
 import ComunidadPageContent from '../components/ComunidadPageContent'
+import PageHero from '../components/PageHero'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCalendarAlt,
@@ -59,125 +60,33 @@ const Eventos = () => {
       />
 
       <div
-        className="section"
         style={{
-          minHeight: '100vh',
-          paddingTop: '1.5rem',
-          paddingBottom: '4rem',
-          paddingLeft: 'clamp(0.75rem, 4vw, 1.25rem)',
-          paddingRight: 'clamp(0.75rem, 4vw, 1.25rem)',
+          padding: '0.5rem clamp(0.5rem, 3vw, 1rem) 3rem',
         }}
       >
         {/* ============================================================
             HERO
             ============================================================ */}
-        <header
-          className="puma-hero-bg"
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto 2.5rem',
-            padding: '2.5rem 1rem 1.5rem',
-            textAlign: 'center',
-            position: 'relative',
-          }}
-        >
-          <div className="puma-hero-grid" />
-
-          <div
-            className="puma-pop-in"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 64,
-              height: 64,
-              borderRadius: 18,
-              background: 'linear-gradient(135deg, #60a5fa, #2563eb)',
-              boxShadow: '0 12px 30px rgba(37,99,235,0.4)',
-              marginBottom: '1.25rem',
-            }}
-          >
-            <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#fff', fontSize: '1.7rem' }} />
-          </div>
-
-          <h1
-            className="puma-title-glow puma-fade-in-up"
-            style={{
-              fontSize: 'clamp(2rem, 5.5vw, 3rem)',
-              marginBottom: '0.75rem',
-              lineHeight: 1.15,
-            }}
-          >
-            Eventos y comunidad
-          </h1>
-          <p
-            className="puma-fade-in-up"
-            style={{
-              color: '#cbd5e1',
-              fontSize: 'clamp(1rem, 2.5vw, 1.12rem)',
-              maxWidth: 720,
-              margin: '0 auto 1.25rem',
-              lineHeight: 1.65,
-              animationDelay: '120ms',
-            }}
-          >
-            Inscríbete a meetups, hackathones y sesiones de embajadores. Al asistir, reclama tu{' '}
-            <strong style={{ color: '#F4D03F' }}>POAP on-chain</strong> como recuerdo del evento.
-          </p>
-
-          <div
-            className="puma-fade-in-up"
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.75rem',
-              justifyContent: 'center',
-              animationDelay: '220ms',
-            }}
-          >
-            <Link to="/claim" className="puma-btn puma-btn--gold">
-              <FontAwesomeIcon icon={faAward} />
-              Reclamar POAP
-            </Link>
-            <a href="#comunidad" className="puma-btn puma-btn--ghost">
-              <FontAwesomeIcon icon={faUsers} />
-              Comunidad
-            </a>
-          </div>
-        </header>
-
-        {/* ============================================================
-            STATS
-            ============================================================ */}
-        <section
-          className="puma-stagger"
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto 2.5rem',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
-            gap: '1rem',
-          }}
-        >
-          <div className="puma-stat" style={{ '--i': 0 } as React.CSSProperties}>
-            <FontAwesomeIcon icon={faTicket} className="puma-stat__icon" />
-            <div className="puma-stat__label">Vigentes</div>
-            <div className="puma-stat__value">{totalVigentes}</div>
-            <div className="puma-stat__hint">Inscríbete ahora</div>
-          </div>
-          <div className="puma-stat" style={{ '--i': 1 } as React.CSSProperties}>
-            <FontAwesomeIcon icon={faCode} className="puma-stat__icon" />
-            <div className="puma-stat__label">Hackathons</div>
-            <div className="puma-stat__value">{totalHacks}</div>
-            <div className="puma-stat__hint">Próximos 2026</div>
-          </div>
-          <div className="puma-stat" style={{ '--i': 2 } as React.CSSProperties}>
-            <FontAwesomeIcon icon={faClock} className="puma-stat__icon" />
-            <div className="puma-stat__label">Pasados</div>
-            <div className="puma-stat__value">{totalPasados}</div>
-            <div className="puma-stat__hint">Historial Luma</div>
-          </div>
-        </section>
+        <PageHero
+          icon={faCalendarAlt}
+          iconColor="#60a5fa"
+          iconGradient="linear-gradient(135deg, #60a5fa, #2563eb)"
+          eyebrow="Eventos"
+          title="Comunidad CriptoUNAM"
+          description={
+            <>
+              Meetups, hackathones y sesiones. Al asistir, reclama tu{' '}
+              <strong style={{ color: '#F4D03F' }}>POAP on-chain</strong>.
+            </>
+          }
+          accentRgba="rgba(37,99,235,0.1)"
+          stats={[
+            { icon: faTicket, label: 'Vigentes', value: totalVigentes, color: '#4ade80' },
+            { icon: faCode, label: 'Hackathons', value: totalHacks, color: '#a78bfa' },
+            { icon: faClock, label: 'Pasados', value: totalPasados, color: '#60a5fa' },
+          ]}
+          cta={{ to: '/claim', label: 'Reclamar POAP', icon: faAward, variant: 'gold' }}
+        />
 
         {/* ============================================================
             EVENTOS PRESENCIALES VIGENTES
@@ -224,11 +133,14 @@ const Eventos = () => {
                 <FontAwesomeIcon icon={faRocket} />
                 {totalVigentes} {totalVigentes === 1 ? 'vigente' : 'vigentes'}
               </span>
+              {totalVigentes > 1 && (
+                <span className="eventos-swipe-hint">← desliza →</span>
+              )}
             </div>
 
             <div
-              className="eventos-vigentes-grid puma-stagger"
-              style={{ display: 'grid', gap: '1.5rem', alignItems: 'stretch' }}
+              className="eventos-carousel puma-stagger"
+              style={{ gap: '1rem', alignItems: 'stretch' }}
             >
               {eventosLumaPresenciales.map((evento, idx) => (
                 <article
@@ -377,11 +289,14 @@ const Eventos = () => {
                 Eventos pasados
               </h3>
               <span className="puma-chip puma-chip--gray">{totalPasados} eventos</span>
+              {totalPasados > 1 && (
+                <span className="eventos-swipe-hint">← desliza →</span>
+              )}
             </div>
 
             <div
-              className="eventos-pasados-grid puma-stagger"
-              style={{ display: 'grid', gap: '1.25rem' }}
+              className="eventos-carousel eventos-carousel--pasados puma-stagger"
+              style={{ gap: '1rem' }}
             >
               {eventosLumaPasados.map((evento, idx) => (
                 <article
@@ -512,6 +427,9 @@ const Eventos = () => {
               <FontAwesomeIcon icon={faTrophy} />
               {totalHacks} {totalHacks === 1 ? 'evento' : 'eventos'}
             </span>
+            {totalHacks > 1 && (
+              <span className="eventos-swipe-hint">← desliza →</span>
+            )}
           </div>
 
           <p
@@ -528,12 +446,8 @@ const Eventos = () => {
           </p>
 
           <div
-            className="puma-stagger"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))',
-              gap: '1.35rem',
-            }}
+            className="eventos-carousel eventos-carousel--hacks puma-stagger"
+            style={{ gap: '1rem' }}
           >
             {hackathonsData.map((hack, idx) => (
               <article
@@ -837,21 +751,88 @@ const Eventos = () => {
       </div>
 
       <style>{`
-        .eventos-vigentes-grid {
-          grid-template-columns: 1fr;
+        /* ============================================================
+           Carrusel horizontal con scroll-snap (vigentes / pasados / hacks)
+           Se desliza con swipe en mobile y con trackpad en desktop.
+           ============================================================ */
+        .eventos-carousel {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: nowrap !important;
+          overflow-x: auto;
+          overflow-y: hidden;
+          scroll-snap-type: x mandatory;
+          scroll-padding-left: 0.25rem;
+          padding: 0 0.25rem 1rem;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-x;
         }
-        @media (min-width: 920px) {
-          .eventos-vigentes-grid {
-            grid-template-columns: repeat(2, 1fr);
+        .eventos-carousel > article {
+          flex: 0 0 clamp(280px, 88vw, 420px);
+          scroll-snap-align: start;
+          min-width: 0;
+        }
+        @media (min-width: 720px) {
+          .eventos-carousel > article {
+            flex-basis: 460px;
           }
         }
-        .eventos-pasados-grid {
-          grid-template-columns: 1fr;
-        }
-        @media (min-width: 700px) {
-          .eventos-pasados-grid {
-            grid-template-columns: repeat(2, 1fr);
+        @media (min-width: 1100px) {
+          .eventos-carousel > article {
+            flex-basis: 500px;
           }
+        }
+        /* Cards pasadas son más compactas — menos ancho */
+        .eventos-carousel--pasados > article {
+          flex-basis: clamp(260px, 84vw, 360px);
+        }
+        @media (min-width: 720px) {
+          .eventos-carousel--pasados > article {
+            flex-basis: 380px;
+          }
+        }
+        /* Hackathons: cards medias */
+        .eventos-carousel--hacks > article {
+          flex-basis: clamp(280px, 86vw, 380px);
+        }
+        @media (min-width: 720px) {
+          .eventos-carousel--hacks > article {
+            flex-basis: 400px;
+          }
+        }
+        /* Scrollbar dorada delgada (Chromium/WebKit) */
+        .eventos-carousel::-webkit-scrollbar {
+          height: 6px;
+        }
+        .eventos-carousel::-webkit-scrollbar-track {
+          background: rgba(255,255,255,0.04);
+          border-radius: 4px;
+        }
+        .eventos-carousel::-webkit-scrollbar-thumb {
+          background: rgba(212,175,55,0.4);
+          border-radius: 4px;
+        }
+        .eventos-carousel::-webkit-scrollbar-thumb:hover {
+          background: rgba(212,175,55,0.6);
+        }
+        /* Firefox */
+        .eventos-carousel {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(212,175,55,0.4) rgba(255,255,255,0.04);
+        }
+        /* Hint sutil de scroll */
+        .eventos-swipe-hint {
+          font-size: 0.78rem;
+          color: #94a3b8;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          margin-left: auto;
+          padding: 4px 10px;
+          background: rgba(212,175,55,0.08);
+          border: 1px solid rgba(212,175,55,0.2);
+          border-radius: 999px;
+          white-space: nowrap;
         }
       `}</style>
     </>

@@ -1,11 +1,10 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { cursosData, type Curso } from '../constants/cursosData'
+import PageHero from '../components/PageHero'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBook,
-  faCode,
-  faRocket,
   faGraduationCap,
   faClock,
   faUsers,
@@ -106,290 +105,127 @@ const Cursos = () => {
     <>
       <style>{`
         .cursos-layout {
-          display: grid;
-          grid-template-columns: 280px 1fr;
-          gap: 2rem;
-          align-items: flex-start;
           width: 100%;
           max-width: 1300px;
           margin: 0 auto;
+          padding: 0 1rem;
         }
-        .filtros-sidebar {
-          position: sticky;
-          top: 90px;
-          height: fit-content;
-          z-index: 2;
+        .cursos-toolbar {
+          display: flex;
+          flex-direction: column;
+          gap: 0.7rem;
+          margin-bottom: 1.5rem;
+        }
+        .cursos-toolbar__row {
+          display: flex;
+          gap: 0.6rem;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+        .cursos-search {
+          position: relative;
+          flex: 1 1 240px;
+          min-width: 200px;
+        }
+        .cursos-chips {
+          display: flex;
+          gap: 0.4rem;
+          overflow-x: auto;
+          padding: 2px 0;
+          scrollbar-width: thin;
+          -webkit-overflow-scrolling: touch;
+        }
+        .cursos-chips::-webkit-scrollbar { height: 4px; }
+        .cursos-chips::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.3); border-radius: 4px; }
+        .cursos-chip {
+          flex-shrink: 0;
+          padding: 0.4rem 0.85rem;
+          border-radius: 999px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          font-family: inherit;
+        }
+        .cursos-chip--lvl {
+          background: rgba(255,255,255,0.04);
+          color: #cbd5e1;
+          border: 1px solid rgba(212,175,55,0.18);
+        }
+        .cursos-chip--lvl.is-active {
+          background: linear-gradient(135deg, #F4D03F, #D4AF37);
+          color: #0a0a0a;
+          border-color: #F4D03F;
+        }
+        .cursos-chip--cat {
+          background: rgba(212,175,55,0.08);
+          color: #D4AF37;
+          border: 1px solid rgba(212,175,55,0.25);
+        }
+        .cursos-chip--cat.is-active {
+          background: linear-gradient(135deg, #F4D03F, #D4AF37);
+          color: #0a0a0a;
+          border-color: #F4D03F;
         }
         .cursos-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-          gap: 1.5rem;
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+          gap: 1.25rem;
         }
-        @media (max-width: 880px) {
-          .cursos-layout { grid-template-columns: 1fr; padding: 0 1rem; }
-          .filtros-sidebar { position: relative; top: 0; }
+        @media (max-width: 480px) {
           .cursos-grid { grid-template-columns: 1fr; }
         }
       `}</style>
 
-      <div className="section" style={{ minHeight: '100vh', paddingTop: '1.5rem' }}>
+      <div style={{ padding: '0.5rem 0 3rem' }}>
         {/* ============================================================
             HERO
             ============================================================ */}
-        <header
-          className="puma-hero-bg"
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto 2.5rem',
-            padding: '2.5rem 1rem 1.5rem',
-            textAlign: 'center',
-            position: 'relative',
+        <PageHero
+          icon={faGraduationCap}
+          iconColor="#a78bfa"
+          iconGradient="linear-gradient(135deg, #a78bfa, #7c3aed)"
+          eyebrow="Catálogo"
+          title="Cursos CriptoUNAM"
+          description={
+            <>
+              Aprende blockchain con contenido de la comunidad. Cada curso te da una{' '}
+              <strong style={{ color: '#F4D03F' }}>credencial NFT soulbound</strong> on-chain.
+            </>
+          }
+          accentRgba="rgba(124,58,237,0.1)"
+          stats={[
+            { icon: faBook, label: 'Cursos', value: totalCursos, color: '#a78bfa' },
+            { icon: faGift, label: 'Gratis', value: cursosGratis, color: '#4ade80' },
+            { icon: faCoins, label: 'En $PUMA', value: cursosPago, color: '#F4D03F' },
+          ]}
+          cta={{
+            to: '/claim',
+            label: 'Mis certificaciones',
+            icon: faAward,
+            variant: 'ghost',
           }}
-        >
-          <div className="puma-hero-grid" />
-
-          <div
-            className="puma-pop-in"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 64,
-              height: 64,
-              borderRadius: 18,
-              background: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
-              boxShadow: '0 12px 30px rgba(124,58,237,0.4)',
-              marginBottom: '1.25rem',
-            }}
-          >
-            <FontAwesomeIcon icon={faGraduationCap} style={{ color: '#fff', fontSize: '1.7rem' }} />
-          </div>
-
-          <h1
-            className="puma-title-glow puma-fade-in-up"
-            style={{
-              fontSize: 'clamp(2rem, 5.5vw, 3rem)',
-              marginBottom: '0.75rem',
-              lineHeight: 1.15,
-            }}
-          >
-            Cursos CriptoUNAM
-          </h1>
-          <p
-            className="puma-fade-in-up"
-            style={{
-              color: '#cbd5e1',
-              fontSize: 'clamp(1rem, 2.5vw, 1.12rem)',
-              maxWidth: 720,
-              margin: '0 auto 1.25rem',
-              lineHeight: 1.65,
-              animationDelay: '120ms',
-            }}
-          >
-            Aprende blockchain, smart contracts y DeFi con contenido creado por la comunidad. Al
-            terminar cada curso obtienes una <strong style={{ color: '#F4D03F' }}>credencial NFT
-            soulbound</strong> verificable on-chain.
-          </p>
-
-          <div
-            className="puma-fade-in-up"
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '0.75rem',
-              justifyContent: 'center',
-              animationDelay: '220ms',
-            }}
-          >
-            <Link to="/recompensas" className="puma-btn puma-btn--gold">
-              <FontAwesomeIcon icon={faGift} />
-              Recompensas $PUMA
-            </Link>
-            <Link to="/claim" className="puma-btn puma-btn--ghost">
-              <FontAwesomeIcon icon={faAward} />
-              Mi colección NFT
-            </Link>
-          </div>
-        </header>
-
-        {/* ============================================================
-            STATS
-            ============================================================ */}
-        <section
-          className="puma-stagger"
-          style={{
-            maxWidth: 1100,
-            margin: '0 auto 2.5rem',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
-            gap: '1rem',
-            padding: '0 1rem',
-          }}
-        >
-          <div className="puma-stat" style={{ '--i': 0 } as React.CSSProperties}>
-            <FontAwesomeIcon icon={faBook} className="puma-stat__icon" />
-            <div className="puma-stat__label">Total cursos</div>
-            <div className="puma-stat__value">{totalCursos}</div>
-            <div className="puma-stat__hint">en el catálogo</div>
-          </div>
-          <div className="puma-stat" style={{ '--i': 1 } as React.CSSProperties}>
-            <FontAwesomeIcon icon={faGift} className="puma-stat__icon" />
-            <div className="puma-stat__label">Gratuitos</div>
-            <div className="puma-stat__value">{cursosGratis}</div>
-            <div className="puma-stat__hint">sólo firma de wallet</div>
-          </div>
-          <div className="puma-stat" style={{ '--i': 2 } as React.CSSProperties}>
-            <FontAwesomeIcon icon={faCoins} className="puma-stat__icon" />
-            <div className="puma-stat__label">En $PUMA</div>
-            <div className="puma-stat__value">{cursosPago}</div>
-            <div className="puma-stat__hint">pago con token</div>
-          </div>
-        </section>
-
-        {/* ============================================================
-            CAMINO DE APRENDIZAJE
-            ============================================================ */}
-        <section style={{ maxWidth: 1000, margin: '0 auto 3rem', padding: '0 1rem' }}>
-          <h2
-            className="puma-fade-in-up"
-            style={{
-              fontFamily: 'Orbitron',
-              color: '#D4AF37',
-              fontSize: 'clamp(1.3rem, 3.5vw, 1.6rem)',
-              textAlign: 'center',
-              marginBottom: '1.5rem',
-            }}
-          >
-            Tu camino de aprendizaje
-          </h2>
-          <div
-            className="puma-stagger"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
-              gap: '1.25rem',
-            }}
-          >
-            {[
-              {
-                number: 1,
-                title: 'Fundamentos',
-                description: 'Blockchain, Bitcoin, Ethereum y conceptos básicos',
-                icon: faBook,
-                gradient: 'linear-gradient(135deg, #4ecdc4, #2dd4bf)',
-              },
-              {
-                number: 2,
-                title: 'Desarrollo',
-                description: 'Smart Contracts, DApps y desarrollo Web3',
-                icon: faCode,
-                gradient: 'linear-gradient(135deg, #F4D03F, #D4AF37)',
-              },
-              {
-                number: 3,
-                title: 'Especialización',
-                description: 'DeFi, NFTs, DAOs y trading avanzado',
-                icon: faRocket,
-                gradient: 'linear-gradient(135deg, #a78bfa, #7c3aed)',
-              },
-            ].map((step, i) => (
-              <div
-                key={i}
-                className="puma-card puma-card--shimmer"
-                style={
-                  {
-                    '--i': i,
-                    textAlign: 'center',
-                    padding: '1.5rem 1.25rem',
-                  } as React.CSSProperties
-                }
-              >
-                <div
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: '50%',
-                    background: step.gradient,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 1rem',
-                    position: 'relative',
-                    boxShadow: '0 10px 28px rgba(0,0,0,0.4)',
-                  }}
-                >
-                  <FontAwesomeIcon icon={step.icon} style={{ color: '#fff', fontSize: '1.4rem' }} />
-                  <span
-                    style={{
-                      position: 'absolute',
-                      top: -8,
-                      right: -8,
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      background: '#0a0a0a',
-                      color: '#F4D03F',
-                      border: '2px solid #F4D03F',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 800,
-                      fontSize: '0.82rem',
-                      fontFamily: 'Orbitron',
-                    }}
-                  >
-                    {step.number}
-                  </span>
-                </div>
-                <h3
-                  style={{
-                    color: '#fff',
-                    fontFamily: 'Orbitron',
-                    fontSize: '1.1rem',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  {step.title}
-                </h3>
-                <p style={{ color: '#94a3b8', margin: 0, lineHeight: 1.55, fontSize: '0.92rem' }}>
-                  {step.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
+        />
 
         {/* ============================================================
             FILTROS + GRID
             ============================================================ */}
         <div className="cursos-layout">
-          <aside className="filtros-sidebar puma-fade-in-up">
-            <div className="puma-card" style={{ padding: '1.25rem' }}>
-              <h3
-                style={{
-                  fontFamily: 'Orbitron',
-                  color: '#D4AF37',
-                  fontSize: '0.95rem',
-                  marginBottom: '1rem',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8,
-                }}
-              >
-                <FontAwesomeIcon icon={faFilter} />
-                Filtros
-              </h3>
-
-              <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
+          {/* Toolbar de filtros — compacta y horizontal */}
+          <div className="cursos-toolbar puma-fade-in-up">
+            <div className="cursos-toolbar__row">
+              <div className="cursos-search">
                 <FontAwesomeIcon
                   icon={faMagnifyingGlass}
                   style={{
                     position: 'absolute',
-                    left: 12,
+                    left: 14,
                     top: '50%',
                     transform: 'translateY(-50%)',
                     color: '#94a3b8',
                     fontSize: '0.85rem',
+                    pointerEvents: 'none',
                   }}
                 />
                 <input
@@ -399,98 +235,76 @@ const Cursos = () => {
                   onChange={(e) => setBusqueda(e.target.value)}
                   aria-label="Buscar cursos"
                   className="puma-input"
-                  style={{ paddingLeft: 36, marginBottom: 0 }}
+                  style={{ paddingLeft: 40, marginBottom: 0, height: 40 }}
                 />
               </div>
-
-              <div style={{ marginBottom: '1.25rem' }}>
-                <h4
+              <div className="cursos-chips" role="tablist" aria-label="Filtro por nivel">
+                {NIVELES.map((nivel) => {
+                  const active = filtroNivel === nivel
+                  return (
+                    <button
+                      key={nivel}
+                      type="button"
+                      onClick={() => setFiltroNivel(nivel)}
+                      aria-pressed={active}
+                      className={`cursos-chip cursos-chip--lvl ${active ? 'is-active' : ''}`}
+                    >
+                      {nivel === 'todos'
+                        ? 'Todos'
+                        : nivel.charAt(0).toUpperCase() + nivel.slice(1)}
+                    </button>
+                  )
+                })}
+              </div>
+              {(busqueda || filtroNivel !== 'todos' || categoriaSeleccionada !== 'todas') && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBusqueda('')
+                    setFiltroNivel('todos')
+                    setCategoriaSeleccionada('todas')
+                  }}
                   style={{
+                    background: 'none',
+                    border: 'none',
                     color: '#94a3b8',
                     fontSize: '0.78rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: 1,
-                    marginBottom: '0.65rem',
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    whiteSpace: 'nowrap',
+                    fontFamily: 'inherit',
                   }}
                 >
-                  Nivel
-                </h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  {NIVELES.map((nivel) => {
-                    const active = filtroNivel === nivel
-                    return (
-                      <button
-                        key={nivel}
-                        type="button"
-                        onClick={() => setFiltroNivel(nivel)}
-                        aria-pressed={active}
-                        style={{
-                          fontWeight: 600,
-                          borderRadius: 10,
-                          background: active
-                            ? 'linear-gradient(135deg, #F4D03F, #D4AF37)'
-                            : 'rgba(255,255,255,0.03)',
-                          color: active ? '#0a0a0a' : '#cbd5e1',
-                          border: `1px solid ${active ? '#F4D03F' : 'rgba(212,175,55,0.18)'}`,
-                          padding: '0.5rem 0.85rem',
-                          cursor: 'pointer',
-                          textAlign: 'left',
-                          fontSize: '0.88rem',
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        {nivel === 'todos'
-                          ? 'Todos los niveles'
-                          : nivel.charAt(0).toUpperCase() + nivel.slice(1)}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <h4
-                  style={{
-                    color: '#94a3b8',
-                    fontSize: '0.78rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: 1,
-                    marginBottom: '0.65rem',
-                  }}
-                >
-                  Categorías
-                </h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                  {CATEGORIAS_LIST.map((cat) => {
-                    const active = categoriaSeleccionada === cat
-                    return (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => setCategoriaSeleccionada(cat)}
-                        aria-pressed={active}
-                        style={{
-                          fontWeight: 600,
-                          borderRadius: 999,
-                          background: active
-                            ? 'linear-gradient(135deg, #F4D03F, #D4AF37)'
-                            : 'rgba(212,175,55,0.08)',
-                          color: active ? '#0a0a0a' : '#D4AF37',
-                          border: `1px solid ${active ? '#F4D03F' : 'rgba(212,175,55,0.25)'}`,
-                          padding: '0.35rem 0.8rem',
-                          cursor: 'pointer',
-                          fontSize: '0.8rem',
-                          transition: 'all 0.2s ease',
-                        }}
-                      >
-                        {cat === 'todas' ? 'Todas' : cat}
-                      </button>
-                    )
-                  })}
-                </div>
-              </div>
+                  Limpiar
+                </button>
+              )}
             </div>
-          </aside>
+            <div
+              className="cursos-chips"
+              role="tablist"
+              aria-label="Filtro por categoría"
+              style={{ paddingBottom: 2 }}
+            >
+              <FontAwesomeIcon
+                icon={faFilter}
+                style={{ color: '#94a3b8', fontSize: '0.78rem', marginRight: 4, alignSelf: 'center' }}
+              />
+              {CATEGORIAS_LIST.map((cat) => {
+                const active = categoriaSeleccionada === cat
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategoriaSeleccionada(cat)}
+                    aria-pressed={active}
+                    className={`cursos-chip cursos-chip--cat ${active ? 'is-active' : ''}`}
+                  >
+                    {cat === 'todas' ? 'Todas' : cat}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
           <main className="cursos-grid puma-stagger">
             {cursosFiltrados.length === 0 ? (

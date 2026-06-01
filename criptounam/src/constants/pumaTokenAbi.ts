@@ -264,6 +264,20 @@ export const pumaCompleteMissionAbi = [
   },
 ] as const
 
+/** Pago de curso público — cualquier wallet quema su propio PUMA. */
+export const pumaPayCourseAbi = [
+  {
+    type: 'function',
+    name: 'payCourse',
+    stateMutability: 'nonpayable',
+    inputs: [
+      { name: 'cursoId', type: 'string' },
+      { name: 'amount', type: 'uint256' },
+    ],
+    outputs: [],
+  },
+] as const
+
 /** Enviar PUMA acreditados a otra wallet (mismo contrato). */
 export const pumaTransferRewardAbi = [
   {

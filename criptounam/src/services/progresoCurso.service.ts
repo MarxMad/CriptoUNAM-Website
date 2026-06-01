@@ -54,6 +54,27 @@ export async function inscripcionCurso(params: {
   return true
 }
 
+/** Perfil del usuario reutilizable: última inscripción con nombre/email. */
+export async function obtenerPerfilUsuario(
+  walletAddress: string
+): Promise<{ nombre: string; email: string } | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('curso_inscripciones')
+    .select('nombre_completo, email')
+    .eq('wallet_address', walletAddress.toLowerCase())
+    .order('inscrito_en', { ascending: false })
+    .limit(20)
+  if (error || !data || data.length === 0) return null
+  // Toma el primer registro con al menos nombre o email no vacío
+  for (const row of data) {
+    const nombre = (row.nombre_completo || '').trim()
+    const email = (row.email || '').trim()
+    if (nombre || email) return { nombre, email }
+  }
+  return null
+}
+
 /** Verificar si el usuario está inscrito en un curso */
 export async function estaInscrito(walletAddress: string, cursoId: string): Promise<boolean> {
   if (!supabase) return false

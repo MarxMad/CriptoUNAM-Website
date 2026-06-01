@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   useAccount,
   useChainId,
@@ -29,6 +30,7 @@ import {
 import { useWallet } from '../../context/WalletContext'
 import ENV_CONFIG from '../../config/env'
 import { BadgeKind, BADGE_KIND_LABEL } from '../../constants/criptoUnamBadgesAbi'
+import { pumaBalanceQueryKey } from '../../hooks/usePumaTokenBalance'
 
 const explorerBase = ENV_CONFIG.EXPLORER_URL || 'https://etherscan.io'
 
@@ -55,6 +57,7 @@ const Confetti: React.FC = () => {
 }
 
 const DropCodeClaim: React.FC = () => {
+  const queryClient = useQueryClient()
   const { isConnected, connectWallet } = useWallet()
   const { address } = useAccount()
   const chainId = useChainId()
@@ -76,8 +79,11 @@ const DropCodeClaim: React.FC = () => {
     if (txOk) {
       refetchDrop()
       refetchClaimed()
+      if (address) {
+        queryClient.invalidateQueries({ queryKey: pumaBalanceQueryKey(address) })
+      }
     }
-  }, [txOk, refetchDrop, refetchClaimed])
+  }, [txOk, refetchDrop, refetchClaimed, queryClient, address])
 
   const busy = isPending || confirming
   const now = Math.floor(Date.now() / 1000)

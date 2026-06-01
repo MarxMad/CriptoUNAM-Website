@@ -8,29 +8,29 @@ import "../contracts/CriptoUNAMBadges.sol";
  * Minteo on-chain con la wallet que tenga MINTER_ROLE (validación directa en cadena).
  *
  * Variables de entorno:
- *   PRIVATE_KEY     — clave del minter (debe tener MINTER_ROLE)
  *   BADGES_CONTRACT — dirección desplegada de CriptoUNAMBadges
  *   MINT_TO         — destinatario del NFT
  *   BADGE_KIND      — 0 CourseCompletion, 1 EventAttendance, 2 Ambassador, 3 Certification
  *   BADGE_REF       — referencia única (ej. curso-xyz-2026 o evento-luma-id)
  *   TOKEN_URI       — metadata (ej. ipfs://... o https://...)
  *
- * Sepolia (ejemplo):
- *   export PRIVATE_KEY=0x...
+ * Firmante por CLI: --account <keystore> --sender <address>.
+ *
+ * Avalanche Fuji testnet (ejemplo):
  *   export BADGES_CONTRACT=0x...
  *   export MINT_TO=0x...
  *   export BADGE_KIND=1
  *   export BADGE_REF="meetup-2026-05"
  *   export TOKEN_URI="ipfs://Qm..."
  *   forge script script/MintCriptoUNAMBadge.s.sol:MintCriptoUNAMBadge \
- *     --rpc-url $SEPOLIA_RPC_URL --broadcast
+ *     --rpc-url $AVAX_FUJI_RPC_URL \
+ *     --account deployer-criptounam --sender $DEPLOYER_ADDRESS \
+ *     --broadcast
  *
- * Ethereum mainnet (chainId 1): mismo comando con MAINNET_RPC_URL y gas acorde.
- * Revisa gas y nonce en hardware wallet antes de --broadcast.
+ * Avalanche C-Chain mainnet (chainId 43114): mismo comando con AVAX_RPC_URL.
  */
 contract MintCriptoUNAMBadge is Script {
     function run() external returns (uint256 tokenId) {
-        uint256 pk = vm.envUint("PRIVATE_KEY");
         address badgesAddr = vm.envAddress("BADGES_CONTRACT");
         address to = vm.envAddress("MINT_TO");
         uint256 kindRaw = vm.envUint("BADGE_KIND");
@@ -40,7 +40,7 @@ contract MintCriptoUNAMBadge is Script {
         require(kindRaw <= uint256(type(uint8).max), "BADGE_KIND out of range");
         CriptoUNAMBadges.BadgeKind kind = CriptoUNAMBadges.BadgeKind(uint8(kindRaw));
 
-        vm.startBroadcast(pk);
+        vm.startBroadcast();
         tokenId = CriptoUNAMBadges(badgesAddr).mint(to, kind, ref, uri);
         vm.stopBroadcast();
 

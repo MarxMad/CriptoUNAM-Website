@@ -1,16 +1,13 @@
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiProvider, createStorage } from 'wagmi'
-import { arbitrum, mainnet, polygon, base, optimism } from '@reown/appkit/networks'
+import { avalanche, avalancheFuji } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
-// 0. Setup queryClient
 const queryClient = new QueryClient()
 
-// 1. Obtén el projectId desde las variables de entorno
 const projectId = import.meta.env.VITE_WALLET_CONNECT_PROJECT_ID || '4d100a6eb76b812745208d28235dd59c'
 
-// 2. Metadata correcta según los ejemplos de Reown
 const metadata = {
   name: 'CriptoUNAM',
   description: 'Plataforma educativa Web3 de la UNAM',
@@ -18,18 +15,18 @@ const metadata = {
   icons: ['https://criptounam.xyz/favicon.png']
 }
 
-// 3. Redes soportadas. Arbitrum One es la red primaria donde viven
-//    PUMAToken y CriptoUNAMBadges. Mantengo mainnet para fallback de
-//    wallets que no han añadido Arbitrum, y otras L2 como referencia.
-const networks = [arbitrum, mainnet, base, optimism, polygon]
+// Selección de red por VITE_CHAIN_ID. Default 43114 (C-Chain mainnet).
+// Usar 43113 en .env.local para apuntar a Fuji y probar contra los contratos
+// de testnet sin tocar este archivo.
+const chainId = Number(import.meta.env.VITE_CHAIN_ID || 43114)
+const primaryNetwork = chainId === 43113 ? avalancheFuji : avalanche
+const networks = [primaryNetwork] as const
 
-// 4. Adapter de wagmi — Arbitrum primero = red por defecto al conectar.
-//    ssr: false porque es SPA Vite (sin server-rendering). Con ssr: true wagmi
-//    no auto-reconecta al refrescar y el usuario tiene que reabrir el modal.
-//    storage explícito en localStorage para persistir el último connector
-//    entre refreshes y pestañas.
+// ssr: false porque es SPA Vite (sin server-rendering). Con ssr: true wagmi
+// no auto-reconecta al refrescar. storage explícito en localStorage para
+// persistir el último connector entre refreshes y pestañas.
 const wagmiAdapter = new WagmiAdapter({
-  networks: [arbitrum, mainnet],
+  networks: [...networks],
   projectId,
   ssr: false,
   storage: createStorage({
@@ -38,16 +35,15 @@ const wagmiAdapter = new WagmiAdapter({
   })
 })
 
-// 5. Inicializa AppKit con configuración completa incluyendo On-Ramp y Swaps
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [arbitrum, mainnet],
-  defaultNetwork: arbitrum,
+  networks: [...networks],
+  defaultNetwork: primaryNetwork,
   projectId,
   metadata,
   features: {
-    onramp: true, // Habilitar On-Ramp para comprar criptomonedas
-    swaps: true, // Habilitar Swaps para intercambiar tokens
+    onramp: true,
+    swaps: true,
     analytics: true,
     email: true,
     socials: ['google', 'github', 'discord'],
@@ -66,4 +62,4 @@ export function AppKitProvider({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </WagmiProvider>
   )
-} 
+}

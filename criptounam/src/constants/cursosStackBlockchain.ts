@@ -23,7 +23,7 @@ const cursoSolana: Curso = {
   descripcion:
     'Aprende el modelo de cuentas de Solana, escribe tus primeros programas con el framework Anchor y despliega en devnet con un cliente web.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 1000,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -350,7 +350,7 @@ const cursoArbitrum: Curso = {
   descripcion:
     'Aprende qué son los optimistic rollups, despliega tu contrato Solidity en Arbitrum One y entiende bridging, gas y herramientas L2.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -676,7 +676,7 @@ const cursoAvalanche: Curso = {
   descripcion:
     'Domina la arquitectura de tres cadenas de Avalanche, lanza un contrato en C-Chain y crea tu propia subnet con Avalanche-CLI.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -975,7 +975,7 @@ const cursoStellar: Curso = {
   descripcion:
     'De anchors y trustlines en Stellar clásico a smart contracts en Soroban con Rust. Despliegue en Futurenet y SDK JS.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1173,7 +1173,7 @@ const cursoSui: Curso = {
   descripcion:
     'Sui cambia la forma de modelar estado: todo es un objeto. Aprende Move adaptado a Sui, abilities, transfer y publica tu primer módulo.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 1000,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1507,7 +1507,7 @@ const cursoEthereumL2: Curso = {
   descripcion:
     'Por qué Ethereum necesita L2. Tipos (optimistic, zk, validium), comparativa Arbitrum/Optimism/Base/zkSync/Scroll y cuándo elegir cada uno.',
   precio: 0,
-  precioPuma: 0,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,

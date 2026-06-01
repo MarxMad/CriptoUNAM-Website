@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAccount, useChainId, useConfig, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoins, faCheck, faClock } from '@fortawesome/free-solid-svg-icons'
 import { pumaCompleteMissionAbi, type PumaMissionRow } from '../../constants/pumaTokenAbi'
 import { usePumaMissionClaims } from '../../hooks/usePumaMissions'
+import { pumaBalanceQueryKey } from '../../hooks/usePumaTokenBalance'
 import ENV_CONFIG from '../../config/env'
 
 const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
@@ -15,9 +17,18 @@ type Props = {
   onTxConfirmed: () => void
   /** Textos en lenguaje claro para la comunidad. */
   tone?: 'embajador' | 'neutral'
+  /** 'list' (default) = columna vertical · 'carousel' = scroll horizontal con snap. */
+  layout?: 'list' | 'carousel'
 }
 
-const PumaMissionsSection: React.FC<Props> = ({ missions, isLoading, onTxConfirmed, tone = 'neutral' }) => {
+const PumaMissionsSection: React.FC<Props> = ({
+  missions,
+  isLoading,
+  onTxConfirmed,
+  tone = 'neutral',
+  layout = 'list',
+}) => {
+  const queryClient = useQueryClient()
   const { address } = useAccount()
   const chainId = useChainId()
   const wagmiConfig = useConfig()
@@ -39,9 +50,12 @@ const PumaMissionsSection: React.FC<Props> = ({ missions, isLoading, onTxConfirm
     if (txSuccess) {
       refetchClaims()
       onTxConfirmed()
+      if (address) {
+        queryClient.invalidateQueries({ queryKey: pumaBalanceQueryKey(address) })
+      }
       reset()
     }
-  }, [txSuccess, refetchClaims, onTxConfirmed, reset])
+  }, [txSuccess, refetchClaims, onTxConfirmed, reset, queryClient, address])
 
   const busy = isSendingTx || isConfirming
 
@@ -91,8 +105,44 @@ const PumaMissionsSection: React.FC<Props> = ({ missions, isLoading, onTxConfirm
 
   const nowSec = Math.floor(Date.now() / 1000)
 
+  const isCarousel = layout === 'carousel'
+  const containerStyle: React.CSSProperties = isCarousel
+    ? {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '0.85rem',
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        scrollSnapType: 'x mandatory',
+        scrollPadding: '0 1rem',
+        paddingBottom: '0.5rem',
+        WebkitOverflowScrolling: 'touch',
+        scrollbarWidth: 'thin',
+      }
+    : { display: 'flex', flexDirection: 'column', gap: '1rem' }
+
+  const cardLayoutStyle: React.CSSProperties = isCarousel
+    ? {
+        flex: '0 0 clamp(260px, 80vw, 320px)',
+        scrollSnapAlign: 'start',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        gap: '0.85rem',
+        padding: '1rem 1.1rem',
+        minHeight: 200,
+      }
+    : {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '1rem',
+        padding: 'clamp(0.9rem, 3vw, 1.15rem) clamp(1rem, 3vw, 1.35rem)',
+      }
+
   return (
-    <div className="puma-stagger" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className="puma-stagger" style={containerStyle}>
       {missions.map((m, idx) => {
         const expired = m.deadline > 0n ? nowSec > Number(m.deadline) : false
         const claimed = claimedMap?.[m.missionId] === true
@@ -123,17 +173,7 @@ const PumaMissionsSection: React.FC<Props> = ({ missions, isLoading, onTxConfirm
           <div
             key={m.missionId}
             className={`puma-card puma-card--shimmer ${canClaim ? 'puma-glow' : ''}`}
-            style={
-              {
-                '--i': idx,
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                padding: 'clamp(0.9rem, 3vw, 1.15rem) clamp(1rem, 3vw, 1.35rem)',
-              } as React.CSSProperties
-            }
+            style={{ '--i': idx, ...cardLayoutStyle } as React.CSSProperties}
           >
             <div style={{ flex: '1 1 240px', minWidth: 0 }}>
               <div
