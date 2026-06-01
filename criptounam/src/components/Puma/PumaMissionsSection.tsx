@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useAccount, useChainId, useConfig, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { useAccount, useConfig, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { formatEther } from 'viem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoins, faCheck, faClock } from '@fortawesome/free-solid-svg-icons'
 import { pumaCompleteMissionAbi, type PumaMissionRow } from '../../constants/pumaTokenAbi'
 import { usePumaMissionClaims } from '../../hooks/usePumaMissions'
 import { pumaBalanceQueryKey } from '../../hooks/usePumaTokenBalance'
+import { useEnsureNetwork } from '../../hooks/useEnsureNetwork'
 import ENV_CONFIG from '../../config/env'
 
 const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
@@ -30,9 +31,9 @@ const PumaMissionsSection: React.FC<Props> = ({
 }) => {
   const queryClient = useQueryClient()
   const { address } = useAccount()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { ensure: ensureTargetChain, targetChainId } = useEnsureNetwork()
+  const targetChain = wagmiConfig.chains.find((c) => c.id === targetChainId)
 
   const { data: claimedMap, refetch: refetchClaims } = usePumaMissionClaims(missions, address)
 
@@ -59,14 +60,15 @@ const PumaMissionsSection: React.FC<Props> = ({
 
   const busy = isSendingTx || isConfirming
 
-  const claim = (missionId: string, canClaim: boolean) => {
-    if (!canClaim || !chain || !address) return
+  const claim = async (missionId: string, canClaim: boolean) => {
+    if (!canClaim || !targetChain || !address) return
+    if (!(await ensureTargetChain())) return
     writeContract({
       address: tokenAddr,
       abi: pumaCompleteMissionAbi,
       functionName: 'completeMission',
       args: [missionId],
-      chain,
+      chain: targetChain,
       account: address,
     })
   }
@@ -147,7 +149,7 @@ const PumaMissionsSection: React.FC<Props> = ({
         const expired = m.deadline > 0n ? nowSec > Number(m.deadline) : false
         const claimed = claimedMap?.[m.missionId] === true
         const canClaim =
-          !!chain && !!address && m.exists && m.active && !expired && !claimed
+          !!targetChain && !!address && m.exists && m.active && !expired && !claimed
 
         let statusChip: React.ReactNode = null
         if (!m.exists || !m.active) {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   useAccount,
-  useChainId,
   useConfig,
   useWriteContract,
   useWaitForTransactionReceipt,
@@ -23,6 +22,7 @@ import {
   usePumaBalance,
 } from '../../hooks/usePumaPayment'
 import { useWallet } from '../../context/WalletContext'
+import { useEnsureNetwork } from '../../hooks/useEnsureNetwork'
 
 const explorerBase = ENV_CONFIG.EXPLORER_URL || 'https://etherscan.io'
 
@@ -50,9 +50,9 @@ const CoursePumaPayment: React.FC<Props> = ({
 }) => {
   const { isConnected, connectWallet } = useWallet()
   const { address } = useAccount()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { ensure: ensureTargetChain, targetChainId } = useEnsureNetwork()
+  const chain = wagmiConfig.chains.find((c) => c.id === targetChainId)
 
   const precioWei = parseEther(String(precioPuma))
 
@@ -74,8 +74,9 @@ const CoursePumaPayment: React.FC<Props> = ({
     }
   }, [txOk, calledOnPaid, refetchBalance, onPaid, reset])
 
-  const pagar = () => {
+  const pagar = async () => {
     if (!chain || !address) return
+    if (!(await ensureTargetChain())) return
     writeContract({
       address: PUMA_TOKEN_ADDRESS,
       abi: pumaPayCourseAbi,

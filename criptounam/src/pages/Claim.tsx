@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import {
   useAccount,
-  useChainId,
   useConfig,
   useWriteContract,
   useWaitForTransactionReceipt,
@@ -10,6 +9,7 @@ import {
 import { isAddress, zeroAddress } from 'viem'
 import SEOHead from '../components/SEOHead'
 import { useWallet } from '../context/WalletContext'
+import { useEnsureNetwork } from '../hooks/useEnsureNetwork'
 import ENV_CONFIG from '../config/env'
 import {
   criptoUnamBadgesAbi,
@@ -438,9 +438,9 @@ const ClaimView: React.FC<{ slug: SlugKind; ref?: string }> = ({ slug, ref: refP
   const navigate = useNavigate()
   const { address, isConnected } = useAccount()
   const { connectWallet } = useWallet()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { ensure: ensureTargetChain, targetChainId } = useEnsureNetwork()
+  const chain = wagmiConfig.chains.find((c) => c.id === targetChainId)
 
   const kind = SLUG_TO_KIND[slug]
   const icon = KIND_ICON[kind]
@@ -487,6 +487,7 @@ const ClaimView: React.FC<{ slug: SlugKind; ref?: string }> = ({ slug, ref: refP
     e.preventDefault()
     if (!hasMinterRole || !chain || !address) return
     if (!refValue.trim()) return
+    if (!(await ensureTargetChain())) return
     const uri = ENV_CONFIG.BADGES_METADATA_BASE
       ? `${ENV_CONFIG.BADGES_METADATA_BASE.replace(/\/$/, '')}/${slug}-${refValue.trim()}.json`
       : `${slug}-${refValue.trim()}.json`

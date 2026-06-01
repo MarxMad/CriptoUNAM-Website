@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {
   useAccount,
-  useChainId,
   useConfig,
   useReadContract,
   useWriteContract,
@@ -14,6 +13,7 @@ import ENV_CONFIG from '../../config/env'
 import { pumaTokenAbi, pumaTransferRewardAbi, type PumaRewardRecord } from '../../constants/pumaTokenAbi'
 import { useWallet } from '../../context/WalletContext'
 import { usePumaTokenBalance } from '../../hooks/usePumaTokenBalance'
+import { useEnsureNetwork } from '../../hooks/useEnsureNetwork'
 
 const tokenAddr = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
 const tokenOk = isAddress(tokenAddr) && tokenAddr !== zeroAddress
@@ -41,9 +41,9 @@ const input: React.CSSProperties = {
 const PumaUserPanel: React.FC = () => {
   const { isConnected, walletAddress, connectWallet } = useWallet()
   const { address } = useAccount()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { ensure: ensureTargetChain, targetChainId } = useEnsureNetwork()
+  const chain = wagmiConfig.chains.find((c) => c.id === targetChainId)
 
   const [toAddr, setToAddr] = useState('')
   const [sendAmt, setSendAmt] = useState('')
@@ -94,7 +94,7 @@ const PumaUserPanel: React.FC = () => {
     }
   }, [ok, refetchBalance, refetchInfo, refetchBadges, refetchRewards, reset])
 
-  const sendTransfer = (e: React.FormEvent) => {
+  const sendTransfer = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!chain || !address || !isAddress(toAddr.trim())) return
     let wei: bigint
@@ -104,6 +104,7 @@ const PumaUserPanel: React.FC = () => {
       return
     }
     if (wei === 0n) return
+    if (!(await ensureTargetChain())) return
     writeContract({
       address: tokenAddr,
       abi: pumaTransferRewardAbi,

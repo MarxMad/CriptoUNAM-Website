@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   useAccount,
-  useChainId,
   useConfig,
   useReadContract,
   useWriteContract,
@@ -40,6 +39,7 @@ import { usePumaMissionsList, pumaTokenConfigured } from '../hooks/usePumaMissio
 import { useAdmin } from '../hooks/useAdmin'
 import DropsAdminTab from '../components/Puma/DropsAdminTab'
 import DropsRoleWiring from '../components/Puma/DropsRoleWiring'
+import { useEnsureNetwork } from '../hooks/useEnsureNetwork'
 import { faGift } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
@@ -50,9 +50,9 @@ type AdminTab = 'general' | 'misiones' | 'recompensas' | 'drops'
 const AdminPuma: React.FC = () => {
   const { address, isConnected } = useAccount()
   const { isAdmin: isLegacyAdmin } = useAdmin()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const chain = wagmiConfig.chains.find((c) => c.id === chainId)
+  const { ensure: ensureTargetChain, targetChainId } = useEnsureNetwork()
+  const chain = wagmiConfig.chains.find((c) => c.id === targetChainId)
 
   const { data: missions = [], isLoading: loadingMissions, refetch: refetchMissions } =
     usePumaMissionsList()
@@ -135,8 +135,9 @@ const AdminPuma: React.FC = () => {
   const hasOnchainAdminRole = Boolean(hasMissionRole || hasRewardRole || hasDefaultAdmin)
   const canViewAdminPanel = Boolean(isLegacyAdmin || hasOnchainAdminRole)
 
-  const execWrite = (functionName: string, args: readonly unknown[]) => {
+  const execWrite = async (functionName: string, args: readonly unknown[]) => {
     if (!chain || !address) return
+    if (!(await ensureTargetChain())) return
     writeContract({
       address: tokenAddr,
       abi: pumaTokenAbi,
