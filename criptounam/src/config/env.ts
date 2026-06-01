@@ -28,9 +28,12 @@ export const ENV_CONFIG = {
   EMAIL_TEMPLATE_NEWSLETTER: 'newsletter_template',
   EMAIL_TEMPLATE_NOTIFICATION: 'notification_template',
 
-  PUMA_TOKEN_ADDRESS: envStr('VITE_PUMA_TOKEN_ADDRESS') || '0x0000000000000000000000000000000000000000',
-  BADGES_CONTRACT_ADDRESS: envStr('VITE_BADGES_CONTRACT_ADDRESS') || '0x0000000000000000000000000000000000000000',
-  DROPS_CONTRACT_ADDRESS: envStr('VITE_DROPS_CONTRACT_ADDRESS') || '0x0000000000000000000000000000000000000000',
+  // Fallbacks = set v2 desplegado en Avalanche Fuji (43113). Son contratos públicos
+  // de testnet (no secretos), así que sirven de default cuando Vercel/entorno no
+  // define las VITE_*. Para mainnet, sobreescribir con las env vars correspondientes.
+  PUMA_TOKEN_ADDRESS: envStr('VITE_PUMA_TOKEN_ADDRESS') || '0xF5F8b95cA7708f092a6D70751A4BE1545472Ee1F',
+  BADGES_CONTRACT_ADDRESS: envStr('VITE_BADGES_CONTRACT_ADDRESS') || '0x44F13D4ECd24515beFB64924A7483E2C0Fb768b2',
+  DROPS_CONTRACT_ADDRESS: envStr('VITE_DROPS_CONTRACT_ADDRESS') || '0x98BfbdBfE5626c391f56B324b01B00f310A70370',
   /** Endpoint serverless que firma mints del Badge desde la wallet MINTER. Vacío = no disponible. */
   BADGES_CLAIM_ENDPOINT: envStr('VITE_BADGES_CLAIM_ENDPOINT'),
   /** Base URL para metadata IPFS/HTTP de los badges (ej. ipfs://CID/ o https://criptounam.xyz/badges/). */
@@ -46,10 +49,12 @@ export const ENV_CONFIG = {
   MAX_LIKES_PER_USER: parseInt(envStr('VITE_MAX_LIKES_PER_USER') || '100', 10),
   LIKE_REWARD_AMOUNT: parseInt(envStr('VITE_LIKE_REWARD_AMOUNT') || '10', 10),
 
-  CHAIN_ID: parseInt(envStr('VITE_CHAIN_ID') || '43114', 10), // Avalanche C-Chain default
-  RPC_URL: envStr('VITE_RPC_URL') || 'https://api.avax.network/ext/bc/C/rpc',
+  // Default = Avalanche Fuji (43113), donde vive el set de contratos v2 actual.
+  // Para producción en mainnet, definir VITE_CHAIN_ID=43114 y sus RPC/explorer.
+  CHAIN_ID: parseInt(envStr('VITE_CHAIN_ID') || '43113', 10),
+  RPC_URL: envStr('VITE_RPC_URL') || 'https://api.avax-test.network/ext/bc/C/rpc',
   INFURA_ID: envStr('VITE_INFURA_ID'),
-  EXPLORER_URL: envStr('VITE_EXPLORER_URL') || 'https://snowtrace.io',
+  EXPLORER_URL: envStr('VITE_EXPLORER_URL') || 'https://testnet.snowtrace.io',
   ADMIN_PRIVATE_KEY: envStr('VITE_ADMIN_PRIVATE_KEY'),
 }
 

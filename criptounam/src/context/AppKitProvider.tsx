@@ -56,9 +56,12 @@ createAppKit({
   }
 })
 
+// reconnectOnMount={true} fuerza a wagmi a rehidratar la última sesión guardada
+// en localStorage (key 'criptounam.wagmi') al cargar/refrescar la página, en vez
+// de quedarse desconectado y volver a pedir conexión/firma.
 export function AppKitProvider({ children }: { children: React.ReactNode }) {
   return (
-    <WagmiProvider config={wagmiAdapter.wagmiConfig}>
+    <WagmiProvider config={wagmiAdapter.wagmiConfig} reconnectOnMount={true}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </WagmiProvider>
   )
