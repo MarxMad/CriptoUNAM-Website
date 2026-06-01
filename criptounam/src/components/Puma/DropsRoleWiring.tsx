@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import {
   useAccount,
-  useChainId,
   useConfig,
   useReadContract,
-  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from 'wagmi'
@@ -20,6 +18,7 @@ import ENV_CONFIG from '../../config/env'
 import { pumaTokenAbi } from '../../constants/pumaTokenAbi'
 import { criptoUnamBadgesAbi } from '../../constants/criptoUnamBadgesAbi'
 import { DROPS_ADDRESS } from '../../hooks/useDrops'
+import { useEnsureNetwork } from '../../hooks/useEnsureNetwork'
 
 const PUMA_ADDRESS = ENV_CONFIG.PUMA_TOKEN_ADDRESS as `0x${string}`
 const BADGES_ADDRESS = ENV_CONFIG.BADGES_CONTRACT_ADDRESS as `0x${string}`
@@ -38,13 +37,11 @@ const MINTER_ROLE = keccak256(toBytes('MINTER_ROLE'))
  */
 const DropsRoleWiring: React.FC = () => {
   const { address, isConnected } = useAccount()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const { switchChainAsync } = useSwitchChain()
 
-  const targetChainId = ENV_CONFIG.CHAIN_ID
+  const { ensure: ensureTargetChain, wrongNetwork, currentChainId, targetChainId } =
+    useEnsureNetwork()
   const targetChain = wagmiConfig.chains.find((c) => c.id === targetChainId)
-  const wrongNetwork = chainId !== targetChainId
 
   const {
     data: pumaRole,
@@ -78,16 +75,6 @@ const DropsRoleWiring: React.FC = () => {
       reset()
     }
   }, [txOk, refetchPuma, refetchBadges, reset])
-
-  const ensureTargetChain = async (): Promise<boolean> => {
-    if (chainId === targetChainId) return true
-    try {
-      await switchChainAsync({ chainId: targetChainId })
-      return true
-    } catch {
-      return false
-    }
-  }
 
   const grantPumaRole = async () => {
     if (!targetChain || !address) return
@@ -160,7 +147,7 @@ const DropsRoleWiring: React.FC = () => {
         <div className="puma-alert puma-alert--warn">
           <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginTop: 3 }} />
           <span style={{ fontSize: '0.85rem' }}>
-            Estás en la red {chainId}. Al firmar se cambiará a{' '}
+            Estás en la red {currentChainId}. Al firmar se cambiará a{' '}
             <strong>{targetChain?.name ?? `chain ${targetChainId}`}</strong>.
           </span>
         </div>

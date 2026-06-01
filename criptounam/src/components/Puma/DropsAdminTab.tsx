@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import {
   useAccount,
-  useChainId,
   useConfig,
-  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from 'wagmi'
 import { formatEther, parseEther } from 'viem'
-import ENV_CONFIG from '../../config/env'
+import { useEnsureNetwork } from '../../hooks/useEnsureNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlus,
@@ -38,26 +36,13 @@ type Props = {
 
 const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
   const { address, isConnected } = useAccount()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const { switchChainAsync } = useSwitchChain()
 
-  // Red destino de los contratos (43113 Fuji por defecto). La tx DEBE firmarse aquí,
-  // no en la red que la wallet tenga activa (p. ej. Arbitrum Sepolia).
-  const targetChainId = ENV_CONFIG.CHAIN_ID
+  // Red destino de los contratos (43113 Fuji por defecto). useEnsureNetwork
+  // sincroniza AppKit + wagmi y valida el cambio antes de firmar.
+  const { ensure: ensureTargetChain, wrongNetwork, currentChainId, targetChainId } =
+    useEnsureNetwork()
   const targetChain = wagmiConfig.chains.find((c) => c.id === targetChainId)
-  const wrongNetwork = chainId !== targetChainId
-
-  /** Garantiza que la wallet esté en la red de los contratos antes de firmar. */
-  const ensureTargetChain = async (): Promise<boolean> => {
-    if (chainId === targetChainId) return true
-    try {
-      await switchChainAsync({ chainId: targetChainId })
-      return true
-    } catch {
-      return false
-    }
-  }
 
   const { data: hasDropRole, isLoading: roleLoading } = useIsDropManager(address)
   const { data: drops = [], isLoading: dropsLoading, refetch } = useAllDrops()
@@ -366,7 +351,7 @@ const DropsAdminTab: React.FC<Props> = ({ isAdmin }) => {
             <div className="puma-alert puma-alert--warn" style={{ marginBottom: '0.85rem' }}>
               <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginTop: 3 }} />
               <span style={{ fontSize: '0.85rem' }}>
-                Tu wallet está en la red {chainId}. Al crear el drop se cambiará automáticamente a{' '}
+                Tu wallet está en la red {currentChainId}. Al crear el drop se cambiará automáticamente a{' '}
                 <strong>{targetChain?.name ?? `chain ${targetChainId}`}</strong>, donde viven los
                 contratos. Acepta el cambio de red en tu wallet.
               </span>

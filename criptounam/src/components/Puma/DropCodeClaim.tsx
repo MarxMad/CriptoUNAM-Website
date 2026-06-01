@@ -2,9 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   useAccount,
-  useChainId,
   useConfig,
-  useSwitchChain,
   useWriteContract,
   useWaitForTransactionReceipt,
 } from 'wagmi'
@@ -32,6 +30,7 @@ import { useWallet } from '../../context/WalletContext'
 import ENV_CONFIG from '../../config/env'
 import { BadgeKind, BADGE_KIND_LABEL } from '../../constants/criptoUnamBadgesAbi'
 import { pumaBalanceQueryKey } from '../../hooks/usePumaTokenBalance'
+import { useEnsureNetwork } from '../../hooks/useEnsureNetwork'
 import FaucetButton from './FaucetButton'
 
 const explorerBase = ENV_CONFIG.EXPLORER_URL || 'https://etherscan.io'
@@ -62,25 +61,13 @@ const DropCodeClaim: React.FC = () => {
   const queryClient = useQueryClient()
   const { isConnected, connectWallet } = useWallet()
   const { address } = useAccount()
-  const chainId = useChainId()
   const wagmiConfig = useConfig()
-  const { switchChainAsync } = useSwitchChain()
 
-  // La tx DEBE firmarse en la red de los contratos (43113 Fuji), no en la que
-  // tenga activa la wallet.
-  const targetChainId = ENV_CONFIG.CHAIN_ID
+  // La tx DEBE firmarse en la red de los contratos (43113 Fuji). useEnsureNetwork
+  // sincroniza AppKit + wagmi y valida el cambio antes de firmar.
+  const { ensure: ensureTargetChain, wrongNetwork, currentChainId, targetChainId } =
+    useEnsureNetwork()
   const targetChain = wagmiConfig.chains.find((c) => c.id === targetChainId)
-  const wrongNetwork = chainId !== targetChainId
-
-  const ensureTargetChain = async (): Promise<boolean> => {
-    if (chainId === targetChainId) return true
-    try {
-      await switchChainAsync({ chainId: targetChainId })
-      return true
-    } catch {
-      return false
-    }
-  }
 
   const [codeInput, setCodeInput] = useState('')
   const [submittedCode, setSubmittedCode] = useState('')
@@ -364,7 +351,7 @@ const DropCodeClaim: React.FC = () => {
                 <div className="puma-alert puma-alert--warn" style={{ marginBottom: '0.75rem' }}>
                   <FontAwesomeIcon icon={faTriangleExclamation} style={{ marginTop: 3 }} />
                   <span style={{ fontSize: '0.85rem' }}>
-                    Tu wallet está en la red {chainId}. Al reclamar se cambiará a{' '}
+                    Tu wallet está en la red {currentChainId}. Al reclamar se cambiará a{' '}
                     <strong>{targetChain?.name ?? `chain ${targetChainId}`}</strong>; acepta el
                     cambio en tu wallet.
                   </span>
