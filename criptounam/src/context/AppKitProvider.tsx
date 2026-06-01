@@ -3,6 +3,7 @@ import { WagmiProvider, createStorage } from 'wagmi'
 import { avalanche, avalancheFuji } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import ENV_CONFIG from '../config/env'
 
 const queryClient = new QueryClient()
 
@@ -15,12 +16,16 @@ const metadata = {
   icons: ['https://criptounam.xyz/favicon.png']
 }
 
-// Selección de red por VITE_CHAIN_ID. Default 43114 (C-Chain mainnet).
-// Usar 43113 en .env.local para apuntar a Fuji y probar contra los contratos
-// de testnet sin tocar este archivo.
-const chainId = Number(import.meta.env.VITE_CHAIN_ID || 43114)
+// Fuente única de verdad: ENV_CONFIG.CHAIN_ID (default 43113 Fuji). Antes este
+// archivo tenía su propio default 43114, así que si faltaba VITE_CHAIN_ID (p. ej.
+// en Vercel) AppKit registraba mainnet mientras el resto de la app usaba Fuji:
+// los popups salían en C-Chain y el switchChain a Fuji fallaba.
+const chainId = ENV_CONFIG.CHAIN_ID
 const primaryNetwork = chainId === 43113 ? avalancheFuji : avalanche
-const networks = [primaryNetwork] as const
+// Registramos ambas redes Avalanche (la primaria primero) para que switchChain
+// siempre tenga la red destino disponible aunque la wallet esté en la otra.
+const secondaryNetwork = chainId === 43113 ? avalanche : avalancheFuji
+const networks = [primaryNetwork, secondaryNetwork] as [typeof primaryNetwork, typeof secondaryNetwork]
 
 // ssr: false porque es SPA Vite (sin server-rendering). Con ssr: true wagmi
 // no auto-reconecta al refrescar. storage explícito en localStorage para
