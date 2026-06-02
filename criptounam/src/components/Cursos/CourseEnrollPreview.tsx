@@ -170,7 +170,7 @@ const CourseEnrollPreview: React.FC<Props> = ({
                     fontWeight: 700,
                   }}
                 >
-                  <FontAwesomeIcon icon={faCoins} /> {precioPuma} $PUMA
+                  <FontAwesomeIcon icon={faCoins} /> {precioPuma.toLocaleString('en-US')} $PUMA
                 </span>
               )}
             </div>
@@ -259,7 +259,7 @@ const CourseEnrollPreview: React.FC<Props> = ({
               }}
             >
               {esPago
-                ? `Paga ${precioPuma} $PUMA, firma con tu wallet y empieza el curso.`
+                ? `Paga ${precioPuma.toLocaleString('en-US')} $PUMA, firma con tu wallet y empieza el curso.`
                 : 'Inscríbete con tu wallet en menos de un minuto. Es gratis.'}
             </p>
           </div>

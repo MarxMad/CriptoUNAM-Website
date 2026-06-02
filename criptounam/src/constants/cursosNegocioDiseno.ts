@@ -23,7 +23,7 @@ const cursoMarketingCripto: Curso = {
   descripcion:
     'Cómo construir audiencia para un proyecto Web3: narrativa, canales (X, Discord, Farcaster), programas de embajadores y lanzamientos sin caer en hype hueco.',
   precio: 0,
-  precioPuma: 100,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -403,7 +403,7 @@ const cursoModelosNegocio: Curso = {
   descripcion:
     'Cómo hacer dinero (sostenible) en Web3. Categorías de monetización, casos de estudio (Uniswap, OpenSea, Lens, Farcaster), unit economics on-chain.',
   precio: 0,
-  precioPuma: 500,
+  precioPuma: 1500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -647,7 +647,7 @@ const cursoTokenomics: Curso = {
   descripcion:
     'Cuándo emitir token y cuándo no. Supply, distribución, vesting, demand sinks (utility, governance, burn) y cómo evitar inflación tóxica.',
   precio: 0,
-  precioPuma: 500,
+  precioPuma: 1500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1055,7 +1055,7 @@ const cursoDisenoProducto: Curso = {
   descripcion:
     'Los patrones únicos de UX en Web3 (wallets, firmas, gas, retries) y cómo reducir fricción con smart accounts, gasless tx y fiat ramps.',
   precio: 0,
-  precioPuma: 500,
+  precioPuma: 1500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1316,7 +1316,7 @@ const cursoFigma: Curso = {
   descripcion:
     'Aprende lo justo de Figma para entender entregables de diseño, extraer design tokens, usar Dev Mode y trabajar fluido con tu diseñadora.',
   precio: 0,
-  precioPuma: 100,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,
@@ -1568,7 +1568,7 @@ const cursoCanva: Curso = {
   descripcion:
     'Crea piezas visuales consistentes y rápidas para X, Instagram, decks y newsletters sin necesidad de un diseñador. Kit de marca + plantillas + batch.',
   precio: 0,
-  precioPuma: 100,
+  precioPuma: 500,
   cohorteRef: 'v1',
   estudiantes: 0,
   rating: 5,

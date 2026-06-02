@@ -1950,7 +1950,7 @@ const Home = () => {
                         fontWeight: 700,
                       }}
                     >
-                      {curso.precioPuma} PUMA
+                      {curso.precioPuma?.toLocaleString('en-US')} $PUMA
                     </span>
                   )}
                 </div>

@@ -405,7 +405,7 @@ const Cursos = () => {
                           }}
                         >
                           <FontAwesomeIcon icon={faCoins} style={{ fontSize: '0.72rem' }} />
-                          {curso.precioPuma} PUMA
+                          {curso.precioPuma?.toLocaleString('en-US')} $PUMA
                         </span>
                       )}
                     </div>

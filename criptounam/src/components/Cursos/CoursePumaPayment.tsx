@@ -92,7 +92,7 @@ const CoursePumaPayment: React.FC<Props> = ({
       <div className="puma-alert puma-alert--warn">
         <FontAwesomeIcon icon={faShieldHalved} style={{ marginTop: 3 }} />
         <span>
-          Este curso cuesta {precioPuma} $PUMA, pero el contrato del token aún no está enlazado
+          Este curso cuesta {precioPuma.toLocaleString('en-US')} $PUMA, pero el contrato del token aún no está enlazado
           en esta red.
         </span>
       </div>
@@ -159,7 +159,7 @@ const CoursePumaPayment: React.FC<Props> = ({
               marginTop: 4,
             }}
           >
-            {precioPuma} PUMA
+            {precioPuma.toLocaleString('en-US')} $PUMA
           </div>
         </div>
         <div
@@ -208,7 +208,7 @@ const CoursePumaPayment: React.FC<Props> = ({
         <div className="puma-alert puma-alert--warn" style={{ marginBottom: '0.85rem' }}>
           <FontAwesomeIcon icon={faShieldHalved} style={{ marginTop: 3 }} />
           <span>
-            Te faltan {(precioPuma - Number(formatEther(balanceBig))).toFixed(2)} PUMA. Reclama
+            Te faltan {(precioPuma - Number(formatEther(balanceBig))).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} $PUMA. Reclama
             misiones o pide a un embajador que te apoye.
           </span>
         </div>
@@ -233,7 +233,7 @@ const CoursePumaPayment: React.FC<Props> = ({
             ? 'Firma en tu wallet…'
             : confirming
             ? 'Confirmando on-chain…'
-            : `Pagar ${precioPuma} PUMA`}
+            : `Pagar ${precioPuma.toLocaleString('en-US')} $PUMA`}
         </button>
       )}
 
