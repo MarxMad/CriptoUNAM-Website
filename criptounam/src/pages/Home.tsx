@@ -1318,8 +1318,8 @@ const Home = () => {
       {/* Banner Token $PUMA */}
       <section
         style={{
-          maxWidth: 1000,
-          margin: "0 auto 4rem auto",
+          maxWidth: 900,
+          margin: "0 auto 3rem auto",
           padding: "0 1.5rem",
         }}
       >
@@ -1329,67 +1329,18 @@ const Home = () => {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: "2rem",
-            padding: "2rem",
+            gap: "1.5rem",
+            padding: "1.2rem 1.5rem",
             background:
               "linear-gradient(135deg, rgba(20,20,20,0.9) 0%, rgba(30,30,30,0.9) 100%)",
             border: "1px solid rgba(212,175,55,0.3)",
-            boxShadow: "0 8px 32px rgba(212,175,55,0.1)",
+            boxShadow: "0 4px 20px rgba(212,175,55,0.08)",
+            borderRadius: "16px",
           }}
         >
-          <div style={{ flex: 1 }}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                marginBottom: "1rem",
-              }}
-            >
-              <span
-                className="puma-chip puma-chip--gold"
-                style={{ fontSize: "0.75rem" }}
-              >
-                <FontAwesomeIcon icon={faStar} /> NUEVO
-              </span>
-              <h2
-                style={{
-                  fontFamily: "Orbitron",
-                  color: "#F4D03F",
-                  fontSize: "1.8rem",
-                  margin: 0,
-                }}
-              >
-                Token $PUMA
-              </h2>
-            </div>
-            <p
-              style={{
-                color: "#cbd5e1",
-                lineHeight: 1.6,
-                fontSize: "1.05rem",
-                marginBottom: "1.5rem",
-              }}
-            >
-              El token exclusivo para los miembros de la comunidad CriptoUNAM.
-              Gana $PUMA participando en misiones, úsalo para{" "}
-              <strong>comprar cursos premium</strong> y accede a{" "}
-              <strong>eventos exclusivos</strong>.
-            </p>
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-              <Link to="/recompensas" className="puma-btn puma-btn--gold">
-                <FontAwesomeIcon icon={faCoins} />
-                Ir a Recompensas
-              </Link>
-              <Link to="/cursos" className="puma-btn puma-btn--outline">
-                <FontAwesomeIcon icon={faGraduationCap} />
-                Ver Cursos
-              </Link>
-            </div>
-          </div>
           <div
             style={{
-              flex: "0 0 200px",
+              flex: "0 0 90px",
               display: "flex",
               justifyContent: "center",
             }}
@@ -1399,31 +1350,103 @@ const Home = () => {
               alt="Token $PUMA"
               style={{
                 width: "100%",
-                maxWidth: "200px",
+                maxWidth: "90px",
                 height: "auto",
-                filter: "drop-shadow(0 0 20px rgba(212,175,55,0.4))",
+                filter: "drop-shadow(0 0 15px rgba(212,175,55,0.4))",
                 animation: "float 6s ease-in-out infinite",
+                objectFit: "contain",
+                mixBlendMode: "screen",
+                borderRadius: "50%",
               }}
             />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.75rem",
+                marginBottom: "0.4rem",
+              }}
+            >
+              <span
+                className="puma-chip puma-chip--gold"
+                style={{ fontSize: "0.65rem", padding: "0.2rem 0.5rem" }}
+              >
+                <FontAwesomeIcon icon={faStar} /> NUEVO
+              </span>
+              <h2
+                style={{
+                  fontFamily: "Orbitron",
+                  color: "#F4D03F",
+                  fontSize: "1.3rem",
+                  margin: 0,
+                }}
+              >
+                Token $PUMA
+              </h2>
+            </div>
+            <p
+              style={{
+                color: "#cbd5e1",
+                lineHeight: 1.4,
+                fontSize: "0.9rem",
+                margin: 0,
+              }}
+            >
+              El token exclusivo de CriptoUNAM. Gana $PUMA en misiones y úsalo
+              para <strong>comprar cursos premium</strong> y acceder a{" "}
+              <strong>eventos exclusivos</strong>.
+            </p>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "0.75rem",
+              flexWrap: "wrap",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Link
+              to="/recompensas"
+              className="puma-btn puma-btn--gold"
+              style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}
+            >
+              <FontAwesomeIcon icon={faCoins} />
+              Recompensas
+            </Link>
+            <Link
+              to="/cursos"
+              className="puma-btn puma-btn--outline"
+              style={{ padding: "0.5rem 1rem", fontSize: "0.85rem" }}
+            >
+              <FontAwesomeIcon icon={faGraduationCap} />
+              Cursos
+            </Link>
           </div>
         </div>
         <style>{`
           @keyframes float {
             0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+            50% { transform: translateY(-8px); }
             100% { transform: translateY(0px); }
           }
           @media (max-width: 768px) {
             .puma-card--featured {
               flex-direction: column !important;
               text-align: center;
+              padding: 1.5rem !important;
+            }
+            .puma-card--featured > div:first-child {
+              margin-bottom: 0.5rem;
             }
             .puma-card--featured > div:last-child {
-              order: -1;
-              margin-bottom: 1rem;
+              width: 100%;
+              justify-content: center !important;
+              margin-top: 1rem;
             }
             .puma-card--featured .puma-btn {
-              width: 100%;
+              flex: 1;
               justify-content: center;
             }
           }
