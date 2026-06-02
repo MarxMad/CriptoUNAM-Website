@@ -101,6 +101,6 @@ export const runDiagnostics = async () => {
 // Función para ejecutar en consola del navegador
 if (typeof window !== 'undefined') {
   (window as any).runDiagnostics = runDiagnostics
-  console.log('💡 Ejecuta runDiagnostics() en la consola para ver el diagnóstico completo')
+  // console.log('💡 Ejecuta runDiagnostics() en la consola para ver el diagnóstico completo')
 }
 

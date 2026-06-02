@@ -63,9 +63,9 @@ const App = () => {
   useEffect(() => {
     // Ejecutar diagnósticos en desarrollo
     if (import.meta.env.DEV) {
-      runDiagnostics().then(results => {
-        console.log('📊 Resultados del diagnóstico:', results)
-      })
+      // runDiagnostics().then(results => {
+      //   console.log('📊 Resultados del diagnóstico:', results)
+      // })
     }
 
     // Temporalmente deshabilitado para resolver problemas de carga
