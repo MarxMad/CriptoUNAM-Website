@@ -73,17 +73,25 @@ const CATEGORIAS_LIST = [
   'Trading',
 ]
 
+
+const normalizeText = (text?: string) => {
+  if (!text) return ''
+  return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}
+
 const Cursos = () => {
   const [filtroNivel, setFiltroNivel] = useState<string>('todos')
   const [busqueda, setBusqueda] = useState('')
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('todas')
 
   const cursosFiltrados = useMemo(() => {
+    const busquedaNorm = normalizeText(busqueda);
     return cursosData.filter((curso) => {
       const cumpleNivel = filtroNivel === 'todos' || curso.nivel?.toLowerCase() === filtroNivel
       const cumpleBusqueda =
-        curso.titulo?.toLowerCase().includes(busqueda.toLowerCase()) ||
-        curso.descripcion?.toLowerCase().includes(busqueda.toLowerCase())
+        !busquedaNorm ||
+        normalizeText(curso.titulo).includes(busquedaNorm) ||
+        normalizeText(curso.descripcion).includes(busquedaNorm)
       const cumpleCategoria =
         categoriaSeleccionada === 'todas' ||
         (curso.categorias && curso.categorias.some((c) => c.toLowerCase() === categoriaSeleccionada.toLowerCase()))
