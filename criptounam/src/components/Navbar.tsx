@@ -241,8 +241,8 @@ const Navbar = () => {
   const navigationItems = [
     { path: '/', icon: faHome, label: 'Home' },
     { path: '/cursos', icon: faGraduationCap, label: 'Cursos' },
-    { path: '/eventos', icon: faCalendarAlt, label: 'Eventos' },
     { path: '/recompensas', icon: faGift, label: 'Recompensas' },
+    { path: '/eventos', icon: faCalendarAlt, label: 'Eventos' },
     { path: '/perfil', icon: faUser, label: 'Perfil' },
   ]
   const compactNav = navigationItems.length >= 5
