@@ -22,6 +22,7 @@ import {
   faGlobe,
   faCheckCircle,
   faStar,
+  faCoins,
   faTrophy,
   faCalendarAlt,
   faExternalLinkAlt,
