@@ -66,14 +66,7 @@ export interface EventoLumaItem {
   description?: string
 }
 
-export const eventosLumaPresenciales: EventoLumaItem[] = [
-  {
-    id: 'luma-compufest-1',
-    title: 'compufest[1] - Charlas & Talleres',
-    lumaEventId: 'evt-YbUemgYQBVXzncy',
-    description: 'Charlas y talleres. Inscríbete en Luma.',
-  },
-]
+export const eventosLumaPresenciales: EventoLumaItem[] = []
 
 /**
  * Eventos pasados con embed de Luma (solo visualización / replay).
@@ -89,6 +82,14 @@ export interface EventoLumaPasadoItem {
 }
 
 export const eventosLumaPasados: EventoLumaPasadoItem[] = [
+  {
+    id: 'pasado-compufest-1',
+    title: 'compufest[1] - Charlas & Talleres',
+    lumaEventId: 'evt-YbUemgYQBVXzncy',
+    date: 'Mayo de 2026',
+    location: 'Facultad de Ingeniería UNAM, Ciudad de México',
+    description: 'Charlas y talleres sobre Web3 y tecnología.',
+  },
   {
     id: 'pasado-avax-bootcamp',
     title: 'Evento AVAX — Bootcamp Economía y Blockchain 103',
