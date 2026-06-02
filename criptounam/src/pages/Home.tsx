@@ -1797,7 +1797,7 @@ const Home = () => {
       {/* Próximos eventos reales */}
       {eventosHome.length > 0 && (
         <section className="section" style={{maxWidth:1200, margin:'0 auto 2.5rem auto'}}>
-          <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.5rem', marginBottom:'1.2rem'}}>Próximos Eventos</h2>
+          <h2 className="hero-title" style={{fontFamily:'Orbitron', color:'#D4AF37', fontSize:'1.5rem', marginBottom:'1.2rem'}}>Eventos</h2>
           <div className="grid-4" style={{gap:'2rem'}}>
             {eventosHome.map((evento, idx) => (
               <div key={evento._id || idx} className="card" style={{textAlign:'center', minHeight:220, display:'flex', flexDirection:'column', justifyContent:'space-between'}}>

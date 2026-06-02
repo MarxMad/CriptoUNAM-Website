@@ -421,7 +421,7 @@ const Eventos = () => {
                 minWidth: 0,
               }}
             >
-              Hackathons 2026
+              Hackathons Pasados
             </h2>
             <span className="puma-chip puma-chip--blue">
               <FontAwesomeIcon icon={faTrophy} />
@@ -441,7 +441,7 @@ const Eventos = () => {
               lineHeight: 1.6,
             }}
           >
-            Participa en los hackathones del ecosistema Web3. Premios, mentores y la oportunidad de
+            Revive los hackathones en los que participó el ecosistema Web3. Premios, mentores y la oportunidad de
             construir el futuro con la comunidad.
           </p>
 

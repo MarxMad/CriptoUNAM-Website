@@ -196,7 +196,7 @@ export const spacesData: SpaceItem[] = [
     url: 'https://twitter.com/criptounam',
     image: '/images/spaces/starknet-l2s.png', // TODO: Agregar imagen
     description: 'Aprende sobre las soluciones de escalabilidad Layer 2 y Starknet.',
-    status: 'upcoming',
+    status: 'past',
   }
 ]
 
@@ -210,7 +210,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://latamhubs.lat',
     image: '/images/hackathones_proximos/celobuild.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: 'Open Track + MiniApps Track',
   },
   {
@@ -221,7 +221,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://build.avax.network',
     image: '/images/hackathones_proximos/avas.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: '$1,000,000 USD',
   },
   {
@@ -232,7 +232,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://nearcon.org/innovation-sandbox',
     image: '/images/hackathones_proximos/nearhack.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: 'Presentación en NEARCON',
   },
   {
@@ -243,7 +243,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://hackathon.starknet.org',
     image: '/images/hackathones_proximos/starknet.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: 'DeFi + Privacy Tracks',
   },
   {
@@ -254,7 +254,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://gemini3.devpost.com',
     image: '/images/hackathones_proximos/gemini.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: '$100,000 USD',
   },
   {
@@ -265,7 +265,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online + NYC',
     url: 'https://hackquest.io',
     image: '/images/hackathones_proximos/arbitrum.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: 'Founder House NYC',
   },
   {
@@ -276,7 +276,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://stackup.dev',
     image: '/images/hackathones_proximos/Hedera.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: '$250,000 USD',
   },
   {
@@ -287,7 +287,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://chain.link/hackathon',
     image: '/images/hackathones_proximos/chainlink.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: 'CCIP + Oracles Tracks',
   },
   {
@@ -298,7 +298,7 @@ export const hackathonsData: HackathonItem[] = [
     location: 'Online',
     url: 'https://ethglobal.com/events/hackmoney2026',
     image: '/images/hackathones_proximos/hackmoney.jpeg',
-    status: 'upcoming',
+    status: 'past',
     prizes: 'DeFi Track',
   },
 ]
