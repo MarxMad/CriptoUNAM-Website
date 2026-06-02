@@ -50,8 +50,8 @@ createAppKit({
     onramp: true,
     swaps: true,
     analytics: true,
-    email: true,
-    socials: ['google', 'github', 'discord'],
+    email: false,
+    socials: false,
     emailShowWallets: true
   },
   themeMode: 'light',
