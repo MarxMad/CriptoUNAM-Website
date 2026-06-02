@@ -1346,7 +1346,7 @@ const Home = () => {
             }}
           >
             <img
-              src="/images/puma/puma_token.png"
+              src="/images/puma_token.png"
               alt="Token $PUMA"
               style={{
                 width: "100%",
