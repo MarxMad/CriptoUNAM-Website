@@ -1355,7 +1355,6 @@ const Home = () => {
                 filter: "drop-shadow(0 0 15px rgba(212,175,55,0.4))",
                 animation: "float 6s ease-in-out infinite",
                 objectFit: "contain",
-                borderRadius: "50%",
               }}
             />
           </div>
