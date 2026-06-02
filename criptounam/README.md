@@ -235,6 +235,25 @@ Para test del flow de pago en local, necesitas:
 - `VITE_PUMA_TOKEN_ADDRESS` en `.env.local` apuntando a **v2** (`0xF5F8...Ee1F`)
 - Vercel dev para que `/api/courses/auto-certificate` funcione
 
+## Cómo contribuir al Newsletter (Blog)
+
+¡Aceptamos propuestas de la comunidad para publicar en nuestro Newsletter! Si quieres escribir un artículo, tutorial o nota sobre Web3, puedes enviar un Pull Request (PR) siguiendo estos lineamientos:
+
+### 1. Dónde guardar la información
+- **Datos de la nota**: Agrega tu entrada en el archivo `src/data/newsletterData.ts`. Sigue la estructura de las notas existentes (necesitarás un `id` único, `titulo`, `fecha`, `autor`, `contenido`, `imagen`, `tags`, etc.).
+- **Imágenes y Media**: Guarda las imágenes de tu nota en la carpeta `public/images/newsletter/`. Nombra los archivos de forma descriptiva y en minúsculas (ej. `mi-articulo-cover.png`). En tu entrada de `newsletterData.ts`, haz referencia a la imagen como `'/images/newsletter/mi-articulo-cover.png'`.
+
+### 2. Cómo escribir la nota
+- **Formato**: El campo `contenido` soporta texto plano o HTML básico si necesitas estructurar párrafos. Mantén un tono educativo, objetivo y alineado con los valores de CriptoUNAM.
+- **Fuentes y Citas**: Si utilizas información de terceros, incluye una sección de "Fuentes" al final de tu contenido. Usa enlaces directos a las fuentes originales.
+- **Etiquetas (Tags)**: Usa 2 o 3 tags relevantes (ej. `DeFi`, `Educación`, `Avalanche`) para categorizar tu nota.
+
+### 3. Proceso de PR
+1. Haz un fork del repositorio y crea una rama para tu nota (ej. `feat/newsletter-mi-nota`).
+2. Agrega la imagen en `public/images/newsletter/` y el contenido en `src/data/newsletterData.ts`.
+3. Haz commit de tus cambios y abre un Pull Request hacia la rama principal.
+4. El equipo de CriptoUNAM revisará tu propuesta, te dará feedback si es necesario, y la publicará.
+
 ---
 
 ## Tareas pendientes

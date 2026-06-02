@@ -8,7 +8,24 @@ export const IMAGES = {
     BLOCKCHAIN_BASICS: '/images/cursos/intro_blockchain.png',
     SMART_CONTRACTS: '/images/cursos/smart_contracts.png',
     DEFI: '/images/cursos/defi.png',
-    SOLANA: '/images/cursos/solana.png'
+    SOLANA: '/images/cursos/solana.png',
+    ARBITRUM: '/images/cursos/arbitrum.png',
+    AVALANCHE: '/images/cursos/avalanche.png',
+    STELLAR: '/images/cursos/stellar.png',
+    SUI: '/images/cursos/sui.png',
+    ETHEREUM_L2: '/images/cursos/ethereum_l2.png',
+    BITSO: '/images/cursos/bitso.png',
+    ETHERFUSE: '/images/cursos/etherfuse.png',
+    CRIPTOGRAFIA: '/images/cursos/criptografia.png',
+    ARQUITECTURA: '/images/cursos/arquitectura.png',
+    CLAUDE: '/images/cursos/claude.png',
+    VIBECODING: '/images/cursos/vibecoding.png',
+    MARKETING: '/images/cursos/marketing.png',
+    NEGOCIOS: '/images/cursos/negocios.png',
+    TOKENOMICS: '/images/cursos/tokenomics.png',
+    DISENO: '/images/cursos/diseno.png',
+    FIGMA: '/images/cursos/figma.png',
+    CANVA: '/images/cursos/canva.png'
   },
   
   // Imágenes de comunidad

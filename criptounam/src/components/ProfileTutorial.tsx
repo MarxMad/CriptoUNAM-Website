@@ -60,7 +60,7 @@ const STEPS: Step[] = [
     body: (
       <>
         Cada asistencia, curso terminado o certificación se acuña como un{' '}
-        <strong>NFT soulbound</strong> en Arbitrum: no se vende ni se transfiere — es tu
+        <strong>NFT soulbound</strong> en Avalanche Fuji: no se vende ni se transfiere — es tu
         reputación. Aparecen en <strong>Mi colección NFT</strong>, clasificadas por tipo
         (eventos, embajadores, certificados).
       </>

@@ -9,7 +9,7 @@ import ENV_CONFIG from '../../config/env'
  * no se renderiza (no hay faucet de AVAX real).
  */
 const FAUCETS: Record<number, { label: string; url: string }> = {
-  43113: { label: 'Faucet Avalanche Fuji', url: 'https://faucet.avax.network/' },
+  43113: { label: 'Faucet Avalanche Fuji', url: 'https://build.avax.network/console/primary-network/faucet' },
 }
 
 type Props = {

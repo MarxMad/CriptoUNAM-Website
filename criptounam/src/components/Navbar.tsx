@@ -567,15 +567,15 @@ const Navbar = () => {
           left: 0,
           right: 0,
           height: '75px',
-          background: 'rgba(20,20,30,0.95)',
-          backdropFilter: 'blur(12px)',
-          borderTop: '1px solid rgba(212, 175, 55, 0.3)',
+          background: 'linear-gradient(to top, rgba(15, 15, 20, 0.98), rgba(25, 25, 35, 0.95))',
+          backdropFilter: 'blur(16px)',
+          borderTop: '1px solid rgba(212, 175, 55, 0.4)',
           zIndex: 1000,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-around',
           padding: '0 1rem',
-          boxShadow: '0 -2px 12px rgba(0,0,0,0.1)'
+          boxShadow: '0 -4px 24px rgba(212, 175, 55, 0.15)'
         }}
       >
         {navigationItems.map((item) => (
@@ -589,32 +589,38 @@ const Navbar = () => {
               justifyContent: 'center',
               gap: '4px',
               padding: isMobile ? '6px 8px' : '8px 12px',
-              borderRadius: '12px',
+              borderRadius: '14px',
               textDecoration: 'none',
-              transition: 'all 0.3s ease',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               background: isActiveRoute(item.path)
-                ? 'rgba(212, 175, 55, 0.15)'
+                ? 'linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.05))'
                 : 'transparent',
               border: isActiveRoute(item.path)
-                ? '1px solid rgba(212, 175, 55, 0.3)'
+                ? '1px solid rgba(212, 175, 55, 0.5)'
                 : '1px solid transparent',
-              minWidth: isMobile ? '52px' : '60px'
+              boxShadow: isActiveRoute(item.path)
+                ? '0 4px 16px rgba(212, 175, 55, 0.25), inset 0 1px 4px rgba(255, 255, 255, 0.1)'
+                : 'none',
+              minWidth: isMobile ? '56px' : '64px',
+              transform: isActiveRoute(item.path) ? 'translateY(-2px)' : 'none'
             }}
           >
             <FontAwesomeIcon
               icon={item.icon}
               style={{
-                fontSize: isMobile ? '1.2rem' : '1.4rem',
-                color: isActiveRoute(item.path) ? '#D4AF37' : '#888',
-                transition: 'all 0.3s ease'
+                fontSize: isMobile ? '1.25rem' : '1.45rem',
+                color: isActiveRoute(item.path) ? '#FFD700' : '#60A5FA',
+                transition: 'all 0.3s ease',
+                filter: isActiveRoute(item.path) ? 'drop-shadow(0 0 8px rgba(255, 215, 0, 0.5))' : 'none'
               }}
             />
             <span
               style={{
-                fontSize: compactNav ? (isMobile ? '0.6rem' : '0.68rem') : '0.75rem',
-                color: isActiveRoute(item.path) ? '#D4AF37' : '#888',
-                fontWeight: isActiveRoute(item.path) ? 600 : 400,
-                transition: 'all 0.3s ease'
+                fontSize: compactNav ? (isMobile ? '0.65rem' : '0.7rem') : '0.75rem',
+                color: isActiveRoute(item.path) ? '#FFD700' : '#60A5FA',
+                fontWeight: isActiveRoute(item.path) ? 700 : 500,
+                transition: 'all 0.3s ease',
+                letterSpacing: '0.3px'
               }}
             >
               {item.label}

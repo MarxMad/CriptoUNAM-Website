@@ -19,7 +19,7 @@ const cursoBitsoApi: Curso = {
   titulo: 'API de Bitso: trading y on/off-ramp MX',
   nivel: 'Intermedio',
   duracion: '2 semanas',
-  imagen: IMAGES.CURSOS.DEFI,
+  imagen: IMAGES.CURSOS.BITSO,
   descripcion:
     'Conecta tu app al exchange mexicano de cripto líder. Autenticación HMAC, libro de órdenes, place_order y SPEI para mover MXN ↔ cripto.',
   precio: 0,
@@ -404,7 +404,7 @@ const cursoEtherfuseApi: Curso = {
   titulo: 'API de Etherfuse: CETES tokenizados',
   nivel: 'Intermedio',
   duracion: '2 semanas',
-  imagen: IMAGES.CURSOS.DEFI,
+  imagen: IMAGES.CURSOS.ETHERFUSE,
   descripcion:
     'Integra Stablebonds (CETES en cadena) en tu app. Comprar, redimir y mostrar yield real en pesos para tus usuarios.',
   precio: 0,
@@ -656,7 +656,7 @@ const cursoCriptografia: Curso = {
   titulo: 'Criptografía aplicada para Web3',
   nivel: 'Intermedio',
   duracion: '4 semanas',
-  imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
+  imagen: IMAGES.CURSOS.CRIPTOGRAFIA,
   descripcion:
     'Las primitivas detrás de toda blockchain: hashes, árboles de Merkle, firmas digitales (ECDSA, Ed25519) y una intro práctica a zero-knowledge proofs.',
   precio: 0,
@@ -1020,7 +1020,7 @@ const cursoArquitectura: Curso = {
   titulo: 'Arquitectura de sistemas Web3',
   nivel: 'Avanzado',
   duracion: '4 semanas',
-  imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
+  imagen: IMAGES.CURSOS.ARQUITECTURA,
   descripcion:
     'Diseñar un sistema Web3 real: front, contratos, indexer, oráculos, RPC redundante y monitoreo. Lo que separa un demo de una app en producción.',
   precio: 0,
@@ -1268,7 +1268,7 @@ const cursoClaude: Curso = {
   titulo: 'Claude para desarrolladores',
   nivel: 'Intermedio',
   duracion: '3 semanas',
-  imagen: IMAGES.CURSOS.SMART_CONTRACTS,
+  imagen: IMAGES.CURSOS.CLAUDE,
   descripcion:
     'API de Claude (Anthropic), tool use, prompt caching, batches y el SDK de agentes. Desde el primer call hasta agentes que ejecutan código.',
   precio: 0,
@@ -1531,7 +1531,7 @@ const cursoVibecoding: Curso = {
   titulo: 'Vibecoding: programar con IA sin perder control',
   nivel: 'Principiante',
   duracion: '3 semanas',
-  imagen: IMAGES.CURSOS.SMART_CONTRACTS,
+  imagen: IMAGES.CURSOS.VIBECODING,
   descripcion:
     'Filosofía y práctica de programar con asistentes IA. Cómo describir intención, iterar y mantener calidad sin entender todo cada línea — pero sí lo importante.',
   precio: 0,

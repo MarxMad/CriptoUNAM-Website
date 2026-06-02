@@ -414,7 +414,7 @@ const Perfil: React.FC = () => {
                   Nivel {pumaLevel.toString()}
                 </span>
                 <span className="puma-chip puma-chip--blue">
-                  Arbitrum {chainId === 42161 ? 'One' : `chain ${chainId}`}
+                  Avalanche {chainId === 43114 ? 'C-Chain' : chainId === 43113 ? 'Fuji' : `chain ${chainId}`}
                 </span>
               </div>
 

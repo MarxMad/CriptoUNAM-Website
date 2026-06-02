@@ -847,7 +847,7 @@ const Home = () => {
         return 0
       }
       const ordenadas = [...newsletterData].sort((a, b) => parseFecha(b.fecha) - parseFecha(a.fecha))
-      setNewslettersHome(ordenadas.slice(0, 3))
+      setNewslettersHome(ordenadas)
     };
     
     fetchCursosYEventos();
@@ -1560,13 +1560,15 @@ const Home = () => {
         </section>
       )}
 
-      {/* Últimas Newsletters — carrusel horizontal */}
+      {/* Últimas Newsletters — ticker horizontal */}
       {newslettersHome.length > 0 && (
         <section
           style={{
-            maxWidth: '1200px',
+            maxWidth: '1400px',
+            width: '100%',
             margin: '0 auto 3rem auto',
             padding: '0 20px',
+            overflow: 'hidden'
           }}
         >
           <div
@@ -1575,9 +1577,11 @@ const Home = () => {
               alignItems: 'baseline',
               justifyContent: 'space-between',
               gap: '0.75rem',
-              marginBottom: '0.85rem',
+              marginBottom: '1.5rem',
               padding: '0 0.25rem',
               flexWrap: 'wrap',
+              maxWidth: '1200px',
+              margin: '0 auto 1.5rem auto'
             }}
           >
             <div>
@@ -1603,9 +1607,6 @@ const Home = () => {
               </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {newslettersHome.length > 1 && (
-                <span className="news-swipe-hint">← desliza →</span>
-              )}
               <Link
                 to="/newsletter"
                 style={{
@@ -1625,149 +1626,152 @@ const Home = () => {
             </div>
           </div>
 
-          <div
-            className="newsletters-carousel"
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: '0.85rem',
-              overflowX: 'auto',
-              overflowY: 'hidden',
-              scrollSnapType: 'x mandatory',
-              paddingBottom: '0.5rem',
-              WebkitOverflowScrolling: 'touch',
-              touchAction: 'pan-x',
-              scrollbarWidth: 'thin',
-            }}
-          >
-            {newslettersHome.map((newsletter, index) => (
-              <Link
-                key={newsletter.id || index}
-                to={`/newsletter/${newsletter.id}`}
-                style={{
-                  flex: '0 0 clamp(260px, 80vw, 320px)',
-                  scrollSnapAlign: 'start',
-                  background: 'rgba(20,20,30,0.85)',
-                  border: '1px solid rgba(212,175,55,0.2)',
-                  borderRadius: 14,
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  transition: 'border-color 0.2s, transform 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#D4AF37'
-                  e.currentTarget.style.transform = 'translateY(-3px)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(212,175,55,0.2)'
-                  e.currentTarget.style.transform = 'translateY(0)'
-                }}
-              >
-                {newsletter.imagen && (
-                  <div
-                    style={{
-                      width: '100%',
-                      aspectRatio: '16 / 9',
-                      overflow: 'hidden',
-                    }}
-                  >
-                    <img
-                      src={newsletter.imagen}
-                      alt={newsletter.titulo}
-                      loading="lazy"
+          <div className="newsletter-ticker-container">
+            <div className="newsletter-ticker-track">
+              {[...newslettersHome, ...newslettersHome].map((newsletter, index) => (
+                <Link
+                  key={`${newsletter.id}-${index}`}
+                  to={`/newsletter/${newsletter.id}`}
+                  className="newsletter-ticker-item"
+                >
+                  {newsletter.imagen && (
+                    <div
                       style={{
                         width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block',
+                        aspectRatio: '16 / 9',
+                        overflow: 'hidden',
                       }}
-                    />
+                    >
+                      <img
+                        src={newsletter.imagen}
+                        alt={newsletter.titulo}
+                        loading="lazy"
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          display: 'block',
+                        }}
+                      />
+                    </div>
+                  )}
+                  <div style={{ padding: '0.95rem 1rem 1.1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <span
+                      style={{
+                        color: '#94a3b8',
+                        fontSize: '0.72rem',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        marginBottom: 6,
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#2563EB', fontSize: '0.7rem' }} />
+                      {(() => {
+                        const dateStr = newsletter.fecha
+                        if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+                          return new Date(dateStr).toLocaleDateString('es-MX', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                          })
+                        }
+                        return dateStr
+                      })()}
+                    </span>
+                    <h3
+                      style={{
+                        fontFamily: 'Orbitron',
+                        color: '#F4D03F',
+                        fontSize: '1rem',
+                        margin: '0 0 0.5rem',
+                        lineHeight: 1.25,
+                      }}
+                    >
+                      {newsletter.titulo}
+                    </h3>
+                    <p
+                      style={{
+                        color: '#cbd5e1',
+                        fontSize: '0.82rem',
+                        lineHeight: 1.5,
+                        margin: '0 0 0.85rem',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        flex: 1,
+                      }}
+                    >
+                      {newsletter.contenido}
+                    </p>
+                    <span
+                      style={{
+                        color: '#D4AF37',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                      }}
+                    >
+                      Leer más
+                      <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.68rem' }} />
+                    </span>
                   </div>
-                )}
-                <div style={{ padding: '0.95rem 1rem 1.1rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
-                  <span
-                    style={{
-                      color: '#94a3b8',
-                      fontSize: '0.72rem',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 5,
-                      marginBottom: 6,
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faCalendarAlt} style={{ color: '#2563EB', fontSize: '0.7rem' }} />
-                    {(() => {
-                      const dateStr = newsletter.fecha
-                      if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-                        return new Date(dateStr).toLocaleDateString('es-MX', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })
-                      }
-                      return dateStr
-                    })()}
-                  </span>
-                  <h3
-                    style={{
-                      fontFamily: 'Orbitron',
-                      color: '#F4D03F',
-                      fontSize: '1rem',
-                      margin: '0 0 0.5rem',
-                      lineHeight: 1.25,
-                    }}
-                  >
-                    {newsletter.titulo}
-                  </h3>
-                  <p
-                    style={{
-                      color: '#cbd5e1',
-                      fontSize: '0.82rem',
-                      lineHeight: 1.5,
-                      margin: '0 0 0.85rem',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                      flex: 1,
-                    }}
-                  >
-                    {newsletter.contenido}
-                  </p>
-                  <span
-                    style={{
-                      color: '#D4AF37',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: 5,
-                    }}
-                  >
-                    Leer más
-                    <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.68rem' }} />
-                  </span>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
 
           <style>{`
-            .newsletters-carousel::-webkit-scrollbar { height: 6px; }
-            .newsletters-carousel::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 4px; }
-            .newsletters-carousel::-webkit-scrollbar-thumb { background: rgba(212,175,55,0.4); border-radius: 4px; }
-            .newsletters-carousel::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.6); }
-            .news-swipe-hint {
-              font-size: 0.75rem;
-              color: #94a3b8;
-              padding: 3px 9px;
-              background: rgba(212,175,55,0.08);
+            .newsletter-ticker-container {
+              width: 100%;
+              overflow: hidden;
+              position: relative;
+              padding: 0.5rem 0;
+              -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+              mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+            }
+            .newsletter-ticker-track {
+              display: flex;
+              gap: 1.25rem;
+              width: max-content;
+              animation: newsletter-ticker 40s linear infinite;
+              will-change: transform;
+            }
+            .newsletter-ticker-container:hover .newsletter-ticker-track {
+              animation-play-state: paused;
+            }
+            .newsletter-ticker-item {
+              flex: 0 0 clamp(280px, 30vw, 320px);
+              background: rgba(20,20,30,0.85);
               border: 1px solid rgba(212,175,55,0.2);
-              border-radius: 999px;
-              white-space: nowrap;
+              border-radius: 14px;
+              overflow: hidden;
+              display: flex;
+              flex-direction: column;
+              text-decoration: none;
+              color: inherit;
+              transition: border-color 0.2s, transform 0.2s;
+            }
+            .newsletter-ticker-item:hover {
+              border-color: #D4AF37;
+              transform: translateY(-3px);
+            }
+            @keyframes newsletter-ticker {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(calc(-50% - 0.625rem)); }
+            }
+            @media (prefers-reduced-motion: reduce) {
+              .newsletter-ticker-track {
+                animation: none;
+              }
+              .newsletter-ticker-container {
+                overflow-x: auto;
+                -webkit-mask-image: none;
+                mask-image: none;
+              }
             }
           `}</style>
         </section>

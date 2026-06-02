@@ -1,24 +1,24 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useAccount } from 'wagmi'
 import SEOHead from '../components/SEOHead'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  faGraduationCap,
-  faCalendarCheck,
   faCoins,
-  faGift,
-  faClipboardList,
-  faArrowRight,
-  faAward,
   faBolt,
   faTrophy,
   faTriangleExclamation,
+  faWallet,
+  faClipboardList,
+  faGift,
 } from '@fortawesome/free-solid-svg-icons'
 import ENV_CONFIG from '../config/env'
 import PageHero from '../components/PageHero'
 import PumaMissionsSection from '../components/Puma/PumaMissionsSection'
 import PumaPausedBanner from '../components/Puma/PumaPausedBanner'
+import AddPumaToWalletButton from '../components/Puma/AddPumaToWalletButton'
+import FaucetButton from '../components/Puma/FaucetButton'
+import DropCodeClaim from '../components/Puma/DropCodeClaim'
+import BadgeCodeClaimPanel from '../components/Puma/BadgeCodeClaimPanel'
 import { usePumaMissionsList } from '../hooks/usePumaMissions'
 import { usePumaTokenBalance } from '../hooks/usePumaTokenBalance'
 import '../styles/global.css'
@@ -98,12 +98,6 @@ const Recompensas: React.FC = () => {
               color: '#a78bfa',
             },
           ]}
-          cta={{
-            to: '/recompensas/misiones',
-            label: 'Misiones y código de sesión',
-            icon: faClipboardList,
-            variant: 'gold',
-          }}
         />
 
         {address && tokenConfigured && !onExpectedChain && (
@@ -120,166 +114,105 @@ const Recompensas: React.FC = () => {
           </div>
         )}
 
-        {/* ============================================================
-            MISIONES — carrusel horizontal
-            ============================================================ */}
-        <section style={{ maxWidth: 1100, margin: '0 auto 2.5rem', padding: '0 0.25rem' }}>
-          <div
+        {tokenConfigured && (
+          <section
             style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              justifyContent: 'space-between',
-              gap: '0.75rem',
-              marginBottom: '0.85rem',
-              padding: '0 0.25rem',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <FontAwesomeIcon
-                icon={faGift}
-                style={{ fontSize: '1.1rem', color: '#F4D03F' }}
-              />
-              <h2
-                style={{
-                  fontFamily: 'Orbitron',
-                  color: '#fff',
-                  fontSize: 'clamp(1.05rem, 3vw, 1.3rem)',
-                  margin: 0,
-                  lineHeight: 1.1,
-                }}
-              >
-                Misiones disponibles
-              </h2>
-            </div>
-            <Link
-              to="/recompensas/misiones"
-              style={{
-                color: '#D4AF37',
-                fontSize: '0.85rem',
-                fontWeight: 600,
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 6,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              Ver todas
-              <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.7rem' }} />
-            </Link>
-          </div>
-          <p
-            style={{
-              color: '#94a3b8',
-              fontSize: '0.88rem',
-              margin: '0 0.25rem 0.85rem',
-              lineHeight: 1.5,
-            }}
-          >
-            Desliza para ver más. Cada wallet reclama una sola vez por misión.
-          </p>
-          <PumaMissionsSection
-            missions={missions.slice(0, 6)}
-            isLoading={loadingMissions}
-            onTxConfirmed={() => refetchMissions()}
-            tone="embajador"
-            layout="carousel"
-          />
-        </section>
-
-        {/* ============================================================
-            NAVEGACIÓN A OTRAS SECCIONES
-            ============================================================ */}
-        <section style={{ maxWidth: 720, margin: '0 auto', padding: '0 0.25rem' }}>
-          <div
-            style={{
-              color: '#94a3b8',
-              fontSize: '0.78rem',
-              textTransform: 'uppercase',
-              letterSpacing: 1,
-              marginBottom: 10,
-              paddingLeft: 4,
-            }}
-          >
-            Ir a otra sección
-          </div>
-          <nav
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
+              maxWidth: 960,
+              margin: '0 auto 1.5rem',
+              padding: '0.85rem 1rem',
               borderRadius: 14,
-              overflow: 'hidden',
-              border: '1px solid rgba(212,175,55,0.18)',
+              border: '1px solid rgba(212,175,55,0.22)',
               background: 'rgba(20,20,30,0.55)',
             }}
           >
-            {[
-              {
-                icon: faAward,
-                title: 'Reclamar NFTs',
-                text: 'POAPs, certificados y badges',
-                to: '/claim',
-                color: '#a78bfa',
-              },
-              {
-                icon: faGraduationCap,
-                title: 'Cursos',
-                text: 'Catálogo y rutas de aprendizaje',
-                to: '/cursos',
-                color: '#4ecdc4',
-              },
-              {
-                icon: faCalendarCheck,
-                title: 'Eventos',
-                text: 'Encuentros presenciales y online',
-                to: '/eventos',
-                color: '#60a5fa',
-              },
-            ].map((item, idx, arr) => (
-              <Link
-                key={item.title}
-                to={item.to}
-                style={{
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  padding: '0.95rem 1rem',
-                  borderBottom:
-                    idx < arr.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-                  transition: 'background 0.18s ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(212,175,55,0.06)')}
-                onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-              >
-                <div
-                  style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: 10,
-                    background: `${item.color}1f`,
-                    border: `1px solid ${item.color}40`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <FontAwesomeIcon icon={item.icon} style={{ color: item.color, fontSize: '0.95rem' }} />
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: '0.75rem' }}>
+              <FontAwesomeIcon icon={faWallet} style={{ color: '#F4D03F', marginTop: 3 }} />
+              <div>
+                <div style={{ color: '#fff', fontWeight: 600, fontSize: '0.95rem' }}>
+                  Ver $PUMA en tu wallet
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ color: '#fff', fontSize: '0.95rem', fontWeight: 600, lineHeight: 1.2 }}>
-                    {item.title}
-                  </div>
-                  <div style={{ color: '#94a3b8', fontSize: '0.8rem', marginTop: 2 }}>{item.text}</div>
-                </div>
-                <FontAwesomeIcon
-                  icon={faArrowRight}
-                  style={{ color: '#94a3b8', fontSize: '0.85rem', flexShrink: 0 }}
-                />
-              </Link>
-            ))}
-          </nav>
+                <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: '0.35rem 0 0', lineHeight: 1.5 }}>
+                  Tras reclamar, MetaMask no muestra el token hasta que lo importes. Usa el botón para
+                  agregarlo con un clic. Las transacciones en Fuji necesitan un poco de AVAX de prueba
+                  (gas); si el faucet está vacío, intenta más tarde o con otra wallet.
+                </p>
+              </div>
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.6rem',
+                alignItems: 'center',
+              }}
+            >
+              <AddPumaToWalletButton
+                disabled={!address || !onExpectedChain}
+                compact
+                style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }}
+              />
+              <FaucetButton compact style={{ padding: '0.45rem 0.9rem', fontSize: '0.85rem' }} />
+              {!address && (
+                <span style={{ color: '#94a3b8', fontSize: '0.82rem' }}>
+                  Conecta tu wallet para agregar el token.
+                </span>
+              )}
+            </div>
+          </section>
+        )}
+
+        <section id="reclamos" style={{ maxWidth: 1100, margin: '0 auto 1.5rem', padding: '0 0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '0.75rem' }}>
+            <FontAwesomeIcon icon={faGift} style={{ fontSize: '1.1rem', color: '#F4D03F' }} />
+            <h2
+              style={{
+                fontFamily: 'Orbitron',
+                color: '#fff',
+                fontSize: 'clamp(1.05rem, 3vw, 1.3rem)',
+                margin: 0,
+                lineHeight: 1.1,
+              }}
+            >
+              Reclamos con código
+            </h2>
+          </div>
+          <p style={{ color: '#94a3b8', fontSize: '0.88rem', margin: '0 0 0.9rem', lineHeight: 1.5 }}>
+            Todo se reclama aquí: sesión de embajadores (PUMA) y credenciales de curso/evento/certificación.
+          </p>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+              gap: '1rem',
+              alignItems: 'start',
+            }}
+          >
+            <DropCodeClaim />
+            <BadgeCodeClaimPanel />
+          </div>
+        </section>
+
+        <section className="puma-card puma-card--featured" style={{ maxWidth: 1100, margin: '0 auto', padding: '1rem' }}>
+          <h2
+            style={{
+              fontFamily: 'Orbitron',
+              color: '#fff',
+              fontSize: 'clamp(1.1rem, 3.2vw, 1.4rem)',
+              marginTop: 0,
+              marginBottom: '0.65rem',
+            }}
+          >
+            Misiones disponibles
+          </h2>
+          <p style={{ color: '#94a3b8', lineHeight: 1.65, marginBottom: '1rem', fontSize: 'clamp(0.9rem, 2.5vw, 1rem)' }}>
+            Las misiones activas se publican por el equipo y se reclaman una sola vez por wallet.
+          </p>
+          <PumaMissionsSection
+            missions={missions}
+            isLoading={loadingMissions}
+            onTxConfirmed={() => refetchMissions()}
+            tone="embajador"
+          />
         </section>
       </div>
     </>

@@ -3,6 +3,7 @@ import { capitulosIntroBlockchain } from './cursoIntroBlockchain'
 import { cursosStackBlockchain } from './cursosStackBlockchain'
 import { cursosApisProductividad } from './cursosApisProductividad'
 import { cursosNegocioDiseno } from './cursosNegocioDiseno'
+import { capitulosDefi, capitulosSolidity, examenFinalSolidity, examenFinalDefi } from './cursoSolidityDefi'
 
 export interface PreguntaCuestionario {
   pregunta: string
@@ -108,29 +109,23 @@ export const cursosData: Curso[] = [
     rating: 4.9,
     categorias: ['Ethereum', 'Desarrollo', 'Smart Contracts'],
     requisitos: 'Conocimientos básicos de blockchain recomendados.',
-    lecciones: [
-      { id: 1, titulo: 'Introducción a Solidity', video: 'https://www.youtube.com/embed/gyMwXuJrbJQ', descripcion: 'Primeros pasos con Solidity.' },
-      { id: 2, titulo: 'Variables y Tipos', video: 'https://www.youtube.com/embed/1YVJt2Q1gZQ', descripcion: 'Variables, tipos y estructuras.' },
-      { id: 3, titulo: 'Funciones y Contratos', video: 'https://www.youtube.com/embed/8jI1TuEaTro', descripcion: 'Cómo escribir funciones y contratos.' },
-    ]
+    capitulos: capitulosSolidity,
+    examenFinal: examenFinalSolidity,
   },
   {
     id: '3',
-    titulo: 'DeFi y Finanzas Descentralizadas',
+    titulo: 'Protocolos DeFi y Gestión de Riesgo',
     nivel: 'Avanzado',
     duracion: '2 semanas',
     imagen: IMAGES.CURSOS.DEFI,
-    descripcion: 'Explora el mundo de las finanzas descentralizadas y sus protocolos.',
+    descripcion: 'Aprende protocolos DeFi, métricas de rendimiento y un marco práctico de gestión de riesgo.',
     precio: 0,
     estudiantes: 600,
     rating: 4.7,
     categorias: ['DeFi', 'Finanzas', 'Trading'],
     requisitos: 'Conocimientos básicos de Ethereum y wallets recomendados.',
-    lecciones: [
-      { id: 1, titulo: '¿Qué es DeFi?', video: 'https://www.youtube.com/embed/8XGQGhli0IY', descripcion: 'Introducción a las finanzas descentralizadas.' },
-      { id: 2, titulo: 'Protocolos DeFi', video: 'https://www.youtube.com/embed/8XGQGhli0IY', descripcion: 'Principales protocolos y casos de uso.' },
-      { id: 3, titulo: 'Riesgos y Seguridad', video: 'https://www.youtube.com/embed/8XGQGhli0IY', descripcion: 'Riesgos y mejores prácticas.' },
-    ]
+    capitulos: capitulosDefi,
+    examenFinal: examenFinalDefi,
   },
   ...cursosStackBlockchain,
   ...cursosApisProductividad,

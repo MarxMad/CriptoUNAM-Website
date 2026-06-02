@@ -346,7 +346,7 @@ const cursoArbitrum: Curso = {
   titulo: 'Desarrollo en Arbitrum (Layer 2)',
   nivel: 'Intermedio',
   duracion: '3 semanas',
-  imagen: IMAGES.CURSOS.SMART_CONTRACTS,
+  imagen: IMAGES.CURSOS.ARBITRUM,
   descripcion:
     'Aprende qué son los optimistic rollups, despliega tu contrato Solidity en Arbitrum One y entiende bridging, gas y herramientas L2.',
   precio: 0,
@@ -672,7 +672,7 @@ const cursoAvalanche: Curso = {
   titulo: 'Avalanche: C-Chain y Subnets',
   nivel: 'Intermedio',
   duracion: '3 semanas',
-  imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
+  imagen: IMAGES.CURSOS.AVALANCHE,
   descripcion:
     'Domina la arquitectura de tres cadenas de Avalanche, lanza un contrato en C-Chain y crea tu propia subnet con Avalanche-CLI.',
   precio: 0,
@@ -971,7 +971,7 @@ const cursoStellar: Curso = {
   titulo: 'Stellar y Soroban (smart contracts en Rust)',
   nivel: 'Intermedio',
   duracion: '4 semanas',
-  imagen: IMAGES.CURSOS.DEFI,
+  imagen: IMAGES.CURSOS.STELLAR,
   descripcion:
     'De anchors y trustlines en Stellar clásico a smart contracts en Soroban con Rust. Despliegue en Futurenet y SDK JS.',
   precio: 0,
@@ -1169,7 +1169,7 @@ const cursoSui: Curso = {
   titulo: 'Sui y Move: el modelo de objetos',
   nivel: 'Avanzado',
   duracion: '4 semanas',
-  imagen: IMAGES.CURSOS.SMART_CONTRACTS,
+  imagen: IMAGES.CURSOS.SUI,
   descripcion:
     'Sui cambia la forma de modelar estado: todo es un objeto. Aprende Move adaptado a Sui, abilities, transfer y publica tu primer módulo.',
   precio: 0,
@@ -1503,7 +1503,7 @@ const cursoEthereumL2: Curso = {
   titulo: 'Ethereum Layer 2: rollups y escalado',
   nivel: 'Intermedio',
   duracion: '3 semanas',
-  imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
+  imagen: IMAGES.CURSOS.ETHEREUM_L2,
   descripcion:
     'Por qué Ethereum necesita L2. Tipos (optimistic, zk, validium), comparativa Arbitrum/Optimism/Base/zkSync/Scroll y cuándo elegir cada uno.',
   precio: 0,
