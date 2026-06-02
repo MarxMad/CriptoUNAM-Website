@@ -148,7 +148,7 @@ const Navbar = () => {
       try {
         const cursos = await cursosApi.getAll();
         const cursosRecientes = cursos.filter(curso => {
-          const fechaCreacion = new Date(curso.creadoEn);
+          const fechaCreacion = new Date(curso.created_at);
           const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return fechaCreacion > hace24Horas;
         });
@@ -159,7 +159,7 @@ const Navbar = () => {
             titulo: 'Nuevo curso disponible',
             mensaje: `${curso.titulo} - ${curso.descripcion.substring(0, 50)}...`,
             leida: false,
-            fecha: curso.creadoEn
+            fecha: curso.created_at
           });
         });
       } catch (error) {
@@ -170,7 +170,7 @@ const Navbar = () => {
       try {
         const eventos = await eventosApi.getAll();
         const eventosRecientes = eventos.filter(evento => {
-          const fechaCreacion = new Date(evento.creadoEn);
+          const fechaCreacion = new Date(evento.created_at);
           const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return fechaCreacion > hace24Horas;
         });
@@ -181,7 +181,7 @@ const Navbar = () => {
             titulo: 'Nuevo evento',
             mensaje: `${evento.titulo} - ${evento.fecha}`,
             leida: false,
-            fecha: evento.creadoEn
+            fecha: evento.created_at
           });
         });
       } catch (error) {
@@ -192,7 +192,7 @@ const Navbar = () => {
       try {
         const newsletters = await newsletterApi.getAll();
         const newslettersRecientes = newsletters.filter(newsletter => {
-          const fechaCreacion = new Date(newsletter.creadoEn);
+          const fechaCreacion = new Date(newsletter.created_at);
           const hace24Horas = new Date(Date.now() - 24 * 60 * 60 * 1000);
           return fechaCreacion > hace24Horas;
         });
@@ -203,7 +203,7 @@ const Navbar = () => {
             titulo: 'Nueva entrada en el blog',
             mensaje: `${newsletter.titulo}`,
             leida: false,
-            fecha: newsletter.creadoEn
+            fecha: newsletter.created_at
           });
         });
       } catch (error) {

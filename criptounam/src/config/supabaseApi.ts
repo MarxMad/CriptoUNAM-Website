@@ -9,7 +9,7 @@ export interface Evento {
   lugar: string
   imagen: string
   enlace: string
-  creadoEn: string
+  created_at: string
   tipo?: string
   cupo?: number
   hora?: string
@@ -28,7 +28,7 @@ export interface Curso {
   duracion: string
   imagen: string
   enlace: string
-  creadoEn: string
+  created_at: string
   instructor?: string
   precio?: number
   fechaInicio?: string
@@ -43,7 +43,7 @@ export interface NewsletterEntry {
   autor: string
   fecha: string
   imagen: string
-  creadoEn: string
+  created_at: string
   tags?: string[]
 }
 
@@ -84,7 +84,7 @@ export const eventosApi = {
   },
 
   // Crear evento
-  async create(evento: Omit<Evento, 'id' | 'creadoEn'>): Promise<Evento> {
+  async create(evento: Omit<Evento, 'id' | 'created_at'>): Promise<Evento> {
     const { data, error } = await supabase
       .from('eventos')
       .insert([evento])
@@ -135,7 +135,7 @@ export const cursosApi = {
     const { data, error } = await supabase
       .from('cursos')
       .select('*')
-      .order('creadoen', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -152,7 +152,7 @@ export const cursosApi = {
     return data
   },
 
-  async create(curso: Omit<Curso, 'id' | 'creadoEn'>): Promise<Curso> {
+  async create(curso: Omit<Curso, 'id' | 'created_at'>): Promise<Curso> {
     const { data, error } = await supabase
       .from('cursos')
       .insert([curso])
@@ -195,7 +195,7 @@ export const newsletterApi = {
     const { data, error } = await supabase
       .from('newsletters')
       .select('*')
-      .order('creadoen', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) throw error
     return data || []
@@ -212,7 +212,7 @@ export const newsletterApi = {
     return data
   },
 
-  async create(entry: Omit<NewsletterEntry, 'id' | 'creadoEn'>): Promise<NewsletterEntry> {
+  async create(entry: Omit<NewsletterEntry, 'id' | 'created_at'>): Promise<NewsletterEntry> {
     const { data, error } = await supabase
       .from('newsletters')
       .insert([entry])
