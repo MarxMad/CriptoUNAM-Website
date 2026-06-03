@@ -447,25 +447,7 @@ const Cursos = () => {
                           <FontAwesomeIcon icon={faLock} style={{ fontSize: '2rem', color: 'rgba(255,255,255,0.2)' }} />
                         </div>
                       )}
-                      {/* level chip */}
-                      <span
-                        style={{
-                          position: 'absolute',
-                          top: 12,
-                          left: 12,
-                          background: nivelGradient[curso.nivel] || nivelGradient.Principiante,
-                          color: '#fff',
-                          padding: '0.3rem 0.7rem',
-                          borderRadius: 999,
-                          fontSize: '0.72rem',
-                          fontWeight: 700,
-                          fontFamily: 'Orbitron',
-                          letterSpacing: 0.5,
-                          boxShadow: '0 4px 14px rgba(0,0,0,0.45)',
-                        }}
-                      >
-                        {curso.nivel}
-                      </span>
+
                       {/* puma chip */}
                       {tienePuma && (
                         <span
@@ -475,9 +457,9 @@ const Cursos = () => {
                             right: 12,
                             background: 'linear-gradient(135deg, #F4D03F, #D4AF37)',
                             color: '#0a0a0a',
-                            padding: '0.3rem 0.7rem',
+                            padding: '0.25rem 0.6rem',
                             borderRadius: 999,
-                            fontSize: '0.78rem',
+                            fontSize: '0.7rem',
                             fontWeight: 700,
                             fontFamily: 'Orbitron',
                             boxShadow: '0 4px 14px rgba(212,175,55,0.4)',
