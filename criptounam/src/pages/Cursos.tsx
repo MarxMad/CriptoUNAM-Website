@@ -10,8 +10,6 @@ import {
   faBook,
   faGraduationCap,
   faClock,
-  faUsers,
-  faStar,
   faCoins,
   faAward,
   faArrowRight,
@@ -525,22 +523,7 @@ const Cursos = () => {
                           <FontAwesomeIcon icon={faClock} />
                           {curso.duracion}
                         </span>
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-                          <FontAwesomeIcon icon={faUsers} />
-                          {curso.estudiantes}
-                        </span>
-                        <span
-                          style={{
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                            color: '#F4D03F',
-                            fontWeight: 600,
-                          }}
-                        >
-                          <FontAwesomeIcon icon={faStar} />
-                          {curso.rating}
-                        </span>
+                        
                       </div>
 
                       {/* NFT chip */}

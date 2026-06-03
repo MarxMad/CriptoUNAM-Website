@@ -18,7 +18,7 @@ const cursoMarketingCripto: Curso = {
   id: 'marketing-cripto',
   titulo: 'Marketing para proyectos cripto',
   nivel: 'Principiante',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.MARKETING,
   descripcion:
     'Cómo construir audiencia para un proyecto Web3: narrativa, canales (X, Discord, Farcaster), programas de embajadores y lanzamientos sin caer en hype hueco.',
@@ -398,7 +398,7 @@ const cursoModelosNegocio: Curso = {
   id: 'modelos-negocio-web3',
   titulo: 'Modelos de negocio Web3',
   nivel: 'Intermedio',
-  duracion: '4 semanas',
+  duracion: '60 min',
   imagen: IMAGES.CURSOS.NEGOCIOS,
   descripcion:
     'Cómo hacer dinero (sostenible) en Web3. Categorías de monetización, casos de estudio (Uniswap, OpenSea, Lens, Farcaster), unit economics on-chain.',
@@ -642,7 +642,7 @@ const cursoTokenomics: Curso = {
   id: 'tokenomics',
   titulo: 'Tokenomics: diseñar la economía de un token',
   nivel: 'Intermedio',
-  duracion: '4 semanas',
+  duracion: '60 min',
   imagen: IMAGES.CURSOS.TOKENOMICS,
   descripcion:
     'Cuándo emitir token y cuándo no. Supply, distribución, vesting, demand sinks (utility, governance, burn) y cómo evitar inflación tóxica.',
@@ -1050,7 +1050,7 @@ const cursoDisenoProducto: Curso = {
   id: 'diseno-producto-web3',
   titulo: 'Diseño de producto Web3 (UX/UI)',
   nivel: 'Intermedio',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.DISENO,
   descripcion:
     'Los patrones únicos de UX en Web3 (wallets, firmas, gas, retries) y cómo reducir fricción con smart accounts, gasless tx y fiat ramps.',
@@ -1311,7 +1311,7 @@ const cursoFigma: Curso = {
   id: 'figma-para-devs',
   titulo: 'Figma para devs',
   nivel: 'Principiante',
-  duracion: '2 semanas',
+  duracion: '30 min',
   imagen: IMAGES.CURSOS.FIGMA,
   descripcion:
     'Aprende lo justo de Figma para entender entregables de diseño, extraer design tokens, usar Dev Mode y trabajar fluido con tu diseñadora.',
@@ -1563,7 +1563,7 @@ const cursoCanva: Curso = {
   id: 'canva-comunidad-cripto',
   titulo: 'Canva para comunidad cripto',
   nivel: 'Principiante',
-  duracion: '1 semana',
+  duracion: '20 min',
   imagen: IMAGES.CURSOS.CANVA,
   descripcion:
     'Crea piezas visuales consistentes y rápidas para X, Instagram, decks y newsletters sin necesidad de un diseñador. Kit de marca + plantillas + batch.',

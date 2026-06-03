@@ -18,7 +18,7 @@ const cursoSolana: Curso = {
   id: 'solana-rust-anchor',
   titulo: 'Programación en Solana (Rust + Anchor)',
   nivel: 'Avanzado',
-  duracion: '5 semanas',
+  duracion: '1.5 horas',
   imagen: IMAGES.CURSOS.SOLANA,
   descripcion:
     'Aprende el modelo de cuentas de Solana, escribe tus primeros programas con el framework Anchor y despliega en devnet con un cliente web.',
@@ -345,7 +345,7 @@ const cursoArbitrum: Curso = {
   id: 'arbitrum-l2-dev',
   titulo: 'Desarrollo en Arbitrum (Layer 2)',
   nivel: 'Intermedio',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.ARBITRUM,
   descripcion:
     'Aprende qué son los optimistic rollups, despliega tu contrato Solidity en Arbitrum One y entiende bridging, gas y herramientas L2.',
@@ -671,7 +671,7 @@ const cursoAvalanche: Curso = {
   id: 'avalanche-subnets',
   titulo: 'Avalanche: C-Chain y Subnets',
   nivel: 'Intermedio',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.AVALANCHE,
   descripcion:
     'Domina la arquitectura de tres cadenas de Avalanche, lanza un contrato en C-Chain y crea tu propia subnet con Avalanche-CLI.',
@@ -970,7 +970,7 @@ const cursoStellar: Curso = {
   id: 'stellar-soroban',
   titulo: 'Stellar y Soroban (smart contracts en Rust)',
   nivel: 'Intermedio',
-  duracion: '4 semanas',
+  duracion: '60 min',
   imagen: IMAGES.CURSOS.STELLAR,
   descripcion:
     'De anchors y trustlines en Stellar clásico a smart contracts en Soroban con Rust. Despliegue en Futurenet y SDK JS.',
@@ -1168,7 +1168,7 @@ const cursoSui: Curso = {
   id: 'sui-move',
   titulo: 'Sui y Move: el modelo de objetos',
   nivel: 'Avanzado',
-  duracion: '4 semanas',
+  duracion: '60 min',
   imagen: IMAGES.CURSOS.SUI,
   descripcion:
     'Sui cambia la forma de modelar estado: todo es un objeto. Aprende Move adaptado a Sui, abilities, transfer y publica tu primer módulo.',
@@ -1502,7 +1502,7 @@ const cursoEthereumL2: Curso = {
   id: 'ethereum-l2-panorama',
   titulo: 'Ethereum Layer 2: rollups y escalado',
   nivel: 'Intermedio',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.ETHEREUM_L2,
   descripcion:
     'Por qué Ethereum necesita L2. Tipos (optimistic, zk, validium), comparativa Arbitrum/Optimism/Base/zkSync/Scroll y cuándo elegir cada uno.',

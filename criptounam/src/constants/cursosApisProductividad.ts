@@ -18,7 +18,7 @@ const cursoBitsoApi: Curso = {
   id: 'bitso-api',
   titulo: 'API de Bitso: trading y on/off-ramp MX',
   nivel: 'Intermedio',
-  duracion: '2 semanas',
+  duracion: '30 min',
   imagen: IMAGES.CURSOS.BITSO,
   descripcion:
     'Conecta tu app al exchange mexicano de cripto líder. Autenticación HMAC, libro de órdenes, place_order y SPEI para mover MXN ↔ cripto.',
@@ -403,7 +403,7 @@ const cursoEtherfuseApi: Curso = {
   id: 'etherfuse-api',
   titulo: 'API de Etherfuse: CETES tokenizados',
   nivel: 'Intermedio',
-  duracion: '2 semanas',
+  duracion: '30 min',
   imagen: IMAGES.CURSOS.ETHERFUSE,
   descripcion:
     'Integra Stablebonds (CETES en cadena) en tu app. Comprar, redimir y mostrar yield real en pesos para tus usuarios.',
@@ -655,7 +655,7 @@ const cursoCriptografia: Curso = {
   id: 'criptografia-aplicada',
   titulo: 'Criptografía aplicada para Web3',
   nivel: 'Intermedio',
-  duracion: '4 semanas',
+  duracion: '60 min',
   imagen: IMAGES.CURSOS.CRIPTOGRAFIA,
   descripcion:
     'Las primitivas detrás de toda blockchain: hashes, árboles de Merkle, firmas digitales (ECDSA, Ed25519) y una intro práctica a zero-knowledge proofs.',
@@ -1019,7 +1019,7 @@ const cursoArquitectura: Curso = {
   id: 'arquitectura-sistemas-web3',
   titulo: 'Arquitectura de sistemas Web3',
   nivel: 'Avanzado',
-  duracion: '4 semanas',
+  duracion: '60 min',
   imagen: IMAGES.CURSOS.ARQUITECTURA,
   descripcion:
     'Diseñar un sistema Web3 real: front, contratos, indexer, oráculos, RPC redundante y monitoreo. Lo que separa un demo de una app en producción.',
@@ -1267,7 +1267,7 @@ const cursoClaude: Curso = {
   id: 'claude-para-devs',
   titulo: 'Claude para desarrolladores',
   nivel: 'Intermedio',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.CLAUDE,
   descripcion:
     'API de Claude (Anthropic), tool use, prompt caching, batches y el SDK de agentes. Desde el primer call hasta agentes que ejecutan código.',
@@ -1530,7 +1530,7 @@ const cursoVibecoding: Curso = {
   id: 'vibecoding',
   titulo: 'Vibecoding: programar con IA sin perder control',
   nivel: 'Principiante',
-  duracion: '3 semanas',
+  duracion: '45 min',
   imagen: IMAGES.CURSOS.VIBECODING,
   descripcion:
     'Filosofía y práctica de programar con asistentes IA. Cómo describir intención, iterar y mantener calidad sin entender todo cada línea — pero sí lo importante.',

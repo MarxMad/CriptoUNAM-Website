@@ -92,7 +92,7 @@ export const cursosData: Curso[] = [
     id: "1",
     titulo: "Introducción a Blockchain",
     nivel: "Principiante",
-    duracion: "4-6 semanas",
+    duracion: '1.5 horas',
     imagen: IMAGES.CURSOS.BLOCKCHAIN_BASICS,
     descripcion:
       "Curso tipo libro: desde antes de Satoshi hasta contratos inteligentes. Contexto histórico, whitepaper, bloques, minería, consenso, Ethereum y referencias bibliográficas.",
@@ -108,7 +108,7 @@ export const cursosData: Curso[] = [
     id: "2",
     titulo: "Smart Contracts con Solidity",
     nivel: "Intermedio",
-    duracion: "4 semanas",
+    duracion: '60 min',
     imagen: IMAGES.CURSOS.SMART_CONTRACTS,
     descripcion: "Desarrolla contratos inteligentes en la red Ethereum.",
     precio: 0,
@@ -124,7 +124,7 @@ export const cursosData: Curso[] = [
     id: "3",
     titulo: "Protocolos DeFi y Gestión de Riesgo",
     nivel: "Avanzado",
-    duracion: "2 semanas",
+    duracion: '30 min',
     imagen: IMAGES.CURSOS.DEFI,
     descripcion:
       "Aprende protocolos DeFi, métricas de rendimiento y un marco práctico de gestión de riesgo.",
