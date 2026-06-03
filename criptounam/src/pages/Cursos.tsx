@@ -292,31 +292,25 @@ const Cursos = () => {
                   style={{ paddingLeft: 40, marginBottom: 0, height: 40 }}
                 />
               </div>
-              <div className="cursos-chips" role="tablist" aria-label="Filtro por nivel">
-                {NIVELES.map((nivel) => {
-                  const active = filtroNivel === nivel
-                  return (
-                    <button
-                      key={nivel}
-                      type="button"
-                      onClick={() => setFiltroNivel(nivel)}
-                      aria-pressed={active}
-                      className={`cursos-chip cursos-chip--lvl ${active ? 'is-active' : ''}`}
-                    >
-                      {nivel === 'todos'
-                        ? 'Todos'
-                        : nivel.charAt(0).toUpperCase() + nivel.slice(1)}
-                    </button>
-                  )
-                })}
-              </div>
-              {(busqueda || filtroNivel !== 'todos' || categoriaSeleccionada !== 'todas') && (
+              
+              <select
+                value={filtroNivel}
+                onChange={(e) => setFiltroNivel(e.target.value)}
+                className="puma-input"
+                style={{ width: 'auto', minWidth: '140px', height: 40, marginBottom: 0, cursor: 'pointer', paddingRight: '2rem' }}
+              >
+                <option value="todos">Todos los niveles</option>
+                <option value="principiante">Principiante</option>
+                <option value="intermedio">Intermedio</option>
+                <option value="avanzado">Avanzado</option>
+              </select>
+
+              {(busqueda || filtroNivel !== 'todos') && (
                 <button
                   type="button"
                   onClick={() => {
                     setBusqueda('')
                     setFiltroNivel('todos')
-                    setCategoriaSeleccionada('todas')
                   }}
                   style={{
                     background: 'none',
@@ -332,31 +326,6 @@ const Cursos = () => {
                   Limpiar
                 </button>
               )}
-            </div>
-            <div
-              className="cursos-chips"
-              role="tablist"
-              aria-label="Filtro por categoría"
-              style={{ paddingBottom: 2 }}
-            >
-              <FontAwesomeIcon
-                icon={faFilter}
-                style={{ color: '#94a3b8', fontSize: '0.78rem', marginRight: 4, alignSelf: 'center' }}
-              />
-              {CATEGORIAS_LIST.map((cat) => {
-                const active = categoriaSeleccionada === cat
-                return (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => setCategoriaSeleccionada(cat)}
-                    aria-pressed={active}
-                    className={`cursos-chip cursos-chip--cat ${active ? 'is-active' : ''}`}
-                  >
-                    {cat === 'todas' ? 'Todas' : cat}
-                  </button>
-                )
-              })}
             </div>
           </div>
 
