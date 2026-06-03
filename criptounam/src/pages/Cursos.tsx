@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { useAccount } from 'wagmi'
 import { obtenerInscripcionesUsuario, type InscripcionResumen } from '../services/progresoCurso.service'
 import { Link } from 'react-router-dom'
@@ -23,6 +24,14 @@ import {
   faPalette,
   faRobot,
   faCheckCircle,
+  faLock,
+  faShieldHalved,
+  faDatabase,
+  faNetworkWired,
+  faMoneyBillTrendUp,
+  faPenNib,
+  faMicrochip,
+  faCubes,
 } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
@@ -90,11 +99,15 @@ const normalizeText = (text?: string) => {
 
 const getCourseIcon = (categorias: string[]) => {
   const cats = categorias.map(c => c.toLowerCase())
-  if (cats.some(c => ['desarrollo', 'smart contracts', 'rust', 'move', 'backend', 'apis'].includes(c))) return faCode
-  if (cats.some(c => ['defi', 'finanzas', 'trading', 'tokenomics', 'economía', 'cetes'].includes(c))) return faChartLine
-  if (cats.some(c => ['diseño', 'ux', 'producto', 'figma', 'canva'].includes(c))) return faPalette
-  if (cats.some(c => ['ia', 'claude', 'anthropic', 'vibecoding'].includes(c))) return faRobot
-  if (cats.some(c => ['blockchain', 'ethereum', 'l2', 'arbitrum', 'solana', 'avalanche', 'stellar', 'sui'].includes(c))) return faCube
+  if (cats.some(c => ['seguridad', 'criptografía'].includes(c))) return faShieldHalved
+  if (cats.some(c => ['backend', 'indexers', 'database'].includes(c))) return faDatabase
+  if (cats.some(c => ['arquitectura', 'oráculos', 'network'].includes(c))) return faNetworkWired
+  if (cats.some(c => ['desarrollo', 'smart contracts', 'rust', 'move', 'apis'].includes(c))) return faCode
+  if (cats.some(c => ['defi', 'finanzas', 'trading', 'cetes'].includes(c))) return faMoneyBillTrendUp
+  if (cats.some(c => ['tokenomics', 'economía', 'negocio', 'growth', 'marketing'].includes(c))) return faChartLine
+  if (cats.some(c => ['diseño', 'ux', 'producto', 'figma', 'canva'].includes(c))) return faPenNib
+  if (cats.some(c => ['ia', 'claude', 'anthropic', 'vibecoding'].includes(c))) return faMicrochip
+  if (cats.some(c => ['blockchain', 'ethereum', 'l2', 'arbitrum', 'solana', 'avalanche', 'stellar', 'sui', 'rollups', 'subnets'].includes(c))) return faCubes
   return faBook
 }
 
@@ -213,11 +226,11 @@ const Cursos = () => {
         }
         .cursos-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 1.25rem;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 1rem;
         }
-        @media (max-width: 480px) {
-          .cursos-grid { grid-template-columns: 1fr; }
+        @media (max-width: 640px) {
+          .cursos-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
         }
       `}</style>
 
@@ -377,9 +390,13 @@ const Cursos = () => {
                 const progreso = totalLecciones > 0 ? Math.round((completadas / totalLecciones) * 100) : 0
                 const completado = progreso === 100
                 return (
-                  <article
+                  <motion.article
                     key={curso.id}
                     className="puma-card puma-card--shimmer"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: idx * 0.05 }}
+                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     style={
                       {
                         '--i': idx,
@@ -387,22 +404,47 @@ const Cursos = () => {
                         overflow: 'hidden',
                         display: 'flex',
                         flexDirection: 'column',
+                        opacity: address && progreso === 0 ? 0.75 : 1,
                       } as React.CSSProperties
                     }
                   >
                     <div style={{ position: 'relative', aspectRatio: '16 / 9', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: completado ? 'rgba(212,175,55,0.05)' : 'rgba(20,20,20,0.8)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                      <FontAwesomeIcon 
-                        icon={getCourseIcon(curso.categorias || [])} 
-                        style={{ 
-                          fontSize: '4rem', 
-                          color: completado ? '#D4AF37' : '#475569',
-                          filter: completado ? 'drop-shadow(0 0 15px rgba(212,175,55,0.4))' : 'grayscale(100%)',
-                          transition: 'all 0.3s ease'
-                        }} 
-                      />
+                      
+                      {/* Icono circular */}
+                      <div style={{
+                        width: '70px',
+                        height: '70px',
+                        borderRadius: '50%',
+                        background: completado ? 'rgba(212,175,55,0.1)' : 'rgba(255,255,255,0.03)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: completado ? '0 0 20px rgba(212,175,55,0.2)' : 'none',
+                        transition: 'all 0.3s ease',
+                        position: 'relative',
+                        zIndex: 2
+                      }}>
+                        <FontAwesomeIcon 
+                          icon={getCourseIcon(curso.categorias || [])} 
+                          style={{ 
+                            fontSize: '2rem', 
+                            color: completado ? '#D4AF37' : '#64748b',
+                            filter: completado ? 'drop-shadow(0 0 8px rgba(212,175,55,0.4))' : 'none',
+                          }} 
+                        />
+                      </div>
+
+                      {/* Overlay de completado */}
                       {completado && (
-                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                          <FontAwesomeIcon icon={faCheckCircle} style={{ fontSize: '6rem', color: 'rgba(212,175,55,0.15)' }} />
+                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1 }}>
+                          <FontAwesomeIcon icon={faCheckCircle} style={{ fontSize: '6rem', color: 'rgba(212,175,55,0.08)' }} />
+                        </div>
+                      )}
+                      
+                      {/* Overlay de bloqueado */}
+                      {address && progreso === 0 && (
+                        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3 }}>
+                          <FontAwesomeIcon icon={faLock} style={{ fontSize: '2rem', color: 'rgba(255,255,255,0.2)' }} />
                         </div>
                       )}
                       {/* level chip */}
@@ -542,7 +584,7 @@ const Cursos = () => {
                         <FontAwesomeIcon icon={faArrowRight} style={{ fontSize: '0.72rem' }} />
                       </Link>
                     </div>
-                  </article>
+                  </motion.article>
                 )
               })
             )}
