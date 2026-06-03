@@ -1,4 +1,6 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useAccount } from 'wagmi'
+import { obtenerInscripcionesUsuario, type InscripcionResumen } from '../services/progresoCurso.service'
 import { Link } from 'react-router-dom'
 import { cursosData, type Curso } from '../constants/cursosData'
 import PageHero from '../components/PageHero'
@@ -15,6 +17,12 @@ import {
   faFilter,
   faMagnifyingGlass,
   faGift,
+  faCode,
+  faCube,
+  faChartLine,
+  faPalette,
+  faRobot,
+  faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import '../styles/global.css'
 
@@ -79,10 +87,37 @@ const normalizeText = (text?: string) => {
   return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
+
+const getCourseIcon = (categorias: string[]) => {
+  const cats = categorias.map(c => c.toLowerCase())
+  if (cats.some(c => ['desarrollo', 'smart contracts', 'rust', 'move', 'backend', 'apis'].includes(c))) return faCode
+  if (cats.some(c => ['defi', 'finanzas', 'trading', 'tokenomics', 'economía', 'cetes'].includes(c))) return faChartLine
+  if (cats.some(c => ['diseño', 'ux', 'producto', 'figma', 'canva'].includes(c))) return faPalette
+  if (cats.some(c => ['ia', 'claude', 'anthropic', 'vibecoding'].includes(c))) return faRobot
+  if (cats.some(c => ['blockchain', 'ethereum', 'l2', 'arbitrum', 'solana', 'avalanche', 'stellar', 'sui'].includes(c))) return faCube
+  return faBook
+}
+
 const Cursos = () => {
   const [filtroNivel, setFiltroNivel] = useState<string>('todos')
   const [busqueda, setBusqueda] = useState('')
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('todas')
+
+  const { address } = useAccount()
+  const [inscripciones, setInscripciones] = useState<Record<string, InscripcionResumen>>({})
+
+  useEffect(() => {
+    if (address) {
+      obtenerInscripcionesUsuario(address).then(res => {
+        const map: Record<string, InscripcionResumen> = {}
+        res.forEach(r => { map[r.curso_id] = r })
+        setInscripciones(map)
+      })
+    } else {
+      setInscripciones({})
+    }
+  }, [address])
+
 
   const cursosFiltrados = useMemo(() => {
     const busquedaNorm = normalizeText(busqueda);
@@ -336,6 +371,11 @@ const Cursos = () => {
             ) : (
               cursosFiltrados.map((curso: Curso, idx) => {
                 const tienePuma = !!curso.precioPuma && curso.precioPuma > 0
+                const inscripcion = inscripciones[curso.id]
+                const completadas = inscripcion?.lecciones_completadas?.length || 0
+                const totalLecciones = (curso.capitulos?.reduce((acc, c) => acc + c.secciones.length, 0) ?? 0) + (curso.lecciones?.length ?? 0)
+                const progreso = totalLecciones > 0 ? Math.round((completadas / totalLecciones) * 100) : 0
+                const completado = progreso === 100
                 return (
                   <article
                     key={curso.id}
@@ -350,29 +390,21 @@ const Cursos = () => {
                       } as React.CSSProperties
                     }
                   >
-                    <div style={{ position: 'relative', aspectRatio: '16 / 9', overflow: 'hidden' }}>
-                      <img
-                        src={curso.imagen}
-                        alt={curso.titulo}
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          transition: 'transform 0.4s ease',
-                        }}
-                        onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                        onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                    <div style={{ position: 'relative', aspectRatio: '16 / 9', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: completado ? 'rgba(212,175,55,0.05)' : 'rgba(20,20,20,0.8)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                      <FontAwesomeIcon 
+                        icon={getCourseIcon(curso.categorias || [])} 
+                        style={{ 
+                          fontSize: '4rem', 
+                          color: completado ? '#D4AF37' : '#475569',
+                          filter: completado ? 'drop-shadow(0 0 15px rgba(212,175,55,0.4))' : 'grayscale(100%)',
+                          transition: 'all 0.3s ease'
+                        }} 
                       />
-                      {/* gradient overlay */}
-                      <div
-                        style={{
-                          position: 'absolute',
-                          inset: 0,
-                          background:
-                            'linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%)',
-                          pointerEvents: 'none',
-                        }}
-                      />
+                      {completado && (
+                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+                          <FontAwesomeIcon icon={faCheckCircle} style={{ fontSize: '6rem', color: 'rgba(212,175,55,0.15)' }} />
+                        </div>
+                      )}
                       {/* level chip */}
                       <span
                         style={{
